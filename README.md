@@ -54,23 +54,19 @@ npm run calendar:update    # fetch only documents added since the last build
 npm run calendar:rebuild   # re-scrape everything from scratch
 ```
 
-Prefer `calendar:update` for routine refreshes. The document listing is a single
-request, but resolving a date costs one request per document, so the update
-script diffs the listing against what is already stored and only fetches genuinely
-new entries. It leaves existing records untouched, including any manual
-corrections. Pass `--prune` to also drop entries that have disappeared upstream.
+Prefer `calendar:update` for routine refreshes: the document listing is a single
+request, but resolving a date costs one request per document, so `update` only
+fetches genuinely new entries and leaves existing records — including manual
+corrections — untouched.
 
-### Notes on the source data
+The city's data is messier than it looks, and the scraper compensates in ways
+worth understanding before changing any of it. **See [docs/](./docs/)**:
 
-The city's listing is messier than it looks, and the scraper compensates:
-
-- **Dates come from each document's media page**, not its title. Titles use at
-  least five date formats and ~9% carry no date at all.
-- **Meeting times are rendered as raw UTC**, so an evening meeting entered as
-  7:00 PM shows as `12:00 AM` the _next_ day while Haverhill is on EST. Those
-  records are rolled back one day; see `parseMeetingDate` for the evidence.
-- **Clock times are unreliable** and deliberately not displayed.
-- **Some documents share a media page or a PDF**, so records are keyed on the
-  page/file pair and duplicates are collapsed for display.
-- Where a document's own title or filename contradicts its published meeting
-  date, the record is flagged and the count is shown in the page footer.
+| Document                                 | What it covers                                      |
+| ---------------------------------------- | --------------------------------------------------- |
+| [Overview](./docs/README.md)             | How the pieces fit together                         |
+| [Scraping](./docs/scraping.md)           | How documents are pulled off the city's site        |
+| [Dates](./docs/dates.md)                 | How a meeting date is determined, and why it's hard |
+| [Data format](./docs/data-format.md)     | The `meetings.json` schema                          |
+| [Calendar page](./docs/calendar-page.md) | How the page renders and prerenders                 |
+| [Operations](./docs/operations.md)       | Refreshing data and troubleshooting                 |
