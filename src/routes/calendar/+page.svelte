@@ -211,13 +211,14 @@
 										<li>
 											<a
 												href={linkFor(m)}
-												rel="external"
-												title="{m.title} ({m.kind})"
+												target="_blank"
+												rel="external noopener noreferrer"
+												title="{m.title} ({m.kind}) - opens in a new tab"
 												class="block truncate rounded px-1 py-0.5 text-[11px] leading-tight transition {kindClass(
 													m.kind
 												)}"
 											>
-												{m.board}
+												{m.board}<span class="sr-only">, {m.kind}, opens in a new tab</span>
 											</a>
 										</li>
 									{/each}
@@ -248,12 +249,18 @@
 						<ul class="divide-y divide-slate-100">
 							{#each day.items as m (m.pageUrl + m.fileUrl)}
 								<li class="px-3 py-2">
-									<a href={linkFor(m)} rel="external" class="block hover:underline">
+									<a
+										href={linkFor(m)}
+										target="_blank"
+										rel="external noopener noreferrer"
+										class="block hover:underline"
+									>
 										<span class="text-sm font-medium text-slate-900">{m.board}</span>
 										<span class="ml-2 rounded px-1.5 py-0.5 text-[11px] {kindClass(m.kind)}"
 											>{m.kind}</span
 										>
 										<span class="mt-0.5 block text-xs text-slate-500">{m.title}</span>
+										<span class="sr-only">opens in a new tab</span>
 									</a>
 								</li>
 							{/each}

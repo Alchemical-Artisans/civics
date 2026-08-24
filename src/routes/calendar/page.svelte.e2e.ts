@@ -16,6 +16,20 @@ test.describe('meeting calendar', () => {
 		expect(await link.getAttribute('href')).toMatch(/^https:\/\/media-001.*\.pdf$/);
 	});
 
+	test('opens documents in a new tab', async ({ page }) => {
+		// Asserted on attributes rather than by clicking, so the suite never
+		// reaches out to the city's CDN for the actual PDF.
+		const links = page.locator('table a[href*=".pdf"]');
+		const count = await links.count();
+		expect(count).toBeGreaterThan(0);
+
+		for (let i = 0; i < count; i++) {
+			const link = links.nth(i);
+			await expect(link).toHaveAttribute('target', '_blank');
+			expect(await link.getAttribute('rel')).toContain('noopener');
+		}
+	});
+
 	test('navigates to the previous month', async ({ page }) => {
 		const heading = page.getByRole('heading', { level: 2 });
 		const start = await heading.textContent();
