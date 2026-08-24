@@ -117,6 +117,29 @@ comma — `, agenda, opens in a new tab` — because Svelte trims leading whites
 inside an element, which otherwise ran the board name into the following word for
 screen readers.
 
+## The site mark
+
+[`src/lib/assets/favicon.svg`](../src/lib/assets/favicon.svg) is a civic portico:
+a pediment over four columns, on a plinth and steps. It replaced the default
+SvelteKit logo.
+
+The colonnade is the whole idea. The building is drawn **open** — the gaps
+between the columns let the page background read straight through the mark
+rather than it being a solid mass — so the symbol for government and the symbol
+for seeing into it are the same shape.
+
+Constraints that shaped it:
+
+- **Legibility at 16px.** Favicons are mostly seen tiny. Four columns is the
+  fewest that still reads as a portico; finer detail turns to mud at tab size.
+  It was checked rendered at 16, 24, 32, 64, and 128px.
+- **Works on light and dark.** Browser tab strips are either. The single fill,
+  `#0369a1`, holds contrast on both, so no theme variants are needed.
+- **No comments in the file.** Vite inlines assets under 4KB as a data URI, so
+  anything in the SVG ships in the `<link rel="icon">` of every page. Explanatory
+  comments were moved here; the file keeps only a `<title>`, which is small and
+  gives the mark an accessible name if it is ever used inline in the page.
+
 ## Honesty in the footer
 
 The footer states how many documents are indexed, how many were dropped for
