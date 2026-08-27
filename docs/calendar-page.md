@@ -152,6 +152,35 @@ first subdirectory build.
 
 See [deployment.md](./deployment.md#base-path).
 
+## The site root
+
+`/` has nothing on it worth landing on yet, so
+[`src/routes/+page.svelte`](../src/routes/+page.svelte) forwards to `/calendar`
+with a meta refresh:
+
+```svelte
+<svelte:head>
+  <meta http-equiv="refresh" content="0;url={Router.calendar()}" />
+</svelte:head>
+```
+
+Two things about that are deliberate.
+
+**It is not a 301.** GitHub Pages serves static files and cannot send a redirect
+status anyway, but a permanent one would be the wrong choice even where it could:
+browsers cache 301s, sometimes for as long as the profile lives, and would keep
+sending people to `/calendar` long after a real landing page replaced this file.
+Nothing about a meta refresh is cached that way.
+
+**It is not SvelteKit's `redirect()`.** Thrown from a `+page.ts`, that prerenders
+to the same meta refresh preceded by `location.href = ...`, which pushes a
+history entry — the back button would land on `/` and be thrown forward again,
+trapping the visitor on the site. A meta refresh that fires while the page is
+still loading replaces its history entry instead.
+
+The markup under it is a plain link to the calendar, which is what a crawler
+that reads the page without following the refresh will see.
+
 ## The document page
 
 [`documents/[id]/+page.svelte`](../src/routes/calendar/documents/%5Bid%5D/+page.svelte)
@@ -220,5 +249,9 @@ covers the document page: reaching one from the calendar and finding converted
 text, the original PDF offered at the top, the back link, and the embedded
 viewer appearing for a scanned document.
 
-Both assert on link attributes rather than following outbound links, so the
-suite never fetches anything from the city's CDN.
+[`src/routes/page.svelte.e2e.ts`](../src/routes/page.svelte.e2e.ts) covers the
+root: `/` lands on the calendar, and going back from there leaves the site
+rather than bouncing forward again.
+
+The two calendar suites assert on link attributes rather than following outbound
+links, so the suite never fetches anything from the city's CDN.

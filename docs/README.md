@@ -98,6 +98,10 @@ src/lib/
   data/reviews.json        human corrections, overlaid onto it
   data/documents/*.html    the converted documents, one file per document
 
+src/routes/
+  +page.svelte             `/`, which forwards to /calendar
+  page.svelte.e2e.ts       end-to-end tests for that forward
+
 src/routes/calendar/
   +page.ts                 build-time load: trims and de-duplicates records
   +page.svelte             the calendar UI

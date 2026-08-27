@@ -51,7 +51,9 @@ scraped during a deploy — the data is committed, so the build is offline. See
 `/calendar` renders agendas and minutes scraped from the
 [City of Haverhill](https://www.haverhillma.gov/government/agendas-and-minutes/).
 Every entry opens as a readable page on this site, with the PDF's text converted
-to HTML and a link to the original at the top.
+to HTML and a link to the original at the top. The site root forwards there,
+without a cacheable redirect status, until there is a landing page worth having
+— see [docs/calendar-page.md](./docs/calendar-page.md#the-site-root).
 
 The site is fully prerendered, so both the data (`src/lib/data/meetings.json`)
 and the converted documents (`src/lib/data/documents/`) are committed to the repo
