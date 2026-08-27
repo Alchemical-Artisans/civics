@@ -29,20 +29,20 @@ every write so refreshes produce readable diffs rather than reshuffled files.
 
 ```json
 {
-	"title": "2026-08-27 Conservation Commission Agenda",
-	"pageUrl": "/document-manager/media-pages/agenda-and-minutes/2026-08-27-conservation-commission-agenda/",
-	"fileUrl": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/verck2ga/20260827_hccagenda.pdf",
-	"category": "Conservation Commission Agendas",
-	"description": "",
-	"board": "Conservation Commission",
-	"kind": "agenda",
-	"date": "2026-08-27",
-	"dateSource": "meeting-date",
-	"rawMeetingDate": "08/27/2026 07:15 PM",
-	"dateAdjusted": false,
-	"dateConflict": false,
-	"filenameDate": null,
-	"needsReview": false
+  "title": "2026-08-27 Conservation Commission Agenda",
+  "pageUrl": "/document-manager/media-pages/agenda-and-minutes/2026-08-27-conservation-commission-agenda/",
+  "fileUrl": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/verck2ga/20260827_hccagenda.pdf",
+  "category": "Conservation Commission Agendas",
+  "description": "",
+  "board": "Conservation Commission",
+  "kind": "agenda",
+  "date": "2026-08-27",
+  "dateSource": "meeting-date",
+  "rawMeetingDate": "08/27/2026 07:15 PM",
+  "dateAdjusted": false,
+  "dateConflict": false,
+  "filenameDate": null,
+  "needsReview": false
 }
 ```
 
@@ -83,7 +83,7 @@ Neither `pageUrl` nor `fileUrl` is unique on its own:
 The **pair** is unique across all 280 records, so `documentKey()` joins them:
 
 ```js
-`${doc.pageUrl}::${doc.fileUrl ?? ''}`;
+;`${doc.pageUrl}::${doc.fileUrl ?? ""}`
 ```
 
 This is what `calendar:update` diffs on. Using either field alone would silently

@@ -10,7 +10,7 @@ Route: `/calendar`. Files:
 The whole site is prerendered. `src/routes/+layout.ts` contains:
 
 ```ts
-export const prerender = true;
+export const prerender = true
 ```
 
 That is required by `@sveltejs/adapter-static`, which refuses to build if any

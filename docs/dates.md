@@ -35,8 +35,8 @@ a proper metadata field:
 
 ```html
 <tr>
-	<th scope="row">Meeting Date</th>
-	<td>01/06/2026 03:00 PM</td>
+  <th scope="row">Meeting Date</th>
+  <td>01/06/2026 03:00 PM</td>
 </tr>
 ```
 

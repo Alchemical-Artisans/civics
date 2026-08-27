@@ -6,23 +6,23 @@
  * its authoritative Meeting Date. That is one request per document (~280 today),
  * so prefer `npm run calendar:update` for routine refreshes.
  */
-import { fetchListing, resolveDocument, mapLimit, LISTING_URL } from './lib/haverhill.mjs';
-import { saveStore, printSummary, DATA_FILE } from './lib/store.mjs';
+import { fetchListing, resolveDocument, mapLimit, LISTING_URL } from "./lib/haverhill.mjs"
+import { saveStore, printSummary, DATA_FILE } from "./lib/store.mjs"
 
-const CONCURRENCY = 6;
+const CONCURRENCY = 6
 
-const docs = await fetchListing();
-console.log(`Listing returned ${docs.length} documents. Resolving dates...`);
+const docs = await fetchListing()
+console.log(`Listing returned ${docs.length} documents. Resolving dates...`)
 
-let done = 0;
+let done = 0
 const meetings = await mapLimit(docs, CONCURRENCY, async (doc) => {
-	const rec = await resolveDocument(doc);
-	if (++done % 25 === 0 || done === docs.length) {
-		process.stdout.write(`  resolved ${done}/${docs.length}\r`);
-	}
-	return rec;
-});
+  const rec = await resolveDocument(doc)
+  if (++done % 25 === 0 || done === docs.length) {
+    process.stdout.write(`  resolved ${done}/${docs.length}\r`)
+  }
+  return rec
+})
 
-await saveStore(meetings, { source: LISTING_URL });
-printSummary(meetings);
-console.log(`\n  wrote ${DATA_FILE}`);
+await saveStore(meetings, { source: LISTING_URL })
+printSummary(meetings)
+console.log(`\n  wrote ${DATA_FILE}`)

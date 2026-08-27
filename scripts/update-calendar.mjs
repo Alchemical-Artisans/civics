@@ -10,57 +10,57 @@
  * Pass --prune to also drop stored entries no longer present in the listing.
  */
 import {
-	fetchListing,
-	resolveDocument,
-	mapLimit,
-	documentKey,
-	LISTING_URL
-} from './lib/haverhill.mjs';
-import { loadStore, saveStore, printSummary, DATA_FILE } from './lib/store.mjs';
+  fetchListing,
+  resolveDocument,
+  mapLimit,
+  documentKey,
+  LISTING_URL,
+} from "./lib/haverhill.mjs"
+import { loadStore, saveStore, printSummary, DATA_FILE } from "./lib/store.mjs"
 
-const CONCURRENCY = 6;
-const prune = process.argv.includes('--prune');
+const CONCURRENCY = 6
+const prune = process.argv.includes("--prune")
 
-const store = await loadStore();
+const store = await loadStore()
 if (!store) {
-	console.error('No existing calendar data. Run `npm run calendar:rebuild` first.');
-	process.exit(1);
+  console.error("No existing calendar data. Run `npm run calendar:rebuild` first.")
+  process.exit(1)
 }
 
-const existing = new Map(store.meetings.map((m) => [documentKey(m), m]));
-const docs = await fetchListing();
-const fresh = docs.filter((d) => !existing.has(documentKey(d)));
+const existing = new Map(store.meetings.map((m) => [documentKey(m), m]))
+const docs = await fetchListing()
+const fresh = docs.filter((d) => !existing.has(documentKey(d)))
 
-console.log(`Listing returned ${docs.length} documents; ${existing.size} already stored.`);
+console.log(`Listing returned ${docs.length} documents; ${existing.size} already stored.`)
 
 if (!fresh.length && !prune) {
-	console.log('Nothing new. Calendar is up to date.');
-	process.exit(0);
+  console.log("Nothing new. Calendar is up to date.")
+  process.exit(0)
 }
 
-let added = [];
+let added = []
 if (fresh.length) {
-	console.log(`Resolving ${fresh.length} new document(s)...`);
-	added = await mapLimit(fresh, CONCURRENCY, (doc) => resolveDocument(doc));
+  console.log(`Resolving ${fresh.length} new document(s)...`)
+  added = await mapLimit(fresh, CONCURRENCY, (doc) => resolveDocument(doc))
 }
 
-let meetings = [...store.meetings, ...added];
+let meetings = [...store.meetings, ...added]
 
-let removed = 0;
+let removed = 0
 if (prune) {
-	const live = new Set(docs.map(documentKey));
-	const before = meetings.length;
-	meetings = meetings.filter((m) => live.has(documentKey(m)));
-	removed = before - meetings.length;
+  const live = new Set(docs.map(documentKey))
+  const before = meetings.length
+  meetings = meetings.filter((m) => live.has(documentKey(m)))
+  removed = before - meetings.length
 }
 
-await saveStore(meetings, { source: LISTING_URL });
+await saveStore(meetings, { source: LISTING_URL })
 
 if (added.length) {
-	console.log(`\n  added ${added.length}:`);
-	for (const m of added.slice(0, 20)) console.log(`    + ${m.date ?? '????-??-??'}  ${m.title}`);
-	if (added.length > 20) console.log(`    ... and ${added.length - 20} more`);
+  console.log(`\n  added ${added.length}:`)
+  for (const m of added.slice(0, 20)) console.log(`    + ${m.date ?? "????-??-??"}  ${m.title}`)
+  if (added.length > 20) console.log(`    ... and ${added.length - 20} more`)
 }
-if (prune) console.log(`  pruned ${removed} entry(ies) no longer in the listing`);
-printSummary(meetings);
-console.log(`\n  wrote ${DATA_FILE}`);
+if (prune) console.log(`  pruned ${removed} entry(ies) no longer in the listing`)
+printSummary(meetings)
+console.log(`\n  wrote ${DATA_FILE}`)
