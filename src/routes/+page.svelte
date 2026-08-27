@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { resolve } from "$app/paths"
+  import { Router } from "$lib/router"
 </script>
 
 <div class="mx-auto max-w-2xl px-4 py-12">
@@ -8,7 +8,7 @@
     Public meeting records for the City of Haverhill, Massachusetts.
   </p>
   <a
-    href={resolve("/calendar")}
+    href={Router.calendar()}
     class="mt-6 inline-block rounded-md bg-slate-900 px-4 py-2 font-medium text-white transition hover:bg-slate-700"
   >
     Meeting calendar

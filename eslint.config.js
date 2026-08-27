@@ -40,6 +40,13 @@ export default defineConfig(
   {
     // Override or add rule settings here, such as:
     // 'svelte/button-has-type': 'error'
-    rules: {},
+    rules: {
+      // Internal links go through `Router` in src/lib/router.ts instead of
+      // SvelteKit's `resolve()`, which the rule is looking for by name and
+      // cannot be taught about. `Router` applies the base path itself, so the
+      // thing this rule guards against is handled — in one place rather than at
+      // every call site.
+      "svelte/no-navigation-without-resolve": "off",
+    },
   },
 )

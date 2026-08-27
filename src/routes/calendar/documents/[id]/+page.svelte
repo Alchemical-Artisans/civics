@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { resolve } from "$app/paths"
+  import { Router } from "$lib/router"
   import { formatLongDate } from "$lib/calendar"
 
   let { data } = $props()
@@ -43,7 +43,7 @@
 
 <div class="mx-auto max-w-3xl px-4 py-8">
   <nav class="mb-6">
-    <a class="text-sm text-slate-600 underline hover:text-slate-900" href={resolve("/calendar")}>
+    <a class="text-sm text-slate-600 underline hover:text-slate-900" href={Router.calendar()}>
       &larr; Back to the calendar
     </a>
   </nav>

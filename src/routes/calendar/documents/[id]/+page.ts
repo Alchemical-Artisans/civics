@@ -2,6 +2,7 @@ import { error } from "@sveltejs/kit"
 import type { EntryGenerator, PageLoad } from "./$types"
 import raw from "$lib/data/meetings.json"
 import type { DocumentStatus, MeetingKind } from "$lib/calendar"
+import { Router } from "$lib/router"
 
 /**
  * The converted HTML, keyed by document id.
@@ -14,8 +15,6 @@ const pages = import.meta.glob("../../../../lib/data/documents/*.html", {
   query: "?raw",
   import: "default",
 }) as Record<string, () => Promise<string>>
-
-const CITY = "https://www.haverhillma.gov"
 
 /** One record per document, preferring the row the scraper did not flag. */
 function documents() {
@@ -49,7 +48,7 @@ export const load: PageLoad = async ({ params }) => {
     kind: meeting.kind as MeetingKind,
     date: meeting.date,
     fileUrl: meeting.fileUrl,
-    sourceUrl: `${CITY}${meeting.pageUrl}`,
+    sourceUrl: Router.cityPage(meeting.pageUrl),
     status: html ? status : status === "converted" ? "failed" : status,
     html,
   }

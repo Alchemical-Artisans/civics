@@ -103,9 +103,9 @@ Agendas are blue, minutes green, in both views.
 ## Where entries link
 
 Each entry links to that document's page on this site,
-`/calendar/documents/<docId>`, built with `resolve()` so it survives a
-non-empty base path. The one listing row with no `fileUrl` has nothing to
-convert and so no page; it falls back to the document's page on the city site.
+`/calendar/documents/<docId>`, built with `Router.document(docId)`. The one
+listing row with no `fileUrl` has nothing to convert and so no page; it falls
+back to the document's page on the city site, `Router.cityPage(pageUrl)`.
 
 These used to be outbound links to the city's CDN, opening in a new tab with
 `rel="external noopener noreferrer"` and visually-hidden text announcing the new
@@ -117,6 +117,40 @@ following word for screen readers.
 
 The e2e suite asserts on _every_ link that it is internal and carries no
 `target`, so a leftover would not slip through.
+
+## Internal links
+
+Every internal URL on the site is built by `Router` in
+[`src/lib/router.ts`](../src/lib/router.ts) — one static method per route:
+
+```svelte
+<a href={Router.calendar()}>…</a>
+<a href={Router.document(m.docId)}>…</a>
+```
+
+This replaces SvelteKit's `resolve()` from `$app/paths`, which the site used
+until it was set up for deployment. Two reasons:
+
+- **One place knows how a URL is spelled.** A route that changes shape is a
+  compile error at every call site rather than a string to hunt for, and the
+  base path is applied exactly once, in `Router`.
+- **`resolve()` proved unreliable.** Under a non-empty base path, mixing it with
+  a value that already carried the base produced `/civics/civics/…` and failed
+  the build outright. Whether the base is already applied is the kind of thing a
+  route table can answer and a call site cannot.
+
+The rule `svelte/no-navigation-without-resolve` is off in
+[`eslint.config.js`](../eslint.config.js) for this reason: it looks for
+`resolve()` by name and cannot be taught about `Router`, which does the job the
+rule is guarding.
+
+There is one link `Router` does not build — the hidden locale link in
+[`+layout.svelte`](../src/routes/+layout.svelte), which points at whatever page
+is being rendered. `page.url.pathname` already carries the base path, so it is
+used as-is. Adding the base a second time there is precisely what broke the
+first subdirectory build.
+
+See [deployment.md](./deployment.md#base-path).
 
 ## The document page
 

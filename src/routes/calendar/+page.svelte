@@ -10,7 +10,7 @@
     monthsCovered,
     type Meeting,
   } from "$lib/calendar"
-  import { resolve } from "$app/paths"
+  import { Router } from "$lib/router"
   import { onMount } from "svelte"
   import { SvelteSet } from "svelte/reactivity"
 
@@ -208,9 +208,7 @@
                   {#each byDate.get(cell.date) ?? [] as m (m.pageUrl + m.fileUrl)}
                     <li>
                       <a
-                        href={m.docId
-                          ? resolve("/calendar/documents/[id]", { id: m.docId })
-                          : `https://www.haverhillma.gov${m.pageUrl}`}
+                        href={m.docId ? Router.document(m.docId) : Router.cityPage(m.pageUrl)}
                         title="{m.title} ({m.kind})"
                         class="block truncate rounded px-1 py-0.5 text-[11px] leading-tight transition {kindClass(
                           m.kind,
@@ -248,9 +246,7 @@
               {#each day.items as m (m.pageUrl + m.fileUrl)}
                 <li class="px-3 py-2">
                   <a
-                    href={m.docId
-                      ? resolve("/calendar/documents/[id]", { id: m.docId })
-                      : `https://www.haverhillma.gov${m.pageUrl}`}
+                    href={m.docId ? Router.document(m.docId) : Router.cityPage(m.pageUrl)}
                     class="block hover:underline"
                   >
                     <span class="text-sm font-medium text-slate-900">{m.board}</span>
