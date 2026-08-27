@@ -15,3 +15,8 @@ bun.lockb
 # these would churn the diff on every refresh, and reflowing inline elements
 # would change how the text reads.
 /src/lib/data/documents/
+
+# Local Claude Code permissions, written by the tool and ignored by git through
+# a global exclude. Prettier only reads this repository's .gitignore, so it
+# would otherwise fail `npm run lint` on a file that is not part of the project.
+/.claude/
