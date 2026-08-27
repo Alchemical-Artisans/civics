@@ -1,0 +1,61 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  # Lets a deploy be re-run from the Actions tab without an empty commit, which
+  # is the usual way to recover from a failed deploy.
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deploy at a time. Queued runs wait rather than cancel: cancelling a run
+# that is mid-deploy can leave the site half-published.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+        env:
+          # `npm ci` runs the prepare script, which installs Playwright's
+          # browsers. This workflow never runs a test, and they are a few
+          # hundred megabytes.
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
+
+      # BASE_PATH is deliberately not set: static/CNAME points the site at
+      # haverhill.alchemicalartisans.com, which serves from the root. It would
+      # need to be /${{ github.event.repository.name }} if the custom domain
+      # ever went away and the site fell back to <owner>.github.io/<repo>.
+      - name: Build
+        run: npm run build
+
+      # No scraping happens here: meetings.json and the converted documents are
+      # committed, so the build is offline and never touches the city's site.
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: build/
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

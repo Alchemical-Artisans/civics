@@ -17,6 +17,7 @@ converted to HTML and a link to the original at the top.
 | [pdf-conversion.md](./pdf-conversion.md) | Turning the city's PDFs into readable HTML, and where that fails    |
 | [calendar-page.md](./calendar-page.md)   | How the page renders, filters, and prerenders                       |
 | [operations.md](./operations.md)         | Running the scripts, refreshing data, and what to do when it breaks |
+| [deployment.md](./deployment.md)         | How the site is published to GitHub Pages                           |
 
 ## The shape of the system
 
@@ -91,6 +92,8 @@ scripts/
 src/lib/
   calendar.ts              pure date/grouping helpers used by the page
   calendar.spec.ts         unit tests for those helpers
+  router.ts                every internal URL the site builds, in one place
+  router.spec.ts           unit tests for it
   data/meetings.json       the committed dataset
   data/reviews.json        human corrections, overlaid onto it
   data/documents/*.html    the converted documents, one file per document
@@ -102,6 +105,13 @@ src/routes/calendar/
   documents/[id]/+page.ts      per-document load, and the prerender entry list
   documents/[id]/+page.svelte  the document page
   documents/page.svelte.e2e.ts end-to-end tests for it
+
+static/
+  CNAME                    the custom domain, published with the build
+  .nojekyll                stops GitHub Pages discarding _app/
+
+.github/workflows/
+  deploy.yml               build and publish to GitHub Pages on push to main
 ```
 
 ## Current dataset

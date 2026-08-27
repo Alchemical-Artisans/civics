@@ -7,6 +7,19 @@ import { sveltekit } from "@sveltejs/kit/vite"
 import path from "node:path"
 import { storybookTest } from "@storybook/addon-vitest/vitest-plugin"
 
+// Where the site is served from, when that is not the root of a domain.
+//
+// It is empty everywhere today: dev, preview and the test suites run at the
+// root, and so does the deployed site, because static/CNAME points GitHub Pages
+// at haverhill.alchemicalartisans.com. The knob exists for the fallback case —
+// without the custom domain GitHub Pages serves a project site from
+// https://<owner>.github.io/<repo>, and the build has to know it lives under
+// that subdirectory. Set BASE_PATH=/civics to produce that build.
+//
+// Every internal link is built by Router in src/lib/router.ts, which applies
+// this once. See docs/deployment.md.
+const base = (process.env.BASE_PATH ?? "") as "" | `/${string}`
+
 // More info at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon
 export default defineConfig({
   plugins: [
@@ -17,7 +30,11 @@ export default defineConfig({
         runes: ({ filename }) =>
           filename.split(/[/\\]/).includes("node_modules") ? undefined : true,
       },
-      adapter: adapter(),
+      // GitHub Pages serves 404.html for any path it cannot find. Emitting one
+      // means an unknown or stale URL lands on the app's own not-found page
+      // rather than GitHub's, which would be a dead end off the site.
+      adapter: adapter({ fallback: "404.html" }),
+      paths: { base },
     }),
     paraglideVitePlugin({
       project: "./project.inlang",

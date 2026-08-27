@@ -39,7 +39,12 @@ npm run build
 
 You can preview the production build with `npm run preview`.
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+## Deploying
+
+Pushing to `main` publishes the site to
+<https://haverhill.alchemicalartisans.com> through GitHub Pages. Nothing is
+scraped during a deploy — the data is committed, so the build is offline. See
+[docs/deployment.md](./docs/deployment.md).
 
 ## Meeting calendar
 
@@ -86,3 +91,4 @@ worth understanding before changing any of it. **See [docs/](./docs/)**:
 | [PDF conversion](./docs/pdf-conversion.md) | Turning the city's PDFs into readable HTML          |
 | [Calendar page](./docs/calendar-page.md)   | How the page renders and prerenders                 |
 | [Operations](./docs/operations.md)         | Refreshing data and troubleshooting                 |
+| [Deployment](./docs/deployment.md)         | Publishing the site to GitHub Pages                 |
