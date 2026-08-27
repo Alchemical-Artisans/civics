@@ -10,23 +10,24 @@ test.describe("meeting calendar", () => {
     await expect(page.getByRole("heading", { level: 2 })).toHaveText(/^[A-Z][a-z]+ \d{4}$/)
   })
 
-  test("links meetings to their source documents", async ({ page }) => {
-    const link = page.locator('table a[href*=".pdf"]').first()
+  test("links meetings to their document pages", async ({ page }) => {
+    const link = page.locator('table a[href*="/calendar/documents/"]').first()
     await expect(link).toBeVisible()
-    expect(await link.getAttribute("href")).toMatch(/^https:\/\/media-001.*\.pdf$/)
+    expect(await link.getAttribute("href")).toMatch(/^\/calendar\/documents\/[a-z0-9-]+$/)
   })
 
-  test("opens documents in a new tab", async ({ page }) => {
-    // Asserted on attributes rather than by clicking, so the suite never
-    // reaches out to the city's CDN for the actual PDF.
-    const links = page.locator('table a[href*=".pdf"]')
+  test("keeps document links on this site, in the same tab", async ({ page }) => {
+    // Documents used to open on the city's CDN in a new tab. They are pages
+    // here now, so a new tab would be wrong; checked on every link because a
+    // stray leftover would be easy to miss.
+    const links = page.locator("table a")
     const count = await links.count()
     expect(count).toBeGreaterThan(0)
 
     for (let i = 0; i < count; i++) {
       const link = links.nth(i)
-      await expect(link).toHaveAttribute("target", "_blank")
-      expect(await link.getAttribute("rel")).toContain("noopener")
+      expect(await link.getAttribute("href")).toMatch(/^\/calendar\/documents\//)
+      expect(await link.getAttribute("target")).toBeNull()
     }
   })
 
@@ -38,7 +39,7 @@ test.describe("meeting calendar", () => {
   })
 
   test("filtering by board narrows the visible documents", async ({ page }) => {
-    const cells = page.locator('table a[href*=".pdf"]')
+    const cells = page.locator('table a[href*="/calendar/documents/"]')
     const before = await cells.count()
     await page.getByRole("button", { name: "Conservation Commission", exact: true }).click()
     await expect(cells).not.toHaveCount(before)
@@ -46,7 +47,7 @@ test.describe("meeting calendar", () => {
   })
 
   test("unchecking agendas hides agenda entries", async ({ page }) => {
-    const cells = page.locator('table a[href*=".pdf"]')
+    const cells = page.locator('table a[href*="/calendar/documents/"]')
     const before = await cells.count()
     await page.getByRole("checkbox", { name: "Agendas" }).uncheck()
     expect(await cells.count()).toBeLessThan(before)

@@ -4,17 +4,19 @@ This project publishes a browsable calendar of public meeting documents —
 agendas and minutes — for the City of Haverhill, Massachusetts. The city
 publishes those documents through a searchable file listing that is awkward to
 browse and impossible to see chronologically. This site turns that listing into a
-month calendar where every entry links straight to the source PDF.
+month calendar where every entry opens as a readable page, with the PDF's text
+converted to HTML and a link to the original at the top.
 
 ## Documentation map
 
-| Document                               | What it covers                                                      |
-| -------------------------------------- | ------------------------------------------------------------------- |
-| [scraping.md](./scraping.md)           | How documents are pulled off the city's site                        |
-| [dates.md](./dates.md)                 | How a meeting date is determined, and why that is hard              |
-| [data-format.md](./data-format.md)     | The `meetings.json` schema, field by field                          |
-| [calendar-page.md](./calendar-page.md) | How the page renders, filters, and prerenders                       |
-| [operations.md](./operations.md)       | Running the scripts, refreshing data, and what to do when it breaks |
+| Document                                 | What it covers                                                      |
+| ---------------------------------------- | ------------------------------------------------------------------- |
+| [scraping.md](./scraping.md)             | How documents are pulled off the city's site                        |
+| [dates.md](./dates.md)                   | How a meeting date is determined, and why that is hard              |
+| [data-format.md](./data-format.md)       | The `meetings.json` schema, field by field                          |
+| [pdf-conversion.md](./pdf-conversion.md) | Turning the city's PDFs into readable HTML, and where that fails    |
+| [calendar-page.md](./calendar-page.md)   | How the page renders, filters, and prerenders                       |
+| [operations.md](./operations.md)         | Running the scripts, refreshing data, and what to do when it breaks |
 
 ## The shape of the system
 
@@ -31,22 +33,27 @@ flowchart LR
 
     subgraph build["Build time (a developer's machine)"]
         S["scripts/<br/>rebuild &amp; update"]
+        C["poppler<br/>pdftohtml"]
         J["src/lib/data/<br/>meetings.json"]
+        D["src/lib/data/<br/>documents/*.html"]
         V["vite build"]
     end
 
     subgraph runtime["Runtime (the reader's browser)"]
         H["prerendered<br/>/calendar"]
+        O["prerendered<br/>/calendar/documents/[id]"]
     end
 
     L --> E --> S
     M --> S
-    S --> J --> V --> H
-    H -. "links out to" .-> P
+    P --> S --> C --> D --> V
+    S --> J --> V --> H --> O
+    O -. "links out to" .-> P
 ```
 
 The important property: **the reader's browser never talks to the city's
-servers**, except to follow a link to a PDF. All scraping happens ahead of time,
+servers**, except to follow a link to a PDF or to load one into the embedded
+viewer on a document the city published as a scan. All scraping happens ahead of time,
 the results are committed to the repository, and the page is prerendered to
 static HTML. Nothing about the site depends on the city's site being up, fast, or
 CORS-friendly.
@@ -60,7 +67,8 @@ also means:
 
 - The data is reviewable. A refresh shows up as a readable diff.
 - Builds are reproducible and offline. CI never depends on the city's uptime.
-- Manual corrections survive. See [dates.md](./dates.md) for why that matters.
+- Manual corrections survive, in `reviews.json`, across a full rebuild. See
+  [dates.md](./dates.md) for why that matters.
 
 ## Files at a glance
 
@@ -68,26 +76,42 @@ also means:
 scripts/
   lib/haverhill.mjs        scraping and parsing: the endpoint, dates, classification
   lib/haverhill.spec.mjs   unit tests for the parsers
+  lib/pdf-html.mjs         poppler XML -> reflowed, semantic HTML
+  lib/pdf-html.spec.mjs    unit tests for the layout heuristics
+  lib/documents.mjs        document ids, the incremental conversion pass
+  lib/documents.spec.mjs   unit tests for ids and de-duplication
   lib/store.mjs            reading and writing meetings.json, run summaries
+  lib/reviews.mjs          the corrections overlay
+  lib/reviews.spec.mjs     unit tests for it
   rebuild-calendar.mjs     full re-scrape
   update-calendar.mjs      incremental refresh
+
+.cache/documents/          every document downloaded, gitignored; makes --recheck cheap
 
 src/lib/
   calendar.ts              pure date/grouping helpers used by the page
   calendar.spec.ts         unit tests for those helpers
   data/meetings.json       the committed dataset
+  data/reviews.json        human corrections, overlaid onto it
+  data/documents/*.html    the converted documents, one file per document
 
 src/routes/calendar/
   +page.ts                 build-time load: trims and de-duplicates records
   +page.svelte             the calendar UI
   page.svelte.e2e.ts       end-to-end tests
+  documents/[id]/+page.ts      per-document load, and the prerender entry list
+  documents/[id]/+page.svelte  the document page
+  documents/page.svelte.e2e.ts end-to-end tests for it
 ```
 
 ## Current dataset
 
-As of the last refresh: **280 documents** spanning **2025-01-07 to 2026-08-27**,
-across 10 boards. 279 resolve to a date; the one that does not is a schedule
-document rather than a meeting.
+As of the last refresh: **281 documents** spanning **2025-01-07 to 2026-08-27**,
+across 10 boards. 280 resolve to a date; the one that does not is a schedule
+document rather than a meeting. Those become **275 document pages** — a few PDFs
+are published under two media pages each, and one listing row has no file at all.
+85 of them have readable text; the rest are scans, which
+[pdf-conversion.md](./pdf-conversion.md) explains.
 
 | Board                              | Documents |
 | ---------------------------------- | --------: |

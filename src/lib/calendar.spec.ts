@@ -22,6 +22,7 @@ const meeting = (
   kind,
   fileUrl: "https://example.test/a.pdf",
   pageUrl: "/p",
+  docId: "a-document-0000abcd",
 })
 
 describe("monthKey / formatMonth", () => {

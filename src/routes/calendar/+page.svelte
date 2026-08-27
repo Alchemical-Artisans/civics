@@ -10,6 +10,7 @@
     monthsCovered,
     type Meeting,
   } from "$lib/calendar"
+  import { resolve } from "$app/paths"
   import { onMount } from "svelte"
   import { SvelteSet } from "svelte/reactivity"
 
@@ -69,9 +70,6 @@
     else activeBoards.add(board)
   }
 
-  /** Prefer the direct PDF; fall back to the document's page on the city site. */
-  const linkFor = (m: Meeting) => m.fileUrl ?? `https://www.haverhillma.gov${m.pageUrl}`
-
   const kindClass = (kind: Meeting["kind"]) =>
     kind === "agenda"
       ? "bg-sky-100 text-sky-900 hover:bg-sky-200"
@@ -95,7 +93,7 @@
       Agendas and minutes from
       <a class="underline hover:text-slate-900" rel="external" href={data.source}>
         the City of Haverhill
-      </a>. Every entry links straight to its document.
+      </a>. Every entry opens as a readable page, with a link to the original.
     </p>
   </header>
 
@@ -210,15 +208,15 @@
                   {#each byDate.get(cell.date) ?? [] as m (m.pageUrl + m.fileUrl)}
                     <li>
                       <a
-                        href={linkFor(m)}
-                        target="_blank"
-                        rel="external noopener noreferrer"
-                        title="{m.title} ({m.kind}) - opens in a new tab"
+                        href={m.docId
+                          ? resolve("/calendar/documents/[id]", { id: m.docId })
+                          : `https://www.haverhillma.gov${m.pageUrl}`}
+                        title="{m.title} ({m.kind})"
                         class="block truncate rounded px-1 py-0.5 text-[11px] leading-tight transition {kindClass(
                           m.kind,
                         )}"
                       >
-                        {m.board}<span class="sr-only">, {m.kind}, opens in a new tab</span>
+                        {m.board}<span class="sr-only">, {m.kind}</span>
                       </a>
                     </li>
                   {/each}
@@ -250,9 +248,9 @@
               {#each day.items as m (m.pageUrl + m.fileUrl)}
                 <li class="px-3 py-2">
                   <a
-                    href={linkFor(m)}
-                    target="_blank"
-                    rel="external noopener noreferrer"
+                    href={m.docId
+                      ? resolve("/calendar/documents/[id]", { id: m.docId })
+                      : `https://www.haverhillma.gov${m.pageUrl}`}
                     class="block hover:underline"
                   >
                     <span class="text-sm font-medium text-slate-900">{m.board}</span>
@@ -260,7 +258,6 @@
                       >{m.kind}</span
                     >
                     <span class="mt-0.5 block text-xs text-slate-500">{m.title}</span>
-                    <span class="sr-only">opens in a new tab</span>
                   </a>
                 </li>
               {/each}

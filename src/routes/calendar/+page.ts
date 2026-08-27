@@ -6,7 +6,8 @@ import type { Meeting, MeetingKind } from "$lib/calendar"
  * Runs at build time (the site is fully prerendered), so the trimmed meeting
  * list is baked into the page rather than fetched by the browser. Fields only
  * the scraper cares about -- rawMeetingDate, category, dateSource -- are dropped
- * here to keep the serialized payload small.
+ * here to keep the serialized payload small. `docId` stays: it is how a
+ * calendar entry addresses its document page.
  */
 export const load: PageLoad = () => {
   const dated = raw.meetings.filter((m) => m.date)
@@ -29,6 +30,7 @@ export const load: PageLoad = () => {
     kind: m.kind as MeetingKind,
     fileUrl: m.fileUrl,
     pageUrl: m.pageUrl,
+    docId: m.docId ?? null,
   }))
 
   return {

@@ -1,5 +1,10 @@
 node_modules
 
+# Documents downloaded by the calendar scripts. Only the converted HTML in
+# src/lib/data/documents/ is committed; these are kept so re-running the
+# conversion does not re-download the corpus. Safe to delete.
+/.cache/
+
 # Output
 .output
 .vercel
@@ -29,3 +34,4 @@ project.inlang/cache/
 
 *storybook.log
 storybook-static
+docs/.obsidian

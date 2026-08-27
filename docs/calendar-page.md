@@ -32,7 +32,8 @@ Records are grouped by `fileUrl`, keeping one — and preferring the copy _not_
 flagged `needsReview`, since where the two disagree the unflagged one is the
 better-evidenced date.
 
-**Trims fields.** Only the six fields the UI needs are kept. Scraper bookkeeping
+**Trims fields.** Only the seven fields the UI needs are kept — including
+`docId`, which is how an entry addresses its document page. Scraper bookkeeping
 (`rawMeetingDate`, `dateSource`, `category`, …) is dropped so it never ships to
 the browser.
 
@@ -99,23 +100,46 @@ Two presentations of the same data, switched on viewport width:
 
 Agendas are blue, minutes green, in both views.
 
-## Outbound links
+## Where entries link
 
-Each entry links to its PDF (`fileUrl`), falling back to the document's page on
-the city site when no PDF is listed. Links open in a new tab:
+Each entry links to that document's page on this site,
+`/calendar/documents/<docId>`, built with `resolve()` so it survives a
+non-empty base path. The one listing row with no `fileUrl` has nothing to
+convert and so no page; it falls back to the document's page on the city site.
 
-```html
-target="_blank" rel="external noopener noreferrer"
-```
+These used to be outbound links to the city's CDN, opening in a new tab with
+`rel="external noopener noreferrer"` and visually-hidden text announcing the new
+window. **All of that is gone**: the links are internal now, so a new tab would
+be wrong, and there is no unannounced window to warn about. The grid's hidden
+text is down to `, agenda`, and still begins with a comma because Svelte trims
+leading whitespace inside an element, which otherwise ran the board name into the
+following word for screen readers.
 
-`external` tells the SvelteKit router not to intercept the navigation;
-`noopener noreferrer` is standard hygiene for third-party links.
+The e2e suite asserts on _every_ link that it is internal and carries no
+`target`, so a leftover would not slip through.
 
-Because opening a new window unannounced is a WCAG 3.2.5 failure, each link
-carries visually-hidden text saying so. The grid's hidden text begins with a
-comma — `, agenda, opens in a new tab` — because Svelte trims leading whitespace
-inside an element, which otherwise ran the board name into the following word for
-screen readers.
+## The document page
+
+[`documents/[id]/+page.svelte`](../src/routes/calendar/documents/%5Bid%5D/+page.svelte)
+renders one document: a back link, the title, board, kind and date, then the
+source links, then the converted text in a `prose` container.
+
+**The source link sits at the top, not the footer.** This page is a convenience
+and the city's file is the record — and since the conversion reflows complex
+layouts imperfectly, the way back to the original has to be obvious.
+
+The converted HTML is injected with `{@html}`. That is safe here because the
+markup is not sanitised after the fact but _assembled from a whitelist_ by
+`scripts/lib/pdf-html.mjs` at scrape time, with every character of text escaped
+on the way out. Nothing about it is user input: it comes from a committed file.
+See [pdf-conversion.md](./pdf-conversion.md).
+
+Documents with no text layer — over half of them — get a plain explanation and an
+`<object>` PDF viewer instead, so the page is still useful. The wording names the
+scan as the city's, so the limitation does not read as a fault here.
+
+`+page.ts` exports `entries()` listing every `docId`, because a fully prerendered
+site cannot discover a dynamic route by crawling.
 
 ## The site mark
 
@@ -153,9 +177,14 @@ than present uncertain data as authoritative.
 ## Tests
 
 [`page.svelte.e2e.ts`](../src/routes/calendar/page.svelte.e2e.ts) runs against
-the production build and covers: the month heading renders, entries link to real
-PDF URLs, links open in a new tab, month navigation works, board filtering
-narrows results, and unchecking agendas hides them.
+the production build and covers: the month heading renders, entries link to
+document pages, every link is internal and same-tab, month navigation works,
+board filtering narrows results, and unchecking agendas hides them.
 
-The new-tab test asserts link attributes rather than clicking through, so the
+[`documents/page.svelte.e2e.ts`](../src/routes/calendar/documents/page.svelte.e2e.ts)
+covers the document page: reaching one from the calendar and finding converted
+text, the original PDF offered at the top, the back link, and the embedded
+viewer appearing for a scanned document.
+
+Both assert on link attributes rather than following outbound links, so the
 suite never fetches anything from the city's CDN.

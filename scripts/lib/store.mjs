@@ -1,6 +1,7 @@
 /** Load/save helpers for the committed calendar data file. */
 import { readFile, writeFile, mkdir } from "node:fs/promises"
 import path from "node:path"
+import { summarizeDocuments } from "./documents.mjs"
 
 export const DATA_FILE = path.join(
   import.meta.dirname,
@@ -52,6 +53,10 @@ export function summarize(meetings) {
   }
 }
 
+/** The PDF's own filename, which is how you find the document to check it. */
+const filenameOf = (fileUrl) =>
+  fileUrl ? decodeURIComponent(fileUrl.split("/").pop() ?? "") : "(no file)"
+
 export function printSummary(meetings) {
   const s = summarize(meetings)
   console.log(`\n  ${s.total} meetings, ${s.dated} with a resolved date`)
@@ -61,10 +66,25 @@ export function printSummary(meetings) {
       .map(([k, v]) => `${k}=${v}`)
       .join(", ")}`,
   )
+  const docs = summarizeDocuments(meetings)
+  const total = Object.values(docs).reduce((n, v) => n + v, 0)
+  if (total) {
+    console.log(
+      `  documents: ${Object.entries(docs)
+        .sort((a, b) => b[1] - a[1])
+        .map(([k, v]) => `${k}=${v}`)
+        .join(", ")}`,
+    )
+  }
   if (s.review.length) {
     console.log(`\n  ${s.review.length} need review (no date, or an ambiguous filename date):`)
     for (const m of s.review.slice(0, 15)) {
-      console.log(`    - ${m.date ?? "????-??-??"}  ${m.title}  [${m.dateSource}]`)
+      // The filename is here because it is usually the thing that disagrees:
+      // most flagged records are a media-page date contradicting a date in the
+      // PDF's own name, so this is what you open to settle it.
+      console.log(
+        `    - ${m.date ?? "????-??-??"}  ${m.title}  [${m.dateSource}]  ${filenameOf(m.fileUrl)}`,
+      )
     }
     if (s.review.length > 15) console.log(`    ... and ${s.review.length - 15} more`)
   }

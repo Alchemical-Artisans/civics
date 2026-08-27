@@ -18,7 +18,7 @@ const PAGE_KEY = "12437"
 const CONTENT_KEY = "0a375e52-71a5-4b77-a81d-d140b10479fc"
 const SETTINGS_KEY = "db2f2ad8-3c61-42ad-985b-bd2b0d6dc284"
 
-const USER_AGENT =
+export const USER_AGENT =
   "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36"
 
 const decode = (s) =>
@@ -35,7 +35,7 @@ const stripTags = (s) =>
     .replace(/\s+/g, " ")
     .trim()
 
-async function retrying(label, fn, { retries = 3 } = {}) {
+export async function retrying(label, fn, { retries = 3 } = {}) {
   let lastErr
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
