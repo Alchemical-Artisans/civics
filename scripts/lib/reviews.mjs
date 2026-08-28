@@ -59,7 +59,7 @@ export async function saveReviews(reviews) {
   const sorted = {}
   for (const key of Object.keys(reviews).sort()) sorted[key] = reviews[key]
   await mkdir(path.dirname(REVIEWS_FILE), { recursive: true })
-  await writeFile(REVIEWS_FILE, JSON.stringify(sorted, null, "\t") + "\n")
+  await writeFile(REVIEWS_FILE, JSON.stringify(sorted, null, 2) + "\n")
   return sorted
 }
 

@@ -34,7 +34,7 @@ export async function saveStore(meetings, { source }) {
     meetings: sorted,
   }
   await mkdir(path.dirname(DATA_FILE), { recursive: true })
-  await writeFile(DATA_FILE, JSON.stringify(payload, null, "\t") + "\n")
+  await writeFile(DATA_FILE, JSON.stringify(payload, null, 2) + "\n")
   return payload
 }
 
