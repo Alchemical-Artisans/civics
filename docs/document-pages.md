@@ -117,6 +117,22 @@ give them a directory named after the item:
 file per page, so a document spanning two of them is cut singly and stitched
 back with `pdfunite`.
 
+A wide sheet is often scanned sideways, so the excerpt comes out unreadable
+without tilting your head. Poppler cannot turn a page, and `qpdf` is not
+installed here; `pip install --user pypdf` and set the rotation, which costs
+nothing in quality because it only writes `/Rotate` into the page and leaves
+the scan alone:
+
+```python
+from pypdf import PdfReader, PdfWriter
+
+reader, writer = PdfReader(path), PdfWriter()
+for page in reader.pages:
+    page.rotate(90)  # clockwise; 270 for a sheet lying the other way
+    writer.add_page(page)
+writer.write(open(path, "wb"))
+```
+
 There is a worked example at
 [`city-council-agenda-august-25-2026-a5cd2463/+page.svelte`](../src/routes/calendar/documents/city-council-agenda-august-25-2026-a5cd2463/+page.svelte):
 an agenda outline as `<h2>` per numbered item, nested `<ul>` for sub-items with
