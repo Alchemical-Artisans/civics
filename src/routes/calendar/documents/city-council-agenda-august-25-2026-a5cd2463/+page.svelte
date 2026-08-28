@@ -46,30 +46,24 @@
     </a>
   </li>
   <li>
-    <strong>6.3</strong> Councilor Lewandowski requests to introduce John M. Roche, who is
-    requesting a Home Rule Age Waiver petition for the position of Fire Fighter in the City of
-    Haverhill.
-    <ul>
-      <li>
-        <strong>6.3.1</strong> Order - Home Rule Petition &mdash; Authorizing John M. Roche to take the
-        Civil Service Exam for the position of Fire Fighter in the City of Haverhill notwithstanding the
-        maximum age requirement.
-      </li>
-    </ul>
+    <strong>6.3</strong>
+    <a href={Router.documentItem(DOCUMENT, "john-roche-home-rule-age-waiver")}>
+      John M. Roche, Home Rule Age Waiver Petition
+    </a>
   </li>
 </ul>
 
-<h2>7. Public Participation &mdash; Requests under Council Rule 28</h2>
+<h2>7. Public Participation- Requests under Council Rule 28</h2>
 
 <h2>8. Communications and Reports from City Officers and Employees</h2>
 
 <ul>
   <li>
-    <strong>8.1 EROM-26-19</strong> &mdash; Lisa DeMeo, <em>City Engineer</em>, requests approval to
-    open the roadway to allow for a gas leak repair at 135 Hyatt Ave, which requires National Grid
-    to excavate in the right of way.
+    <strong>8.1 EROM-26-19</strong> - Lisa DeMeo, <em>City Engineer</em>, requests approval to open
+    the roadway to allow for a gas leak repair at 135 Hyatt Ave, which requires National Grid to
+    excavate in the right of way.
     <ul>
-      <li><strong>8.1.1</strong> Order &mdash; approve request to excavate at 135 Hyatt Ave.</li>
+      <li><strong>8.1.1</strong> Order &ndash; approve request to excavate at 135 Hyatt Ave.</li>
     </ul>
   </li>
   <li>
@@ -82,7 +76,7 @@
     MGL Ch. 30B, &sect;15.
     <ul>
       <li>
-        <strong>8.3.1</strong> Order &mdash; that the City Council declares as surplus and authorizes
+        <strong>8.3.1</strong> Order &ndash; that the City Council declares as surplus and authorizes
         for disposal each of the below City-owned vehicles previously utilized by the Department of Public
         Works, each having an estimated value exceeding $10,000, through sale to the highest bidder via
         a public online auction with proceeds to be deposited into the General Fund Misc. Receipts account.
@@ -142,19 +136,19 @@
 
 <ul>
   <li>
-    <strong>10.1 Doc 21-B</strong> &mdash; Planning Director Jacki Byerley requests a hearing for
-    the following Zoning Amendment &mdash; Battery Energy Storage Systems Ordinance: re: Amend
-    Chapter 255 Zoning Ordinance and Zoning Map &mdash; Battery Energy Storage Systems Overlay
-    District (BESS) &mdash; by inserting a new section 7.9 Battery Energy Storage Systems, amending
-    section 3.1.3 Table of Use and Parking regulations by allowing a Tier 1, Tier 2 and Tier 3 BESS,
-    and amending the Zoning Map to include the BESS Overlay District. The overlay district will be
+    <strong>10.1 Doc 21-B</strong> - Planning Director Jacki Byerley requests a hearing for the
+    following Zoning Amendment &ndash; Battery Energy Storage Systems Ordinance: re: Amend Chapter
+    255 Zoning Ordinance and Zoning Map &ndash; Battery Energy Storage Systems Overlay District
+    (BESS)&ndash; by inserting a new section 7.9 Battery Energy Storage Systems, amending section
+    3.1.3 Table of Use and Parking regulations by allowing a Tier 1, Tier 2 and Tier 3 BESS, and
+    amending the Zoning Map to include the BESS Overlay District. The overlay district will be
     creating regulations for the installation and use of free-standing battery energy storage
     systems (&ldquo;BESS&rdquo;), adding to the table the overlay district with the allowed Tiers
     and updating the zoning map to include the BESS Overlay District, or take any other action
     related to. <em>Continued from July 14, 2026.</em>
   </li>
   <li>
-    <strong>10.2 Doc 21-G &mdash; PDD-26-1</strong> Attorney Russell Channen for client
+    <strong>10.2 Doc 21-G- PDD-26-1</strong> Attorney Russell Channen for client
     <em>Pentucket North Development, LLC</em> requests to amend Chapter 255 Zoning Ordinance and
     Zoning Map by creating a Special Permit Planned Development District in accordance with Section
     8.5 of the Zoning Ordinance. Applicant Pentucket North Development, LLC is requesting a special
@@ -168,7 +162,7 @@
     >
   </li>
   <li>
-    <strong>10.3 Doc 21-I &mdash; CCSP-26-2</strong> &mdash; Philip Rice of
+    <strong>10.3 Doc 21-I- CCSP-26-2</strong> &ndash; Philip Rice of
     <em>Rice &amp; Brouillard</em> requests approval to transform an existing 1&frac12; story structure
     into a three-family residential building containing a mix of two- and three-bedroom units at 125 River
     St. The renovation will include an interior reconfiguration, structural expansion, and modernization
@@ -176,9 +170,9 @@
     needed.
   </li>
   <li>
-    <strong>10.4 Doc 21-D &mdash; CCSP-26-3</strong> &mdash; Attorney Jonathan Stark-Sachs for
-    Maryam Salehi-Ala-Yamin requests approval to operate &ldquo;Mariam&rsquo;s Cottage,&rdquo; a
-    family run bed and breakfast at 421 East Broadway allowed with a special permit in the RR (Rural
+    <strong>10.4 Doc 21-D - CCSP-26-3</strong> - Attorney Jonathan Stark-Sachs for Maryam
+    Salehi-Ala-Yamin requests approval to operate &ldquo;Mariam&rsquo;s Cottage,&rdquo; a family run
+    bed and breakfast at 421 East Broadway allowed with a special permit in the RR (Rural
     Residential) zoning district, and seeks to host small-scale weddings and similar outdoor events
     of up to 50 guests packaged with overnight stays.
     <em
@@ -209,36 +203,36 @@
     </ul>
   </li>
   <li>
-    <strong>12.6 One Day Liquor License</strong> &mdash; with Police and License Commission approval.
+    <strong>12.6 One Day Liquor License</strong> &ndash;with Police and License Commission approval
   </li>
   <li>
     <strong>12.7 Annual License Renewals:</strong>
     <ul>
       <li>
-        <strong>12.7.1</strong> Hawker Peddlers License &mdash; Fixed location, w/ Police approval
+        <strong>12.7.1</strong> Hawker Peddlers License- Fixed location &ndash; w/Police approval
       </li>
-      <li><strong>12.7.2</strong> Coin-Op License Renewals &mdash; with Police approval</li>
-      <li><strong>12.7.3</strong> Christmas Tree Vendor &mdash; with Police approval</li>
-      <li><strong>12.7.4</strong> Taxi Driver Licenses &mdash; with Police approval</li>
-      <li><strong>12.7.5</strong> Taxi/Limousine License &mdash; with Police approval</li>
-      <li><strong>12.7.6</strong> Junk Dealer/Collector License &mdash; with Police approval</li>
+      <li><strong>12.7.2</strong> Coin-Op License Renewals &ndash; with Police approval</li>
+      <li><strong>12.7.3</strong> Christmas Tree Vendor &ndash; with Police approval</li>
+      <li><strong>12.7.4</strong> Taxi Driver Licenses: with Police approval</li>
+      <li><strong>12.7.5</strong> Taxi/Limousine License with Police approval</li>
+      <li><strong>12.7.6</strong> Junk Dealer/Collector License - with Police approval</li>
       <li><strong>12.7.7</strong> Pool/Billiard</li>
       <li><strong>12.7.8</strong> Bowling</li>
       <li><strong>12.7.9</strong> Sunday Bowling</li>
       <li>
-        <strong>12.7.10</strong> Buy &amp; Sell Secondhand Articles &mdash; with Police approval
+        <strong>12.7.10</strong> Buy &amp; Sell Secondhand Articles with Police approval
       </li>
       <li>
-        <strong>12.7.11</strong> Buy &amp; Sell Secondhand Clothing &mdash; with Police approval
+        <strong>12.7.11</strong> Buy &amp; Sell Secondhand Clothing with Police approval
       </li>
-      <li><strong>12.7.12</strong> Pawnbroker license &mdash; with Police approval</li>
-      <li><strong>12.7.13</strong> Fortune Teller &mdash; with Police approval</li>
-      <li><strong>12.7.14</strong> Buy &amp; Sell Old Gold &mdash; with Police approval</li>
+      <li><strong>12.7.12</strong> Pawnbroker license - with Police approval</li>
+      <li><strong>12.7.13</strong> Fortune Teller with - Police approval</li>
+      <li><strong>12.7.14</strong> Buy &amp; Sell Old Gold &ndash; with Police approval</li>
       <li><strong>12.7.15</strong> Roller Skating Rink</li>
       <li><strong>12.7.16</strong> Sunday Skating</li>
       <li><strong>12.7.17</strong> Exterior Vending Machines/Redbox Automated Retail, LLC</li>
       <li>
-        <strong>12.7.18</strong> Limousine/Livery License/Chair Cars &mdash; with Police approval
+        <strong>12.7.18</strong> Limousine/Livery License/Chair Cars with Police approval
       </li>
     </ul>
   </li>
@@ -248,7 +242,7 @@
 
 <ul>
   <li>
-    <strong>13.1</strong> Order &mdash; Pay bills of the previous years and authorize payment from current
+    <strong>13.1</strong> Order &ndash; Pay bills of the previous years and authorize payment from current
     year departmental appropriations as listed.
   </li>
 </ul>
@@ -393,7 +387,7 @@
   </thead>
   <tbody>
     <tr>
-      <td>Mohawk Trail &mdash; both sides, entire length</td>
+      <td>Mohawk Trail both sides, entire length</td>
       <td>No Parking</td>
       <td>24 hrs</td>
     </tr>
@@ -414,13 +408,13 @@
 
 <ul>
   <li>
-    <strong>16.1 Document 19-D</strong> &mdash; Mayor Barrett submits a Memorandum of Agreement
-    between the City of Haverhill and the New England Police Benevolent Association (NEPBA) Local
-    119 (Dispatchers) for contract period July 1, 2026 through June 30, 2029.
+    <strong>16.1 Document 19-D</strong>- Mayor Barrett submits a Memorandum of Agreement between the
+    City of Haverhill and the New England Police Benevolent Association (NEPBA) Local 119
+    (Dispatchers) for contract period July 1, 2026 through June 30, 2029.
     <ul>
       <li>
-        <strong>16.1.1</strong> Order &mdash; Memorandum Agreement between the City of Haverhill and
-        the New England Police Benevolent Association (NEPBA) Local 119 (Dispatchers).
+        <strong>16.1.1</strong> Order- Memorandum Agreement between the City of Haverhill and the
+        New England Police Benevolent Association (NEPBA) Local 119 (Dispatchers).
         <em>Filed on August 12, 2026.</em>
       </li>
     </ul>
