@@ -109,9 +109,11 @@ src/routes/calendar/
   documents/+layout.svelte     title, date and links to the city's own copy
   documents/<id>/+page.svelte  a hand-written document page, one directory each
   documents/<id>/+page.ts      its time, room and remote link, where stated
+  documents/<id>/<item>/       a page for a single agenda item, where one earns it
   documents/page.svelte.e2e.ts end-to-end tests for them
 
 static/
+  excerpts/<id>/*.pdf      pages cut out of a document's PDF for one item
   CNAME                    the custom domain, published with the build
   .nojekyll                stops GitHub Pages discarding _app/
 

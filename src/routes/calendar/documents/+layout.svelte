@@ -10,6 +10,12 @@
   // printed. Absent on a document that states none of it.
   const meeting = $derived(page.data.meeting)
 
+  // A page for a single agenda item titles itself after the item. The meeting
+  // logistics stay on the document page: they describe the whole sitting, and
+  // repeating them here would bury the one item the reader came for.
+  const item = $derived(page.data.item)
+  const heading = $derived(item?.title ?? data.title)
+
   const when = $derived(
     data.date && meeting?.time
       ? `${formatLongDate(data.date)} at ${meeting.time}`
@@ -27,7 +33,7 @@
 </script>
 
 <svelte:head>
-  <title>{data.title} - Haverhill Meeting Calendar</title>
+  <title>{heading} - Haverhill Meeting Calendar</title>
   <meta
     name="description"
     content="{data.board} {data.kind}{data.date
@@ -38,9 +44,18 @@
 
 <div class="mx-auto max-w-3xl px-4 py-8">
   <nav class="mb-6">
-    <a class="text-sm text-slate-600 underline hover:text-slate-900" href={Router.calendar()}>
-      &larr; Back to the calendar
-    </a>
+    {#if data.isItem}
+      <a
+        class="text-sm text-slate-600 underline hover:text-slate-900"
+        href={Router.document(data.id)}
+      >
+        &larr; {data.title}
+      </a>
+    {:else}
+      <a class="text-sm text-slate-600 underline hover:text-slate-900" href={Router.calendar()}>
+        &larr; Back to the calendar
+      </a>
+    {/if}
   </nav>
 
   <header class="mb-6 border-b border-slate-200 pb-6">
@@ -48,8 +63,8 @@
 	     and so it takes the width of the content column rather than the width
 	     of the icon it hangs off. -->
     <div class="relative flex flex-wrap items-center gap-x-2">
-      <h1 class="text-2xl font-bold tracking-tight text-slate-900">{data.title}</h1>
-      {#if meeting?.notice?.length}
+      <h1 class="text-2xl font-bold tracking-tight text-slate-900">{heading}</h1>
+      {#if !data.isItem && meeting?.notice?.length}
         <Note label="How this meeting is held, and how it is recorded">
           {#each meeting.notice as paragraph (paragraph)}
             <p>{paragraph}</p>
@@ -68,7 +83,7 @@
 
     <!-- How to attend, rather than how to read the document -- so it sits
 	     above the source links, not among them. -->
-    {#if meeting?.location || meeting?.remote}
+    {#if !data.isItem && (meeting?.location || meeting?.remote)}
       <p class="mt-2 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-slate-600">
         {#if meeting.location}
           <a
@@ -95,27 +110,34 @@
 
     <!-- The source link sits at the top: this page is a written summary, and
 		     the city's file is the record. Anyone checking what was actually
-		     published should not have to hunt for it. -->
-    <p class="mt-4 flex flex-wrap gap-x-4 gap-y-2 text-sm">
-      <a
-        class="text-slate-600 underline hover:text-slate-900"
-        href={data.sourceUrl}
-        target="_blank"
-        rel="external noopener noreferrer"
-      >
-        Original Page<span class="sr-only">, opens in a new tab</span>
-      </a>
-      {#if data.fileUrl}
+		     published should not have to hunt for it.
+
+		     Only on the document itself. An item page is about one entry on the
+		     agenda, and these point at the whole packet, which reads as though
+		     they are that item's source when they are not -- an item links to
+		     its own excerpt in its own text instead. -->
+    {#if !data.isItem}
+      <p class="mt-4 flex flex-wrap gap-x-4 gap-y-2 text-sm">
         <a
-          class="font-medium text-sky-800 underline hover:text-sky-950"
-          href={data.fileUrl}
+          class="text-slate-600 underline hover:text-slate-900"
+          href={data.sourceUrl}
           target="_blank"
           rel="external noopener noreferrer"
         >
-          (PDF<span class="sr-only">, opens in a new tab</span>)
+          Original Page<span class="sr-only">, opens in a new tab</span>
         </a>
-      {/if}
-    </p>
+        {#if data.fileUrl}
+          <a
+            class="font-medium text-sky-800 underline hover:text-sky-950"
+            href={data.fileUrl}
+            target="_blank"
+            rel="external noopener noreferrer"
+          >
+            (PDF<span class="sr-only">, opens in a new tab</span>)
+          </a>
+        {/if}
+      </p>
+    {/if}
   </header>
 
   <!-- The write-up is the child route: an ordinary Svelte component, checked
@@ -128,7 +150,8 @@
   <footer class="mt-8 border-t border-slate-200 pt-4 text-xs text-slate-500">
     <p>
       Written up by hand from the city's document. It may summarise, condense or omit &mdash; the
-      original linked above is the record.
+      {#if data.isItem}city's own file, linked from the agenda above, is{:else}original linked above
+        is{/if} the record.
     </p>
   </footer>
 </div>

@@ -39,6 +39,27 @@ export class Router {
     return path(`/calendar/documents/${id}`)
   }
 
+  /**
+   * One item on an agenda, written up on a page of its own beneath the
+   * document it belongs to. `item` is the page's directory name.
+   */
+  static documentItem(id: string, item: string): string {
+    return path(`/calendar/documents/${id}/${item}`)
+  }
+
+  /**
+   * A few pages lifted out of a document's PDF and published beside it, so an
+   * item that rests on a letter or a plan can link to just that letter rather
+   * than to a 200-page packet the reader then has to search.
+   *
+   * Committed under `static/excerpts/<id>/`, so this is a path on this site
+   * rather than one of the city's -- and it takes the base path, which is why
+   * it belongs here rather than being written out in a template.
+   */
+  static excerpt(id: string, name: string): string {
+    return path(`/excerpts/${id}/${name}.pdf`)
+  }
+
   /** Scaffolding from `sv create`, kept because the e2e suite drives it. */
   static demo(): string {
     return path("/demo")

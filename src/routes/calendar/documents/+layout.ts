@@ -9,9 +9,14 @@ import { Router } from "$lib/router"
  *
  * The pages themselves are static routes -- one directory per document id, each
  * holding a hand-written `+page.svelte` -- so there is no `[id]` param to read.
- * The id is the last segment of the path, which is also the directory name and
- * the `docId` in meetings.json. Deriving it here rather than in each page keeps
- * a new write-up down to a single file with nothing to declare.
+ * The id is the segment straight after `documents/`, which is also the
+ * directory name and the `docId` in meetings.json. Deriving it here rather than
+ * in each page keeps a new write-up down to a single file with nothing to
+ * declare.
+ *
+ * Not the *last* segment, because a document can have pages beneath it for
+ * individual agenda items; those want the same meeting and the same links to
+ * the city out of this one lookup.
  */
 
 /** One record per document, preferring the row the scraper did not flag. */
@@ -26,7 +31,11 @@ function documents() {
 }
 
 export const load: LayoutLoad = ({ url }) => {
-  const id = url.pathname.replace(/\/+$/, "").split("/").pop()!
+  const segments = url.pathname.replace(/\/+$/, "").split("/")
+  // lastIndexOf, so a base path that happens to contain "documents" cannot
+  // shadow the real one.
+  const at = segments.lastIndexOf("documents")
+  const id = segments[at + 1]
   const meeting = documents().get(id)
 
   // A directory named something that is not a document id. The site is fully
@@ -36,6 +45,8 @@ export const load: LayoutLoad = ({ url }) => {
 
   return {
     id,
+    /** True on a page for one agenda item, rather than the document itself. */
+    isItem: segments.length > at + 2,
     title: meeting.title,
     board: meeting.board,
     kind: meeting.kind as MeetingKind,

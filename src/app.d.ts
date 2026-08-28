@@ -13,6 +13,11 @@ declare global {
        * one -- see src/routes/calendar/documents/.
        */
       meeting?: MeetingDetails
+      /**
+       * Set by a page for one agenda item, so the layout can title itself
+       * after the item rather than after the whole document.
+       */
+      item?: { title: string }
     }
     // interface PageState {}
     // interface Platform {}

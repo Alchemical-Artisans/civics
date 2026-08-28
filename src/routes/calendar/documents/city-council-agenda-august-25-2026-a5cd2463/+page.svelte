@@ -1,3 +1,10 @@
+<script lang="ts">
+  import { Router } from "$lib/router"
+
+  /** This page's own directory name, which is the document's id. */
+  const DOCUMENT = "city-council-agenda-august-25-2026-a5cd2463"
+</script>
+
 <h2>1. Opening Prayer</h2>
 
 <h2>2. Pledge of Allegiance</h2>
@@ -10,9 +17,10 @@
 
 <ul>
   <li>
-    <strong>5.1</strong> Mayor Barrett wishes to introduce representatives from
-    <em>MassDOT</em> and <em>Middlesex Corporation</em> to provide the City Council with an update on
-    the Basiliere Bridge project.
+    <strong>5.1</strong>
+    <a href={Router.documentItem(DOCUMENT, "basiliere-bridge-project-update")}>
+      Basiliere Bridge Project Update
+    </a>
   </li>
   <li>
     <strong>5.2</strong> Mayor Barrett submits a loan order appropriating $26,190,000 for the

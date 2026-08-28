@@ -78,6 +78,36 @@ city's file.
    with no entry list to extend, and the calendar starts linking to it. Nothing
    needs recording anywhere else.
 
+## A page for one item
+
+An item worth more than a line gets its own page one level down, at
+`src/routes/calendar/documents/<id>/<item-slug>/+page.svelte`. On the agenda,
+the item's text is replaced by a link to it. The surrounding layout picks the
+document up from the id either way, so an item page inherits the meeting's
+board, date and links to the city; give it a `+page.ts` returning
+`{ item: { title } }` and the layout titles the page after the item and points
+the back-link at the agenda rather than at the calendar.
+
+Because the whole meeting header would repeat on every item, the layout shows
+the time, room, remote link and notice only on the document page itself.
+
+### Excerpting the PDF
+
+An item that rests on a letter or a plan can link to just those pages instead of
+a packet running to hundreds. Cut them out of the cached original with poppler
+and commit the result under `static/excerpts/<id>/`:
+
+```sh
+pdfseparate -f 7 -l 7 .cache/documents/<id>.pdf \
+  static/excerpts/<id>/<item-slug>.pdf
+```
+
+Link it with `Router.excerpt(id, slug)`, which applies the base path. Keep the
+link to the full document as well — the excerpt is a convenience, and the city's
+complete file stays the record. Note the page numbers are the PDF's, not the
+agenda's own numbering, and that `.cache/` is gitignored, so re-cutting an
+excerpt means fetching the original again.
+
 There is a worked example at
 [`city-council-agenda-august-25-2026-a5cd2463/+page.svelte`](../src/routes/calendar/documents/city-council-agenda-august-25-2026-a5cd2463/+page.svelte):
 an agenda outline as `<h2>` per numbered item, nested `<ul>` for sub-items with
@@ -125,13 +155,15 @@ someone else's script tag into the build. Read what you paste.
 ```
 src/routes/calendar/documents/<id>/+page.svelte  the pages, written by hand
 src/routes/calendar/documents/<id>/+page.ts      when and where, where stated
-src/routes/calendar/documents/+layout.svelte     the header around both
+src/routes/calendar/documents/<id>/<item>/       a page for one agenda item
+src/routes/calendar/documents/+layout.svelte     the header around all of them
 src/routes/calendar/documents/+layout.ts         looks a document up by its id
+static/excerpts/<id>/<item>.pdf                  pages cut out of the original
 scripts/lib/documents.mjs                        ids, and which ids have a page
 ```
 
-The layout reads the id off the end of the URL — which is the directory name,
-which is the `docId` — and pulls the title, board, kind, date and links to the
+The layout reads the id off the segment after `documents/` — which is the
+directory name, which is the `docId` — and pulls the title, board, kind, date and links to the
 city out of `meetings.json`, so a page never restates any of it. What is only
 on the document rather than in the dataset comes up from the page's `+page.ts`
 through `page.data`. `src/routes/calendar/+page.ts` globs the same directories
