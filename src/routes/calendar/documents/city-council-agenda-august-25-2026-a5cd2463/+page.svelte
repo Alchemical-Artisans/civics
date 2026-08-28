@@ -205,16 +205,10 @@
 
 <ul>
   <li>
-    <strong>16.1 Document 19-D</strong>- Mayor Barrett submits a Memorandum of Agreement between the
-    City of Haverhill and the New England Police Benevolent Association (NEPBA) Local 119
-    (Dispatchers) for contract period July 1, 2026 through June 30, 2029.
-    <ul>
-      <li>
-        <strong>16.1.1</strong> Order- Memorandum Agreement between the City of Haverhill and the
-        New England Police Benevolent Association (NEPBA) Local 119 (Dispatchers).
-        <em>Filed on August 12, 2026.</em>
-      </li>
-    </ul>
+    <strong>16.1</strong>
+    <a href={Router.documentItem(DOCUMENT, "nepba-dispatchers-agreement")}>
+      NEPBA Local 119 Dispatchers Agreement
+    </a>
   </li>
 </ul>
 
