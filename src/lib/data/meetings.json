@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-08-27T15:01:33.064Z",
+  "generatedAt": "2026-08-28T03:19:24.192Z",
   "source": "https://www.haverhillma.gov/government/agendas-and-minutes/",
-  "count": 280,
+  "count": 281,
   "meetings": [
     {
       "title": "2026-08-27 Conservation Commission Agenda",
@@ -19,6 +19,23 @@
       "filenameDate": null,
       "needsReview": false,
       "docId": "2026-08-27-conservation-commission-agenda-2d410306"
+    },
+    {
+      "title": "Agenda and Minutes (26)",
+      "pageUrl": "/document-manager/media-pages/agenda-and-minutes/agenda-and-minutes-26/",
+      "fileUrl": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/jj1dtiwq/boa-mtg-min-82526.pdf",
+      "category": "Administration & Finance Committee Minutes",
+      "description": "BOA MTG MINUTES 8.25.2026",
+      "board": "Administration & Finance Committee",
+      "kind": "minutes",
+      "date": "2026-08-25",
+      "dateSource": "meeting-date",
+      "rawMeetingDate": "08/25/2026 02:00 PM",
+      "dateAdjusted": false,
+      "dateConflict": false,
+      "filenameDate": "2026-08-25",
+      "needsReview": false,
+      "docId": "agenda-and-minutes-26-fdd2d510"
     },
     {
       "title": "City Council Agenda - August 25, 2026",
