@@ -34,8 +34,10 @@
 
 <ul>
   <li>
-    <strong>6.1</strong> Councilor Basiliere wishes to introduce and recognize Lisa MacDougall of
-    the <em>Haverhill Exchange Club</em> as the 2026 Exchangite of the Year.
+    <strong>6.1</strong>
+    <a href={Router.documentItem(DOCUMENT, "lisa-macdougall-exchangite-of-the-year")}>
+      Lisa MacDougall, 2026 Exchangite of the Year
+    </a>
   </li>
   <li>
     <strong>6.2</strong> Councilor Toohey wishes to introduce and recognize Nicky Tejada, winner of
