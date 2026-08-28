@@ -194,9 +194,10 @@
 
 <ul>
   <li>
-    <strong>15.1</strong> Councilor Ferreira requests to refer an overview of the city&rsquo;s vegetation
-    management plan to the Natural Resources and Public Property subcommittee for discussion at the September
-    14th meeting.
+    <strong>15.1</strong>
+    <a href={Router.documentItem(DOCUMENT, "vegetation-management-plan")}>
+      Vegetation Management Plan
+    </a>
   </li>
 </ul>
 
