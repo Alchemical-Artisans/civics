@@ -65,8 +65,10 @@
     </a>
   </li>
   <li>
-    <strong>8.2</strong> Angel A. Perkins, <em>City Auditor and Chief Financial Officer</em>,
-    submits the revenue and expense reports for the months of June and July 2026.
+    <strong>8.2</strong>
+    <a href={Router.documentItem(DOCUMENT, "revenue-and-expense-reports")}>
+      Revenue and Expense Reports, June and July 2026
+    </a>
   </li>
   <li>
     <strong>8.3</strong> Steven Bucuzzo, <em>Purchasing Director</em>, on behalf of the Department
