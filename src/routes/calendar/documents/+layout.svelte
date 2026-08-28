@@ -143,7 +143,9 @@
   <!-- The write-up is the child route: an ordinary Svelte component, checked
 	     and formatted like the rest of the source, rather than a string of
 	     markup dropped in with {@html}. See docs/document-pages.md. -->
-  <article class="prose max-w-none break-words prose-slate prose-headings:font-semibold">
+  <article
+    class="prose max-w-none break-words prose-slate prose-headings:font-semibold prose-h2:mt-6 prose-h2:mb-2 prose-h2:text-base"
+  >
     {@render children()}
   </article>
 
