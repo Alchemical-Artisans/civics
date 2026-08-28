@@ -131,12 +131,8 @@
   <li><strong>12.3 Amusement/Event Application:</strong> with Police approval.</li>
   <li><strong>12.4 Auctioneer License</strong></li>
   <li>
-    <strong>12.5 Tag Days:</strong> with Police approval.
-    <ul>
-      <li>
-        <strong>12.5.1</strong> <em>Haverhill High Boys and Girls Soccer</em>, October 10, 2026.
-      </li>
-    </ul>
+    <strong>12.5</strong>
+    <a href={Router.documentItem(DOCUMENT, "tag-days")}> Tag Days, Haverhill High Soccer </a>
   </li>
   <li>
     <strong>12.6 One Day Liquor License</strong> &ndash;with Police and License Commission approval
