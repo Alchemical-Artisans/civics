@@ -97,18 +97,10 @@
     </a>
   </li>
   <li>
-    <strong>10.2 Doc 21-G- PDD-26-1</strong> Attorney Russell Channen for client
-    <em>Pentucket North Development, LLC</em> requests to amend Chapter 255 Zoning Ordinance and
-    Zoning Map by creating a Special Permit Planned Development District in accordance with Section
-    8.5 of the Zoning Ordinance. Applicant Pentucket North Development, LLC is requesting a special
-    permit of a planned residential development on a portion of land owned by Cedardale, Inc.,
-    located off of Boston Road known as 931 Boston Road (Map 754 Block 2 Lot 21) to construct six
-    duplex units and two single family units. The property is currently zoned Commercial Highway
-    (CH).
-    <em
-      >Related communication from Jacki Byerley, Planning Director, recommending the hearing be
-      continued to either the October 20th or October 27th meeting.</em
-    >
+    <strong>10.2</strong>
+    <a href={Router.documentItem(DOCUMENT, "pentucket-north-planned-development-district")}>
+      Pentucket North Planned Development District
+    </a>
   </li>
   <li>
     <strong>10.3 Doc 21-I- CCSP-26-2</strong> &ndash; Philip Rice of
