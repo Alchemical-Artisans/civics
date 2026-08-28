@@ -40,8 +40,10 @@
     </a>
   </li>
   <li>
-    <strong>6.2</strong> Councilor Toohey wishes to introduce and recognize Nicky Tejada, winner of
-    the <em>WBA North American Boxing Association</em> Gold Super Lightweight Championship.
+    <strong>6.2</strong>
+    <a href={Router.documentItem(DOCUMENT, "nicky-tejada-wba-championship")}>
+      Nicky Tejada, WBA NABA Champion
+    </a>
   </li>
   <li>
     <strong>6.3</strong> Councilor Lewandowski requests to introduce John M. Roche, who is
@@ -49,9 +51,9 @@
     Haverhill.
     <ul>
       <li>
-        <strong>6.3.1</strong> Order &mdash; Home Rule Petition &mdash; Authorizing John M. Roche to take
-        the Civil Service Exam for the position of Fire Fighter in the City of Haverhill notwithstanding
-        the maximum age requirement.
+        <strong>6.3.1</strong> Order - Home Rule Petition &mdash; Authorizing John M. Roche to take the
+        Civil Service Exam for the position of Fire Fighter in the City of Haverhill notwithstanding the
+        maximum age requirement.
       </li>
     </ul>
   </li>
