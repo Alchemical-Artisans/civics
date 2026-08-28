@@ -57,6 +57,18 @@ export class Router {
   static cityPage(pageUrl: string): string {
     return `${CITY}${pageUrl}`
   }
+
+  /**
+   * A place on a map. Also not a route here, and for the same reason as
+   * `cityPage`: a document page links out to where its meeting is held, and
+   * the spelling of that URL belongs with the rest of them.
+   *
+   * The `api=1` form is Google's documented, stable one -- the URLs a browser
+   * ends up on after searching are not.
+   */
+  static map(query: string): string {
+    return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`
+  }
 }
 
 /** Origin of the City of Haverhill's site, where every source document lives. */

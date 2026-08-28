@@ -89,6 +89,7 @@ scripts/
   update-calendar.mjs      incremental refresh
 
 src/lib/
+  Note.svelte              the information popover in a document page's header
   calendar.ts              pure date/grouping helpers used by the page
   calendar.spec.ts         unit tests for those helpers
   router.ts                every internal URL the site builds, in one place
@@ -107,6 +108,7 @@ src/routes/calendar/
   documents/+layout.ts         looks a document's metadata up by id
   documents/+layout.svelte     title, date and links to the city's own copy
   documents/<id>/+page.svelte  a hand-written document page, one directory each
+  documents/<id>/+page.ts      its time, room and remote link, where stated
   documents/page.svelte.e2e.ts end-to-end tests for them
 
 static/

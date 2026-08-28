@@ -1,38 +1,3 @@
-<!--
-  City Council Agenda - August 25, 2026
-
-  Transcribed by hand from the first six pages of the city's PDF, which are the
-  agenda outline itself. The remaining ~198 pages are the supporting packet --
-  orders, petitions, plans and correspondence -- and are not reproduced here.
-  Item numbers are the city's own and are kept verbatim so they can be quoted.
-
-  The title, the date and the links to the city's own copy come from
-  meetings.json, rendered by the layout around this file. Everything below is
-  the write-up itself. See docs/document-pages.md.
--->
-
-<p>
-  Tuesday, August 25, 2026, at 7:00 PM, in the Theodore A. Pelosi, Jr. Council Chambers, 4 Summer
-  St, Room 202, with a remote option at
-  <a href="https://meet.google.com/zjk-usap-vmh" target="_blank" rel="external noopener noreferrer"
-    >meet.google.com/zjk-usap-vmh</a
-  >.
-</p>
-
-<p>
-  The meeting is held in person as its official location under the Open Meeting Law, so the Council
-  is not required to provide remote access; the live stream is a courtesy and the meeting will not
-  be suspended if it fails. Anyone with an interest in a specific item should plan their attendance
-  accordingly. The meeting is audio and video recorded by HCTV, The Eagle Tribune and WHAV, and
-  audience members who wish to record must inform the Council President, who will announce it, to
-  comply with the Massachusetts wiretap statute.
-</p>
-
-<p>
-  Below is the agenda outline, which is the first six pages of the city's file. The rest of that
-  file is the supporting packet and is not reproduced here.
-</p>
-
 <h2>1. Opening Prayer</h2>
 
 <h2>2. Pledge of Allegiance</h2>

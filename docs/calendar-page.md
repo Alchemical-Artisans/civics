@@ -184,11 +184,30 @@ that reads the page without following the refresh will see.
 ## The document page
 
 [`documents/+layout.svelte`](../src/routes/calendar/documents/+layout.svelte)
-wraps every document page: a back link, the title, board, kind and date, then
-the source links, then the page itself in a `prose` container.
-[`+layout.ts`](../src/routes/calendar/documents/+layout.ts) supplies that
-metadata, reading the id off the end of the URL and looking it up in
-`meetings.json`.
+wraps every document page: a back link, the title, then a header, then the page
+itself in a `prose` container. The header runs the title, with an information
+icon beside it where the document carries standing boilerplate; then board, kind
+and date; then where the meeting is held, linked to a map, and `Remote Access`,
+linked to the join URL; then the links to the city's own copy.
+
+[`Note.svelte`](../src/lib/Note.svelte) is that icon. It pops the text over the
+page rather than expanding, so opening it never moves the agenda underneath, and
+it positions against its parent rather than the icon so the panel stays inside
+the content column on a narrow screen. The icon is Material Symbols
+`info-outline-rounded`, pulled in through Iconify's **offline** component: the
+default one takes an icon name and fetches the artwork from `api.iconify.design`
+at runtime, which would put a CDN round-trip in front of a page that is
+otherwise entirely self-contained.
+
+That header draws on two sources.
+[`+layout.ts`](../src/routes/calendar/documents/+layout.ts) supplies the title,
+board, kind and date, reading the id off the end of the URL and looking it up in
+`meetings.json`. The time, room and remote option are not in `meetings.json` at
+all — they are printed on the document and nowhere else — so the page underneath
+supplies them from its own `+page.ts` and the layout reads them off `page.data`.
+See [`MeetingDetails`](../src/lib/calendar.ts), and
+[dates.md](./dates.md#scraped-clock-times-are-not-displayed) for why the clock
+time in the dataset cannot be used.
 
 **The source link sits at the top, not the footer.** The page is a written
 summary and the city's file is the record, so the way to the original has to be

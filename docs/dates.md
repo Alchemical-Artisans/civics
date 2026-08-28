@@ -79,7 +79,7 @@ Records corrected this way are marked `dateAdjusted: true`, and the untouched
 original is kept in `rawMeetingDate`, so the inference is always auditable and
 reversible.
 
-## Clock times are not displayed
+## Scraped clock times are not displayed
 
 The time component is unreliable beyond the rollover issue. Among City Council
 records, `12:00 PM` appears 59 times and `11:00 PM` 48 times, for a body that
@@ -87,8 +87,15 @@ meets at 7:00 PM. Conservation Commission times (`07:15 PM`) look plausible;
 City Council's do not.
 
 Since some times are real and some are placeholders, and there is no way to tell
-which from the data alone, **only dates are shown**. The raw value is kept in the
-dataset for anyone who wants to revisit that.
+which from the data alone, **no time from the scrape is shown**. The raw value
+is kept in the dataset for anyone who wants to revisit that.
+
+A document page can still show a time, because that one was read off the
+document by the person who wrote the page up rather than taken from the
+listing — it is part of `MeetingDetails` in `src/lib/calendar.ts`, set in the
+page's own `+page.ts`. The distinction is the point: a printed agenda saying
+7:00 PM is evidence, and `rawMeetingDate` saying 11:00 PM for the same meeting
+is not.
 
 ## The fallback chain
 

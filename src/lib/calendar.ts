@@ -23,6 +23,44 @@ export interface Meeting {
   docId: string | null
 }
 
+/**
+ * What a document says about attending its meeting, read off the document by
+ * whoever wrote the page up.
+ *
+ * None of this comes from the scrape. `meetings.json` carries a clock time in
+ * `rawMeetingDate`, but it is a mix of real times and placeholders rendered
+ * without timezone conversion -- 41 City Council agendas say 11:00 PM for a
+ * body that meets at 7:00 -- so it is not displayed anywhere. See
+ * docs/dates.md. A time here is one a person read off the page.
+ *
+ * Every field is optional: minutes rarely state a time, and plenty of
+ * documents offer no remote option.
+ */
+export interface MeetingDetails {
+  /** Start time exactly as printed, e.g. `"7:00 PM"`. */
+  time?: string
+  location?: {
+    /** Shown to the reader, verbatim from the document. */
+    name: string
+    /**
+     * What to hand a map service. Kept apart from `name` because the printed
+     * form is usually a room inside a building, and "Room 202" geocodes to
+     * nothing -- so this is the street address, with the city added.
+     */
+    mapQuery: string
+  }
+  /** Join URL for the remote option, when the document gives one. */
+  remote?: string
+  /**
+   * Standing boilerplate from the head of the document -- Open Meeting Law
+   * status, recording notices -- one string per paragraph. It is about the
+   * meeting rather than about any item on it, so it belongs up in the header
+   * behind a disclosure rather than in the write-up, where it would push the
+   * agenda itself below the fold on every page.
+   */
+  notice?: string[]
+}
+
 export interface DayCell {
   date: string
   day: number

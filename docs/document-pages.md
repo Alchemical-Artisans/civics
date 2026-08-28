@@ -33,9 +33,9 @@ city's file.
 
 2. **Create `src/routes/calendar/documents/<id>/+page.svelte`.** The directory
    name is the id and becomes the URL. The page is the write-up and nothing
-   else: no `<script>`, no data to declare, no title. It renders inside
-   `<article class="prose">` in the surrounding layout, so plain semantic markup
-   is enough and Tailwind's typography plugin styles it.
+   else: no `<script>`, no title, nothing restated from `meetings.json`. It
+   renders inside `<article class="prose">` in the surrounding layout, so plain
+   semantic markup is enough and Tailwind's typography plugin styles it.
 
    The page's `<h1>` is the document title and is rendered above by the layout,
    so start headings at `<h2>`. Everything else is ordinary markup — `<p>`,
@@ -44,7 +44,37 @@ city's file.
    the site. Svelte treats `{` and `}` as expressions, so write them `&lbrace;`
    and `&rbrace;` on the rare occasion a document contains one.
 
-3. **Build.** The route is static, so the fully-prerendered build picks it up
+3. **If the document says when and where, add a `+page.ts` beside it.** An
+   agenda usually opens with a time, a room and a link to join remotely. Those
+   belong in the header rather than in the prose, so return them as `meeting`
+   and let the layout render them:
+
+   ```ts
+   export const load: PageLoad = () => ({
+     meeting: {
+       time: "7:00 PM",
+       location: { name: "…, 4 Summer St, Room 202", mapQuery: "4 Summer Street, Haverhill, MA" },
+       remote: "https://meet.google.com/…",
+       notice: ["The meeting is held in person as its official location under…"],
+     },
+   })
+   ```
+
+   Every field is optional, and the file itself is optional — skip it for a set
+   of minutes that states none of this. `name` is shown and should be verbatim;
+   `mapQuery` is what gets handed to the map, so drop the room number and add
+   the city. `notice` is the standing boilerplate an agenda opens with — Open
+   Meeting Law status, recording notices — one string per paragraph; it goes
+   behind an information icon next to the title rather than into the write-up,
+   where it would push the agenda below the fold. See `MeetingDetails` in
+   [`src/lib/calendar.ts`](../src/lib/calendar.ts).
+
+   The time has to come from the document. `meetings.json` has a clock time in
+   `rawMeetingDate`, but it is a mix of real times and placeholders rendered
+   without timezone conversion, so nothing displays it — see
+   [dates.md](./dates.md#scraped-clock-times-are-not-displayed).
+
+4. **Build.** The route is static, so the fully-prerendered build picks it up
    with no entry list to extend, and the calendar starts linking to it. Nothing
    needs recording anywhere else.
 
@@ -94,14 +124,16 @@ someone else's script tag into the build. Read what you paste.
 
 ```
 src/routes/calendar/documents/<id>/+page.svelte  the pages, written by hand
-src/routes/calendar/documents/+layout.svelte     title, date and source links
-src/routes/calendar/documents/+layout.ts         looks that metadata up by id
+src/routes/calendar/documents/<id>/+page.ts      when and where, where stated
+src/routes/calendar/documents/+layout.svelte     the header around both
+src/routes/calendar/documents/+layout.ts         looks a document up by its id
 scripts/lib/documents.mjs                        ids, and which ids have a page
 ```
 
 The layout reads the id off the end of the URL — which is the directory name,
 which is the `docId` — and pulls the title, board, kind, date and links to the
-city out of `meetings.json`, so a page never restates any of it.
-`src/routes/calendar/+page.ts` globs the same directories to decide where a
-calendar entry links, so a new page is picked up by the build with no registry
-to update.
+city out of `meetings.json`, so a page never restates any of it. What is only
+on the document rather than in the dataset comes up from the page's `+page.ts`
+through `page.data`. `src/routes/calendar/+page.ts` globs the same directories
+to decide where a calendar entry links, so a new page is picked up by the build
+with no registry to update.
