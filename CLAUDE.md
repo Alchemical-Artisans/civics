@@ -64,17 +64,26 @@ not survive `calendar:rebuild`.
 
 **Site (`src/routes/`).** Fully prerendered — `src/routes/+layout.ts` sets
 `prerender = true` for `@sveltejs/adapter-static`, so every `+page.ts` is a
-build-time load and no route may be dynamic. `calendar/+page.ts` imports
-`meetings.json`, drops undated records, collapses PDFs published under two media
-pages, and trims to the seven fields the UI needs.
+build-time load. `src/lib/meetings.ts` turns `meetings.json` into what the site
+shows: it drops undated records, collapses PDFs published under two media pages,
+trims to the fields the UI needs, and groups the documents into meetings.
+
+**A calendar entry is a meeting, not a document.** The city publishes an agenda
+and its minutes separately; they are two documents about one sitting, matched on
+board and date, which is all the listing gives to match on. An entry opens
+`/calendar/meetings/<board-slug>-<date>`, which lists that sitting's documents —
+each linking to a write-up here when one exists and to the city's PDF when not.
+That route is the **only** one with a parameter, and it prerenders because
+`+page.ts` exports `entries()`; everything else, hand-written pages included, is
+a static route.
 
 **Document pages are hand-written, one static route each**, at
 `src/routes/calendar/documents/<docId>/+page.svelte`, with an agenda item
 optionally getting `<docId>/<item-slug>/+page.svelte` beneath it. There is no
-registry: `calendar/+page.ts` globs `./documents/*/+page.svelte` to decide
-whether an entry links to a page here or straight to the city's PDF, and
-`documents/+layout.ts` derives the id from the URL segment after `documents` and
-looks the meeting up in `meetings.json`. Adding a page is one file; a data
+registry: `src/lib/meetings.ts` globs `../routes/calendar/documents/*/+page.svelte`
+to decide whether a document links to a page here or straight to the city's PDF,
+and `documents/+layout.ts` derives the id from the URL segment after `documents`
+and looks the record up in `meetings.json`. Adding a page is one file; a data
 refresh cannot contradict it.
 
 Notable pieces:
@@ -108,9 +117,10 @@ rules that bite:
 - Outbound links get `target="_blank" rel="external noopener noreferrer"`.
   Literal `{`/`}` must be written `&lbrace;`/`&rbrace;`.
 - Time, room, remote link and standing notices go in a sibling `+page.ts`
-  returning `{ meeting: … }` (`MeetingDetails` in `src/lib/calendar.ts`) — never
-  in the prose, and only when the document states them. Clock times from
-  `meetings.json` are unreliable and are never displayed.
+  returning `{ details: … }` (`MeetingDetails` in `src/lib/calendar.ts`) — never
+  in the prose, and only when the document states them. It is `details` and not
+  `meeting` because a `Meeting` is a sitting, with documents under it. Clock
+  times from `meetings.json` are unreliable and are never displayed.
 - An item page's `+page.ts` returns `{ item: { title } }`.
 - PDF pages cut out for one item are committed under `static/excerpts/<id>/`
   and linked with `Router.excerpt(...)`; `.cache/` is gitignored, so re-cutting

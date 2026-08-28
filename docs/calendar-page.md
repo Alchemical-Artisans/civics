@@ -2,8 +2,36 @@
 
 Route: `/calendar`. Files:
 [`+page.ts`](../src/routes/calendar/+page.ts) (build-time data),
-[`+page.svelte`](../src/routes/calendar/+page.svelte) (UI), and
-[`src/lib/calendar.ts`](../src/lib/calendar.ts) (pure helpers).
+[`+page.svelte`](../src/routes/calendar/+page.svelte) (UI),
+[`src/lib/meetings.ts`](../src/lib/meetings.ts) (turning `meetings.json` into
+what the site shows), and [`src/lib/calendar.ts`](../src/lib/calendar.ts) (pure
+helpers).
+
+## One entry per meeting, not per document
+
+The city publishes an agenda and its minutes as two separate records. They are
+two documents about the same sitting, so the calendar shows **one entry per
+meeting**, and the entry opens a page listing that meeting's documents:
+[`/calendar/meetings/<id>`](../src/routes/calendar/meetings/).
+
+Board and date are the identity, because they are all the scrape gives to match
+on — nothing in the listing ties a document to a sitting. `meetingId()` slugs
+the board and appends the date, so `City Council` on `2026-08-25` becomes
+`city-council-2026-08-25`.
+
+A meeting is not limited to two documents. Of 166 meetings, 74 hold one, 76
+hold two, and 16 hold three or four — a revised agenda beside the original,
+executive-session minutes kept apart from the ordinary ones, or a special
+permit decision recorded as minutes of its own. Whether such a decision was
+taken at that sitting or at a separate one the same day is not something the
+records say; grouping them assumes the former.
+
+**The meeting route is the one route with a parameter.** Everything else here is
+a static route, including the hand-written document pages. Meeting pages are
+generated from data rather than written, so there is nothing to hand-write, and
+`+page.ts` exports `entries()` naming every id. That makes the build fail loudly
+if the data and the links ever disagree, where relying on SvelteKit's crawler
+would quietly emit fewer pages.
 
 ## Prerendering
 
@@ -33,12 +61,19 @@ flagged `needsReview`, since where the two disagree the unflagged one is the
 better-evidenced date.
 
 **Trims fields.** Only the seven fields the UI needs are kept — including
-`docId`, which is how an entry addresses its document page. Scraper bookkeeping
+`docId`, which is how a document addresses its write-up. Scraper bookkeeping
 (`rawMeetingDate`, `dateSource`, `category`, …) is dropped so it never ships to
 the browser.
 
-The result: 280 records become 274 rendered entries, with `undated`,
+**Groups into meetings.** `groupIntoMeetings()` collapses the documents by board
+and date. Undated documents are dropped here rather than later, so a `Meeting`
+always has a date and `groupByDate()` never has to check for one.
+
+The result: 282 records become 276 documents in 166 meetings, with `undated`,
 `duplicates`, and `flagged` counts passed alongside for the footer.
+
+The work is in `src/lib/meetings.ts` rather than in the route, because each
+meeting page needs the same list built the same way.
 
 ## Payload
 
@@ -76,6 +111,12 @@ Svelte 5 runes, in a small amount of state:
 
 Two details are deliberate:
 
+**The kind toggles hide documents, not meetings.** A sitting with both an
+agenda and minutes stays on the calendar when only one kind is showing, with the
+hidden one dropped from its chip; a meeting left with nothing visible disappears
+entirely. Hiding the whole meeting because one of its documents was filtered out
+would be the wrong answer to "show me the minutes".
+
 **The default month is the newest month containing meetings, not today.**
 Because the page is prerendered, "today" at build time and "today" in the
 reader's browser are different dates. Deriving the default from the data keeps
@@ -102,21 +143,28 @@ Agendas are blue, minutes green, in both views.
 
 ## Where entries link
 
-Each entry links to that document's page on this site,
-`/calendar/documents/<docId>`, built with `Router.document(docId)`. The one
-listing row with no `fileUrl` has nothing to convert and so no page; it falls
-back to the document's page on the city site, `Router.cityPage(pageUrl)`.
+Every entry links to its meeting, `/calendar/meetings/<id>`, built with
+`Router.meeting(id)`. Nothing in the grid leaves the site any more: the choice
+between a write-up here and the city's own file has moved down to the meeting
+page, which is the only place that knows which documents there are.
 
-These used to be outbound links to the city's CDN, opening in a new tab with
-`rel="external noopener noreferrer"` and visually-hidden text announcing the new
-window. **All of that is gone**: the links are internal now, so a new tab would
-be wrong, and there is no unannounced window to warn about. The grid's hidden
-text is down to `, agenda`, and still begins with a comma because Svelte trims
-leading whitespace inside an element, which otherwise ran the board name into the
-following word for screen readers.
+On a meeting page, a document links to `/calendar/documents/<docId>` when
+somebody has written it up, and otherwise straight to the city's PDF — opening
+in a new tab with `rel="external noopener noreferrer"` and visually-hidden text
+announcing the new window. The one listing row with no `fileUrl` has nothing to
+convert; it falls back to the city's media page, `Router.cityPage(pageUrl)`.
 
-The e2e suite asserts on _every_ link that it is internal and carries no
-`target`, so a leftover would not slip through.
+A chip carries one letter per document, `A` for an agenda and `M` for minutes,
+coloured by kind. It is `aria-hidden`; the accessible name gets a plain count
+instead, because "A M" read aloud is noise. The count still begins with a comma,
+because Svelte trims leading whitespace inside an element and the board name
+otherwise ran into the following word for screen readers.
+
+The e2e suite asserts on _every_ grid link that it points at a meeting and
+carries no `target`, so a leftover would not slip through.
+
+A write-up's back link goes to its meeting rather than to the calendar, so the
+path in and the path out match: calendar → meeting → document → item.
 
 ## Internal links
 
@@ -125,7 +173,8 @@ Every internal URL on the site is built by `Router` in
 
 ```svelte
 <a href={Router.calendar()}>…</a>
-<a href={Router.document(m.docId)}>…</a>
+<a href={Router.meeting(m.id)}>…</a>
+<a href={Router.document(doc.docId)}>…</a>
 ```
 
 This replaces SvelteKit's `resolve()` from `$app/paths`, which the site used
@@ -253,8 +302,9 @@ Constraints that shaped it:
 
 ## Honesty in the footer
 
-The footer states how many documents are indexed, how many were dropped for
-having no date, how many duplicates were collapsed, and how many carry a date
+The footer states how many meetings and documents are indexed, how many were
+dropped for having no date, how many duplicates were collapsed, and how many
+carry a date
 that contradicts their own title or filename.
 
 This is intentional. The underlying data has real quality problems (see
@@ -264,19 +314,27 @@ than present uncertain data as authoritative.
 ## Tests
 
 [`page.svelte.e2e.ts`](../src/routes/calendar/page.svelte.e2e.ts) runs against
-the production build and covers: the month heading renders, entries link to
-document pages, every link is internal and same-tab, month navigation works,
-board filtering narrows results, and unchecking agendas hides them.
+the production build and covers: the month heading renders, every entry links to
+a meeting and is same-tab, month navigation works, board filtering narrows
+results, and unchecking agendas drops the document count without dropping the
+meetings that still have minutes.
+
+[`meetings/page.svelte.e2e.ts`](../src/routes/calendar/meetings/page.svelte.e2e.ts)
+covers the meeting pages, reached through the calendar rather than by a
+hardcoded id: the board and date render, at least one document is listed, a
+document with no write-up goes to the city in a new tab, the back link returns
+to the calendar, and an unknown id returns a 404.
 
 [`documents/page.svelte.e2e.ts`](../src/routes/calendar/documents/page.svelte.e2e.ts)
 covers the document pages, enumerated from the route directories that exist:
-reaching one from the calendar and finding it rendered, the original PDF offered
-at the top, the back link, a document with no page going straight to the city,
-and an unknown id returning a 404.
+reaching one from the calendar by way of its meeting, the original PDF offered
+at the top, the back link returning to that meeting, and an unknown id returning
+a 404. It looks the meeting up in `meetings.json` with the same `meetingId()`
+the site uses, rather than walking the grid until a write-up turns up.
 
 [`src/routes/page.svelte.e2e.ts`](../src/routes/page.svelte.e2e.ts) covers the
 root: `/` lands on the calendar, and going back from there leaves the site
 rather than bouncing forward again.
 
-The two calendar suites assert on link attributes rather than following outbound
+The calendar suites assert on link attributes rather than following outbound
 links, so the suite never fetches anything from the city's CDN.

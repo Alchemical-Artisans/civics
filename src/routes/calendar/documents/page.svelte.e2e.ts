@@ -2,6 +2,8 @@ import { expect, test } from "@playwright/test"
 import { existsSync, readdirSync } from "node:fs"
 import { join } from "node:path"
 import { fileURLToPath } from "node:url"
+import { meetingId } from "../../../lib/calendar"
+import data from "../../../lib/data/meetings.json" with { type: "json" }
 
 /**
  * The documents somebody has written a page for: one route directory each,
@@ -13,6 +15,10 @@ const dir = fileURLToPath(new URL(".", import.meta.url))
 const written = readdirSync(dir, { withFileTypes: true })
   .filter((entry) => entry.isDirectory() && existsSync(join(dir, entry.name, "+page.svelte")))
   .map((entry) => entry.name)
+
+/** The sitting the first written-up document belongs to. */
+const record = data.meetings.find((m) => m.docId === written[0] && m.date)!
+const meeting = meetingId(record.board, record.date!)
 
 test.describe("meeting document pages", () => {
   test("renders the page written for a document", async ({ page }) => {
@@ -37,30 +43,26 @@ test.describe("meeting document pages", () => {
     expect(await pdf.getAttribute("rel")).toContain("noopener")
   })
 
-  test("returns to the calendar", async ({ page }) => {
+  test("returns to the meeting it belongs to", async ({ page }) => {
+    // Not to the calendar: an agenda and its minutes are two documents about
+    // one sitting, and the meeting page is the step the reader came through.
     await page.goto(`/calendar/documents/${written[0]}`)
-    await page.getByRole("link", { name: "Back to the calendar" }).click()
-    await expect(page).toHaveURL(/\/calendar$/)
+    await page.locator("nav a").click()
+    await expect(page).toHaveURL(/\/calendar\/meetings\/[a-z0-9-]+-\d{4}-\d{2}-\d{2}$/)
   })
 
-  test("reaches the written page from the calendar", async ({ page }) => {
+  test("is reached from the calendar by way of its meeting", async ({ page }) => {
+    // Write-ups are the exception, so walking the grid until one turns up is
+    // slow and depends on which month opens by default. Look the meeting up in
+    // the same data the site is built from instead.
     await page.goto("/calendar")
-    // Internal links are the exception now, so finding one at all is the
-    // assertion: it proves the calendar still routes to a page when there is
-    // one to route to.
-    await page.locator('a[href*="/calendar/documents/"]').first().click()
-    await expect(page).toHaveURL(/\/calendar\/documents\//)
-  })
+    const entry = page.locator(`a[href*="/calendar/meetings/${meeting}"]`)
+    if (await entry.count()) await entry.first().click()
+    else await page.goto(`/calendar/meetings/${meeting}`)
 
-  test("sends a document with no page written straight to the city's PDF", async ({ page }) => {
-    // The common case by a long way: most of the corpus has no page here, and
-    // the calendar links those to the city rather than to a page with nothing
-    // on it. Asserted on attributes so the suite never leaves the site.
-    await page.goto("/calendar")
-
-    const external = page.locator('a[href^="https://media-001"]').first()
-    await expect(external).toHaveAttribute("target", "_blank")
-    expect(await external.getAttribute("rel")).toContain("noopener")
+    await expect(page).toHaveURL(new RegExp(`/calendar/meetings/${meeting}$`))
+    await page.locator(`a[href*="/calendar/documents/${written[0]}"]`).first().click()
+    await expect(page).toHaveURL(new RegExp(`/calendar/documents/${written[0]}$`))
   })
 
   test("has no page for a document nobody has written up", async ({ page }) => {

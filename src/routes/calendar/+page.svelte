@@ -9,6 +9,7 @@
     groupByDate,
     monthsCovered,
     type Meeting,
+    type MeetingKind,
   } from "$lib/calendar"
   import { Router } from "$lib/router"
   import { onMount } from "svelte"
@@ -17,23 +18,16 @@
   let { data } = $props()
 
   /**
-   * Where a calendar entry goes.
-   *
-   * A document somebody has written a page for opens on this site. Everything
-   * else goes straight to the city's PDF, which is what the reader wanted in
-   * the first place -- better than a page on this site that only apologises for
-   * having nothing to show. The one listing row with no file at all falls back
-   * to the city's media page.
+   * A calendar entry is one meeting, and opens that meeting's page, which lists
+   * the documents the city published for it. Before this, an entry was a single
+   * document and linked straight to it; an agenda and its minutes then sat as
+   * two unrelated chips on the same day.
    */
-  const linkFor = (m: Meeting) =>
-    m.docId ? Router.document(m.docId) : (m.fileUrl ?? Router.cityPage(m.pageUrl))
+  const linkFor = (m: Meeting) => Router.meeting(m.id)
 
-  /** Everything that is not a page on this site leaves the site. */
-  const leavesSite = (m: Meeting) => !m.docId
-
-  const meetings = $derived(data.meetings as Meeting[])
-  const months = $derived(monthsCovered(meetings))
-  const boards = $derived(boardsOf(meetings))
+  const all = $derived(data.meetings as Meeting[])
+  const months = $derived(monthsCovered(all))
+  const boards = $derived(boardsOf(all))
 
   // Until the reader picks a month, show the most recent one that actually has
   // meetings. Deliberately not "today" -- that would differ between the
@@ -52,16 +46,23 @@
     today = new Date().toISOString().slice(0, 10)
   })
 
-  const visible = $derived(
-    meetings.filter((m) => {
-      if (activeBoards.size && !activeBoards.has(m.board)) return false
-      if (m.kind === "agenda") return showAgendas
-      if (m.kind === "minutes") return showMinutes
-      return showAgendas || showMinutes
-    }),
+  /**
+   * The kind toggles still hide documents, not meetings, so a meeting with an
+   * agenda and minutes stays on the calendar when only one kind is showing --
+   * with the hidden one dropped from its chip. A meeting left with nothing
+   * visible disappears entirely.
+   */
+  const wanted = (kind: MeetingKind) =>
+    kind === "agenda" ? showAgendas : kind === "minutes" ? showMinutes : showAgendas || showMinutes
+
+  const meetings = $derived(
+    all
+      .filter((m) => !activeBoards.size || activeBoards.has(m.board))
+      .map((m) => ({ ...m, documents: m.documents.filter((d) => wanted(d.kind)) }))
+      .filter((m) => m.documents.length > 0),
   )
 
-  const byDate = $derived(groupByDate(visible))
+  const byDate = $derived(groupByDate(meetings))
   const weeks = $derived(buildMonthGrid(month, today))
   const monthDays = $derived(
     weeks
@@ -70,6 +71,9 @@
       .map((c) => ({ ...c, items: byDate.get(c.date)! })),
   )
   const monthCount = $derived(monthDays.reduce((n, d) => n + d.items.length, 0))
+  const monthDocuments = $derived(
+    monthDays.reduce((n, d) => n + d.items.reduce((k, m) => k + m.documents.length, 0), 0),
+  )
 
   const index = $derived(months.indexOf(month))
   const canPrev = $derived(index > 0)
@@ -85,7 +89,7 @@
     else activeBoards.add(board)
   }
 
-  const kindClass = (kind: Meeting["kind"]) =>
+  const kindClass = (kind: MeetingKind) =>
     kind === "agenda"
       ? "bg-sky-100 text-sky-900 hover:bg-sky-200"
       : kind === "minutes"
@@ -108,7 +112,8 @@
       Agendas and minutes from
       <a class="underline hover:text-slate-900" rel="external" href={data.source}>
         the City of Haverhill
-      </a>. Every entry opens as a readable page, with a link to the original.
+      </a>. One entry per meeting: open it for the documents the city published, agenda and minutes
+      together.
     </p>
   </header>
 
@@ -172,7 +177,9 @@
       <h2 class="text-xl font-semibold text-slate-900">{formatMonth(month)}</h2>
       <p class="text-sm text-slate-500">
         {monthCount}
-        {monthCount === 1 ? "document" : "documents"}
+        {monthCount === 1 ? "meeting" : "meetings"},
+        {monthDocuments}
+        {monthDocuments === 1 ? "document" : "documents"}
       </p>
     </div>
 
@@ -220,21 +227,32 @@
               </div>
               {#if cell.inMonth}
                 <ul class="space-y-0.5">
-                  {#each byDate.get(cell.date) ?? [] as m (m.pageUrl + m.fileUrl)}
+                  {#each byDate.get(cell.date) ?? [] as m (m.id)}
                     <li>
                       <a
                         href={linkFor(m)}
-                        title="{m.title} ({m.kind})"
-                        target={leavesSite(m) ? "_blank" : undefined}
-                        rel={leavesSite(m) ? "external noopener noreferrer" : undefined}
-                        class="block truncate rounded px-1 py-0.5 text-[11px] leading-tight transition {kindClass(
-                          m.kind,
-                        )}"
+                        title="{m.board} — {m.documents.length} document{m.documents.length === 1
+                          ? ''
+                          : 's'}"
+                        class="flex items-center gap-1 rounded bg-slate-100 px-1 py-0.5 text-[11px] leading-tight text-slate-900 transition hover:bg-slate-200"
                       >
-                        {m.board}<span class="sr-only"
-                          >, {m.kind}{leavesSite(m)
-                            ? ", opens the city's document in a new tab"
-                            : ""}</span
+                        <span class="min-w-0 flex-1 truncate">{m.board}</span>
+                        <!-- One letter per document, coloured by kind: the
+                             reader can see at a glance whether a meeting has
+                             minutes yet without opening it. -->
+                        <span class="flex shrink-0 gap-0.5" aria-hidden="true">
+                          {#each m.documents as doc, i (i)}
+                            <span
+                              class="rounded-sm px-1 text-[10px] font-semibold {kindClass(
+                                doc.kind,
+                              )}"
+                            >
+                              {doc.kind === "agenda" ? "A" : doc.kind === "minutes" ? "M" : "·"}
+                            </span>
+                          {/each}
+                        </span>
+                        <span class="sr-only">
+                          , {m.documents.length} document{m.documents.length === 1 ? "" : "s"}</span
                         >
                       </a>
                     </li>
@@ -252,7 +270,7 @@
   <div class="md:hidden">
     {#if monthDays.length === 0}
       <p class="rounded-lg border border-slate-200 p-6 text-center text-slate-500">
-        No documents in {formatMonth(month)} for the selected filters.
+        No meetings in {formatMonth(month)} for the selected filters.
       </p>
     {:else}
       <ul class="space-y-4">
@@ -264,22 +282,15 @@
               {formatLongDate(day.date)}
             </h3>
             <ul class="divide-y divide-slate-100">
-              {#each day.items as m (m.pageUrl + m.fileUrl)}
+              {#each day.items as m (m.id)}
                 <li class="px-3 py-2">
-                  <a
-                    href={linkFor(m)}
-                    target={leavesSite(m) ? "_blank" : undefined}
-                    rel={leavesSite(m) ? "external noopener noreferrer" : undefined}
-                    class="block hover:underline"
-                  >
+                  <a href={linkFor(m)} class="block hover:underline">
                     <span class="text-sm font-medium text-slate-900">{m.board}</span>
-                    <span class="ml-2 rounded px-1.5 py-0.5 text-[11px] {kindClass(m.kind)}"
-                      >{m.kind}</span
-                    >
-                    {#if leavesSite(m)}
-                      <span class="sr-only">, opens the city's document in a new tab</span>
-                    {/if}
-                    <span class="mt-0.5 block text-xs text-slate-500">{m.title}</span>
+                    {#each m.documents as doc, i (i)}
+                      <span class="ml-2 rounded px-1.5 py-0.5 text-[11px] {kindClass(doc.kind)}">
+                        {doc.kind}
+                      </span>
+                    {/each}
                   </a>
                 </li>
               {/each}
@@ -300,7 +311,7 @@
 
   <footer class="mt-8 border-t border-slate-200 pt-4 text-xs text-slate-500">
     <p>
-      {meetings.length} documents indexed, {months.length} months covered.
+      {all.length} meetings indexed, {data.documents} documents, {months.length} months covered.
       {#if data.undated > 0}
         {data.undated} document{data.undated === 1 ? "" : "s"} had no resolvable date and {data.undated ===
         1

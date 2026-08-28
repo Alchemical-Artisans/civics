@@ -8,7 +8,7 @@
 
   // When and where, set by the page underneath from what its document actually
   // printed. Absent on a document that states none of it.
-  const meeting = $derived(page.data.meeting)
+  const details = $derived(page.data.details)
 
   // A page for a single agenda item titles itself after the item. The meeting
   // logistics stay on the document page: they describe the whole sitting, and
@@ -17,8 +17,8 @@
   const heading = $derived(item?.title ?? data.title)
 
   const when = $derived(
-    data.date && meeting?.time
-      ? `${formatLongDate(data.date)} at ${meeting.time}`
+    data.date && details?.time
+      ? `${formatLongDate(data.date)} at ${details.time}`
       : data.date
         ? formatLongDate(data.date)
         : null,
@@ -51,6 +51,16 @@
       >
         &larr; {data.title}
       </a>
+    {:else if data.meetingId && data.date}
+      <!-- Back to the sitting, not the calendar: an agenda and its minutes are
+           two documents about one meeting, and the meeting page is where the
+           reader came through. -->
+      <a
+        class="text-sm text-slate-600 underline hover:text-slate-900"
+        href={Router.meeting(data.meetingId)}
+      >
+        &larr; {data.board}, {formatLongDate(data.date)}
+      </a>
     {:else}
       <a class="text-sm text-slate-600 underline hover:text-slate-900" href={Router.calendar()}>
         &larr; Back to the calendar
@@ -64,9 +74,9 @@
 	     of the icon it hangs off. -->
     <div class="relative flex flex-wrap items-center gap-x-2">
       <h1 class="text-2xl font-bold tracking-tight text-slate-900">{heading}</h1>
-      {#if !data.isItem && meeting?.notice?.length}
+      {#if !data.isItem && details?.notice?.length}
         <Note label="How this meeting is held, and how it is recorded">
-          {#each meeting.notice as paragraph (paragraph)}
+          {#each details.notice as paragraph (paragraph)}
             <p>{paragraph}</p>
           {/each}
         </Note>
@@ -83,22 +93,22 @@
 
     <!-- How to attend, rather than how to read the document -- so it sits
 	     above the source links, not among them. -->
-    {#if !data.isItem && (meeting?.location || meeting?.remote)}
+    {#if !data.isItem && (details?.location || details?.remote)}
       <p class="mt-2 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-slate-600">
-        {#if meeting.location}
+        {#if details.location}
           <a
             class="underline hover:text-slate-900"
-            href={Router.map(meeting.location.mapQuery)}
+            href={Router.map(details.location.mapQuery)}
             target="_blank"
             rel="external noopener noreferrer"
           >
-            {meeting.location.name}<span class="sr-only">, opens a map in a new tab</span>
+            {details.location.name}<span class="sr-only">, opens a map in a new tab</span>
           </a>
         {/if}
-        {#if meeting.remote}
+        {#if details.remote}
           <a
             class="underline hover:text-slate-900"
-            href={meeting.remote}
+            href={details.remote}
             target="_blank"
             rel="external noopener noreferrer"
           >

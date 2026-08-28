@@ -3,6 +3,7 @@ import type { LayoutLoad } from "./$types"
 import raw from "$lib/data/meetings.json"
 import type { MeetingKind } from "$lib/calendar"
 import { Router } from "$lib/router"
+import { meetingId } from "$lib/calendar"
 
 /**
  * Metadata for whichever document page is being rendered underneath.
@@ -53,5 +54,11 @@ export const load: LayoutLoad = ({ url }) => {
     date: meeting.date,
     fileUrl: meeting.fileUrl,
     sourceUrl: Router.cityPage(meeting.pageUrl),
+    /**
+     * The sitting this document belongs to, so a write-up can go back to it
+     * rather than all the way out to the calendar. Null when the record has no
+     * date, which is the one case that has no meeting page to return to.
+     */
+    meetingId: meeting.date ? meetingId(meeting.board, meeting.date) : null,
   }
 }

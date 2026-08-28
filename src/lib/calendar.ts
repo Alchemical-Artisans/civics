@@ -8,7 +8,7 @@
 
 export type MeetingKind = "agenda" | "minutes" | "other"
 
-export interface Meeting {
+export interface MeetingDocument {
   title: string
   date: string | null
   board: string
@@ -21,6 +21,71 @@ export interface Meeting {
    * written by hand; see docs/document-pages.md.
    */
   docId: string | null
+}
+
+/**
+ * One sitting of one board, and every document the city published for it.
+ *
+ * The city publishes an agenda and minutes as separate records, but they are
+ * two documents about the same meeting, so the calendar shows one entry per
+ * meeting rather than one per document. Board and date are the identity, which
+ * is the most the scrape supports: nothing in the data ties a document to a
+ * sitting except the board that held it and the day it was held.
+ *
+ * A meeting can carry more than two documents. Fourteen have three and two
+ * have four -- a revised agenda alongside the original, executive-session
+ * minutes kept apart from the ordinary ones, or a special permit decision
+ * recorded as minutes of its own. Whether such a decision was taken at that
+ * sitting or at a separate one the same day is not something the records say,
+ * and grouping them together assumes the former.
+ */
+export interface Meeting {
+  /** `city-council-2026-08-25`; the meeting page's route segment. */
+  id: string
+  board: string
+  date: string
+  /** Published order, agendas before minutes. Never empty. */
+  documents: MeetingDocument[]
+}
+
+/**
+ * The route segment for a meeting: the board slugged, then the date.
+ *
+ * Ampersands and slashes appear in board names ("Administration & Finance
+ * Committee"), so everything outside a-z0-9 collapses to a single dash.
+ */
+export function meetingId(board: string, date: string): string {
+  const slug = board
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "")
+  return `${slug}-${date}`
+}
+
+/** Agendas first, then minutes, then anything else; stable within a kind. */
+const KIND_ORDER: Record<MeetingKind, number> = { agenda: 0, minutes: 1, other: 2 }
+
+/**
+ * Collapse documents into the meetings they belong to.
+ *
+ * Undated documents are dropped: they cannot be placed on a calendar, and the
+ * count of them is disclosed in the footer instead. Order is by date, then
+ * board, so a day's meetings read alphabetically.
+ */
+export function groupIntoMeetings(documents: MeetingDocument[]): Meeting[] {
+  const byId = new Map<string, Meeting>()
+  for (const doc of documents) {
+    if (!doc.date) continue
+    const id = meetingId(doc.board, doc.date)
+    const found = byId.get(id)
+    if (found) found.documents.push(doc)
+    else byId.set(id, { id, board: doc.board, date: doc.date, documents: [doc] })
+  }
+  const meetings = [...byId.values()]
+  for (const m of meetings) {
+    m.documents.sort((a, b) => KIND_ORDER[a.kind] - KIND_ORDER[b.kind])
+  }
+  return meetings.sort((a, b) => a.date.localeCompare(b.date) || a.board.localeCompare(b.board))
 }
 
 /**
@@ -144,24 +209,21 @@ export function buildMonthGrid(key: string, today?: string): DayCell[][] {
   return weeks
 }
 
-/** Index meetings by their date string; undated entries are dropped. */
+/** Index meetings by their date string. */
 export function groupByDate(meetings: Meeting[]): Map<string, Meeting[]> {
   const out = new Map<string, Meeting[]>()
   for (const m of meetings) {
-    if (!m.date) continue
     const bucket = out.get(m.date)
     if (bucket) bucket.push(m)
     else out.set(m.date, [m])
   }
-  for (const list of out.values()) {
-    list.sort((a, b) => a.board.localeCompare(b.board) || a.kind.localeCompare(b.kind))
-  }
+  for (const list of out.values()) list.sort((a, b) => a.board.localeCompare(b.board))
   return out
 }
 
 /** Every month between the earliest and latest meeting, oldest first. */
 export function monthsCovered(meetings: Meeting[]): string[] {
-  const keys = meetings.filter((m) => m.date).map((m) => monthKey(m.date!))
+  const keys = meetings.map((m) => monthKey(m.date))
   if (!keys.length) return []
   keys.sort()
   const out: string[] = []

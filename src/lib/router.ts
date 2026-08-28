@@ -30,6 +30,15 @@ export class Router {
   }
 
   /**
+   * One sitting of one board, listing the documents the city published for it.
+   * `id` is a `Meeting`'s id from `$lib/calendar` -- the board slugged, then
+   * the date -- and is the route's only parameter.
+   */
+  static meeting(id: string): string {
+    return path(`/calendar/meetings/${id}`)
+  }
+
+  /**
    * A single meeting document, written up by hand. `id` is a record's `docId`
    * from `meetings.json`, and is also the route directory the write-up lives in;
    * documents nobody has written up have no page here and link to the city

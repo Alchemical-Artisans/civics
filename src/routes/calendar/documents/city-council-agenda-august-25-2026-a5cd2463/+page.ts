@@ -6,7 +6,7 @@ import type { PageLoad } from "./$types"
  * MeetingDetails for why none of it can come from the scrape.
  */
 export const load: PageLoad = () => ({
-  meeting: {
+  details: {
     time: "7:00 PM",
     location: {
       name: "Theodore A. Pelosi, Jr. Council Chambers, 4 Summer St, Room 202",

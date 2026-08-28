@@ -6,24 +6,33 @@ import {
   formatLongDate,
   formatMonth,
   groupByDate,
+  groupIntoMeetings,
+  meetingId,
   monthKey,
   monthsCovered,
-  type Meeting,
+  type MeetingDocument,
 } from "./calendar"
 
-const meeting = (
+const doc = (
   date: string | null,
   board = "City Council",
-  kind: Meeting["kind"] = "agenda",
-): Meeting => ({
-  title: `${date} ${board}`,
+  kind: MeetingDocument["kind"] = "agenda",
+): MeetingDocument => ({
+  title: `${date} ${board} ${kind}`,
   date,
   board,
   kind,
-  fileUrl: "https://example.test/a.pdf",
+  fileUrl: `https://example.test/${date}-${board}-${kind}.pdf`,
   pageUrl: "/p",
   docId: "a-document-0000abcd",
 })
+
+/** The calendar always groups before it buckets, so tests do too. */
+const meeting = (
+  date: string | null,
+  board = "City Council",
+  kind: MeetingDocument["kind"] = "agenda",
+) => groupIntoMeetings([doc(date, board, kind)])[0]
 
 describe("monthKey / formatMonth", () => {
   it("extracts and formats the month", () => {
@@ -82,12 +91,8 @@ describe("buildMonthGrid", () => {
 })
 
 describe("groupByDate", () => {
-  it("buckets by date and drops undated entries", () => {
-    const g = groupByDate([
-      meeting("2026-08-27"),
-      meeting("2026-08-27", "Planning Board"),
-      meeting(null),
-    ])
+  it("buckets by date", () => {
+    const g = groupByDate([meeting("2026-08-27"), meeting("2026-08-27", "Planning Board")])
     expect(g.size).toBe(1)
     expect(g.get("2026-08-27")).toHaveLength(2)
   })
@@ -108,8 +113,8 @@ describe("monthsCovered", () => {
     ])
   })
 
-  it("returns nothing when no meeting has a date", () => {
-    expect(monthsCovered([meeting(null)])).toEqual([])
+  it("returns nothing when there are no meetings", () => {
+    expect(monthsCovered([])).toEqual([])
   })
 })
 
@@ -122,5 +127,59 @@ describe("boardsOf", () => {
         meeting("2026-01-03", "Zoning"),
       ]),
     ).toEqual(["Airport", "Zoning"])
+  })
+})
+
+describe("meetingId", () => {
+  it("slugs a board name and appends the date", () => {
+    expect(meetingId("City Council", "2026-08-25")).toBe("city-council-2026-08-25")
+  })
+
+  it("collapses punctuation rather than dropping it", () => {
+    expect(meetingId("Administration & Finance Committee", "2026-01-02")).toBe(
+      "administration-finance-committee-2026-01-02",
+    )
+  })
+})
+
+describe("groupIntoMeetings", () => {
+  it("puts an agenda and its minutes into one meeting", () => {
+    const meetings = groupIntoMeetings([
+      doc("2026-08-25", "City Council", "minutes"),
+      doc("2026-08-25", "City Council", "agenda"),
+    ])
+    expect(meetings).toHaveLength(1)
+    expect(meetings[0].id).toBe("city-council-2026-08-25")
+    expect(meetings[0].documents.map((d) => d.kind)).toEqual(["agenda", "minutes"])
+  })
+
+  it("keeps different boards on the same day apart", () => {
+    const meetings = groupIntoMeetings([
+      doc("2026-08-25", "City Council"),
+      doc("2026-08-25", "Planning Board"),
+    ])
+    expect(meetings.map((m) => m.board)).toEqual(["City Council", "Planning Board"])
+  })
+
+  it("keeps the same board on different days apart", () => {
+    const meetings = groupIntoMeetings([
+      doc("2026-08-26", "City Council"),
+      doc("2026-08-25", "City Council"),
+    ])
+    expect(meetings.map((m) => m.date)).toEqual(["2026-08-25", "2026-08-26"])
+  })
+
+  it("holds more than one document of a kind", () => {
+    const meetings = groupIntoMeetings([
+      doc("2026-08-25", "City Council", "agenda"),
+      doc("2026-08-25", "City Council", "agenda"),
+      doc("2026-08-25", "City Council", "minutes"),
+    ])
+    expect(meetings).toHaveLength(1)
+    expect(meetings[0].documents).toHaveLength(3)
+  })
+
+  it("drops undated documents, and the meeting with them", () => {
+    expect(groupIntoMeetings([doc(null)])).toEqual([])
   })
 })
