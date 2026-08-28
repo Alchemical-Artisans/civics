@@ -1,15 +1,3 @@
-<!--
-  Item 5.1 of the City Council agenda for August 25, 2026.
-
-  The paragraph is the item as the agenda prints it, word for word, and is the
-  only prose here. The letter linked underneath is page 7 of the same PDF,
-  lifted out with
-
-    pdfseparate -f 7 -l 7 <packet>.pdf static/excerpts/<id>/<name>.pdf
-
-  and committed under static/. See docs/document-pages.md.
--->
-
 <script lang="ts">
   import { Router } from "$lib/router"
 

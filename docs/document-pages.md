@@ -112,9 +112,8 @@ There is a worked example at
 [`city-council-agenda-august-25-2026-a5cd2463/+page.svelte`](../src/routes/calendar/documents/city-council-agenda-august-25-2026-a5cd2463/+page.svelte):
 an agenda outline as `<h2>` per numbered item, nested `<ul>` for sub-items with
 the city's numbering kept verbatim, and `<table>` for the genuinely tabular
-parts. Its comment header records where the content came from and what was left
-out, which is worth doing on every page — a City Council agenda PDF is usually a
-handful of outline pages followed by a packet running to hundreds.
+parts. A City Council agenda PDF is usually a handful of outline pages followed
+by a packet running to hundreds; only the outline is transcribed.
 
 ## Why a route rather than a data file
 
