@@ -80,8 +80,10 @@
 
 <ul>
   <li>
-    <strong>9.1 Doc 7-I</strong> Petition from National Grid, requesting the installation of
-    underground facilities for Middlesex St WR# 31310074. <em>Filed on July 29, 2026.</em>
+    <strong>9.1</strong>
+    <a href={Router.documentItem(DOCUMENT, "national-grid-petition-middlesex-street")}>
+      Additional National Grid Poles
+    </a>
   </li>
 </ul>
 
