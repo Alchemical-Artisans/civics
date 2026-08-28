@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-08-28T03:19:24.192Z",
+  "generatedAt": "2026-08-28T21:23:33.938Z",
   "source": "https://www.haverhillma.gov/government/agendas-and-minutes/",
-  "count": 281,
+  "count": 282,
   "meetings": [
     {
       "title": "2026-08-27 Conservation Commission Agenda",
@@ -104,6 +104,23 @@
       "filenameDate": null,
       "needsReview": false,
       "docId": "2026-08-06-conservation-commission-agenda-cb247b9a"
+    },
+    {
+      "title": "2026-08-06 Conservation Commission Minutes",
+      "pageUrl": "/document-manager/media-pages/agenda-and-minutes/2026-08-06-conservation-commission-minutes/",
+      "fileUrl": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/rcqhw2pw/20260806_hccmeetingminutes_approved.pdf",
+      "category": "Conservation Commission Minutes",
+      "description": "",
+      "board": "Conservation Commission",
+      "kind": "minutes",
+      "date": "2026-08-06",
+      "dateSource": "meeting-date",
+      "rawMeetingDate": "08/06/2026 07:15 PM",
+      "dateAdjusted": false,
+      "dateConflict": false,
+      "filenameDate": null,
+      "needsReview": false,
+      "docId": "2026-08-06-conservation-commission-minutes-2efc20a9"
     },
     {
       "title": "August 6, 2026 License Commission Agenda",
