@@ -138,35 +138,8 @@
     <strong>12.6 One Day Liquor License</strong> &ndash;with Police and License Commission approval
   </li>
   <li>
-    <strong>12.7 Annual License Renewals:</strong>
-    <ul>
-      <li>
-        <strong>12.7.1</strong> Hawker Peddlers License- Fixed location &ndash; w/Police approval
-      </li>
-      <li><strong>12.7.2</strong> Coin-Op License Renewals &ndash; with Police approval</li>
-      <li><strong>12.7.3</strong> Christmas Tree Vendor &ndash; with Police approval</li>
-      <li><strong>12.7.4</strong> Taxi Driver Licenses: with Police approval</li>
-      <li><strong>12.7.5</strong> Taxi/Limousine License with Police approval</li>
-      <li><strong>12.7.6</strong> Junk Dealer/Collector License - with Police approval</li>
-      <li><strong>12.7.7</strong> Pool/Billiard</li>
-      <li><strong>12.7.8</strong> Bowling</li>
-      <li><strong>12.7.9</strong> Sunday Bowling</li>
-      <li>
-        <strong>12.7.10</strong> Buy &amp; Sell Secondhand Articles with Police approval
-      </li>
-      <li>
-        <strong>12.7.11</strong> Buy &amp; Sell Secondhand Clothing with Police approval
-      </li>
-      <li><strong>12.7.12</strong> Pawnbroker license - with Police approval</li>
-      <li><strong>12.7.13</strong> Fortune Teller with - Police approval</li>
-      <li><strong>12.7.14</strong> Buy &amp; Sell Old Gold &ndash; with Police approval</li>
-      <li><strong>12.7.15</strong> Roller Skating Rink</li>
-      <li><strong>12.7.16</strong> Sunday Skating</li>
-      <li><strong>12.7.17</strong> Exterior Vending Machines/Redbox Automated Retail, LLC</li>
-      <li>
-        <strong>12.7.18</strong> Limousine/Livery License/Chair Cars with Police approval
-      </li>
-    </ul>
+    <strong>12.7</strong>
+    <a href={Router.documentItem(DOCUMENT, "annual-license-renewals")}> Annual License Renewals </a>
   </li>
 </ul>
 
