@@ -16,6 +16,21 @@
 
   let { data } = $props()
 
+  /**
+   * Where a calendar entry goes.
+   *
+   * A document somebody has written a page for opens on this site. Everything
+   * else goes straight to the city's PDF, which is what the reader wanted in
+   * the first place -- better than a page on this site that only apologises for
+   * having nothing to show. The one listing row with no file at all falls back
+   * to the city's media page.
+   */
+  const linkFor = (m: Meeting) =>
+    m.docId ? Router.document(m.docId) : (m.fileUrl ?? Router.cityPage(m.pageUrl))
+
+  /** Everything that is not a page on this site leaves the site. */
+  const leavesSite = (m: Meeting) => !m.docId
+
   const meetings = $derived(data.meetings as Meeting[])
   const months = $derived(monthsCovered(meetings))
   const boards = $derived(boardsOf(meetings))
@@ -208,13 +223,19 @@
                   {#each byDate.get(cell.date) ?? [] as m (m.pageUrl + m.fileUrl)}
                     <li>
                       <a
-                        href={m.docId ? Router.document(m.docId) : Router.cityPage(m.pageUrl)}
+                        href={linkFor(m)}
                         title="{m.title} ({m.kind})"
+                        target={leavesSite(m) ? "_blank" : undefined}
+                        rel={leavesSite(m) ? "external noopener noreferrer" : undefined}
                         class="block truncate rounded px-1 py-0.5 text-[11px] leading-tight transition {kindClass(
                           m.kind,
                         )}"
                       >
-                        {m.board}<span class="sr-only">, {m.kind}</span>
+                        {m.board}<span class="sr-only"
+                          >, {m.kind}{leavesSite(m)
+                            ? ", opens the city's document in a new tab"
+                            : ""}</span
+                        >
                       </a>
                     </li>
                   {/each}
@@ -246,13 +267,18 @@
               {#each day.items as m (m.pageUrl + m.fileUrl)}
                 <li class="px-3 py-2">
                   <a
-                    href={m.docId ? Router.document(m.docId) : Router.cityPage(m.pageUrl)}
+                    href={linkFor(m)}
+                    target={leavesSite(m) ? "_blank" : undefined}
+                    rel={leavesSite(m) ? "external noopener noreferrer" : undefined}
                     class="block hover:underline"
                   >
                     <span class="text-sm font-medium text-slate-900">{m.board}</span>
                     <span class="ml-2 rounded px-1.5 py-0.5 text-[11px] {kindClass(m.kind)}"
                       >{m.kind}</span
                     >
+                    {#if leavesSite(m)}
+                      <span class="sr-only">, opens the city's document in a new tab</span>
+                    {/if}
                     <span class="mt-0.5 block text-xs text-slate-500">{m.title}</span>
                   </a>
                 </li>

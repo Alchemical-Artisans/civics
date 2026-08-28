@@ -14,7 +14,7 @@ converted to HTML and a link to the original at the top.
 | [scraping.md](./scraping.md)             | How documents are pulled off the city's site                        |
 | [dates.md](./dates.md)                   | How a meeting date is determined, and why that is hard              |
 | [data-format.md](./data-format.md)       | The `meetings.json` schema, field by field                          |
-| [pdf-conversion.md](./pdf-conversion.md) | Turning the city's PDFs into readable HTML, and where that fails    |
+| [document-pages.md](./document-pages.md) | Writing a page for a meeting document, and why they are hand-made   |
 | [calendar-page.md](./calendar-page.md)   | How the page renders, filters, and prerenders                       |
 | [operations.md](./operations.md)         | Running the scripts, refreshing data, and what to do when it breaks |
 | [deployment.md](./deployment.md)         | How the site is published to GitHub Pages                           |
@@ -34,10 +34,12 @@ flowchart LR
 
     subgraph build["Build time (a developer's machine)"]
         S["scripts/<br/>rebuild &amp; update"]
-        C["poppler<br/>pdftohtml"]
         J["src/lib/data/<br/>meetings.json"]
-        D["src/lib/data/<br/>documents/*.html"]
         V["vite build"]
+    end
+
+    subgraph hand["Written by hand"]
+        D["src/lib/data/<br/>documents/*.html"]
     end
 
     subgraph runtime["Runtime (the reader's browser)"]
@@ -47,16 +49,17 @@ flowchart LR
 
     L --> E --> S
     M --> S
-    P --> S --> C --> D --> V
+    D --> V
     S --> J --> V --> H --> O
+    H -. "links out to" .-> P
     O -. "links out to" .-> P
 ```
 
 The important property: **the reader's browser never talks to the city's
-servers**, except to follow a link to a PDF or to load one into the embedded
-viewer on a document the city published as a scan. All scraping happens ahead of time,
-the results are committed to the repository, and the page is prerendered to
-static HTML. Nothing about the site depends on the city's site being up, fast, or
+servers**, except to follow a link to a PDF — which, for a document with no page
+written here, is where the calendar entry goes. All scraping happens ahead of
+time, the results are committed to the repository, and the page is prerendered
+to static HTML. Nothing about the site depends on the city's site being up, fast, or
 CORS-friendly.
 
 ## Why the data is committed
@@ -77,17 +80,13 @@ also means:
 scripts/
   lib/haverhill.mjs        scraping and parsing: the endpoint, dates, classification
   lib/haverhill.spec.mjs   unit tests for the parsers
-  lib/pdf-html.mjs         poppler XML -> reflowed, semantic HTML
-  lib/pdf-html.spec.mjs    unit tests for the layout heuristics
-  lib/documents.mjs        document ids, the incremental conversion pass
+  lib/documents.mjs        document ids, and which ids have a page written
   lib/documents.spec.mjs   unit tests for ids and de-duplication
   lib/store.mjs            reading and writing meetings.json, run summaries
   lib/reviews.mjs          the corrections overlay
   lib/reviews.spec.mjs     unit tests for it
   rebuild-calendar.mjs     full re-scrape
   update-calendar.mjs      incremental refresh
-
-.cache/documents/          every document downloaded, gitignored; makes --recheck cheap
 
 src/lib/
   calendar.ts              pure date/grouping helpers used by the page
@@ -96,7 +95,7 @@ src/lib/
   router.spec.ts           unit tests for it
   data/meetings.json       the committed dataset
   data/reviews.json        human corrections, overlaid onto it
-  data/documents/*.html    the converted documents, one file per document
+  data/documents/*.html    the hand-written document pages, one file per document
 
 src/routes/
   +page.svelte             `/`, which forwards to /calendar
@@ -124,8 +123,9 @@ As of the last refresh: **281 documents** spanning **2025-01-07 to 2026-08-27**,
 across 10 boards. 280 resolve to a date; the one that does not is a schedule
 document rather than a meeting. Those become **275 document pages** — a few PDFs
 are published under two media pages each, and one listing row has no file at all.
-85 of them have readable text; the rest are scans, which
-[pdf-conversion.md](./pdf-conversion.md) explains.
+A page is written for a document when somebody writes one; the rest link
+straight to the city's PDF, which [document-pages.md](./document-pages.md)
+explains.
 
 | Board                              | Documents |
 | ---------------------------------- | --------: |

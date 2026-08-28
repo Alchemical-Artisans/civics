@@ -5,7 +5,7 @@ The site is published to GitHub Pages at
 [`.github/workflows/deploy.yml`](../.github/workflows/deploy.yml), on every push
 to `main` and on demand from the Actions tab.
 
-Nothing is scraped during a deploy. `meetings.json` and the converted documents
+Nothing is scraped during a deploy. `meetings.json` and the document pages
 are committed, so the build is offline and never touches the city's servers —
 which is also why refreshing the data is a local step (`npm run calendar:update`)
 followed by an ordinary commit. See [operations.md](./operations.md).

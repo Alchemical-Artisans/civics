@@ -185,24 +185,25 @@ that reads the page without following the refresh will see.
 
 [`documents/[id]/+page.svelte`](../src/routes/calendar/documents/%5Bid%5D/+page.svelte)
 renders one document: a back link, the title, board, kind and date, then the
-source links, then the converted text in a `prose` container.
+source links, then the hand-written page in a `prose` container.
 
-**The source link sits at the top, not the footer.** This page is a convenience
-and the city's file is the record — and since the conversion reflows complex
-layouts imperfectly, the way back to the original has to be obvious.
+**The source link sits at the top, not the footer.** The page is a written
+summary and the city's file is the record, so the way to the original has to be
+obvious rather than tucked underneath.
 
-The converted HTML is injected with `{@html}`. That is safe here because the
-markup is not sanitised after the fact but _assembled from a whitelist_ by
-`scripts/lib/pdf-html.mjs` at scrape time, with every character of text escaped
-on the way out. Nothing about it is user input: it comes from a committed file.
-See [pdf-conversion.md](./pdf-conversion.md).
+The fragment is injected with `{@html}` and is not sanitised. That is sound
+because it is this project's own markup, written into the repository by hand and
+reviewed like any other change — not scraped, not user input. See
+[document-pages.md](./document-pages.md).
 
-Documents with no text layer — over half of them — get a plain explanation and an
-`<object>` PDF viewer instead, so the page is still useful. The wording names the
-scan as the city's, so the limitation does not read as a fault here.
+Most documents have no page. The calendar links those straight to the city's
+PDF, and `/calendar/documents/<id>` 404s for them, because nothing linked there
+in the first place — better than a page whose only content is an apology.
 
-`+page.ts` exports `entries()` listing every `docId`, because a fully prerendered
-site cannot discover a dynamic route by crawling.
+`+page.ts` exports `entries()` listing the ids that have a file, because a fully
+prerendered site cannot discover a dynamic route by crawling. Both it and the
+calendar's loader find those with `import.meta.glob`, so writing a page is one
+step: add the file.
 
 ## The site mark
 

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest"
-import { assignIds, documentId } from "./documents.mjs"
+import { assignIds, documentId, summarizeDocuments } from "./documents.mjs"
 
 const record = (over = {}) => ({
   title: "City Council Agenda",
@@ -82,5 +82,41 @@ describe("assignIds", () => {
     ]
     expect(assignIds(meetings)).toHaveLength(2)
     expect(meetings[0].docId).not.toBe(meetings[1].docId)
+  })
+})
+
+// Whether a document has a page is decided by what is on disk, not by anything
+// recorded in meetings.json -- writing a page is one step, adding the file.
+describe("summarizeDocuments", () => {
+  it("counts the documents with a page written against those without", () => {
+    const meetings = [
+      record({ fileUrl: "https://media.example/a/one.pdf" }),
+      record({ fileUrl: "https://media.example/b/two.pdf" }),
+    ]
+    assignIds(meetings)
+    expect(summarizeDocuments(meetings, new Set([meetings[0].docId]))).toEqual({
+      documents: 2,
+      withPage: 1,
+      withoutPage: 1,
+    })
+  })
+
+  it("counts a document published under two media pages once", () => {
+    const meetings = [
+      record({ pageUrl: "/media-pages/one/" }),
+      record({ pageUrl: "/media-pages/two/" }),
+    ]
+    assignIds(meetings)
+    expect(summarizeDocuments(meetings, new Set()).documents).toBe(1)
+  })
+
+  it("ignores a record with no file, which can never have a page", () => {
+    const meetings = [record({ fileUrl: null })]
+    assignIds(meetings)
+    expect(summarizeDocuments(meetings, new Set())).toEqual({
+      documents: 0,
+      withPage: 0,
+      withoutPage: 0,
+    })
   })
 })

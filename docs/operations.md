@@ -10,9 +10,9 @@ npm run calendar:rebuild   # re-scrape everything from scratch
 **Use `update` for routine refreshes.** Reach for `rebuild` only when the
 scraping or date logic itself has changed.
 
-Both need [poppler](https://poppler.freedesktop.org/) on the PATH
-(`sudo apt install poppler-utils`), which they check for before doing any work.
-See [pdf-conversion.md](./pdf-conversion.md).
+Neither touches the document pages. Those are written by hand and live in
+`src/lib/data/documents/`; the scripts only re-derive what the city has
+published. See [document-pages.md](./document-pages.md).
 
 ### Why there are two
 
@@ -34,86 +34,22 @@ Resolving 3 new document(s)...
     + 2026-08-12  2026-8-12-Abatement Agenda
 ```
 
-When nothing is new there is no date resolving to do, but the run continues: it
-still builds the HTML for any document that does not have it yet.
+When nothing is new there is no date resolving to do, and the run finishes
+almost immediately.
 
-### Both scripts also convert documents
-
-After the dates are resolved, every document without HTML on disk is fetched and
-converted. The run reports what happened:
+### What a run reports
 
 ```
-Building HTML for documents that do not have it yet...
-  274 document(s) known, 0 fetched, 0 converted.
-  cache: 275 file(s), 2.1 GB in .cache/documents (gitignored)
+Listing returned 281 documents; 281 already stored.
+No new documents in the listing.
 
   280 meetings, 279 with a resolved date
-  documents: scanned=186, converted=85, unsupported=4
+  documents: 275, 1 with a page written, 274 linking straight to the city's PDF
 ```
 
-`scanned` is the normal outcome for a City Council document, not a fault — see
-[pdf-conversion.md](./pdf-conversion.md). A document is only fetched when it has
-no HTML and no previously recorded reason it cannot have any, so a repeat run
-costs one `stat` per document and no network at all.
-
-**The first full run is slow**: it downloads the whole corpus, about 2.2 GB.
-Every run after that is incremental — a document is fetched only if it is not
-already in the cache.
-
-### `--max-mb`
-
-```sh
-npm run calendar:update -- --max-mb=25
-```
-
-There is no size cap by default: every document is fetched, up to the 112 MB
-Council packets. This opts into one, recording anything over the limit as
-`too-large` and not downloading it. A stalled transfer is bounded by a
-five-minute per-download timeout rather than by size.
-
-`too-large` is not carried forward between runs the way `scanned` is, because it
-depends on the cap rather than on the document — so changing `--max-mb` takes
-effect on the next run without `--recheck`.
-
-### `--recheck`
-
-```sh
-npm run calendar:update -- --recheck
-```
-
-Converts every document again, ignoring both the HTML already on disk and any
-previously recorded reason a document could not be converted. This is what to
-run after changing the conversion logic. With the PDF cache warm it does no
-network I/O, so it is cheap despite touching everything.
-
-Documents whose last attempt `failed` are always retried, without this flag.
-
-### The document cache, and `--no-cache`
-
-Every document is downloaded into `.cache/documents/`, which is gitignored —
-roughly 2.2 GB. Everything is fetched, including the scans and `.docx` files that
-will never convert, so that `--recheck` costs no network and so any document
-flagged for review can be opened locally.
-
-Canonical copies are named by document id, but every document is also symlinked
-under the city's own filename in `.cache/by-name/`, which is the name the review
-list prints:
-
-```sh
-find .cache -name full-agenda-73026.pdf
-# .cache/by-name/full-agenda-73026.pdf
-```
-
-See [pdf-conversion.md](./pdf-conversion.md#two-ways-in).
-
-```sh
-rm -rf .cache/documents                 # reclaim the space; next run refetches
-npm run calendar:update -- --no-cache   # ignore cached copies, download afresh
-```
-
-Reach for `--no-cache` only if you think the city has replaced a file at a URL it
-had already published. A changed document normally gets a new URL, and therefore
-a new cache entry, but that is a convention of their CMS rather than a guarantee.
+Most documents have no page here and are not meant to — the calendar links those
+straight to the city's PDF. The count moves when somebody writes one, not when a
+script runs. See [document-pages.md](./document-pages.md).
 
 ### Manual corrections survive both scripts
 
@@ -140,7 +76,7 @@ Both scripts print the same summary:
   280 meetings, 279 with a resolved date
   range: 2025-01-07 -> 2026-08-27
   date sources: meeting-date=265, title=13, filename=1, none=1
-  documents: scanned=186, converted=85, unsupported=4
+  documents: 275, 1 with a page written, 274 linking straight to the city's PDF
 
   13 need review (no date, or an ambiguous filename date):
     - 2025-10-23  CityCouncil_9.23.25_minutes  [meeting-date]  citycouncil_92325_minutes.pdf
@@ -160,7 +96,7 @@ probably a month out. In the second, the title and filename agree on 18 February
 against a stored 18 March. Not every flag is an error: an agenda revised on the
 18th for a meeting on the 20th trips the same check and is perfectly correct.
 
-To settle one, open the file — `find .cache -name <filename>` — and see what date
+To settle one, open the city's PDF from the calendar entry and see what date
 it carries. Then edit its entry in `src/lib/data/reviews.json`:
 
 ```json
@@ -187,7 +123,6 @@ What to watch for:
 | `none` count climbs                | new title formats the parsers do not handle                   |
 | total count collapses              | scraping is broken; see below                                 |
 | review list grows                  | new upstream contradictions worth eyeballing                  |
-| `converted` count drops            | conversion is failing, or the city is publishing more scans   |
 | `failed` appears at all            | a conversion error — those are retried on the next run        |
 
 A handful of flagged records is normal and expected — the city's data genuinely
@@ -264,32 +199,14 @@ console.log(c);"
 Expect Tuesday to dominate. A pile of Wednesdays means the rollover correction
 has stopped working.
 
-### `pdftohtml not found`
+### A document links to the city instead of to a page here
 
-The conversion step needs poppler:
+That is the default and not a fault: a page exists only where somebody has
+written one. See [document-pages.md](./document-pages.md) for how to add one.
 
-```sh
-sudo apt install poppler-utils   # Debian/Ubuntu
-brew install poppler             # macOS
-```
-
-Both scripts check for it before scraping, so this fails fast rather than part
-way through a run.
-
-### Documents show "published as a scan" that should have text
-
-Expected for most City Council output; see
-[pdf-conversion.md](./pdf-conversion.md). If a document genuinely does have a
-text layer, check it is under the `--max-mb` cap, then re-run with `--recheck` —
-a document recorded as unconvertible is skipped on later runs.
-
-### The converted text reads oddly
-
-Tables and multi-column layouts reflow into one column. Reading order is right,
-alignment is not. The document page keeps the original PDF linked at the top for
-exactly this reason. If the reflow is wrong in a way that changes the _meaning_,
-that is a bug in `scripts/lib/pdf-html.mjs` — its heuristics are unit-tested in
-`pdf-html.spec.mjs`, so add the failing layout there as a fixture.
+If a page you have written is not being linked to, check that its filename is
+exactly `<docId>.html` — the id from `meetings.json`, including the hash — and
+rebuild.
 
 ### A whole board disappears
 

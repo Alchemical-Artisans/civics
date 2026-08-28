@@ -56,25 +56,18 @@ without a cacheable redirect status, until there is a landing page worth having
 — see [docs/calendar-page.md](./docs/calendar-page.md#the-site-root).
 
 The site is fully prerendered, so both the data (`src/lib/data/meetings.json`)
-and the converted documents (`src/lib/data/documents/`) are committed to the repo
-and baked in at build time — the browser never calls the city's servers.
+and the document pages (`src/lib/data/documents/`) are committed to the repo and
+baked in at build time — the browser never calls the city's servers.
 
 ```sh
 npm run calendar:update    # fetch only documents added since the last build
 npm run calendar:rebuild   # re-scrape everything from scratch
 ```
 
-Both scripts convert any document that does not yet have HTML, and both need
-[poppler](https://poppler.freedesktop.org/) installed:
-
-```sh
-sudo apt install poppler-utils   # Debian/Ubuntu
-brew install poppler             # macOS
-```
-
-Every document is cached in `.cache/documents/` (gitignored, around 2.2 GB) so
-that re-running the conversion does not re-fetch the corpus, and so anything the
-run flags for review can be opened locally. Delete it any time.
+Neither script touches the document pages. Those are written by hand, one HTML
+fragment per document under `src/lib/data/documents/`, and a document with no
+page is linked straight to the city's PDF from the calendar — see
+[docs/document-pages.md](./docs/document-pages.md).
 
 Prefer `calendar:update` for routine refreshes: the document listing is a single
 request, but resolving a date costs one request per document, so `update` only
@@ -90,7 +83,7 @@ worth understanding before changing any of it. **See [docs/](./docs/)**:
 | [Scraping](./docs/scraping.md)             | How documents are pulled off the city's site        |
 | [Dates](./docs/dates.md)                   | How a meeting date is determined, and why it's hard |
 | [Data format](./docs/data-format.md)       | The `meetings.json` schema                          |
-| [PDF conversion](./docs/pdf-conversion.md) | Turning the city's PDFs into readable HTML          |
+| [Document pages](./docs/document-pages.md) | Writing a page for a meeting document               |
 | [Calendar page](./docs/calendar-page.md)   | How the page renders and prerenders                 |
 | [Operations](./docs/operations.md)         | Refreshing data and troubleshooting                 |
 | [Deployment](./docs/deployment.md)         | Publishing the site to GitHub Pages                 |

@@ -1,22 +1,27 @@
 import { expect, test } from "@playwright/test"
+import { readdirSync } from "node:fs"
+import { fileURLToPath } from "node:url"
+
+/**
+ * The documents somebody has written a page for. Read from disk rather than
+ * hardcoded, so these tests follow the pages as they are written instead of
+ * pinning whichever one happened to exist first.
+ */
+const dir = fileURLToPath(new URL("../../../lib/data/documents", import.meta.url))
+const written = readdirSync(dir)
+  .filter((file) => file.endsWith(".html"))
+  .map((file) => file.replace(/\.html$/, ""))
 
 test.describe("meeting document pages", () => {
-  test("reaches a document from the calendar and shows its converted text", async ({ page }) => {
-    await page.goto("/calendar")
-    // Conservation Commission agendas are published with a text layer, so one
-    // of them is guaranteed to have been converted rather than embedded.
-    await page.getByRole("button", { name: "Conservation Commission", exact: true }).click()
-    await page.locator('table a[href*="/calendar/documents/"]').first().click()
+  test("renders the page written for a document", async ({ page }) => {
+    await page.goto(`/calendar/documents/${written[0]}`)
 
-    await expect(page).toHaveURL(/\/calendar\/documents\//)
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible()
-    await expect(page.getByRole("article")).toContainText(/Conservation Commission/i)
+    await expect(page.getByRole("article")).not.toBeEmpty()
   })
 
   test("offers the original document at the top of the page", async ({ page }) => {
-    await page.goto("/calendar")
-    await page.getByRole("button", { name: "Conservation Commission", exact: true }).click()
-    await page.locator('table a[href*="/calendar/documents/"]').first().click()
+    await page.goto(`/calendar/documents/${written[0]}`)
 
     // Asserted on attributes rather than by following them, so the suite never
     // reaches out to the city's CDN.
@@ -31,32 +36,33 @@ test.describe("meeting document pages", () => {
   })
 
   test("returns to the calendar", async ({ page }) => {
-    await page.goto("/calendar")
-    await page.locator('table a[href*="/calendar/documents/"]').first().click()
+    await page.goto(`/calendar/documents/${written[0]}`)
     await page.getByRole("link", { name: "Back to the calendar" }).click()
     await expect(page).toHaveURL(/\/calendar$/)
   })
 
-  test("falls back to an embedded viewer for a scanned document", async ({ page }) => {
-    // Most City Council documents are image-only scans with nothing to convert.
+  test("reaches the written page from the calendar", async ({ page }) => {
     await page.goto("/calendar")
-    await page.getByRole("button", { name: "City Council", exact: true }).click()
+    // Internal links are the exception now, so finding one at all is the
+    // assertion: it proves the calendar still routes to a page when there is
+    // one to route to.
+    await page.locator('a[href*="/calendar/documents/"]').first().click()
+    await expect(page).toHaveURL(/\/calendar\/documents\//)
+  })
 
-    // Collected up front and visited directly. Clicking through and going back
-    // would re-run the filter on every iteration, and racing hydration that way
-    // made this flaky.
-    const hrefs = await page
-      .locator('table a[href*="/calendar/documents/"]')
-      .evaluateAll((els) => els.map((el) => el.getAttribute("href")!))
-    expect(hrefs.length).toBeGreaterThan(0)
+  test("sends a document with no page written straight to the city's PDF", async ({ page }) => {
+    // The common case by a long way: most of the corpus has no page here, and
+    // the calendar links those to the city rather than to a page with nothing
+    // on it. Asserted on attributes so the suite never leaves the site.
+    await page.goto("/calendar")
 
-    for (const href of hrefs) {
-      await page.goto(href)
-      if (await page.locator('object[type="application/pdf"]').count()) {
-        await expect(page.getByText(/published this document as a scan/i)).toBeVisible()
-        return
-      }
-    }
-    throw new Error("expected at least one scanned City Council document")
+    const external = page.locator('a[href^="https://media-001"]').first()
+    await expect(external).toHaveAttribute("target", "_blank")
+    expect(await external.getAttribute("rel")).toContain("noopener")
+  })
+
+  test("has no page for a document nobody has written up", async ({ page }) => {
+    const response = await page.goto("/calendar/documents/not-a-document-00000000")
+    expect(response?.status()).toBe(404)
   })
 })

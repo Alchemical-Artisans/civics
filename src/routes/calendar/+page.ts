@@ -3,6 +3,27 @@ import raw from "$lib/data/meetings.json"
 import type { Meeting, MeetingKind } from "$lib/calendar"
 
 /**
+ * The documents somebody has written a page for.
+ *
+ * Only the keys matter here, so the modules are never called -- the glob is
+ * being used as a directory listing that Vite can resolve at build time. A
+ * relative path rather than `$lib`, because the glob has to be static.
+ *
+ * Presence of the file is the whole signal: a document with a page is linked to
+ * its page, one without is linked straight to the city's PDF. Nothing in
+ * meetings.json records which is which, so writing a page is one step -- add the
+ * file -- and a data refresh cannot contradict it.
+ */
+const written = new Set(
+  Object.keys(import.meta.glob("../../lib/data/documents/*.html")).map((path) =>
+    path
+      .split("/")
+      .pop()!
+      .replace(/\.html$/, ""),
+  ),
+)
+
+/**
  * Runs at build time (the site is fully prerendered), so the trimmed meeting
  * list is baked into the page rather than fetched by the browser. Fields only
  * the scraper cares about -- rawMeetingDate, category, dateSource -- are dropped
@@ -30,7 +51,7 @@ export const load: PageLoad = () => {
     kind: m.kind as MeetingKind,
     fileUrl: m.fileUrl,
     pageUrl: m.pageUrl,
-    docId: m.docId ?? null,
+    docId: m.docId && written.has(m.docId) ? m.docId : null,
   }))
 
   return {
@@ -40,5 +61,6 @@ export const load: PageLoad = () => {
     undated: raw.meetings.length - dated.length,
     duplicates: dated.length - meetings.length,
     flagged: kept.filter((m) => m.needsReview).length,
+    written: meetings.filter((m) => m.docId).length,
   }
 }

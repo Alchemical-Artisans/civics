@@ -8,13 +8,6 @@
 
 export type MeetingKind = "agenda" | "minutes" | "other"
 
-/**
- * How far the PDF-to-HTML conversion got for a document. Anything other than
- * `converted` means the document page falls back to an embedded PDF viewer;
- * see docs/pdf-conversion.md.
- */
-export type DocumentStatus = "converted" | "scanned" | "unsupported" | "too-large" | "failed"
-
 export interface Meeting {
   title: string
   date: string | null
@@ -22,7 +15,11 @@ export interface Meeting {
   kind: MeetingKind
   fileUrl: string | null
   pageUrl: string
-  /** Null for the one listing row that has no file, and so has no page. */
+  /**
+   * The document's page on this site, or null when nobody has written one --
+   * in which case the calendar links straight to the city's PDF. Pages are
+   * written by hand; see docs/document-pages.md.
+   */
   docId: string | null
 }
 

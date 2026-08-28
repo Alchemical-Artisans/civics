@@ -1,8 +1,8 @@
 node_modules
 
-# Documents downloaded by the calendar scripts. Only the converted HTML in
-# src/lib/data/documents/ is committed; these are kept so re-running the
-# conversion does not re-download the corpus. Safe to delete.
+# Scratch space. Nothing in the project writes here any more -- it held the
+# downloaded PDF corpus back when documents were converted automatically -- but
+# the rule stays so an old checkout does not suddenly offer 2 GB to commit.
 /.cache/
 
 # Output

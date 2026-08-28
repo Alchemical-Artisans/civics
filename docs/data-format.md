@@ -70,24 +70,23 @@ every write so refreshes produce readable diffs rather than reshuffled files.
 | `filenameDate`   | `YYYY-MM-DD` \| null                              | Unambiguous date read from the filename, if any.            |
 | `needsReview`    | boolean                                           | No date, a conflict, or an ambiguous filename split.        |
 
-### Fields from the document conversion
+### The document's identity
 
-Written by the conversion pass in
-[`scripts/lib/documents.mjs`](../scripts/lib/documents.mjs); see
-[pdf-conversion.md](./pdf-conversion.md).
+Assigned by [`scripts/lib/documents.mjs`](../scripts/lib/documents.mjs).
 
-| Field       | Type           | Meaning                                                        |
-| ----------- | -------------- | -------------------------------------------------------------- |
-| `docId`     | string \| null | Address of the document's page, `/calendar/documents/<docId>`. |
-| `docStatus` | status \| null | How far conversion got: see below.                             |
-| `docError`  | string         | Only present while `docStatus` is `failed`: why it failed.     |
+| Field   | Type           | Meaning                                                                |
+| ------- | -------------- | ---------------------------------------------------------------------- |
+| `docId` | string \| null | The document's permanent id, and the filename a page is written under. |
 
-`docStatus` is one of `converted`, `scanned`, `unsupported`, `too-large` or
-`failed`. Only `converted` has a file in `src/lib/data/documents/`; the rest fall
-back to an embedded PDF viewer on the page.
+`docId` is null for the one record with no `fileUrl`: there is no document, so
+there is nothing to write about and nothing to link to but the city's media
+page.
 
-Both are null for the one record with no `fileUrl` — there is nothing to convert,
-so it has no page, and the calendar links it to the city's media page instead.
+**A `docId` does not mean a page exists.** Pages are written by hand, and
+whether a document has one is decided by whether
+`src/lib/data/documents/<docId>.html` is there — not by anything recorded here.
+A document with no page is linked straight to the city's PDF from the calendar.
+See [document-pages.md](./document-pages.md).
 
 **Records that share a `fileUrl` share a `docId`.** Five PDFs are published under
 two media pages each; they are one document and get one page. The id is the media
@@ -194,5 +193,6 @@ from the city and would otherwise discard the decision.
 Setting `needsReview` to `false` after checking a document removes it from the
 run summary and from the warning count in the page footer.
 
-`docId` and `docStatus` are rewritten by the conversion pass on every run, so
-there is no point editing those.
+`docId` is re-derived on every run from the file URL, so there is no point
+editing it. To give a document a page, add the HTML file rather than changing
+anything here.

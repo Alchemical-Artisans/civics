@@ -57,7 +57,7 @@ export function summarize(meetings) {
 const filenameOf = (fileUrl) =>
   fileUrl ? decodeURIComponent(fileUrl.split("/").pop() ?? "") : "(no file)"
 
-export function printSummary(meetings) {
+export function printSummary(meetings, written = new Set()) {
   const s = summarize(meetings)
   console.log(`\n  ${s.total} meetings, ${s.dated} with a resolved date`)
   if (s.range) console.log(`  range: ${s.range[0]} -> ${s.range[1]}`)
@@ -66,14 +66,11 @@ export function printSummary(meetings) {
       .map(([k, v]) => `${k}=${v}`)
       .join(", ")}`,
   )
-  const docs = summarizeDocuments(meetings)
-  const total = Object.values(docs).reduce((n, v) => n + v, 0)
-  if (total) {
+  const docs = summarizeDocuments(meetings, written)
+  if (docs.documents) {
     console.log(
-      `  documents: ${Object.entries(docs)
-        .sort((a, b) => b[1] - a[1])
-        .map(([k, v]) => `${k}=${v}`)
-        .join(", ")}`,
+      `  documents: ${docs.documents}, ${docs.withPage} with a page written, ` +
+        `${docs.withoutPage} linking straight to the city's PDF`,
     )
   }
   if (s.review.length) {

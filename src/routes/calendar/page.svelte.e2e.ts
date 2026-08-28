@@ -10,24 +10,30 @@ test.describe("meeting calendar", () => {
     await expect(page.getByRole("heading", { level: 2 })).toHaveText(/^[A-Z][a-z]+ \d{4}$/)
   })
 
-  test("links meetings to their document pages", async ({ page }) => {
+  test("links a meeting with a page written for it to that page", async ({ page }) => {
     const link = page.locator('table a[href*="/calendar/documents/"]').first()
     await expect(link).toBeVisible()
-    expect(await link.getAttribute("href")).toMatch(/^\/calendar\/documents\/[a-z0-9-]+$/)
+    expect(await link.getAttribute("href")).toMatch(/\/calendar\/documents\/[a-z0-9-]+$/)
+    // Stays on the site, so no new tab.
+    expect(await link.getAttribute("target")).toBeNull()
   })
 
-  test("keeps document links on this site, in the same tab", async ({ page }) => {
-    // Documents used to open on the city's CDN in a new tab. They are pages
-    // here now, so a new tab would be wrong; checked on every link because a
-    // stray leftover would be easy to miss.
+  test("sends every other meeting to the city's own file, in a new tab", async ({ page }) => {
+    // Pages here are written by hand and most documents have none. Those link
+    // straight to the city rather than to a page with nothing on it, and a link
+    // that leaves the site opens in a new tab. Checked on every link, because
+    // one going to the wrong place would be easy to miss.
     const links = page.locator("table a")
     const count = await links.count()
     expect(count).toBeGreaterThan(0)
 
     for (let i = 0; i < count; i++) {
       const link = links.nth(i)
-      expect(await link.getAttribute("href")).toMatch(/^\/calendar\/documents\//)
-      expect(await link.getAttribute("target")).toBeNull()
+      const href = await link.getAttribute("href")
+      if (/\/calendar\/documents\//.test(href!)) continue
+      expect(href).toMatch(/^https:\/\//)
+      expect(await link.getAttribute("target")).toBe("_blank")
+      expect(await link.getAttribute("rel")).toContain("noopener")
     }
   })
 
