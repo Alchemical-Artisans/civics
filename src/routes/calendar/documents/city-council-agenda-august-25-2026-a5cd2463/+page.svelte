@@ -183,28 +183,12 @@
 
 <ul>
   <li>
-    <strong>14.1</strong> Ordinance re: Vehicles and Traffic; Amend Ch 24; be further amended by
-    <strong>ADDING</strong> the following to &sect; 240-85 Schedule B: Parking Restrictions and
-    Prohibitions. <em>File 10 Days.</em>
+    <strong>14.1</strong>
+    <a href={Router.documentItem(DOCUMENT, "mohawk-trail-no-parking")}>
+      Mohawk Trail &ndash; No Parking Ordinance
+    </a>
   </li>
 </ul>
-
-<table>
-  <thead>
-    <tr>
-      <th scope="col">Location</th>
-      <th scope="col">Regulation</th>
-      <th scope="col">Hours/Days</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>Mohawk Trail both sides, entire length</td>
-      <td>No Parking</td>
-      <td>24 hrs</td>
-    </tr>
-  </tbody>
-</table>
 
 <h2>15. Communications from Councilors</h2>
 
