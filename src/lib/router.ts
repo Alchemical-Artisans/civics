@@ -30,8 +30,9 @@ export class Router {
   }
 
   /**
-   * A single meeting document, converted to HTML. `id` is a record's `docId`
-   * from `meetings.json`; records with no file have none and link to the city
+   * A single meeting document, written up by hand. `id` is a record's `docId`
+   * from `meetings.json`, and is also the route directory the write-up lives in;
+   * documents nobody has written up have no page here and link to the city
    * instead — see `Router.cityPage`.
    */
   static document(id: string): string {

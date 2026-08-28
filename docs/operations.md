@@ -11,7 +11,7 @@ npm run calendar:rebuild   # re-scrape everything from scratch
 scraping or date logic itself has changed.
 
 Neither touches the document pages. Those are written by hand and live in
-`src/lib/data/documents/`; the scripts only re-derive what the city has
+`src/routes/calendar/documents/`; the scripts only re-derive what the city has
 published. See [document-pages.md](./document-pages.md).
 
 ### Why there are two
@@ -204,9 +204,9 @@ has stopped working.
 That is the default and not a fault: a page exists only where somebody has
 written one. See [document-pages.md](./document-pages.md) for how to add one.
 
-If a page you have written is not being linked to, check that its filename is
-exactly `<docId>.html` — the id from `meetings.json`, including the hash — and
-rebuild.
+If a page you have written is not being linked to, check that its directory is
+named exactly `<docId>` — the id from `meetings.json`, including the hash — that
+the page inside it is called `+page.svelte`, and rebuild.
 
 ### A whole board disappears
 

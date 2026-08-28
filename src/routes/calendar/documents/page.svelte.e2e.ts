@@ -1,16 +1,18 @@
 import { expect, test } from "@playwright/test"
-import { readdirSync } from "node:fs"
+import { existsSync, readdirSync } from "node:fs"
+import { join } from "node:path"
 import { fileURLToPath } from "node:url"
 
 /**
- * The documents somebody has written a page for. Read from disk rather than
- * hardcoded, so these tests follow the pages as they are written instead of
- * pinning whichever one happened to exist first.
+ * The documents somebody has written a page for: one route directory each,
+ * named for the document id. Read from disk rather than hardcoded, so these
+ * tests follow the pages as they are written instead of pinning whichever one
+ * happened to exist first.
  */
-const dir = fileURLToPath(new URL("../../../lib/data/documents", import.meta.url))
-const written = readdirSync(dir)
-  .filter((file) => file.endsWith(".html"))
-  .map((file) => file.replace(/\.html$/, ""))
+const dir = fileURLToPath(new URL(".", import.meta.url))
+const written = readdirSync(dir, { withFileTypes: true })
+  .filter((entry) => entry.isDirectory() && existsSync(join(dir, entry.name, "+page.svelte")))
+  .map((entry) => entry.name)
 
 test.describe("meeting document pages", () => {
   test("renders the page written for a document", async ({ page }) => {

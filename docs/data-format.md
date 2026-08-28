@@ -84,7 +84,8 @@ page.
 
 **A `docId` does not mean a page exists.** Pages are written by hand, and
 whether a document has one is decided by whether
-`src/lib/data/documents/<docId>.html` is there — not by anything recorded here.
+`src/routes/calendar/documents/<docId>/+page.svelte` is there — not by anything
+recorded here.
 A document with no page is linked straight to the city's PDF from the calendar.
 See [document-pages.md](./document-pages.md).
 

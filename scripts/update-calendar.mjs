@@ -8,7 +8,7 @@
  * stored are left untouched, including any manual date corrections.
  *
  * Nothing here touches the document pages. Those are written by hand and live
- * in src/lib/data/documents/; a refresh only re-derives what the city has
+ * in src/routes/calendar/documents/; a refresh only re-derives what the city has
  * published and which ids those documents answer to.
  *
  * Pass --prune to also drop stored entries no longer present in the listing.

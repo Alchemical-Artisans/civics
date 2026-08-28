@@ -56,18 +56,18 @@ without a cacheable redirect status, until there is a landing page worth having
 — see [docs/calendar-page.md](./docs/calendar-page.md#the-site-root).
 
 The site is fully prerendered, so both the data (`src/lib/data/meetings.json`)
-and the document pages (`src/lib/data/documents/`) are committed to the repo and
-baked in at build time — the browser never calls the city's servers.
+and the document pages (`src/routes/calendar/documents/`) are committed to the
+repo and baked in at build time — the browser never calls the city's servers.
 
 ```sh
 npm run calendar:update    # fetch only documents added since the last build
 npm run calendar:rebuild   # re-scrape everything from scratch
 ```
 
-Neither script touches the document pages. Those are written by hand, one HTML
-fragment per document under `src/lib/data/documents/`, and a document with no
-page is linked straight to the city's PDF from the calendar — see
-[docs/document-pages.md](./docs/document-pages.md).
+Neither script touches the document pages. Those are written by hand, one
+`+page.svelte` per document under `src/routes/calendar/documents/<id>/`, and a
+document with no page is linked straight to the city's PDF from the calendar —
+see [docs/document-pages.md](./docs/document-pages.md).
 
 Prefer `calendar:update` for routine refreshes: the document listing is a single
 request, but resolving a date costs one request per document, so `update` only

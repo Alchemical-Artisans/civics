@@ -2,7 +2,7 @@
   import { Router } from "$lib/router"
   import { formatLongDate } from "$lib/calendar"
 
-  let { data } = $props()
+  let { data, children } = $props()
 
   const kindClass = (kind: string) =>
     kind === "agenda"
@@ -65,12 +65,11 @@
     </p>
   </header>
 
-  <!-- Written by hand and committed as an HTML fragment. Nothing here comes
-	     from a PDF, a scrape, or a reader, so `{@html}` is rendering this
-	     project's own markup -- see docs/document-pages.md. -->
+  <!-- The write-up is the child route: an ordinary Svelte component, checked
+	     and formatted like the rest of the source, rather than a string of
+	     markup dropped in with {@html}. See docs/document-pages.md. -->
   <article class="prose max-w-none break-words prose-slate prose-headings:font-semibold">
-    <!-- eslint-disable-next-line svelte/no-at-html-tags -->
-    {@html data.html}
+    {@render children()}
   </article>
 
   <footer class="mt-8 border-t border-slate-200 pt-4 text-xs text-slate-500">

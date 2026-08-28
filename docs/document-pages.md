@@ -1,9 +1,9 @@
 # Document pages
 
 A meeting document gets a page on this site when somebody writes one. There is
-no automated step: `src/lib/data/documents/<id>.html` is an HTML fragment
-written by hand, and its existence is the only thing that decides whether the
-calendar links to a page here or straight to the city's PDF.
+no automated step: `src/routes/calendar/documents/<id>/+page.svelte` is a Svelte
+component written by hand, and its existence is the only thing that decides
+whether the calendar links to a page here or straight to the city's PDF.
 
 ## Why not convert the PDFs
 
@@ -31,53 +31,77 @@ city's file.
    the file URL appended — so they can be settled before anything is written.
    See `documentId()` in [`scripts/lib/documents.mjs`](../scripts/lib/documents.mjs).
 
-2. **Create `src/lib/data/documents/<id>.html`.** A fragment, not a whole
-   document: no `<html>`, `<head>` or `<body>`. It is rendered inside
-   `<article class="prose">`, so plain semantic HTML is enough and Tailwind's
-   typography plugin styles it.
+2. **Create `src/routes/calendar/documents/<id>/+page.svelte`.** The directory
+   name is the id and becomes the URL. The page is the write-up and nothing
+   else: no `<script>`, no data to declare, no title. It renders inside
+   `<article class="prose">` in the surrounding layout, so plain semantic markup
+   is enough and Tailwind's typography plugin styles it.
 
-   The page's `<h1>` is the document title and is rendered above the fragment,
+   The page's `<h1>` is the document title and is rendered above by the layout,
    so start headings at `<h2>`. Everything else is ordinary markup — `<p>`,
    `<ul>`, `<ol>`, `<table>`, `<blockquote>`, `<a href>`. Give outbound links
    `target="_blank" rel="external noopener noreferrer"`, matching the rest of
-   the site.
+   the site. Svelte treats `{` and `}` as expressions, so write them `&lbrace;`
+   and `&rbrace;` on the rare occasion a document contains one.
 
-3. **Build.** The calendar picks the page up on the next build and starts
-   linking to it. Nothing needs recording anywhere else.
+3. **Build.** The route is static, so the fully-prerendered build picks it up
+   with no entry list to extend, and the calendar starts linking to it. Nothing
+   needs recording anywhere else.
 
-There is a stub to copy from at
-[`city-council-agenda-august-25-2026-a5cd2463.html`](../src/lib/data/documents/city-council-agenda-august-25-2026-a5cd2463.html),
-whose comment header lists the same conventions.
+There is a worked example at
+[`city-council-agenda-august-25-2026-a5cd2463/+page.svelte`](../src/routes/calendar/documents/city-council-agenda-august-25-2026-a5cd2463/+page.svelte):
+an agenda outline as `<h2>` per numbered item, nested `<ul>` for sub-items with
+the city's numbering kept verbatim, and `<table>` for the genuinely tabular
+parts. Its comment header records where the content came from and what was left
+out, which is worth doing on every page — a City Council agenda PDF is usually a
+handful of outline pages followed by a packet running to hundreds.
+
+## Why a route rather than a data file
+
+These pages used to be HTML fragments under `src/lib/data/documents/`, loaded by
+a `[id]` route and dropped into the page with `{@html}`. Making each one a route
+of its own is less machinery for the same result:
+
+- **The pages are checked like the rest of the source.** Prettier formats them
+  and `svelte-check` parses them, so unbalanced markup is a build error rather
+  than something a reader finds. As opaque strings they were exempt from both.
+- **Nothing has to enumerate them.** A static route is prerendered because it
+  exists. The old `[id]` route needed an `entries` generator to tell the build
+  which ids were real.
+- **`{@html}` is gone.** There is no longer a string of markup to trust; the
+  write-up is a component the compiler reads.
 
 ## What the reader gets either way
 
 Every page carries the meeting's title, board, kind and date, a link to the
 city's media page, and a link to the PDF itself — the last two rendered from
-`meetings.json`, not from the fragment, so they are right without being typed
-out each time. Underneath, a note that the page was written by hand and that the
+`meetings.json`, not from the page, so they are right without being typed out
+each time. Underneath, a note that the page was written by hand and that the
 city's file is the record.
 
 A document with no page never shows a page. The calendar entry points at the
 city's PDF and opens it in a new tab, and `/calendar/documents/<id>` returns a
-404 for it, because nothing ever linked there.
+404 for it — there is no such route — because nothing ever linked there.
 
 ## Safety
 
-The fragment is rendered with `{@html}` and there is no sanitiser between it and
-the browser. That is sound because the markup is this project's own — written
-into the repository by hand and reviewed like any other change. It stops being
-sound the moment something is pasted in from elsewhere without being read, which
-is worth remembering when working from a PDF that can be copied out of.
+A page is a component, compiled like any other, so there is no `{@html}` and
+nothing to sanitise. What is still worth remembering is that a PDF can be copied
+out of: paste markup from somewhere else without reading it and you have put
+someone else's script tag into the build. Read what you paste.
 
 ## Where things live
 
 ```
-src/lib/data/documents/<id>.html          the pages, written by hand
-src/routes/calendar/documents/[id]/       the route that renders one
-scripts/lib/documents.mjs                 ids, and which ids have a page
+src/routes/calendar/documents/<id>/+page.svelte  the pages, written by hand
+src/routes/calendar/documents/+layout.svelte     title, date and source links
+src/routes/calendar/documents/+layout.ts         looks that metadata up by id
+scripts/lib/documents.mjs                        ids, and which ids have a page
 ```
 
-The route enumerates its prerender entries from the files that exist, and
-`src/routes/calendar/+page.ts` reads the same directory to decide where a
-calendar entry links. Both use `import.meta.glob`, so a new file is picked up by
-the build with no registry to update.
+The layout reads the id off the end of the URL — which is the directory name,
+which is the `docId` — and pulls the title, board, kind, date and links to the
+city out of `meetings.json`, so a page never restates any of it.
+`src/routes/calendar/+page.ts` globs the same directories to decide where a
+calendar entry links, so a new page is picked up by the build with no registry
+to update.

@@ -9,17 +9,14 @@ import type { Meeting, MeetingKind } from "$lib/calendar"
  * being used as a directory listing that Vite can resolve at build time. A
  * relative path rather than `$lib`, because the glob has to be static.
  *
- * Presence of the file is the whole signal: a document with a page is linked to
- * its page, one without is linked straight to the city's PDF. Nothing in
- * meetings.json records which is which, so writing a page is one step -- add the
- * file -- and a data refresh cannot contradict it.
+ * Existence of the route is the whole signal: a document with a page written
+ * for it is linked to that page, one without is linked straight to the city's
+ * PDF. Nothing in meetings.json records which is which, so writing a page is
+ * one step -- add the file -- and a data refresh cannot contradict it.
  */
 const written = new Set(
-  Object.keys(import.meta.glob("../../lib/data/documents/*.html")).map((path) =>
-    path
-      .split("/")
-      .pop()!
-      .replace(/\.html$/, ""),
+  Object.keys(import.meta.glob("./documents/*/+page.svelte")).map((path) =>
+    path.split("/").at(-2)!,
   ),
 )
 

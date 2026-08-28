@@ -10,7 +10,7 @@
  * discards them.
  *
  * Nothing here touches the document pages. Those are written by hand and live
- * in src/lib/data/documents/; a rebuild only re-derives what the city has
+ * in src/routes/calendar/documents/; a rebuild only re-derives what the city has
  * published and which ids those documents answer to.
  */
 import { fetchListing, resolveDocument, mapLimit, LISTING_URL } from "./lib/haverhill.mjs"

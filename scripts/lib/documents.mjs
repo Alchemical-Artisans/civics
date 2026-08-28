@@ -4,7 +4,8 @@
  * Documents on this site are written by hand. The scrape's job is only to say
  * what the city has published and what each document's permanent URL would be;
  * whether a document actually has a page is decided by whether someone has
- * written `src/lib/data/documents/<id>.html`. Nothing here reads a PDF.
+ * written `src/routes/calendar/documents/<id>/+page.svelte`. Nothing here reads
+ * a PDF.
  *
  * This used to convert every PDF to HTML with poppler. That produced a page for
  * every document, but only about a third of the corpus has a text layer at all,
@@ -17,14 +18,14 @@ import { createHash } from "node:crypto"
 import { readdir } from "node:fs/promises"
 import path from "node:path"
 
-/** Where the hand-written document pages live, one HTML fragment per id. */
+/** Where the hand-written document pages live, one route directory per id. */
 export const DOCUMENTS_DIR = path.join(
   import.meta.dirname,
   "..",
   "..",
   "src",
-  "lib",
-  "data",
+  "routes",
+  "calendar",
   "documents",
 )
 
@@ -55,7 +56,7 @@ export const documentGroupKey = (record) => record.fileUrl ?? record.pageUrl
  * existing document's URL the day a new one lands. These pages are the kind of
  * thing people cite, so eight ugly characters buy something worth having.
  *
- * It is also the filename a page is written under, so an id has to be settled
+ * It is also the directory a page is written under, so an id has to be settled
  * before anyone starts writing rather than depending on what else happened to
  * be in the listing that day.
  */
@@ -108,8 +109,11 @@ export function assignIds(meetings) {
  */
 export async function pagesWritten() {
   try {
-    const files = await readdir(DOCUMENTS_DIR)
-    return new Set(files.filter((f) => f.endsWith(".html")).map((f) => f.slice(0, -".html".length)))
+    const entries = await readdir(DOCUMENTS_DIR, { withFileTypes: true })
+    // A directory named for the id, holding the page. The route group's own
+    // files -- the layout, the e2e suite -- are not directories, so they sort
+    // themselves out.
+    return new Set(entries.filter((entry) => entry.isDirectory()).map((entry) => entry.name))
   } catch {
     // No pages written yet.
     return new Set()

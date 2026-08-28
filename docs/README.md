@@ -4,8 +4,8 @@ This project publishes a browsable calendar of public meeting documents —
 agendas and minutes — for the City of Haverhill, Massachusetts. The city
 publishes those documents through a searchable file listing that is awkward to
 browse and impossible to see chronologically. This site turns that listing into a
-month calendar where every entry opens as a readable page, with the PDF's text
-converted to HTML and a link to the original at the top.
+month calendar where every entry opens either as a page written here, with a
+link to the original at the top, or as the city's own PDF.
 
 ## Documentation map
 
@@ -39,12 +39,12 @@ flowchart LR
     end
 
     subgraph hand["Written by hand"]
-        D["src/lib/data/<br/>documents/*.html"]
+        D["src/routes/calendar/documents/<br/>&lt;id&gt;/+page.svelte"]
     end
 
     subgraph runtime["Runtime (the reader's browser)"]
         H["prerendered<br/>/calendar"]
-        O["prerendered<br/>/calendar/documents/[id]"]
+        O["prerendered<br/>/calendar/documents/&lt;id&gt;"]
     end
 
     L --> E --> S
@@ -95,7 +95,6 @@ src/lib/
   router.spec.ts           unit tests for it
   data/meetings.json       the committed dataset
   data/reviews.json        human corrections, overlaid onto it
-  data/documents/*.html    the hand-written document pages, one file per document
 
 src/routes/
   +page.svelte             `/`, which forwards to /calendar
@@ -105,9 +104,10 @@ src/routes/calendar/
   +page.ts                 build-time load: trims and de-duplicates records
   +page.svelte             the calendar UI
   page.svelte.e2e.ts       end-to-end tests
-  documents/[id]/+page.ts      per-document load, and the prerender entry list
-  documents/[id]/+page.svelte  the document page
-  documents/page.svelte.e2e.ts end-to-end tests for it
+  documents/+layout.ts         looks a document's metadata up by id
+  documents/+layout.svelte     title, date and links to the city's own copy
+  documents/<id>/+page.svelte  a hand-written document page, one directory each
+  documents/page.svelte.e2e.ts end-to-end tests for them
 
 static/
   CNAME                    the custom domain, published with the build

@@ -183,27 +183,31 @@ that reads the page without following the refresh will see.
 
 ## The document page
 
-[`documents/[id]/+page.svelte`](../src/routes/calendar/documents/%5Bid%5D/+page.svelte)
-renders one document: a back link, the title, board, kind and date, then the
-source links, then the hand-written page in a `prose` container.
+[`documents/+layout.svelte`](../src/routes/calendar/documents/+layout.svelte)
+wraps every document page: a back link, the title, board, kind and date, then
+the source links, then the page itself in a `prose` container.
+[`+layout.ts`](../src/routes/calendar/documents/+layout.ts) supplies that
+metadata, reading the id off the end of the URL and looking it up in
+`meetings.json`.
 
 **The source link sits at the top, not the footer.** The page is a written
 summary and the city's file is the record, so the way to the original has to be
 obvious rather than tucked underneath.
 
-The fragment is injected with `{@html}` and is not sanitised. That is sound
-because it is this project's own markup, written into the repository by hand and
-reviewed like any other change — not scraped, not user input. See
+Underneath the layout, each write-up is its own static route — one directory per
+document id, holding a hand-written `+page.svelte`. Being components rather than
+strings of markup, they are formatted by Prettier and parsed by `svelte-check`
+like the rest of the source, and there is no `{@html}` anywhere. See
 [document-pages.md](./document-pages.md).
 
 Most documents have no page. The calendar links those straight to the city's
-PDF, and `/calendar/documents/<id>` 404s for them, because nothing linked there
-in the first place — better than a page whose only content is an apology.
+PDF, and `/calendar/documents/<id>` 404s for them — there is no such route —
+because nothing linked there in the first place, which beats a page whose only
+content is an apology.
 
-`+page.ts` exports `entries()` listing the ids that have a file, because a fully
-prerendered site cannot discover a dynamic route by crawling. Both it and the
-calendar's loader find those with `import.meta.glob`, so writing a page is one
-step: add the file.
+Nothing enumerates the pages for the build: a static route is prerendered
+because it exists. The calendar's loader finds them with `import.meta.glob` to
+decide where an entry links, so writing a page is still one step: add the file.
 
 ## The site mark
 
@@ -246,9 +250,10 @@ document pages, every link is internal and same-tab, month navigation works,
 board filtering narrows results, and unchecking agendas hides them.
 
 [`documents/page.svelte.e2e.ts`](../src/routes/calendar/documents/page.svelte.e2e.ts)
-covers the document page: reaching one from the calendar and finding converted
-text, the original PDF offered at the top, the back link, and the embedded
-viewer appearing for a scanned document.
+covers the document pages, enumerated from the route directories that exist:
+reaching one from the calendar and finding it rendered, the original PDF offered
+at the top, the back link, a document with no page going straight to the city,
+and an unknown id returning a 404.
 
 [`src/routes/page.svelte.e2e.ts`](../src/routes/page.svelte.e2e.ts) covers the
 root: `/` lands on the calendar, and going back from there leaves the site
