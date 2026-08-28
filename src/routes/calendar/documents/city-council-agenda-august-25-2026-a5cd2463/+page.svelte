@@ -103,12 +103,10 @@
     </a>
   </li>
   <li>
-    <strong>10.3 Doc 21-I- CCSP-26-2</strong> &ndash; Philip Rice of
-    <em>Rice &amp; Brouillard</em> requests approval to transform an existing 1&frac12; story structure
-    into a three-family residential building containing a mix of two- and three-bedroom units at 125 River
-    St. The renovation will include an interior reconfiguration, structural expansion, and modernization
-    of all building systems to meet current safety, accessibility, and energy-efficiency standards if/as
-    needed.
+    <strong>10.3</strong>
+    <a href={Router.documentItem(DOCUMENT, "special-permit-125-river-st")}>
+      Special Permit, 125 River St
+    </a>
   </li>
   <li>
     <strong>10.4 Doc 21-D - CCSP-26-3</strong> - Attorney Jonathan Stark-Sachs for Maryam
