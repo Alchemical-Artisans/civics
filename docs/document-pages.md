@@ -108,6 +108,15 @@ complete file stays the record. Note the page numbers are the PDF's, not the
 agenda's own numbering, and that `.cache/` is gitignored, so re-cutting an
 excerpt means fetching the original again.
 
+Often the pages behind one item are not one document but several — a
+transmittal letter, the department's letter under it, the order, a cost sheet.
+Cut them apart along those seams rather than into a single run of pages, and
+give them a directory named after the item:
+`static/excerpts/<id>/<item-slug>/<document-slug>.pdf`, reached with
+`Router.excerpt(id, "<item-slug>/<document-slug>")`. `pdfseparate` writes one
+file per page, so a document spanning two of them is cut singly and stitched
+back with `pdfunite`.
+
 There is a worked example at
 [`city-council-agenda-august-25-2026-a5cd2463/+page.svelte`](../src/routes/calendar/documents/city-council-agenda-august-25-2026-a5cd2463/+page.svelte):
 an agenda outline as `<h2>` per numbered item, nested `<ul>` for sub-items with
@@ -158,6 +167,7 @@ src/routes/calendar/documents/<id>/<item>/       a page for one agenda item
 src/routes/calendar/documents/+layout.svelte     the header around all of them
 src/routes/calendar/documents/+layout.ts         looks a document up by its id
 static/excerpts/<id>/<item>.pdf                  pages cut out of the original
+static/excerpts/<id>/<item>/<document>.pdf       when an item rests on several
 scripts/lib/documents.mjs                        ids, and which ids have a page
 ```
 

@@ -55,6 +55,9 @@ export class Router {
    * Committed under `static/excerpts/<id>/`, so this is a path on this site
    * rather than one of the city's -- and it takes the base path, which is why
    * it belongs here rather than being written out in a template.
+   *
+   * `name` may carry a directory of its own, `<item>/<document>`, for an item
+   * whose packet is several separate documents rather than one.
    */
   static excerpt(id: string, name: string): string {
     return path(`/excerpts/${id}/${name}.pdf`)

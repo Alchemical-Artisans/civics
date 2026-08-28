@@ -23,19 +23,10 @@
     </a>
   </li>
   <li>
-    <strong>5.2</strong> Mayor Barrett submits a loan order appropriating $26,190,000 for the
-    engineering and construction of improvements to the South Mill Street Pumping Station and Force
-    Main.
-    <ul>
-      <li>
-        <strong>5.2.1</strong> Order &mdash; That Twenty-Six Million One Hundred and Ninety Thousand
-        Dollars ($26,190,000) is appropriated for the purpose of financing the costs of engineering
-        and construction of improvements to the South Mill Street Pumping Station and Force Main,
-        including the payment of all costs incidental or related thereto, and including without
-        limitation all costs thereof as defined in Section 1 of Chapter 29C of the General Laws, as
-        most recently amended (&ldquo;Chapter 29C&rdquo;). <em>File 10 Days.</em>
-      </li>
-    </ul>
+    <strong>5.2</strong>
+    <a href={Router.documentItem(DOCUMENT, "south-mill-street-loan-order")}>
+      Loan Order &ndash; South Mill Street Pumping Station and Force Main Improvements
+    </a>
   </li>
 </ul>
 
