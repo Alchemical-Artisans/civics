@@ -59,12 +59,10 @@
 
 <ul>
   <li>
-    <strong>8.1 EROM-26-19</strong> - Lisa DeMeo, <em>City Engineer</em>, requests approval to open
-    the roadway to allow for a gas leak repair at 135 Hyatt Ave, which requires National Grid to
-    excavate in the right of way.
-    <ul>
-      <li><strong>8.1.1</strong> Order &ndash; approve request to excavate at 135 Hyatt Ave.</li>
-    </ul>
+    <strong>8.1</strong>
+    <a href={Router.documentItem(DOCUMENT, "road-opening-135-hyatt-ave")}>
+      Road Opening, 135 Hyatt Ave, EROM-26-19
+    </a>
   </li>
   <li>
     <strong>8.2</strong> Angel A. Perkins, <em>City Auditor and Chief Financial Officer</em>,
