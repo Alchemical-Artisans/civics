@@ -109,15 +109,10 @@
     </a>
   </li>
   <li>
-    <strong>10.4 Doc 21-D - CCSP-26-3</strong> - Attorney Jonathan Stark-Sachs for Maryam
-    Salehi-Ala-Yamin requests approval to operate &ldquo;Mariam&rsquo;s Cottage,&rdquo; a family run
-    bed and breakfast at 421 East Broadway allowed with a special permit in the RR (Rural
-    Residential) zoning district, and seeks to host small-scale weddings and similar outdoor events
-    of up to 50 guests packaged with overnight stays.
-    <em
-      >Continued from July 28, 2026. Related communication from applicant requesting to continue the
-      hearing until Sept 22, 2026.</em
-    >
+    <strong>10.4</strong>
+    <a href={Router.documentItem(DOCUMENT, "mariams-cottage-special-permit")}>
+      Mariam&rsquo;s Cottage Special Permit
+    </a>
   </li>
 </ul>
 
