@@ -91,16 +91,10 @@
 
 <ul>
   <li>
-    <strong>10.1 Doc 21-B</strong> - Planning Director Jacki Byerley requests a hearing for the
-    following Zoning Amendment &ndash; Battery Energy Storage Systems Ordinance: re: Amend Chapter
-    255 Zoning Ordinance and Zoning Map &ndash; Battery Energy Storage Systems Overlay District
-    (BESS)&ndash; by inserting a new section 7.9 Battery Energy Storage Systems, amending section
-    3.1.3 Table of Use and Parking regulations by allowing a Tier 1, Tier 2 and Tier 3 BESS, and
-    amending the Zoning Map to include the BESS Overlay District. The overlay district will be
-    creating regulations for the installation and use of free-standing battery energy storage
-    systems (&ldquo;BESS&rdquo;), adding to the table the overlay district with the allowed Tiers
-    and updating the zoning map to include the BESS Overlay District, or take any other action
-    related to. <em>Continued from July 14, 2026.</em>
+    <strong>10.1</strong>
+    <a href={Router.documentItem(DOCUMENT, "battery-energy-storage-systems-ordinance")}>
+      Battery Energy Storage Systems Ordinance
+    </a>
   </li>
   <li>
     <strong>10.2 Doc 21-G- PDD-26-1</strong> Attorney Russell Channen for client
