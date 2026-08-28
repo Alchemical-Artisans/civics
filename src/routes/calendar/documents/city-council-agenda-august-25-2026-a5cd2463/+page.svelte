@@ -122,8 +122,10 @@
 
 <ul>
   <li>
-    <strong>12.1</strong> Petition from National Grid and Verizon, requesting a joint pole location
-    for Emerson St WR# 31224561. <em>Hearing for September 15, 2026.</em>
+    <strong>12.1</strong>
+    <a href={Router.documentItem(DOCUMENT, "joint-pole-location-emerson-st")}>
+      Joint Pole Location, Emerson St
+    </a>
   </li>
   <li><strong>12.2 Applications Handicap Parking Sign:</strong> with Police approval.</li>
   <li><strong>12.3 Amusement/Event Application:</strong> with Police approval.</li>
