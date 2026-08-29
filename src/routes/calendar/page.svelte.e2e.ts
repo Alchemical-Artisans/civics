@@ -12,9 +12,9 @@ test.describe("meeting calendar", () => {
 
   test("every entry opens a meeting on this site", async ({ page }) => {
     // An entry is one sitting, not one document, so nothing in the grid leaves
-    // the site any more -- the documents, and the links out to the city, are on
-    // the meeting page. Checked on every link, because one going somewhere else
-    // would be easy to miss.
+    // the site any more -- the city's files are listed on the meeting page.
+    // Checked on every link, because one going somewhere else would be easy to
+    // miss.
     const links = page.locator("table a")
     const count = await links.count()
     expect(count).toBeGreaterThan(0)

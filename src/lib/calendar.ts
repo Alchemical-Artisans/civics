@@ -15,11 +15,7 @@ export interface MeetingDocument {
   kind: MeetingKind
   fileUrl: string | null
   pageUrl: string
-  /**
-   * The document's page on this site, or null when nobody has written one --
-   * in which case the calendar links straight to the city's PDF. Pages are
-   * written by hand; see docs/document-pages.md.
-   */
+  /** The scraper's id for this document. Not a route; see `Meeting.written`. */
   docId: string | null
 }
 
@@ -46,6 +42,14 @@ export interface Meeting {
   date: string
   /** Published order, agendas before minutes. Never empty. */
   documents: MeetingDocument[]
+  /**
+   * True when somebody has written this meeting up by hand, which is to say
+   * when `src/routes/calendar/meetings/<id>/+page.svelte` exists. The route
+   * decides what the reader sees -- a static directory wins over `[meeting]` --
+   * so this is only here to keep the generated route from prerendering an id a
+   * written page already covers.
+   */
+  written: boolean
 }
 
 /**
@@ -72,18 +76,22 @@ const KIND_ORDER: Record<MeetingKind, number> = { agenda: 0, minutes: 1, other: 
  * count of them is disclosed in the footer instead. Order is by date, then
  * board, so a day's meetings read alphabetically.
  */
-export function groupIntoMeetings(documents: MeetingDocument[]): Meeting[] {
+export function groupIntoMeetings(
+  documents: MeetingDocument[],
+  written: (id: string) => boolean = () => false,
+): Meeting[] {
   const byId = new Map<string, Meeting>()
   for (const doc of documents) {
     if (!doc.date) continue
     const id = meetingId(doc.board, doc.date)
     const found = byId.get(id)
     if (found) found.documents.push(doc)
-    else byId.set(id, { id, board: doc.board, date: doc.date, documents: [doc] })
+    else byId.set(id, { id, board: doc.board, date: doc.date, documents: [doc], written: false })
   }
   const meetings = [...byId.values()]
   for (const m of meetings) {
     m.documents.sort((a, b) => KIND_ORDER[a.kind] - KIND_ORDER[b.kind])
+    m.written = written(m.id)
   }
   return meetings.sort((a, b) => a.date.localeCompare(b.date) || a.board.localeCompare(b.board))
 }

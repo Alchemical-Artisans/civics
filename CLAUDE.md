@@ -77,14 +77,18 @@ That route is the **only** one with a parameter, and it prerenders because
 `+page.ts` exports `entries()`; everything else, hand-written pages included, is
 a static route.
 
-**Document pages are hand-written, one static route each**, at
-`src/routes/calendar/documents/<docId>/+page.svelte`, with an agenda item
-optionally getting `<docId>/<item-slug>/+page.svelte` beneath it. There is no
-registry: `src/lib/meetings.ts` globs `../routes/calendar/documents/*/+page.svelte`
-to decide whether a document links to a page here or straight to the city's PDF,
-and `documents/+layout.ts` derives the id from the URL segment after `documents`
-and looks the record up in `meetings.json`. Adding a page is one file; a data
-refresh cannot contradict it.
+**Write-ups are hand-written, one static route each**, at
+`src/routes/calendar/meetings/<meeting id>/+page.svelte`, with an agenda item
+optionally getting `<meeting id>/<item-slug>/+page.svelte` beneath it. There is
+no registry: SvelteKit prefers the static directory over `[meeting]`, so adding
+the directory is the whole act of writing a meeting up. `src/lib/meetings.ts`
+globs the same directories only to keep `[meeting]` from prerendering an id a
+written page already covers, and `meetings/+layout.ts` derives the id from the
+URL segment after `meetings` and looks the sitting up in `meetings.json`. A data
+refresh cannot contradict any of it.
+
+`docs/document-pages.md` calls these document pages; they are meeting pages now,
+and an agenda's transcription is what a meeting page shows.
 
 Notable pieces:
 

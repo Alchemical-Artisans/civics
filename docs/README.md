@@ -39,12 +39,12 @@ flowchart LR
     end
 
     subgraph hand["Written by hand"]
-        D["src/routes/calendar/documents/<br/>&lt;id&gt;/+page.svelte"]
+        D["src/routes/calendar/meetings/<br/>&lt;id&gt;/+page.svelte"]
     end
 
     subgraph runtime["Runtime (the reader's browser)"]
         H["prerendered<br/>/calendar"]
-        O["prerendered<br/>/calendar/documents/&lt;id&gt;"]
+        O["prerendered<br/>/calendar/meetings/&lt;id&gt;"]
     end
 
     L --> E --> S

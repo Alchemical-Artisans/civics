@@ -30,30 +30,24 @@ export class Router {
   }
 
   /**
-   * One sitting of one board, listing the documents the city published for it.
-   * `id` is a `Meeting`'s id from `$lib/calendar` -- the board slugged, then
-   * the date -- and is the route's only parameter.
+   * One sitting of one board: the page a calendar entry opens, and where a
+   * write-up lives when somebody has made one. `id` is a `Meeting`'s id from
+   * `$lib/calendar` -- the board slugged, then the date.
+   *
+   * A meeting with a hand-written page has a static route directory of that
+   * name; every other meeting falls through to `[meeting]`, which lists the
+   * city's own files. Same URL either way, which is the point.
    */
   static meeting(id: string): string {
     return path(`/calendar/meetings/${id}`)
   }
 
   /**
-   * A single meeting document, written up by hand. `id` is a record's `docId`
-   * from `meetings.json`, and is also the route directory the write-up lives in;
-   * documents nobody has written up have no page here and link to the city
-   * instead — see `Router.cityPage`.
+   * One item on a meeting's agenda, written up on a page of its own beneath
+   * the meeting. `item` is the page's directory name.
    */
-  static document(id: string): string {
-    return path(`/calendar/documents/${id}`)
-  }
-
-  /**
-   * One item on an agenda, written up on a page of its own beneath the
-   * document it belongs to. `item` is the page's directory name.
-   */
-  static documentItem(id: string, item: string): string {
-    return path(`/calendar/documents/${id}/${item}`)
+  static meetingItem(id: string, item: string): string {
+    return path(`/calendar/meetings/${id}/${item}`)
   }
 
   /**
@@ -61,9 +55,9 @@ export class Router {
    * item that rests on a letter or a plan can link to just that letter rather
    * than to a 200-page packet the reader then has to search.
    *
-   * Committed under `static/excerpts/<id>/`, so this is a path on this site
-   * rather than one of the city's -- and it takes the base path, which is why
-   * it belongs here rather than being written out in a template.
+   * Committed under `static/excerpts/<meeting id>/`, so this is a path on this
+   * site rather than one of the city's -- and it takes the base path, which is
+   * why it belongs here rather than being written out in a template.
    *
    * `name` may carry a directory of its own, `<item>/<document>`, for an item
    * whose packet is several separate documents rather than one.
@@ -84,8 +78,9 @@ export class Router {
 
   /**
    * The city's own media page for a document. Not a route on this site, but it
-   * is the fallback a calendar entry links to when a record has no `docId`, so
-   * it belongs with the other link builders rather than inline in a template.
+   * is where a meeting page sends a document the city published but nobody has
+   * transcribed, so it belongs with the other link builders rather than inline
+   * in a template.
    */
   static cityPage(pageUrl: string): string {
     return `${CITY}${pageUrl}`

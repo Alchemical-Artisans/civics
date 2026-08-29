@@ -11,7 +11,7 @@ npm run calendar:rebuild   # re-scrape everything from scratch
 scraping or date logic itself has changed.
 
 Neither touches the document pages. Those are written by hand and live in
-`src/routes/calendar/documents/`; the scripts only re-derive what the city has
+`src/routes/calendar/meetings/`; the scripts only re-derive what the city has
 published. See [document-pages.md](./document-pages.md).
 
 ### Why there are two

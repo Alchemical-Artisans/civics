@@ -1,7 +1,7 @@
 # Document pages
 
 A meeting document gets a page on this site when somebody writes one. There is
-no automated step: `src/routes/calendar/documents/<id>/+page.svelte` is a Svelte
+no automated step: `src/routes/calendar/meetings/<id>/+page.svelte` is a Svelte
 component written by hand, and its existence is the only thing that decides
 whether the calendar links to a page here or straight to the city's PDF.
 
@@ -31,7 +31,7 @@ city's file.
    the file URL appended — so they can be settled before anything is written.
    See `documentId()` in [`scripts/lib/documents.mjs`](../scripts/lib/documents.mjs).
 
-2. **Create `src/routes/calendar/documents/<id>/+page.svelte`.** The directory
+2. **Create `src/routes/calendar/meetings/<id>/+page.svelte`.** The directory
    name is the id and becomes the URL. The page is the write-up and nothing
    else: no `<script>`, no title, nothing restated from `meetings.json`. It
    renders inside `<article class="prose">` in the surrounding layout, so plain
@@ -81,7 +81,7 @@ city's file.
 ## A page for one item
 
 An item worth more than a line gets its own page one level down, at
-`src/routes/calendar/documents/<id>/<item-slug>/+page.svelte`. On the agenda,
+`src/routes/calendar/meetings/<id>/<item-slug>/+page.svelte`. On the agenda,
 the item's text is replaced by a link to it. The surrounding layout picks the
 document up from the id either way, so an item page inherits the meeting's
 board, date and links to the city; give it a `+page.ts` returning
@@ -134,7 +134,7 @@ writer.write(open(path, "wb"))
 ```
 
 There is a worked example at
-[`city-council-agenda-august-25-2026-a5cd2463/+page.svelte`](../src/routes/calendar/documents/city-council-agenda-august-25-2026-a5cd2463/+page.svelte):
+[`city-council-2026-08-25/+page.svelte`](../src/routes/calendar/meetings/city-council-2026-08-25/+page.svelte):
 an agenda outline as `<h2>` per numbered item, nested `<ul>` for sub-items with
 the city's numbering kept verbatim, and `<table>` for the genuinely tabular
 parts. A City Council agenda PDF is usually a handful of outline pages followed
@@ -164,7 +164,8 @@ each time. Underneath, a note that the page was written by hand and that the
 city's file is the record.
 
 A document with no page never shows a page. The calendar entry points at the
-city's PDF and opens it in a new tab, and `/calendar/documents/<id>` returns a
+city's PDF and opens it in a new tab, and `/calendar/meetings/<id>` still renders a
+page listing them, so nothing
 404 for it — there is no such route — because nothing ever linked there.
 
 ## Safety
@@ -177,11 +178,12 @@ someone else's script tag into the build. Read what you paste.
 ## Where things live
 
 ```
-src/routes/calendar/documents/<id>/+page.svelte  the pages, written by hand
-src/routes/calendar/documents/<id>/+page.ts      when and where, where stated
-src/routes/calendar/documents/<id>/<item>/       a page for one agenda item
-src/routes/calendar/documents/+layout.svelte     the header around all of them
-src/routes/calendar/documents/+layout.ts         looks a document up by its id
+src/routes/calendar/meetings/<id>/+page.svelte   the write-ups, by hand
+src/routes/calendar/meetings/<id>/+page.ts       when and where, where stated
+src/routes/calendar/meetings/<id>/<item>/        a page for one agenda item
+src/routes/calendar/meetings/[meeting]/          every meeting nobody wrote up
+src/routes/calendar/meetings/+layout.svelte      the header around all of them
+src/routes/calendar/meetings/+layout.ts          looks a sitting up by its id
 static/excerpts/<id>/<item>.pdf                  pages cut out of the original
 static/excerpts/<id>/<item>/<document>.pdf       when an item rests on several
 scripts/lib/documents.mjs                        ids, and which ids have a page

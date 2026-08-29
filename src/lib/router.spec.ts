@@ -12,9 +12,21 @@ describe("Router", () => {
     expect(Router.demoPlaywright()).toBe("/demo/playwright")
   })
 
-  it("builds a document page from a docId", () => {
-    expect(Router.document("2026-08-06-conservation-commission-agenda-cb247b9a")).toBe(
-      "/calendar/documents/2026-08-06-conservation-commission-agenda-cb247b9a",
+  it("builds a meeting page from a meeting id", () => {
+    expect(Router.meeting("city-council-2026-08-25")).toBe(
+      "/calendar/meetings/city-council-2026-08-25",
+    )
+  })
+
+  it("builds an item page beneath its meeting", () => {
+    expect(Router.meetingItem("city-council-2026-08-25", "south-mill-street-loan-order")).toBe(
+      "/calendar/meetings/city-council-2026-08-25/south-mill-street-loan-order",
+    )
+  })
+
+  it("builds an excerpt path beneath its meeting", () => {
+    expect(Router.excerpt("city-council-2026-08-25", "surplus-city-vehicles/order")).toBe(
+      "/excerpts/city-council-2026-08-25/surplus-city-vehicles/order.pdf",
     )
   })
 

@@ -10,7 +10,7 @@ declare global {
       /**
        * Set by a hand-written document page, for the layout above it to render
        * into the header. Optional because it is the only kind of page that has
-       * one -- see src/routes/calendar/documents/. Named `details` rather than
+       * one -- see src/routes/calendar/meetings/. Named `details` rather than
        * `meeting` because a `Meeting` is now a thing of its own, below.
        */
       details?: MeetingDetails
