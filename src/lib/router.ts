@@ -109,18 +109,6 @@ export class Router {
   }
 
   /**
-   * The City of Haverhill's own site.
-   *
-   * Not the listing the calendar is scraped from -- that is `Calendar.source`,
-   * which points at the agendas and minutes page. This is the city itself,
-   * which is what the landing page credits, since it covers the budget
-   * reports too and they come off a different page entirely.
-   */
-  static city(): string {
-    return CITY
-  }
-
-  /**
    * The city's own media page for a document. Not a route on this site, but it
    * is where a meeting page sends a document the city published but nobody has
    * transcribed, so it belongs with the other link builders rather than inline

@@ -94,10 +94,14 @@ refresh cannot contradict any of it.
 `docs/document-pages.md` calls these document pages; they are meeting pages now,
 and an agenda's transcription is what a meeting page shows.
 
-**`/` is the landing page and the only page that knows both halves exist.** It
-offers the calendar and the budget reports, and counts what is behind each from
-`calendar()` and `fiscalYears()` at build time rather than describing it, so a
-data refresh keeps it honest. Both halves link back to it and not to each other.
+**`/` forwards to the most recent budget book and is not a page to read.** The
+budget is the front door; an index would cost every visitor a hop to reach it.
+The destination comes from `fiscalYears().find((y) => y.written)`, so creating
+`src/routes/budget/fy2028/` moves it. The forward is a meta refresh, never a 301
+or SvelteKit's `redirect()` — see
+[docs/calendar-page.md](docs/calendar-page.md#the-site-root) for why both would
+break, in ways the e2e suite now pins. There being no hub, `/calendar` and
+`/budget` link to each other sideways, and so does every budget page.
 
 **`/budget` is the same idea one level deeper, and shares nothing with the
 calendar.** `/budget` lists every fiscal year the city publishes,

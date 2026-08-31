@@ -106,12 +106,12 @@
 </svelte:head>
 
 <div class="mx-auto max-w-6xl px-4 py-8">
-  <!-- Both halves of the site hang off the landing page, so each carries the
-       same way back to it -- the arrangement a meeting page already uses to
-       return to the calendar. -->
+  <!-- Sideways, not up. `/` forwards to the budget, so a link back to it would
+       take a reader who wanted the calendar straight out of the calendar; the
+       two halves point at each other instead. -->
   <nav class="mb-6">
-    <a class="text-sm text-slate-600 underline hover:text-slate-900" href={Router.home()}>
-      &larr; Haverhill Public Documents
+    <a class="text-sm text-slate-600 underline hover:text-slate-900" href={Router.budget()}>
+      Budget and audit reports
     </a>
   </nav>
 

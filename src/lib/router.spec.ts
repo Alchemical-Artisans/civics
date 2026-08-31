@@ -36,10 +36,6 @@ describe("Router", () => {
     )
   })
 
-  it("points at the city itself, not one of its listings", () => {
-    expect(Router.city()).toBe("https://www.haverhillma.gov")
-  })
-
   it("builds the budget overview, a book, and a section of one", () => {
     expect(Router.budget()).toBe("/budget")
     expect(Router.budgetBook("fy2027")).toBe("/budget/fy2027")

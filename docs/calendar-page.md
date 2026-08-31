@@ -211,47 +211,50 @@ See [deployment.md](./deployment.md#base-path).
 
 ## The site root
 
-`/` is the landing page, and the only page that knows both halves of the site
-exist: [`src/routes/+page.svelte`](../src/routes/+page.svelte) offers the
-calendar and the budget reports and nothing else.
+`/` forwards to the most recent budget book. It is not a page to read: an index
+costs every visitor a hop to reach what they came for, which is the objection
+that turned the meeting page into the write-up rather than a stop on the way to
+it, and a page whose whole content is links onward is that same stop under
+another name.
 
-**It is a placeholder.** An index costs every visitor a hop to reach what they
-came for, which is the objection that turned the meeting page into the write-up
-rather than a stop on the way to it. The intention is that `/` ends up opening
-the most recent budget directly, once the budget is finished enough to land on.
-Whatever replaces it still has to leave a way through to the calendar, which has
-no other entry point.
+The destination is resolved, not written out.
+[`src/routes/+page.ts`](../src/routes/+page.ts) takes the first fiscal year
+`fiscalYears()` reports as written, and that list comes back newest first with
+`written` derived from the route directory existing — so creating
+`src/routes/budget/fy2028/` is the whole act of moving the front door. If no
+book is written up at all the forward falls back to `/budget`, which still
+lists every year the city publishes.
 
-Its `+page.ts` calls `calendar()` and `fiscalYears()` purely to count what is
-behind each link — boards, meetings, documents, the span of months, fiscal
-years, which budget books are readable here. Saying how much is there beats
-describing it, because the description cannot go stale: a data refresh moves the
-numbers, writing a meeting or a budget section up moves them again, and there is
-nothing on the page to remember to edit.
+Two things about the mechanism are deliberate, and both have outlived one change
+of destination already.
 
-Both halves carry the same `&larr; Haverhill Public Documents` link back, the
-way a meeting page returns to the calendar. They do not link to each other: the
-landing page is where they meet, and a second, weaker answer to the same
-question is worth less than one.
+**It is not a 301.** GitHub Pages serves static files and cannot send a redirect
+status anyway, but a permanent one would be the wrong choice even where it could:
+browsers cache 301s, sometimes for as long as the profile lives, and would keep
+opening FY2027 long after FY2028 replaced it. Nothing about a meta refresh is
+cached that way, which is why the destination is free to move every year — and
+why moving it from `/calendar` to the budget was a one-file change rather than a
+problem for everyone who had already visited.
 
-### It used to be a redirect
-
-Until there were two things to land on, `/` forwarded to `/calendar` with a meta
-refresh. That is gone, but why it was never a redirect _status_ is worth keeping,
-because the same reasoning applies to anything that might forward here later.
-
-**It was not a 301.** GitHub Pages serves static files and cannot send a redirect
-status anyway, but a permanent one would have been the wrong choice even where it
-could: browsers cache 301s, sometimes for as long as the profile lives, and would
-have kept sending people to `/calendar` long after this landing page replaced the
-forward. Nothing about a meta refresh is cached that way, which is why swapping
-it out was a one-file change rather than a problem for everyone who had visited.
-
-**It was not SvelteKit's `redirect()`.** Thrown from a `+page.ts`, that prerenders
+**It is not SvelteKit's `redirect()`.** Thrown from a `+page.ts`, that prerenders
 to the same meta refresh preceded by `location.href = ...`, which pushes a
 history entry — the back button would land on `/` and be thrown forward again,
-trapping the visitor on the site. The e2e suite still asserts that back from `/`
-leaves, so the trap cannot return by another route.
+trapping the visitor on the site. A meta refresh that fires while the page is
+still loading replaces its history entry instead.
+[`page.svelte.e2e.ts`](../src/routes/page.svelte.e2e.ts) asserts that back from
+the budget leaves.
+
+The markup under the refresh is a plain link to the budget book _and_ to the
+calendar, which is what a crawler reading the page without following the refresh
+will see. The calendar has no other entry point from `/`, so it has to be there.
+
+### Getting between the two halves
+
+There is no hub page, so the calendar and the budget link to each other
+sideways: `/calendar` carries a "Budget and audit reports" link, `/budget`
+carries a "Meeting calendar" one, and so does every budget book and section
+page — the book is where `/` lands everyone, so the other half of the site has
+to be reachable from it.
 
 ## The document page
 

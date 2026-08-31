@@ -60,7 +60,9 @@ test.describe("budget pages", () => {
     // The header link points into the book at this section's own page.
     await expect(page.locator('header a[href*="#page="]')).toHaveCount(1)
 
-    await page.locator("nav a").click()
+    // The first nav link is the one that goes up; the second is the sideways
+    // link to the calendar, which every budget page carries.
+    await page.locator("nav a").first().click()
     await expect(page).toHaveURL(new RegExp(`/budget/${books[0]}$`))
   })
 
@@ -87,9 +89,8 @@ test.describe("budget pages", () => {
     expect(response?.status()).toBe(404)
   })
 
-  test("is reachable from the landing page", async ({ page }) => {
+  test("is where the site root lands", async ({ page }) => {
     await page.goto("/")
-    await page.getByRole("link", { name: "Budget and Audit Reports" }).click()
-    await expect(page).toHaveURL(/\/budget$/)
+    await expect(page).toHaveURL(new RegExp(`/budget/${books[0]}$`))
   })
 })
