@@ -106,15 +106,6 @@
 </svelte:head>
 
 <div class="mx-auto max-w-6xl px-4 py-8">
-  <!-- Sideways, not up. `/` forwards to the budget, so a link back to it would
-       take a reader who wanted the calendar straight out of the calendar; the
-       two halves point at each other instead. -->
-  <nav class="mb-6">
-    <a class="text-sm text-slate-600 underline hover:text-slate-900" href={Router.budget()}>
-      Budget and audit reports
-    </a>
-  </nav>
-
   <header class="mb-6">
     <h1 class="text-3xl font-bold tracking-tight text-slate-900">Haverhill Meeting Calendar</h1>
     <p class="mt-2 text-slate-600">

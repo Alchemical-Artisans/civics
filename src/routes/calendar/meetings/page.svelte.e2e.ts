@@ -72,7 +72,9 @@ test.describe("meeting pages", () => {
   test("an item page sits beneath its meeting and returns to it", async ({ page }) => {
     await page.goto(`/calendar/meetings/${written[0]}/${items[0]}`)
     await expect(page.getByRole("heading", { level: 1 })).not.toBeEmpty()
-    await page.locator("nav a").click()
+    // By href rather than by nav position: the site header is a nav of its own
+    // on every page now, and this is the only link that points at the meeting.
+    await page.locator(`a[href$="/calendar/meetings/${written[0]}"]`).first().click()
     await expect(page).toHaveURL(new RegExp(`/calendar/meetings/${written[0]}$`))
   })
 

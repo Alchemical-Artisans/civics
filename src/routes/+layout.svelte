@@ -3,11 +3,14 @@
   import { locales, localizeHref } from "$lib/paraglide/runtime"
   import "./layout.css"
   import favicon from "$lib/assets/favicon.svg"
+  import SiteHeader from "$lib/SiteHeader.svelte"
 
-  let { children } = $props()
+  let { data, children } = $props()
 </script>
 
 <svelte:head><link rel="icon" href={favicon} /></svelte:head>
+
+<SiteHeader book={data.budgetBook} />
 {@render children()}
 
 <div style="display:none">

@@ -102,8 +102,8 @@ The destination comes from `fiscalYears().find((y) => y.written)`, so creating
 `src/routes/budget/fy2028/` moves it. The forward is a meta refresh, never a 301
 or SvelteKit's `redirect()` — see
 [docs/calendar-page.md](docs/calendar-page.md#the-site-root) for why both would
-break, in ways the e2e suite now pins. There being no hub, `/calendar` and
-`/budget` link to each other sideways, and so does every budget page.
+break, in ways the e2e suite now pins. The header carries the link to
+each half, so no page needs its own sideways link.
 
 **`/budget` is the same idea one level deeper, and shares nothing with the
 calendar.** `/budget` lists every fiscal year the city publishes,
@@ -118,6 +118,14 @@ its sections were read off rendered pages by hand. See
 [docs/budget-pages.md](docs/budget-pages.md).
 
 Notable pieces:
+
+- **`src/lib/SiteHeader.svelte`** is the bar on every page: the mark, and links
+  to the budget and the calendar. Its budget link goes to the newest _book_,
+  the same place `/` forwards to, not to `/budget`. The current section is
+  matched on `page.route.id`, never on `page.url.pathname` against a
+  `Router`-built href -- with `paths.relative` on, that comparison cannot match
+  during prerendering and starts matching after hydration, so the served markup
+  and the hydrated markup silently disagree.
 
 - **`src/lib/budget.ts`** reads `budget.json` and holds `sectionSlug` and
   `contents`. `sectionSlug` is `meetingId`'s rule except that apostrophes are

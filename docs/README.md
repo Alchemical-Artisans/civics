@@ -95,6 +95,7 @@ scripts/
 
 src/lib/
   Note.svelte              the information popover in a document page's header
+  SiteHeader.svelte        the bar on every page: the mark, budget, calendar
   calendar.ts              pure date/grouping helpers used by the page
   calendar.spec.ts         unit tests for those helpers
   router.ts                every internal URL the site builds, in one place

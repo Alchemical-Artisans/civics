@@ -250,11 +250,27 @@ will see. The calendar has no other entry point from `/`, so it has to be there.
 
 ### Getting between the two halves
 
-There is no hub page, so the calendar and the budget link to each other
-sideways: `/calendar` carries a "Budget and audit reports" link, `/budget`
-carries a "Meeting calendar" one, and so does every budget book and section
-page — the book is where `/` lands everyone, so the other half of the site has
-to be reachable from it.
+[`src/lib/SiteHeader.svelte`](../src/lib/SiteHeader.svelte) sits above every
+page: the mark, which goes to `/`, and a link to each half. Its budget link goes
+to the newest _book_, the same destination `/` forwards to, rather than to
+`/budget` — sending it to the list of fiscal years would put back the hop that
+landing on the budget was meant to remove. The list is still one level up from
+the book for anyone who wants an older year.
+
+The pages used to carry these links themselves — a line above the calendar's
+heading pointing at the budget, another under the budget's table pointing back,
+a third on the right of every budget book and section nav. That works until a
+reader is three levels down a book. The header replaced all of them.
+
+**The current section is matched on `page.route.id`, not on the URL.** The
+obvious spelling — `page.url.pathname.startsWith(Router.budget())` — is wrong
+in a way that hides itself. With `paths.relative` on, `base` is a relative
+prefix that differs per page during prerendering, so `Router.budget()` is
+`./budget` on one page and `../budget` on another while the pathname stays
+absolute: the comparison never matches and no prerendered page gets
+`aria-current`. It then starts matching once the client takes over and `base`
+goes back to `""`. A browser test notices nothing, because it waits for
+hydration; the e2e suite asserts on the served bytes for exactly that reason.
 
 ## The document page
 

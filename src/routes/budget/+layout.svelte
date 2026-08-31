@@ -18,14 +18,10 @@
 </svelte:head>
 
 <div class="mx-auto max-w-3xl px-4 py-8">
-  <!--
-    Up on the left, sideways on the right. The book page is where `/` now lands
-    everyone, so the calendar has to be reachable from it or half the site is
-    only findable by typing the URL. It rides along on the section pages too
-    rather than being conditional: one rule is easier to keep than two, and a
-    reader deep in a section is no less entitled to the other half.
-  -->
-  <nav class="mb-6 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2">
+  <!-- Up only. The calendar used to hang off the right of this row, because
+       the book page is where `/` lands everyone and the other half of the site
+       had to be reachable from it; the header does that now, on every page. -->
+  <nav class="mb-6">
     {#if data.isSection}
       <a
         class="text-sm text-slate-600 underline hover:text-slate-900"
@@ -38,10 +34,6 @@
         &larr; Back to budget and audit reports
       </a>
     {/if}
-
-    <a class="text-sm text-slate-500 underline hover:text-slate-900" href={Router.calendar()}>
-      Meeting calendar
-    </a>
   </nav>
 
   <header class="mb-6 border-b border-slate-200 pb-6">

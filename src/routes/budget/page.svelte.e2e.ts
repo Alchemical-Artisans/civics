@@ -60,9 +60,8 @@ test.describe("budget pages", () => {
     // The header link points into the book at this section's own page.
     await expect(page.locator('header a[href*="#page="]')).toHaveCount(1)
 
-    // The first nav link is the one that goes up; the second is the sideways
-    // link to the calendar, which every budget page carries.
-    await page.locator("nav a").first().click()
+    // Scoped past the site header, which is a nav of its own on every page.
+    await page.getByRole("link", { name: `FY${books[0].slice(2)} Mayor's Budget` }).click()
     await expect(page).toHaveURL(new RegExp(`/budget/${books[0]}$`))
   })
 

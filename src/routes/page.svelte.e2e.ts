@@ -50,22 +50,84 @@ test.describe("the site root", () => {
   })
 })
 
-test.describe("the two halves link to each other", () => {
-  test("the calendar offers the budget", async ({ page }) => {
+test.describe("the site header", () => {
+  test("carries the mark and both sections on every kind of page", async ({ page }) => {
+    for (const at of ["/", "/calendar", "/budget", `/budget/${newest}`]) {
+      await page.goto(at)
+      const header = page.getByRole("banner")
+      // Located as an element, not by role: the mark is decorative (`alt=""`)
+      // because the site name sits right beside it, and a decorative image has
+      // no img role to find it by.
+      await expect(header.locator("img")).toBeVisible()
+      await expect(header.getByRole("link", { name: "Haverhill Public Documents" })).toBeVisible()
+      await expect(header.getByRole("link", { name: "Budget", exact: true })).toBeVisible()
+      await expect(header.getByRole("link", { name: "Calendar", exact: true })).toBeVisible()
+    }
+  })
+
+  test("its budget link opens the book, not the list of years", async ({ page }) => {
+    // The same destination `/` forwards to. Sending it to the index would put
+    // back the hop that landing on the budget was meant to remove.
     await page.goto("/calendar")
-    await page.getByRole("link", { name: "Budget and audit reports" }).click()
-    await expect(page).toHaveURL("/budget")
+    await page.getByRole("banner").getByRole("link", { name: "Budget", exact: true }).click()
+    await expect(page).toHaveURL(`/budget/${newest}`)
   })
 
-  test("the budget offers the calendar", async ({ page }) => {
-    await page.goto("/budget")
-    await page.getByRole("link", { name: "Meeting calendar" }).click()
+  test("its calendar link opens the calendar", async ({ page }) => {
+    await page.goto(`/budget/${newest}`)
+    await page.getByRole("banner").getByRole("link", { name: "Calendar", exact: true }).click()
     await expect(page).toHaveURL("/calendar")
   })
 
-  test("so does the book everyone lands on", async ({ page }) => {
-    await page.goto("/")
-    await page.getByRole("link", { name: "Meeting calendar" }).click()
-    await expect(page).toHaveURL("/calendar")
+  test("the mark goes to the front door", async ({ page }) => {
+    await page.goto("/calendar")
+    await page.getByRole("link", { name: "Haverhill Public Documents" }).click()
+    // `/` forwards, so the mark lands where the front door lands.
+    await expect(page).toHaveURL(`/budget/${newest}`)
+  })
+
+  // Asserted on the served HTML rather than the live DOM. The first spelling of
+  // this compared a Router-built href against the pathname, which cannot match
+  // during prerendering but starts matching after hydration -- so every
+  // prerendered page shipped without `aria-current` and a DOM assertion passed
+  // anyway. Reading the bytes is the only version of this test that would have
+  // caught it.
+  test("marks the current section in the HTML it serves, before any script runs", async ({
+    page,
+  }) => {
+    /** The text of whichever header link the served HTML marks as current. */
+    const marked = async (at: string) => {
+      const html = await (await page.request.get(at)).text()
+      const link = html.match(/<a[^>]*aria-current="page"[^>]*>([\s\S]*?)<\/a>/)
+      return link?.[1].replace(/<[^>]*>/g, "").trim() ?? null
+    }
+
+    expect(await marked("/calendar")).toBe("Calendar")
+    expect(await marked(`/budget/${newest}`)).toBe("Budget")
+    // Three levels down still marks its half of the site.
+    expect(await marked(`/budget/${newest}/mayors-budget-message`)).toBe("Budget")
+    // `/` is in neither section; it only forwards.
+    expect(await marked("/")).toBeNull()
+  })
+
+  test("marks which section the reader is in", async ({ page }) => {
+    const header = page.getByRole("banner")
+
+    await page.goto("/calendar")
+    await expect(header.getByRole("link", { name: "Calendar", exact: true })).toHaveAttribute(
+      "aria-current",
+      "page",
+    )
+    await expect(header.getByRole("link", { name: "Budget", exact: true })).not.toHaveAttribute(
+      "aria-current",
+      "page",
+    )
+
+    // A section three levels down still marks its half of the site.
+    await page.goto(`/budget/${newest}/mayors-budget-message`)
+    await expect(header.getByRole("link", { name: "Budget", exact: true })).toHaveAttribute(
+      "aria-current",
+      "page",
+    )
   })
 })

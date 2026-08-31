@@ -17,14 +17,6 @@
 </svelte:head>
 
 <div class="mx-auto max-w-4xl px-4 py-8">
-  <!-- Sideways, not up: `/` forwards here, so there is nothing above this page
-       to go back to. See the calendar's matching link. -->
-  <nav class="mb-6">
-    <a class="text-sm text-slate-600 underline hover:text-slate-900" href={Router.calendar()}>
-      Meeting calendar
-    </a>
-  </nav>
-
   <header class="mb-6">
     <h1 class="text-3xl font-bold tracking-tight text-slate-900">Budget and Audit Reports</h1>
     <p class="mt-2 text-slate-600">

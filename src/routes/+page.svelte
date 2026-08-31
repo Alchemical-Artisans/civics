@@ -26,7 +26,9 @@
 
   let { data } = $props()
 
-  const book = $derived(data.book)
+  // Resolved on the root layout, which the header needs it for too -- the
+  // front door and the header's budget link are the same destination.
+  const book = $derived(data.budgetBook)
   const destination = $derived(book ? Router.budgetBook(book.id) : Router.budget())
   const label = $derived(book ? `the FY${book.year} Mayor's Budget` : "the city's budget reports")
 </script>
@@ -37,12 +39,10 @@
 </svelte:head>
 
 <!-- Seen only if the refresh does not fire, e.g. by a crawler that reads the
-     markup without following it. It carries the link to the calendar as well,
-     because this is the one page that names both halves and a crawler that
-     stops here should still find its way to the other one. -->
+     markup without following it. The calendar is not repeated here: the header
+     above carries it on every page, this one included. -->
 <div class="mx-auto max-w-2xl px-4 py-12">
   <p class="text-slate-600">
-    Continue to <a class="underline" href={destination}>{label}</a>, or to the
-    <a class="underline" href={Router.calendar()}>meeting calendar</a>.
+    Continue to <a class="underline" href={destination}>{label}</a>.
   </p>
 </div>
