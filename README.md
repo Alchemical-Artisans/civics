@@ -60,8 +60,10 @@ and the document pages (`src/routes/calendar/documents/`) are committed to the
 repo and baked in at build time — the browser never calls the city's servers.
 
 ```sh
+npm run metadata:update    # refresh everything the site takes from the city
 npm run calendar:update    # fetch only documents added since the last build
 npm run calendar:rebuild   # re-scrape everything from scratch
+npm run budget:update      # re-scrape the budget and audit listing
 ```
 
 Neither script touches the document pages. Those are written by hand, one
@@ -69,7 +71,8 @@ Neither script touches the document pages. Those are written by hand, one
 document with no page is linked straight to the city's PDF from the calendar —
 see [docs/document-pages.md](./docs/document-pages.md).
 
-Prefer `calendar:update` for routine refreshes: the document listing is a single
+`metadata:update` runs both scrapers and is the one to reach for. Within it,
+`calendar:update` is preferred for routine refreshes: the document listing is a single
 request, but resolving a date costs one request per document, so `update` only
 fetches genuinely new entries and leaves existing records — including manual
 corrections — untouched.

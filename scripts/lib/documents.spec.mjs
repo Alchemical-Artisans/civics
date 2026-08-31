@@ -3,6 +3,8 @@ import { assignIds, documentId, summarizeDocuments } from "./documents.mjs"
 
 const record = (over = {}) => ({
   title: "City Council Agenda",
+  board: "City Council",
+  date: "2026-08-25",
   pageUrl: "/document-manager/media-pages/agenda-and-minutes/city-council-agenda/",
   fileUrl: "https://media.example/media/abc123/agenda.pdf",
   needsReview: false,
@@ -85,20 +87,46 @@ describe("assignIds", () => {
   })
 })
 
-// Whether a document has a page is decided by what is on disk, not by anything
-// recorded in meetings.json -- writing a page is one step, adding the file.
+// Whether a sitting has a page is decided by what is on disk, not by anything
+// recorded in meetings.json -- writing a page is one step, adding the
+// directory. The ids compared against it are meeting ids, not docIds: a page
+// covers a sitting, and a sitting usually has an agenda and minutes under it.
 describe("summarizeDocuments", () => {
-  it("counts the documents with a page written against those without", () => {
+  it("counts documents and sittings separately", () => {
+    // One sitting, two documents -- which is the ordinary case, and the one
+    // that made the old per-document count read as half-written.
     const meetings = [
-      record({ fileUrl: "https://media.example/a/one.pdf" }),
-      record({ fileUrl: "https://media.example/b/two.pdf" }),
+      record({ fileUrl: "https://media.example/a/agenda.pdf" }),
+      record({ fileUrl: "https://media.example/b/minutes.pdf" }),
     ]
     assignIds(meetings)
-    expect(summarizeDocuments(meetings, new Set([meetings[0].docId]))).toEqual({
+    expect(summarizeDocuments(meetings, new Set())).toEqual({
       documents: 2,
-      withPage: 1,
+      meetings: 1,
+      withPage: 0,
       withoutPage: 1,
     })
+  })
+
+  it("credits a sitting whose meeting id has a route directory", () => {
+    const meetings = [record({ board: "City Council", date: "2026-08-25" })]
+    assignIds(meetings)
+    expect(summarizeDocuments(meetings, new Set(["city-council-2026-08-25"]))).toMatchObject({
+      meetings: 1,
+      withPage: 1,
+      withoutPage: 0,
+    })
+  })
+
+  // The id has to be spelled the way `meetingId` in src/lib/calendar.ts spells
+  // it, or the summary counts pages the site does not serve. Ampersands and
+  // slashes appear in board names.
+  it("slugs a board name the way the site's routes do", () => {
+    const meetings = [record({ board: "Administration & Finance Committee", date: "2026-01-07" })]
+    assignIds(meetings)
+    expect(
+      summarizeDocuments(meetings, new Set(["administration-finance-committee-2026-01-07"])),
+    ).toMatchObject({ withPage: 1 })
   })
 
   it("counts a document published under two media pages once", () => {
@@ -113,10 +141,12 @@ describe("summarizeDocuments", () => {
   it("ignores a record with no file, which can never have a page", () => {
     const meetings = [record({ fileUrl: null })]
     assignIds(meetings)
-    expect(summarizeDocuments(meetings, new Set())).toEqual({
-      documents: 0,
-      withPage: 0,
-      withoutPage: 0,
-    })
+    expect(summarizeDocuments(meetings, new Set()).documents).toBe(0)
+  })
+
+  it("does not count an undated record as a sitting", () => {
+    const meetings = [record({ date: null })]
+    assignIds(meetings)
+    expect(summarizeDocuments(meetings, new Set()).meetings).toBe(0)
   })
 })

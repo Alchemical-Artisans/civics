@@ -32,8 +32,10 @@ npm run test                # unit (once) then e2e
 npm run test:unit           # vitest, watch mode
 npm run test:e2e            # playwright; builds and previews on :4173 first
 
+npm run metadata:update     # refresh everything the site takes from the city
 npm run calendar:update     # scrape only documents new since the last run
 npm run calendar:rebuild    # re-scrape everything (only when scrape/date logic changed)
+npm run budget:update       # re-scrape the budget and audit listing (always full)
 npm run storybook           # storybook on :6006
 ```
 
@@ -60,8 +62,8 @@ the returned HTML table by regex, and resolves each document's date from its own
 media page. `lib/documents.mjs` assigns `docId`; `lib/store.mjs` reads/writes
 `meetings.json`; `lib/reviews.mjs` overlays `src/lib/data/reviews.json`.
 
-**Data (`src/lib/data/`).** `meetings.json` is committed and is the only link
-between the halves. Hand corrections go in `reviews.json`, keyed by
+**Data (`src/lib/data/`).** `meetings.json` and `budget.json` are committed and
+are the only link between the halves. Hand corrections go in `reviews.json`, keyed by
 `<pageUrl slug>::<pdf filename>` — not `docId` — and are re-applied by both
 scripts, so they survive a full rebuild. Editing `meetings.json` directly does
 not survive `calendar:rebuild`.
@@ -108,7 +110,7 @@ calendar.** `/budget` lists every fiscal year the city publishes,
 `/budget/<year>` is a budget book's own table of contents, and
 `/budget/<year>/<section>` is one section of it transcribed. None of it is
 scraped: the city's page is 22 rows that change twice a year, so the list lives
-in `src/lib/budget.ts`. Every route is static and each contents line links to a
+in `src/lib/data/budget.json`, scraped by `budget:update`. Every route is static and each contents line links to a
 section here when the directory exists and into the city's PDF at that page when
 it does not, so writing a section up is creating one directory. The FY2027 book
 has no text layer at all — it is a Canva export flattened to page images — so
@@ -117,7 +119,7 @@ its sections were read off rendered pages by hand. See
 
 Notable pieces:
 
-- **`src/lib/budget.ts`** holds the city's report listing, `sectionSlug` and
+- **`src/lib/budget.ts`** reads `budget.json` and holds `sectionSlug` and
   `contents`. `sectionSlug` is `meetingId`'s rule except that apostrophes are
   dropped rather than collapsed — half this book's titles carry one, and
   `mayor-s-budget-message` reads as a typo.

@@ -14,20 +14,45 @@ The shape mirrors the calendar exactly one level deeper:
 /calendar/meetings/<id>/<item>     /budget/<year id>/<section>
 ```
 
-## Why the list is not scraped
+## Where the list comes from
 
-`meetings.json` exists because the city publishes hundreds of meeting documents
-behind a search endpoint, with dates that have to be resolved from each
-document's own page. The budget page is 22 rows that change twice a year: a
-budget book each spring, an audit each winter. So the list is transcribed into
-`YEARS` in [`src/lib/budget.ts`](../src/lib/budget.ts) instead, which makes it
-typed, keeps `meetings.json` the only file the scripts own, and means adding a
-year is editing one array.
+`src/lib/data/budget.json` is committed and written by `npm run budget:update`
+(or `metadata:update`, which runs it alongside the calendar). The same
+arrangement `meetings.json` has: scraped ahead of time on a developer's machine,
+reviewable as a diff, and baked into the build.
 
-The URLs are the city's own CDN and are opaque — a media key and whatever
-filename the uploader used — so each one has to be recorded; there is no pattern
-to build them from. Two years, FY2022 and FY2023, print "Mayor's Budget" with
-nothing behind it, and are recorded as `null` rather than quietly dropped.
+The scrape is [`scripts/lib/budget.mjs`](../scripts/lib/budget.mjs), and it is
+much simpler than the meeting listing next door — one ordinary HTML page, no
+Umbraco endpoint, no per-document page to resolve. What makes it fiddly is that
+the markup carries no structure: the years are not rows or list items, the city
+pastes them into a handful of `<p>` blocks, and eleven consecutive years share
+one of those. So the parse flattens the page to a run of text and links and
+segments it on `FY####` markers, which is the only thing that reliably separates
+one year from the next. A link can carry its own marker — FY2027's whole label
+sits inside the anchor, unlike every other row.
+
+Two guards matter:
+
+- **A parse returning fewer than twenty years throws.** The city adds a year at
+  a time and has never removed one, so a short parse means the markup changed
+  shape. Without the guard a redesign would quietly replace the data file with
+  an empty list and the site would build fine with nothing on it.
+- **A link that is neither budget nor audit is reported, not dropped.** If the
+  city starts publishing a third kind of report, the run says so instead of
+  silently ignoring it.
+
+This list was typed out by hand at first, on the grounds that twenty-two rows
+changing twice a year were not worth a scraper. That was true right up until the
+point where somebody had to remember to do it: a hand-kept list is only correct
+while someone is checking the city's page against it, and nobody was. When the
+scraper was written it reproduced the hand-typed array exactly — all
+twenty-two years, every URL — which is the only reason to trust it against a
+list that had never been verified either.
+
+A year with no link behind one of its two reports gets `null`, which is a real
+state rather than an omission: the city prints "Mayor's Budget" as plain text
+for FY2022 and FY2023, and lists no audit for a year it has not finished
+auditing.
 
 ## Why FY2027 is transcribed rather than extracted
 
@@ -99,8 +124,13 @@ chart shows and there is nothing to transcribe.
 ## Where things live
 
 ```
-src/lib/budget.ts                          the city's listing, slugs, contents
+src/lib/data/budget.json                   the committed listing, scraped
+src/lib/budget.ts                          reads it; slugs and contents helpers
 src/lib/budget.spec.ts                     unit tests for them
+scripts/lib/budget.mjs                     the scrape: fetch, parse, diff
+scripts/lib/budget.spec.mjs                unit tests for the parser
+scripts/update-budget.mjs                  writes budget.json
+scripts/update-metadata.mjs                runs every scraper in sequence
 src/routes/budget/+page@.svelte            /budget, the overview of every year
 src/routes/budget/+page.ts                 build-time load for it
 src/routes/budget/+layout.ts               looks a book up by its id

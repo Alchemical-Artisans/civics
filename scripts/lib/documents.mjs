@@ -1,11 +1,11 @@
 /**
- * Give every meeting document a stable id, and find the ones that have a page.
+ * Give every meeting document a stable id, and find the sittings that have a page.
  *
- * Documents on this site are written by hand. The scrape's job is only to say
- * what the city has published and what each document's permanent URL would be;
- * whether a document actually has a page is decided by whether someone has
- * written `src/routes/calendar/documents/<id>/+page.svelte`. Nothing here reads
- * a PDF.
+ * Pages on this site are written by hand. The scrape's job is only to say what
+ * the city has published and what each document's permanent URL would be;
+ * whether a sitting actually has a page is decided by whether someone has
+ * written `src/routes/calendar/meetings/<meeting id>/+page.svelte`. Nothing
+ * here reads a PDF.
  *
  * This used to convert every PDF to HTML with poppler. That produced a page for
  * every document, but only about a third of the corpus has a text layer at all,
@@ -18,15 +18,23 @@ import { createHash } from "node:crypto"
 import { readdir } from "node:fs/promises"
 import path from "node:path"
 
-/** Where the hand-written document pages live, one route directory per id. */
-export const DOCUMENTS_DIR = path.join(
+/**
+ * Where the hand-written meeting pages live, one route directory per meeting id.
+ *
+ * This said `calendar/documents` until well after that directory was renamed,
+ * and `pagesWritten` swallows a missing directory as "nothing written yet", so
+ * every run quietly reported nought pages against a repo that had them. The
+ * summary is the only thing that reads this, which is exactly why nobody
+ * noticed -- so if this moves again, check the count afterwards.
+ */
+export const MEETINGS_DIR = path.join(
   import.meta.dirname,
   "..",
   "..",
   "src",
   "routes",
   "calendar",
-  "documents",
+  "meetings",
 )
 
 const slugify = (s) =>
@@ -101,33 +109,71 @@ export function assignIds(meetings) {
 }
 
 /**
- * The ids that have a page written for them.
+ * The meeting ids that have a page written for them.
  *
  * Read from disk rather than recorded in meetings.json, so writing a page is
- * the only step there is: add the file and the calendar links to it on the next
- * build. Nothing to keep in sync, and nothing a refresh can overwrite.
+ * the only step there is: add the directory and the calendar links to it on
+ * the next build. Nothing to keep in sync, and nothing a refresh can overwrite.
+ *
+ * `[meeting]` is the generated route that serves every sitting nobody has
+ * written up, not a page somebody wrote, so it is dropped -- the same rule
+ * `$lib/meetings` applies to the same directory.
  */
 export async function pagesWritten() {
   try {
-    const entries = await readdir(DOCUMENTS_DIR, { withFileTypes: true })
-    // A directory named for the id, holding the page. The route group's own
-    // files -- the layout, the e2e suite -- are not directories, so they sort
-    // themselves out.
-    return new Set(entries.filter((entry) => entry.isDirectory()).map((entry) => entry.name))
+    const entries = await readdir(MEETINGS_DIR, { withFileTypes: true })
+    // A directory named for the meeting id, holding the page. The route
+    // group's own files -- the layout, the e2e suite -- are not directories,
+    // so they sort themselves out.
+    return new Set(
+      entries
+        .filter((entry) => entry.isDirectory() && !entry.name.startsWith("["))
+        .map((entry) => entry.name),
+    )
   } catch {
     // No pages written yet.
     return new Set()
   }
 }
 
-/** How many documents have a page and how many do not, for the run summary. */
+/**
+ * The route segment for a sitting: the board slugged, then the date.
+ *
+ * The same rule as `meetingId` in `src/lib/calendar.ts`, and it has to stay
+ * that way or the summary counts pages the site does not serve. Duplicated
+ * rather than imported because the scripts are plain .mjs run by node and that
+ * module is TypeScript compiled by Vite; `documents.spec.mjs` pins the two
+ * together by asserting the shape this produces.
+ */
+const meetingIdOf = (record) =>
+  `${record.board
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "")}-${record.date}`
+
+/**
+ * How many documents there are, and how many sittings have a page, for the run
+ * summary.
+ *
+ * Documents and sittings are counted separately because they are no longer the
+ * same thing: a page is written for a meeting, and a meeting usually has two
+ * documents under it. Counting pages per document made every written meeting
+ * look half-written.
+ */
 export function summarizeDocuments(meetings, written) {
-  const seen = new Set()
-  let withPage = 0
+  const documents = new Set()
+  const sittings = new Set()
   for (const record of meetings) {
-    if (!record.docId || seen.has(record.docId)) continue
-    seen.add(record.docId)
-    if (written.has(record.docId)) withPage++
+    if (record.docId) documents.add(record.docId)
+    // Undated records cannot be placed on a calendar, so they are not sittings
+    // the site will ever show a page for.
+    if (record.date) sittings.add(meetingIdOf(record))
   }
-  return { documents: seen.size, withPage, withoutPage: seen.size - withPage }
+  const withPage = [...sittings].filter((id) => written.has(id)).length
+  return {
+    documents: documents.size,
+    meetings: sittings.size,
+    withPage,
+    withoutPage: sittings.size - withPage,
+  }
 }

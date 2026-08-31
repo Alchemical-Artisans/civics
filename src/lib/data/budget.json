@@ -1,0 +1,117 @@
+{
+  "generatedAt": "2026-08-31T20:45:34.996Z",
+  "source": "https://www.haverhillma.gov/government/budget-and-finance/financial-reports/budget-and-audit-reports/",
+  "count": 22,
+  "years": [
+    {
+      "year": 2027,
+      "budget": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/mtqjdhgd/fy-2027-budget-book-for-electronic-distribution-compressed.pdf",
+      "audit": null
+    },
+    {
+      "year": 2026,
+      "budget": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/wjrn44js/corrected-fy-2026-budget-book-6225.pdf",
+      "audit": null
+    },
+    {
+      "year": 2025,
+      "budget": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/kwglg325/fy-2025-budget-for-web.pdf",
+      "audit": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/fzcgjgfa/haverhill-financials-25.pdf"
+    },
+    {
+      "year": 2024,
+      "budget": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/peypyw1a/final-fy-2024-mayors-budget-proposal.pdf",
+      "audit": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/n1tdlbdc/haverhill-ma-319030-fs24-final.pdf"
+    },
+    {
+      "year": 2023,
+      "budget": null,
+      "audit": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/ncwmcruh/haverhill-fy2023-financial-statements.pdf"
+    },
+    {
+      "year": 2022,
+      "budget": null,
+      "audit": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/kgmdkukz/haverhill-fy2022-financial-statements.pdf"
+    },
+    {
+      "year": 2021,
+      "budget": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/kwxnnf22/haverhill-budgetbook21.pdf",
+      "audit": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/yptiwre3/haverhill-fy2021-financial-statements.pdf"
+    },
+    {
+      "year": 2020,
+      "budget": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/wojj3cit/haverhill-budgetbook20-no-capital.pdf",
+      "audit": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/gr5hkk2s/h-haverhill-2020-gasb-fs-final.pdf"
+    },
+    {
+      "year": 2019,
+      "budget": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/xw1k4dgs/haverhill-budgetbook19-mayor.pdf",
+      "audit": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/hjya5zsn/haverhill-fy2019-financial-statements.pdf"
+    },
+    {
+      "year": 2018,
+      "budget": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/odahpe3q/haverhill-budgetbook18.pdf",
+      "audit": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/qlfpogsm/haverhill-fy2018-financial-statements.pdf"
+    },
+    {
+      "year": 2017,
+      "budget": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/nhqbotfg/haverhill-budgetbook17.pdf",
+      "audit": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/tysex00v/haverhill-fy2017-financial-statements.pdf"
+    },
+    {
+      "year": 2016,
+      "budget": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/omhe241i/haverhill-budgetbook16.pdf",
+      "audit": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/wtwn4os5/haverhill-fy2016-financial-statements-updated.pdf"
+    },
+    {
+      "year": 2015,
+      "budget": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/fh1p3iqv/budget_book_2015.pdf",
+      "audit": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/bfxiu54x/h-haverhill-2015-gasb-fs-fed-version.pdf"
+    },
+    {
+      "year": 2014,
+      "budget": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/yjyphfxn/mayor_proposed_budget.pdf",
+      "audit": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/scijahpg/h-haverhill-2014-gasb-fs-fed-version.pdf"
+    },
+    {
+      "year": 2013,
+      "budget": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/fctjponj/fy_2013_budget.pdf",
+      "audit": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/eyyhqey2/h___haverhill_2013_gasb_fs___fed_version.pdf"
+    },
+    {
+      "year": 2012,
+      "budget": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/snjjnvrh/fy_2012_budget.pdf",
+      "audit": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/tmgofmts/h___haverhill_2012_gasb_fs___fed_version.pdf"
+    },
+    {
+      "year": 2011,
+      "budget": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/h3wd4u1o/fy_2011_budget.pdf",
+      "audit": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/qm4lpepk/h___haverhill_2011_gasb_fs_fed_version.pdf"
+    },
+    {
+      "year": 2010,
+      "budget": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/0mqd2pif/fy_2010_budget.pdf",
+      "audit": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/jujbhyuv/h___haverhill_2010_gasb_fs_fed_version__2_.pdf"
+    },
+    {
+      "year": 2009,
+      "budget": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/dw4hmtuu/fy_2009_budget.pdf",
+      "audit": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/cqxjwzvc/h___haverhill_2009_gasb_fs_fed_version_w_cap__2_.pdf"
+    },
+    {
+      "year": 2008,
+      "budget": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/rxqflyl1/fy_2008_budget.pdf",
+      "audit": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/b4olkdiy/haverhill_audited_financials__fy08_.pdf"
+    },
+    {
+      "year": 2007,
+      "budget": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/cujcgr2a/fy_2007_budget.pdf",
+      "audit": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/zv0bxcnq/haverhill_audited_financials__fy07_.pdf"
+    },
+    {
+      "year": 2006,
+      "budget": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/knskmpgl/fy_2006_budget.pdf",
+      "audit": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/0synb51w/haverhill_audited_financials__fy06_.pdf"
+    }
+  ]
+}

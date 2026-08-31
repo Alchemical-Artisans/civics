@@ -1,18 +1,18 @@
 /**
  * The City of Haverhill's budget and audit reports, as the city lists them.
  *
- * Unlike the meeting calendar, none of this is scraped. The city's page is a
- * flat list of links that changes once or twice a year -- a new budget book
- * each spring, a new audit each winter -- so a scraper would be more machinery
- * than the problem needs, and there is no date to resolve or duplicate to
- * collapse. The list is transcribed here instead, which makes it typed, keeps
- * `meetings.json` the only file the scripts own, and means a year is added by
- * editing one array.
+ * `data/budget.json` is committed and is written by `npm run budget:update`,
+ * the same arrangement `meetings.json` has: scraped ahead of time on a
+ * developer's machine, reviewable as a diff, and baked into the build so the
+ * reader's browser never calls the city.
  *
- * The URLs are the city's own CDN, copied verbatim. They are opaque -- a media
- * key and the filename whoever uploaded it happened to use -- so there is no
- * pattern to build them from and each one has to be recorded.
+ * This list used to be typed out here on the grounds that twenty-two rows
+ * changing twice a year were not worth a scraper. That was true right up until
+ * the point where somebody had to remember to do it -- a hand-kept list is
+ * only correct while someone is checking the city's page against it, and
+ * nothing was. The scraper is forty lines and runs with the calendar's.
  */
+import raw from "./data/budget.json"
 
 /** One fiscal year, and the two documents the city publishes for it. */
 export interface FiscalYear {
@@ -23,89 +23,21 @@ export interface FiscalYear {
   /**
    * The Mayor's budget book on the city's CDN.
    *
-   * Null for FY2022 and FY2023, where the city's page prints "Mayor's Budget"
-   * as plain text with nothing behind it. Whether those books were never
-   * posted or were posted and lost, the page does not say.
+   * Null where the city's page prints "Mayor's Budget" as plain text with
+   * nothing behind it, as it does for FY2022 and FY2023. Whether those books
+   * were never posted or were posted and lost, the page does not say.
    */
   budget: string | null
   /**
    * The independent auditor's financial statements for the year.
    *
-   * Null for FY2026 and FY2027, which are budgets for years not yet audited --
-   * the audit lands well after the year it covers has closed.
+   * Null for a year not yet audited -- the audit lands well after the year it
+   * covers has closed, so the newest budgets have none.
    */
   audit: string | null
   /** True when `src/routes/budget/<id>/+page.svelte` exists. */
   written: boolean
 }
-
-const CDN = "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media"
-
-/**
- * Every year the city lists, newest first, in the order the page prints them.
- *
- * Only the media key and filename are kept; `report()` puts the CDN origin
- * back. That is not a URL builder pretending the paths are predictable -- they
- * are not -- it just keeps 44 copies of the same origin out of the file.
- */
-const YEARS: [year: number, budget: string | null, audit: string | null][] = [
-  [2027, "mtqjdhgd/fy-2027-budget-book-for-electronic-distribution-compressed.pdf", null],
-  [2026, "wjrn44js/corrected-fy-2026-budget-book-6225.pdf", null],
-  [2025, "kwglg325/fy-2025-budget-for-web.pdf", "fzcgjgfa/haverhill-financials-25.pdf"],
-  [
-    2024,
-    "peypyw1a/final-fy-2024-mayors-budget-proposal.pdf",
-    "n1tdlbdc/haverhill-ma-319030-fs24-final.pdf",
-  ],
-  [2023, null, "ncwmcruh/haverhill-fy2023-financial-statements.pdf"],
-  [2022, null, "kgmdkukz/haverhill-fy2022-financial-statements.pdf"],
-  [
-    2021,
-    "kwxnnf22/haverhill-budgetbook21.pdf",
-    "yptiwre3/haverhill-fy2021-financial-statements.pdf",
-  ],
-  [
-    2020,
-    "wojj3cit/haverhill-budgetbook20-no-capital.pdf",
-    "gr5hkk2s/h-haverhill-2020-gasb-fs-final.pdf",
-  ],
-  [
-    2019,
-    "xw1k4dgs/haverhill-budgetbook19-mayor.pdf",
-    "hjya5zsn/haverhill-fy2019-financial-statements.pdf",
-  ],
-  [
-    2018,
-    "odahpe3q/haverhill-budgetbook18.pdf",
-    "qlfpogsm/haverhill-fy2018-financial-statements.pdf",
-  ],
-  [
-    2017,
-    "nhqbotfg/haverhill-budgetbook17.pdf",
-    "tysex00v/haverhill-fy2017-financial-statements.pdf",
-  ],
-  [
-    2016,
-    "omhe241i/haverhill-budgetbook16.pdf",
-    "wtwn4os5/haverhill-fy2016-financial-statements-updated.pdf",
-  ],
-  [2015, "fh1p3iqv/budget_book_2015.pdf", "bfxiu54x/h-haverhill-2015-gasb-fs-fed-version.pdf"],
-  [2014, "yjyphfxn/mayor_proposed_budget.pdf", "scijahpg/h-haverhill-2014-gasb-fs-fed-version.pdf"],
-  [2013, "fctjponj/fy_2013_budget.pdf", "eyyhqey2/h___haverhill_2013_gasb_fs___fed_version.pdf"],
-  [2012, "snjjnvrh/fy_2012_budget.pdf", "tmgofmts/h___haverhill_2012_gasb_fs___fed_version.pdf"],
-  [2011, "h3wd4u1o/fy_2011_budget.pdf", "qm4lpepk/h___haverhill_2011_gasb_fs_fed_version.pdf"],
-  [2010, "0mqd2pif/fy_2010_budget.pdf", "jujbhyuv/h___haverhill_2010_gasb_fs_fed_version__2_.pdf"],
-  [
-    2009,
-    "dw4hmtuu/fy_2009_budget.pdf",
-    "cqxjwzvc/h___haverhill_2009_gasb_fs_fed_version_w_cap__2_.pdf",
-  ],
-  [2008, "rxqflyl1/fy_2008_budget.pdf", "b4olkdiy/haverhill_audited_financials__fy08_.pdf"],
-  [2007, "cujcgr2a/fy_2007_budget.pdf", "zv0bxcnq/haverhill_audited_financials__fy07_.pdf"],
-  [2006, "knskmpgl/fy_2006_budget.pdf", "0synb51w/haverhill_audited_financials__fy06_.pdf"],
-]
-
-const report = (path: string | null) => (path ? `${CDN}/${path}` : null)
 
 /**
  * The years whose budget book somebody has started writing up.
@@ -113,8 +45,9 @@ const report = (path: string | null) => (path ? `${CDN}/${path}` : null)
  * The same trick `$lib/meetings` uses for meetings: only the glob's keys
  * matter, so the modules are never called and it acts as a directory listing
  * Vite resolves at build time. Existence of `src/routes/budget/<id>/` is the
- * whole signal, so nothing above records which years are written and adding
- * the directory is the entire act of starting one.
+ * whole signal, so nothing in the data records which years are written and
+ * adding the directory is the entire act of starting one -- which is also what
+ * moves the site's front door, since `/` opens the newest written book.
  */
 const written = new Set(
   Object.keys(import.meta.glob("../routes/budget/*/+page.svelte")).map((path) =>
@@ -124,15 +57,14 @@ const written = new Set(
 
 /** Every fiscal year the city lists, newest first. */
 export function fiscalYears(): FiscalYear[] {
-  return YEARS.map(([year, budget, audit]) => {
+  return raw.years.map(({ year, budget, audit }) => {
     const id = `fy${year}`
-    return { year, id, budget: report(budget), audit: report(audit), written: written.has(id) }
+    return { year, id, budget, audit, written: written.has(id) }
   })
 }
 
 /** The city's page these came off, linked so a reader can check the list. */
-export const SOURCE =
-  "https://www.haverhillma.gov/government/budget-and-finance/financial-reports/budget-and-audit-reports/"
+export const SOURCE = raw.source
 
 /** One line of a budget book's own table of contents. */
 export interface BookSection {

@@ -1,20 +1,49 @@
 # Operations
 
-## The two scripts
+## The one command
+
+```sh
+npm run metadata:update    # refresh everything the site takes from the city
+```
+
+That is the command to run. It drives the two scrapers in sequence and prints
+each one's summary under a heading, then says whether anything failed.
+
+A failing step does not stop the ones after it, and the exit status is non-zero
+if any failed. The calendar scrape is the fragile half — it replays an Umbraco
+request with three hardcoded content keys, which will stop working eventually —
+and there is no reason for that to block a budget refresh that would have
+succeeded. Whatever did succeed has already been written; the failures are
+repeated at the end so they cannot scroll past.
+
+Arguments are forwarded to every step, so `npm run metadata:update -- --prune`
+reaches the calendar. The budget script takes no flags and ignores them.
+
+## The scripts underneath
 
 ```sh
 npm run calendar:update    # add documents published since the last run
 npm run calendar:rebuild   # re-scrape everything from scratch
+npm run budget:update      # re-scrape the budget and audit listing
 ```
 
-**Use `update` for routine refreshes.** Reach for `rebuild` only when the
-scraping or date logic itself has changed.
+Worth running alone while working on one of them, or when only one half needs
+refreshing.
 
-Neither touches the document pages. Those are written by hand and live in
-`src/routes/calendar/meetings/`; the scripts only re-derive what the city has
-published. See [document-pages.md](./document-pages.md).
+**Use `calendar:update` for routine refreshes.** Reach for `calendar:rebuild`
+only when the scraping or date logic itself has changed.
 
-### Why there are two
+There is no `budget:rebuild`. The whole budget listing is one request and
+twenty-two rows, so the distinction between a cheap refresh and an expensive
+full rebuild has no meaning there — every run replaces the file.
+
+None of them touches the hand-written pages. Those live in
+`src/routes/calendar/meetings/` and `src/routes/budget/<year>/`; the scripts
+only re-derive what the city has published. See
+[document-pages.md](./document-pages.md) and
+[budget-pages.md](./budget-pages.md).
+
+### Why the calendar has two
 
 The cost is lopsided. Fetching the listing is a single HTTP request that returns
 every document. Determining a _date_ costs one request per document, because that

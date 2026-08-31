@@ -69,8 +69,8 @@ export function printSummary(meetings, written = new Set()) {
   const docs = summarizeDocuments(meetings, written)
   if (docs.documents) {
     console.log(
-      `  documents: ${docs.documents}, ${docs.withPage} with a page written, ` +
-        `${docs.withoutPage} linking straight to the city's PDF`,
+      `  documents: ${docs.documents} across ${docs.meetings} sittings, ` +
+        `${docs.withPage} written up here, ${docs.withoutPage} linking straight to the city's PDF`,
     )
   }
   if (s.review.length) {

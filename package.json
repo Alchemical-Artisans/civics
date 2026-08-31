@@ -15,8 +15,10 @@
     "test:unit": "vitest",
     "test": "npm run test:unit -- --run && npm run test:e2e",
     "test:e2e": "playwright test",
+    "metadata:update": "node scripts/update-metadata.mjs",
     "calendar:rebuild": "node scripts/rebuild-calendar.mjs",
     "calendar:update": "node scripts/update-calendar.mjs",
+    "budget:update": "node scripts/update-budget.mjs",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },

@@ -86,8 +86,12 @@ scripts/
   lib/store.mjs            reading and writing meetings.json, run summaries
   lib/reviews.mjs          the corrections overlay
   lib/reviews.spec.mjs     unit tests for it
+  lib/budget.mjs           the budget listing: fetch, parse, diff
+  lib/budget.spec.mjs      unit tests for that parser
   rebuild-calendar.mjs     full re-scrape
   update-calendar.mjs      incremental refresh
+  update-budget.mjs        re-scrape the budget and audit listing
+  update-metadata.mjs      run every scraper in sequence
 
 src/lib/
   Note.svelte              the information popover in a document page's header
@@ -95,8 +99,11 @@ src/lib/
   calendar.spec.ts         unit tests for those helpers
   router.ts                every internal URL the site builds, in one place
   router.spec.ts           unit tests for it
-  data/meetings.json       the committed dataset
-  data/reviews.json        human corrections, overlaid onto it
+  budget.ts                the budget listing, section slugs and book contents
+  budget.spec.ts           unit tests for it
+  data/meetings.json       the committed meeting dataset
+  data/budget.json         the committed budget and audit listing
+  data/reviews.json        human corrections, overlaid onto the meetings
 
 src/routes/
   +page.svelte             `/`, which forwards to the newest budget book
