@@ -62,6 +62,41 @@ reports no fonts and `pdftotext` yields 245 blank pages. Every section under
 `fy2027/` was read off the rendered pages by hand. FY2025 and FY2026, and all
 the audit reports, do have text layers if they are ever written up.
 
+## The chart on a book's front page
+
+`/budget/<year>` opens on the budget at a glance: two ranked bar charts,
+appropriations and revenue, drawn by
+[`src/lib/BudgetBars.svelte`](../src/lib/BudgetBars.svelte) from figures in the
+book page's own `+page.ts`.
+
+**Ranked bars, not the pie the book draws.** A pie asks the reader to compare
+angles, which nobody does well past the biggest two or three slices, and it caps
+out at a handful of categories — the book's own pie collapses fourteen spending
+categories into five. Bars carry all of them, in order, with the figure printed
+beside each. One series, so one colour and no legend; the heading says what is
+plotted. There is no tooltip, because every value is already on the page and a
+hover layer would put a script on a page that needs none.
+
+Both charts are scaled to one shared maximum. They are two halves of the same
+total and a reader will compare them; scaled separately, Education
+($147,158,454) and Tax Levy ($146,107,374) would draw the same length.
+
+**The figures come from page 78, not from the pie on page 65.** The pie is the
+book's own high-level view of revenue, and it does not add up: its five slices
+total $281,813,295 against the $285,272,159 printed above them. The gap is
+"Other Available Revenue Sources" ($6,210,304), which no slice accounts for,
+less "All Other Excise" ($2,751,440), which "All Other Local Receipts" already
+includes and which is then drawn again as a slice of its own. The page-78 tables
+balance. Note also that the appropriations column there sums to $285,272,160, a
+dollar over the total printed under it; the book prints both, and the site shows
+the stated total.
+
+Those figures are therefore held in two places — the transcription and the
+chart. [`overview.spec.ts`](../src/routes/budget/fy2027/overview.spec.ts) parses
+the transcription and fails if they ever disagree, because correcting one and
+forgetting the other is the whole failure mode and it would surface as a chart
+quietly contradicting the table it links to.
+
 ## Writing a section
 
 1. **Find the section's page number** in the book's own table of contents,
@@ -127,6 +162,8 @@ chart shows and there is nothing to transcribe.
 src/lib/data/budget.json                   the committed listing, scraped
 src/lib/budget.ts                          reads it; slugs and contents helpers
 src/lib/budget.spec.ts                     unit tests for them
+src/lib/BudgetBars.svelte                  the ranked bar chart on a book page
+src/routes/budget/<year>/overview.spec.ts  guards its figures against the transcription
 scripts/lib/budget.mjs                     the scrape: fetch, parse, diff
 scripts/lib/budget.spec.mjs                unit tests for the parser
 scripts/update-budget.mjs                  writes budget.json

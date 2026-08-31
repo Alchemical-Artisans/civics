@@ -46,6 +46,29 @@ test.describe("budget pages", () => {
     expect(await page.getByRole("listitem").count()).toBeGreaterThan(50)
   })
 
+  test("the book opens on the budget at a glance, before its contents", async ({ page }) => {
+    await page.goto(`/budget/${books[0]}`)
+
+    // Both halves of the same total, each ranked largest first.
+    await expect(page.getByRole("heading", { name: "Appropriations" })).toBeVisible()
+    await expect(page.getByRole("heading", { name: "Revenue", exact: true })).toBeVisible()
+
+    const bars = page.getByRole("listitem").filter({ hasText: "$" })
+    expect(await bars.count()).toBeGreaterThan(20)
+    // Every figure is printed beside its bar, so the chart carries its own
+    // values rather than hiding them behind a hover.
+    await expect(bars.first()).toContainText("Education")
+    await expect(bars.first()).toContainText("$147,158,454")
+  })
+
+  test("scales both charts against one maximum so they can be compared", async ({ page }) => {
+    // Education and Tax Levy are within a million of each other; scaled
+    // separately they would draw identically and the comparison would lie.
+    const html = await (await page.request.get(`/budget/${books[0]}`)).text()
+    const widths = [...html.matchAll(/width: max\(2px, ([\d.]+)%\)/g)].map((m) => Number(m[1]))
+    expect(widths.filter((w) => w === 100)).toHaveLength(1)
+  })
+
   test("a contents line with no page here opens the city's PDF at that page", async ({ page }) => {
     await page.goto(`/budget/${books[0]}`)
     const outward = page.locator('li a[href*="#page="]').first()
