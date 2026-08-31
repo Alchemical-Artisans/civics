@@ -66,6 +66,38 @@ export class Router {
     return path(`/excerpts/${id}/${name}.pdf`)
   }
 
+  /**
+   * Every budget and audit report the city publishes, by fiscal year.
+   *
+   * A sibling of the calendar rather than a page under it: the budget books are
+   * not meeting documents, they come off a different page of the city's site,
+   * and nothing in `meetings.json` knows about them.
+   */
+  static budget(): string {
+    return path("/budget")
+  }
+
+  /**
+   * One fiscal year's budget book, written up here. `id` is a `FiscalYear`'s
+   * id from `$lib/budget` -- `fy2027`.
+   *
+   * Only years somebody has written up have this page; a year that is still
+   * just a PDF is linked straight to the city's copy from the overview, so
+   * there is no generated route behind this the way `[meeting]` sits behind a
+   * meeting.
+   */
+  static budgetBook(id: string): string {
+    return path(`/budget/${id}`)
+  }
+
+  /**
+   * One section of a budget book -- the unit its own table of contents is
+   * built out of. `section` is the page's directory name.
+   */
+  static budgetSection(id: string, section: string): string {
+    return path(`/budget/${id}/${section}`)
+  }
+
   /** Scaffolding from `sv create`, kept because the e2e suite drives it. */
   static demo(): string {
     return path("/demo")
@@ -84,6 +116,20 @@ export class Router {
    */
   static cityPage(pageUrl: string): string {
     return `${CITY}${pageUrl}`
+  }
+
+  /**
+   * A page inside a PDF somewhere else -- a budget section's place in the book
+   * it was transcribed from.
+   *
+   * `#page=` is a PDF Open Parameter, honoured by Chrome, Firefox, Safari and
+   * Acrobat and ignored by anything that does not understand it, which lands
+   * the reader on page one rather than nowhere. Not a route here, and it is in
+   * this class for the same reason `cityPage` is: it is a URL, and URLs are
+   * spelled in one place.
+   */
+  static pdfPage(url: string, page: number): string {
+    return `${url}#page=${page}`
   }
 
   /**

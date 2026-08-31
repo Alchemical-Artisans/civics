@@ -15,6 +15,7 @@ link to the original at the top, or as the city's own PDF.
 | [dates.md](./dates.md)                   | How a meeting date is determined, and why that is hard              |
 | [data-format.md](./data-format.md)       | The `meetings.json` schema, field by field                          |
 | [document-pages.md](./document-pages.md) | Writing a page for a meeting document, and why they are hand-made   |
+| [budget-pages.md](./budget-pages.md)     | `/budget`, and writing up a section of a budget book                |
 | [calendar-page.md](./calendar-page.md)   | How the page renders, filters, and prerenders                       |
 | [operations.md](./operations.md)         | Running the scripts, refreshing data, and what to do when it breaks |
 | [deployment.md](./deployment.md)         | How the site is published to GitHub Pages                           |

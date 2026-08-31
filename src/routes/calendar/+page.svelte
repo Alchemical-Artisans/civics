@@ -115,6 +115,14 @@
       </a>. One entry per meeting: open it for the documents the city published, agenda and minutes
       together.
     </p>
+    <!-- The only way to the budget pages: `/` forwards straight here, so
+         without a link from the calendar nothing on the site points at them. -->
+    <p class="mt-2 text-slate-600">
+      Also here: the city's
+      <a class="underline hover:text-slate-900" href={Router.budget()}>
+        budget and audit reports
+      </a>, back to FY2006.
+    </p>
   </header>
 
   <!-- Filters -->

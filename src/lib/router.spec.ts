@@ -35,4 +35,16 @@ describe("Router", () => {
       "https://www.haverhillma.gov/document-manager/media-pages/agenda-and-minutes-5/",
     )
   })
+
+  it("builds the budget overview, a book, and a section of one", () => {
+    expect(Router.budget()).toBe("/budget")
+    expect(Router.budgetBook("fy2027")).toBe("/budget/fy2027")
+    expect(Router.budgetSection("fy2027", "fiscal-reserves")).toBe("/budget/fy2027/fiscal-reserves")
+  })
+
+  it("opens an outside PDF at a page", () => {
+    expect(Router.pdfPage("https://cdn.example/budget.pdf", 17)).toBe(
+      "https://cdn.example/budget.pdf#page=17",
+    )
+  })
 })

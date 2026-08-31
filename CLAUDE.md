@@ -10,10 +10,14 @@ documents — agendas and minutes — as a browsable month calendar at
 developer's machine and the results are committed, so the build is offline and
 the reader's browser never talks to the city's servers.
 
+It also republishes the city's budget and audit reports at `/budget`, where the
+current budget book is readable a section at a time rather than as one PDF
+running to hundreds of pages.
+
 `docs/` is the authoritative reference and is unusually complete. Start at
 [docs/README.md](docs/README.md), which maps the rest:
 `scraping.md`, `dates.md`, `data-format.md`, `document-pages.md`,
-`calendar-page.md`, `operations.md`, `deployment.md`.
+`budget-pages.md`, `calendar-page.md`, `operations.md`, `deployment.md`.
 
 ## Commands
 
@@ -90,8 +94,24 @@ refresh cannot contradict any of it.
 `docs/document-pages.md` calls these document pages; they are meeting pages now,
 and an agenda's transcription is what a meeting page shows.
 
+**`/budget` is the same idea one level deeper, and shares nothing with the
+calendar.** `/budget` lists every fiscal year the city publishes,
+`/budget/<year>` is a budget book's own table of contents, and
+`/budget/<year>/<section>` is one section of it transcribed. None of it is
+scraped: the city's page is 22 rows that change twice a year, so the list lives
+in `src/lib/budget.ts`. Every route is static and each contents line links to a
+section here when the directory exists and into the city's PDF at that page when
+it does not, so writing a section up is creating one directory. The FY2027 book
+has no text layer at all — it is a Canva export flattened to page images — so
+its sections were read off rendered pages by hand. See
+[docs/budget-pages.md](docs/budget-pages.md).
+
 Notable pieces:
 
+- **`src/lib/budget.ts`** holds the city's report listing, `sectionSlug` and
+  `contents`. `sectionSlug` is `meetingId`'s rule except that apostrophes are
+  dropped rather than collapsed — half this book's titles carry one, and
+  `mayor-s-budget-message` reads as a typo.
 - **`src/lib/router.ts`** builds _every_ internal URL. Never write a path inline
   and never use SvelteKit's `resolve()` — `Router` applies `base` (the
   `BASE_PATH` env knob for a non-root deploy) exactly once, and
