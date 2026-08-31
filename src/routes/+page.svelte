@@ -1,3 +1,15 @@
+<!--
+  A placeholder, deliberately. An index costs every visitor a hop to reach the
+  thing they came for, which is the objection that turned the meeting page into
+  the write-up rather than a stop on the way to it. The intention is that `/`
+  ends up opening the most recent budget directly; this stands until the budget
+  is finished enough to land on.
+
+  So do not invest further in it as an index. `fiscalYears()` already comes back
+  newest-first with a `written` flag, so the page to open is
+  `fiscalYears().find((y) => y.written)` -- but whatever replaces this still has
+  to leave a way through to the calendar, which has no other entry point.
+-->
 <script lang="ts">
   import { Router } from "$lib/router"
 

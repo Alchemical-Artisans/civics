@@ -215,6 +215,13 @@ See [deployment.md](./deployment.md#base-path).
 exist: [`src/routes/+page.svelte`](../src/routes/+page.svelte) offers the
 calendar and the budget reports and nothing else.
 
+**It is a placeholder.** An index costs every visitor a hop to reach what they
+came for, which is the objection that turned the meeting page into the write-up
+rather than a stop on the way to it. The intention is that `/` ends up opening
+the most recent budget directly, once the budget is finished enough to land on.
+Whatever replaces it still has to leave a way through to the calendar, which has
+no other entry point.
+
 Its `+page.ts` calls `calendar()` and `fiscalYears()` purely to count what is
 behind each link — boards, meetings, documents, the span of months, fiscal
 years, which budget books are readable here. Saying how much is there beats
