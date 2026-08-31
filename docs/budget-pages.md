@@ -91,11 +91,9 @@ balance. Note also that the appropriations column there sums to $285,272,160, a
 dollar over the total printed under it; the book prints both, and the site shows
 the stated total.
 
-Those figures are therefore held in two places — the transcription and the
-chart. [`overview.spec.ts`](../src/routes/budget/fy2027/overview.spec.ts) parses
-the transcription and fails if they ever disagree, because correcting one and
-forgetting the other is the whole failure mode and it would surface as a chart
-quietly contradicting the table it links to.
+**There is one copy of those figures.** The chart reads the transcription's own
+data, so the two cannot drift apart. See "A section whose tables are charted"
+below.
 
 ## Writing a section
 
@@ -119,11 +117,42 @@ quietly contradicting the table it links to.
    header. This file is not optional the way a meeting's is — the layout titles
    the page from it.
 
-4. The page is the transcription and nothing else: no title, no `<script>`.
+4. The page is the transcription and nothing else: no title, and no `<script>`
+   unless its tables are charted, for which see below.
    It renders inside `<article class="prose">`, so headings start at `<h2>`.
    Where the page's own printed heading differs from the contents entry —
    "2027 Budget Goals" is printed "Mayor's 2027 Budgetary Goals" — the printed
    one is the first `<h2>`.
+
+## A section whose tables are charted
+
+A transcription is ordinarily plain markup. The exception is a section whose
+figures something else on the site also shows — right now that is
+`2027-budget-in-brief`, whose page-78 tables are what the book's front page
+charts. Those tables live in a `tables.ts` beside the page:
+
+```ts
+export const APPROPRIATIONS: BudgetTableData = {
+  columns: ["Appropriations", "2022 Actual", …, "2027 Proposed"],
+  rows: [{ label: "Education", cells: ["$107,945,786", …, "$147,158,454"] }, …],
+}
+```
+
+The page renders them with [`BudgetTable`](../src/lib/BudgetTable.svelte), and
+the chart reads the column it wants with `column()` from
+[`$lib/budget-table`](../src/lib/budget-table.ts). One copy, two renderings,
+nothing to keep in sync.
+
+**Cells are the strings the book prints, not numbers.** "$988,666", "–",
+"$(0)", "4.2%". A transcription has to reproduce what is on the page, and a
+figure held as a number and formatted back out is a figure that can come back
+different — the book writes a parenthesised zero, an en dash for a year with no
+entry, and percentages in the same row as dollars. `amount()` reads numbers back
+out for the chart: parentheses are the book's negative sign, and anything
+holding no money comes back null rather than as a wrong number.
+
+Do this only where a table is genuinely shared. A table nothing else reads is
+clearer written out as markup, next to the prose it belongs to.
 
 ## What a section covers
 
@@ -163,7 +192,10 @@ src/lib/data/budget.json                   the committed listing, scraped
 src/lib/budget.ts                          reads it; slugs and contents helpers
 src/lib/budget.spec.ts                     unit tests for them
 src/lib/BudgetBars.svelte                  the ranked bar chart on a book page
-src/routes/budget/<year>/overview.spec.ts  guards its figures against the transcription
+src/lib/BudgetTable.svelte                 a transcribed table, rendered from data
+src/lib/budget-table.ts                    that data's shape, and `amount`/`column`
+src/routes/budget/<year>/<section>/tables.ts  a shared section's tables
+src/routes/budget/<year>/overview.spec.ts  the arithmetic page 78 claims about itself
 scripts/lib/budget.mjs                     the scrape: fetch, parse, diff
 scripts/lib/budget.spec.mjs                unit tests for the parser
 scripts/update-budget.mjs                  writes budget.json

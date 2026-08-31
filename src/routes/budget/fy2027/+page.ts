@@ -1,81 +1,54 @@
 import type { PageLoad } from "./$types"
 import { contents } from "$lib/budget"
+import { amount, cell, column } from "$lib/budget-table"
+import { APPROPRIATIONS, REVENUE } from "./2027-budget-in-brief/tables"
 
 /**
  * The budget at a glance, from the two tables on page 78.
  *
- * Both are transcribed in full at `2027-budget-in-brief/`, and these figures
- * are copied from there rather than being a second reading of the book;
- * `overview.spec.ts` parses that page and fails if the two ever disagree.
+ * Read out of the transcription's own data rather than typed again here, so
+ * the chart and the table it links to cannot disagree -- there is one copy of
+ * these figures and both render from it.
  *
  * Page 78 rather than the pie chart on page 65, which is the book's own
  * high-level view of revenue but does not add up: its five slices total
  * $281,813,295 against the $285,272,159 printed above them. The gap is
- * "Other Available Revenue Sources" ($6,210,304), which no slice accounts
- * for, less "All Other Excise" ($2,751,440), which "All Other Local
- * Receipts" already includes and which is then drawn again as a slice of its
- * own. The page-78 tables balance, so the chart is built from those.
+ * "OTHER AVAILABLE REVENUE SOURCES" ($6,210,304), which no slice accounts for,
+ * less "OTHER EXCISE" ($2,751,440), which "All Other Local Receipts" already
+ * includes and which is then drawn again as a slice of its own. The page-78
+ * tables balance, so the charts are built from those.
  *
- * A row the table leaves blank for 2027 -- "Capital - Pay as you go",
- * "MISC. REVENUE" -- is left out rather than charted as a zero-length bar.
+ * Labels are the book's, capitals and all: the revenue table shouts and the
+ * appropriations table does not. Case-correcting them would be inventing text,
+ * and it would stop a reader matching a bar to its row at a glance.
  */
-const APPROPRIATIONS = [
-  { label: "Education", amount: 147158454 },
-  { label: "Employee Benefits", amount: 59327682 },
-  { label: "Public Safety", amount: 33421968 },
-  { label: "Public Works", amount: 12235718 },
-  { label: "State Assessments", amount: 10271435 },
-  { label: "Debt Services", amount: 8349024 },
-  { label: "General Government", amount: 6265194 },
-  { label: "Human Services", amount: 2805878 },
-  { label: "Culture & Recreation", amount: 2330447 },
-  { label: "Other Insurance", amount: 1381899 },
-  { label: "Budget Reserve", amount: 988666 },
-  { label: "Debt Service - New", amount: 485795 },
-  { label: "Overlay", amount: 250000 },
-]
-
-const REVENUE = [
-  { label: "Tax Levy", amount: 146107374 },
-  { label: "Ch 70 State Aid", amount: 96427042 },
-  { label: "State Aid (Cherry Sheet) w/o Ch. 70", amount: 14026061 },
-  { label: "Motor Vehicle Excise", amount: 9025789 },
-  { label: "Other Available Revenue Sources", amount: 6210304 },
-  { label: "PILOT & Waste Disposal Fee", amount: 3304799 },
-  { label: "Other Excise", amount: 2751440 },
-  { label: "License & Permits", amount: 2300000 },
-  { label: "Medicaid Reimbursement", amount: 1000000 },
-  { label: "Investments", amount: 1000000 },
-  { label: "Fees", amount: 998900 },
-  { label: "Penalties & Interest", amount: 742000 },
-  { label: "Fines & Forfeits", amount: 625000 },
-  { label: "Other Dept. Revenue", amount: 555000 },
-  { label: "Rentals", amount: 198450 },
-]
+const CHARTED = "2027 Proposed"
 
 /**
- * The book's own table of contents, pages 6 to 8, transcribed in its printed
- * order with the page numbers it prints.
- *
- * The numbers were checked against the link annotations in the PDF -- the
- * contents page tells the reader to "click the page number below to skip
- * directly to the section" -- so every one of them is where the book itself
- * jumps to, and this book's printed page numbers happen to match its PDF
- * pages exactly.
- *
- * `contents()` decides which of these have a page here by looking for the
- * directory, so writing a section up adds nothing to this list.
+ * Rows that are not categories: the table's own total, which would draw a bar
+ * as long as all the others put together, and the memo line under the revenue
+ * table. Named rather than guessed at, so a row added to the table cannot
+ * quietly become a bar that double-counts everything above it.
  */
+const NOT_A_CATEGORY = ["Grand Total", "Budget Surplus (Deficit)"]
+
+const appropriations = column(APPROPRIATIONS, CHARTED, { exclude: NOT_A_CATEGORY })
+const revenue = column(REVENUE, CHARTED, { exclude: NOT_A_CATEGORY })
+
+/**
+ * The grand total the book states.
+ *
+ * Not the sum of the bars above it: the appropriations column adds up to
+ * $285,272,160, a dollar over the total printed under it. The book prints
+ * both, and the site shows the one it states.
+ */
+const total = amount(cell(APPROPRIATIONS, "Grand Total", CHARTED))!
+
 export const load: PageLoad = () => ({
   overview: {
-    appropriations: APPROPRIATIONS,
-    revenue: REVENUE,
-    /**
-     * The grand total both tables print. The appropriations column adds up to
-     * $285,272,160, a dollar over it; the book prints both figures, so the
-     * total here is the one it states rather than the sum of its own parts.
-     */
-    total: 285272159,
+    appropriations,
+    revenue,
+    total,
     /** Where these came from, for the link to the transcription. */
     section: { slug: "2027-budget-in-brief", page: 78 },
   },

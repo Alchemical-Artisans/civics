@@ -96,6 +96,10 @@ scripts/
 src/lib/
   Note.svelte              the information popover in a document page's header
   SiteHeader.svelte        the bar on every page: the mark, budget, calendar
+  BudgetBars.svelte        the ranked bar chart a budget book opens with
+  BudgetTable.svelte       a transcribed budget table, rendered from its data
+  budget-table.ts          that table's shape, and reading figures back out
+  budget-table.spec.ts     unit tests for it
   calendar.ts              pure date/grouping helpers used by the page
   calendar.spec.ts         unit tests for those helpers
   router.ts                every internal URL the site builds, in one place

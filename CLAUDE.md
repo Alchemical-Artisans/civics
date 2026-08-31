@@ -132,10 +132,12 @@ Notable pieces:
   dropped rather than collapsed — half this book's titles carry one, and
   `mayor-s-budget-message` reads as a typo.
 - **`src/lib/BudgetBars.svelte`** is the ranked bar chart a budget book opens
-  with. Its figures live in the book's `+page.ts` and are also transcribed in
-  the section pages, so `overview.spec.ts` parses the transcription and fails if
-  the two drift. They come from the book's page-78 tables, not its own revenue
-  pie on page 65, which is $3,458,864 short of the total it prints.
+  with, and **`src/lib/budget-table.ts`** is how it gets its figures: a
+  transcribed table is data (cells as the strings the book prints), `BudgetTable`
+  renders it, and `column()` reads a year out of it for the chart. One copy, so
+  the chart cannot contradict the table it links to. The figures come from the
+  book's page-78 tables, not its own revenue pie on page 65, which is $3,458,864
+  short of the total it prints.
 - **`src/lib/router.ts`** builds _every_ internal URL. Never write a path inline
   and never use SvelteKit's `resolve()` — `Router` applies `base` (the
   `BASE_PATH` env knob for a non-root deploy) exactly once, and
