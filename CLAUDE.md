@@ -94,6 +94,11 @@ refresh cannot contradict any of it.
 `docs/document-pages.md` calls these document pages; they are meeting pages now,
 and an agenda's transcription is what a meeting page shows.
 
+**`/` is the landing page and the only page that knows both halves exist.** It
+offers the calendar and the budget reports, and counts what is behind each from
+`calendar()` and `fiscalYears()` at build time rather than describing it, so a
+data refresh keeps it honest. Both halves link back to it and not to each other.
+
 **`/budget` is the same idea one level deeper, and shares nothing with the
 calendar.** `/budget` lists every fiscal year the city publishes,
 `/budget/<year>` is a budget book's own table of contents, and

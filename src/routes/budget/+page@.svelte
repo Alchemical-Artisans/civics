@@ -17,6 +17,12 @@
 </svelte:head>
 
 <div class="mx-auto max-w-4xl px-4 py-8">
+  <nav class="mb-6">
+    <a class="text-sm text-slate-600 underline hover:text-slate-900" href={Router.home()}>
+      &larr; Haverhill Public Documents
+    </a>
+  </nav>
+
   <header class="mb-6">
     <h1 class="text-3xl font-bold tracking-tight text-slate-900">Budget and Audit Reports</h1>
     <p class="mt-2 text-slate-600">
@@ -98,9 +104,6 @@
     <p>
       {years.length} fiscal years listed. The city's own files are the record; anything read here was
       transcribed by hand and may condense or omit.
-    </p>
-    <p class="mt-1">
-      <a class="underline hover:text-slate-700" href={Router.calendar()}>Meeting calendar</a>
     </p>
   </footer>
 </div>

@@ -106,6 +106,15 @@
 </svelte:head>
 
 <div class="mx-auto max-w-6xl px-4 py-8">
+  <!-- Both halves of the site hang off the landing page, so each carries the
+       same way back to it -- the arrangement a meeting page already uses to
+       return to the calendar. -->
+  <nav class="mb-6">
+    <a class="text-sm text-slate-600 underline hover:text-slate-900" href={Router.home()}>
+      &larr; Haverhill Public Documents
+    </a>
+  </nav>
+
   <header class="mb-6">
     <h1 class="text-3xl font-bold tracking-tight text-slate-900">Haverhill Meeting Calendar</h1>
     <p class="mt-2 text-slate-600">
@@ -114,14 +123,6 @@
         the City of Haverhill
       </a>. One entry per meeting: open it for the documents the city published, agenda and minutes
       together.
-    </p>
-    <!-- The only way to the budget pages: `/` forwards straight here, so
-         without a link from the calendar nothing on the site points at them. -->
-    <p class="mt-2 text-slate-600">
-      Also here: the city's
-      <a class="underline hover:text-slate-900" href={Router.budget()}>
-        budget and audit reports
-      </a>, back to FY2006.
     </p>
   </header>
 

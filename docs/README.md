@@ -99,8 +99,15 @@ src/lib/
   data/reviews.json        human corrections, overlaid onto it
 
 src/routes/
-  +page.svelte             `/`, which forwards to /calendar
-  page.svelte.e2e.ts       end-to-end tests for that forward
+  +page.svelte             `/`, the landing page: the calendar and the budget
+  +page.ts                 counts what is behind each of its two links
+  page.svelte.e2e.ts       end-to-end tests for it
+
+src/routes/budget/
+  +page@.svelte            /budget, every fiscal year the city publishes
+  +layout.svelte           the header around a budget book and its sections
+  <year>/<section>/        one section of a budget book, by hand
+  page.svelte.e2e.ts       end-to-end tests
 
 src/routes/calendar/
   +page.ts                 build-time load: trims and de-duplicates records

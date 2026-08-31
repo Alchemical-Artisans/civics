@@ -87,9 +87,9 @@ test.describe("budget pages", () => {
     expect(response?.status()).toBe(404)
   })
 
-  test("is reachable from the calendar", async ({ page }) => {
-    await page.goto("/calendar")
-    await page.getByRole("link", { name: "budget and audit reports" }).click()
+  test("is reachable from the landing page", async ({ page }) => {
+    await page.goto("/")
+    await page.getByRole("link", { name: "Budget and Audit Reports" }).click()
     await expect(page).toHaveURL(/\/budget$/)
   })
 })
