@@ -1,8 +1,25 @@
 {
-  "generatedAt": "2026-08-31T19:55:28.664Z",
+  "generatedAt": "2026-08-31T20:45:34.503Z",
   "source": "https://www.haverhillma.gov/government/agendas-and-minutes/",
-  "count": 283,
+  "count": 284,
   "meetings": [
+    {
+      "title": "September 3, 2026 License Commission Agenda",
+      "pageUrl": "/document-manager/media-pages/agenda-and-minutes/september-3-2026-license-commission-agenda/",
+      "fileUrl": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/zavaquam/september-3-2026.pdf",
+      "category": "License Commission Agendas",
+      "description": "",
+      "board": "License Commission",
+      "kind": "agenda",
+      "date": "2026-09-03",
+      "dateSource": "meeting-date",
+      "rawMeetingDate": "09/03/2026 06:00 PM",
+      "dateAdjusted": false,
+      "dateConflict": false,
+      "filenameDate": null,
+      "needsReview": false,
+      "docId": "september-3-2026-license-commission-agenda-ab7ff2b3"
+    },
     {
       "title": "2026-08-27 Conservation Commission Agenda",
       "pageUrl": "/document-manager/media-pages/agenda-and-minutes/2026-08-27-conservation-commission-agenda/",
