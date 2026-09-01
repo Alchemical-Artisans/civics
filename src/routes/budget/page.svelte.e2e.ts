@@ -109,37 +109,69 @@ test.describe("budget pages", () => {
     await expect(owed.last()).toHaveAttribute("aria-label", "Debt, Public Works, $1,455,200, 0.8%")
   })
 
-  test("splits the contents into the year and the departments", async ({ page }) => {
+  test("splits the contents into the year and what it funds", async ({ page }) => {
     await page.goto(`/budget/${books[0]}`)
 
-    // Two lists, one headed. Sixty lines under a single "Table of Contents" is
-    // a list nobody reads to the end of.
+    // Two lists and no heading over either: sixty lines in one list is a list
+    // nobody reads to the end of, and the second one is not all departments.
     // `> div`, because the calendar in the footer is a list too.
     const lists = page.locator("article > div ol")
     await expect(lists).toHaveCount(2)
-    await expect(page.getByRole("heading", { name: "Departments" })).toBeVisible()
+    await expect(page.getByRole("heading", { name: "Departments" })).toHaveCount(0)
     await expect(page.getByRole("heading", { name: "Table of Contents" })).toHaveCount(0)
 
-    // A department at a time, by name rather than by the book's grouping: a
-    // reader who wants one of them knows what it is called.
+    // One line per thing the city funds, by name rather than by the book's
+    // grouping: a reader who wants one of them knows what it is called.
     //
     // `toContainText`, because a line with no page here carries an `sr-only`
     // note saying it opens the city's PDF.
-    const departments = lists.last().locator("li")
-    await expect(departments.first()).toContainText("Assessor's Office")
-    await expect(departments.last()).toContainText("Veterans Services")
+    const funded = lists.last().locator("li")
+    await expect(funded.first()).toContainText("Assessor's Office")
+    await expect(funded.last()).toContainText("Veterans Services")
 
-    const named = await departments.evaluateAll((lines) =>
+    const named = await funded.evaluateAll((lines) =>
       lines.map((line) => line.textContent?.split(",")[0].trim() ?? ""),
     )
     expect(named).toEqual([...named].sort((a, b) => a.localeCompare(b, "en")))
 
-    // What the city owes rather than a department that spends it, so these
-    // stay with the year's own account on the left.
+    // Education is page 26, printed a hundred pages before the rest of these,
+    // and filed here because this is where a reader looks for it.
+    await expect(funded.filter({ hasText: "Education" })).toHaveCount(1)
+
+    // What the city owes rather than something that spends it, so these stay
+    // with the year's own account on the left.
     const year = lists.first().locator("li")
     await expect(year.filter({ hasText: "Debt Service" })).toHaveCount(1)
     await expect(year.filter({ hasText: "Employee Benefits" })).toHaveCount(1)
     await expect(year.filter({ hasText: "Glossary" })).toHaveCount(1)
+
+    // The three lines the Education page covers are gone from both lists.
+    const every = page.locator("article > div ol li")
+    await expect(every.filter({ hasText: "Net School Spending" })).toHaveCount(0)
+    await expect(every.filter({ hasText: "Regional Schools" })).toHaveCount(0)
+    await expect(every.filter({ hasText: "School Department" })).toHaveCount(0)
+  })
+
+  test("puts the three school sections on one page", async ({ page }) => {
+    await page.goto(`/budget/${books[0]}/education`)
+
+    // The one that is transcribed, under the heading the book prints over it.
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Education")
+    await expect(
+      page.getByRole("heading", { name: "Net School Spending", exact: true }),
+    ).toBeVisible()
+    await expect(page.getByRole("article")).toContainText("$167,320,644")
+
+    // The two that are not: the city's own file, opened at the page the book
+    // gives them, which is what a contents line does for any unwritten section.
+    for (const [title, at] of [
+      ["Regional Schools", 150],
+      ["School Department", 152],
+    ] as const) {
+      const link = page.getByRole("link", { name: new RegExp(`^${title}`) })
+      expect(await link.getAttribute("href")).toMatch(new RegExp(`#page=${at}$`))
+      await expect(link).toHaveAttribute("target", "_blank")
+    }
   })
 
   test("draws both bars to one scale", async ({ page }) => {

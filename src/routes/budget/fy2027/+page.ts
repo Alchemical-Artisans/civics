@@ -84,38 +84,50 @@ const reserves: Part[] = [
 const debt = column(LONG_TERM_DEBT, "Amount")
 
 /**
- * The contents in two lists: the book's own account of the year, and the
- * departments whose budgets follow it.
+ * The contents in two lists: the book's own account of the year, and the budget
+ * pages that follow it, one per thing the city funds.
  *
- * The department column is a department at a time, alphabetically: City Council
- * through Library is the run of the book where each page is an office and what
- * it costs, and those lines are then sorted by name. It stops there rather than at the end of "General Fund Budgets",
- * because what follows -- Debt Service, State Assessments, Employee Benefits,
- * Liability, Overlay & Reserves -- is money the city owes rather than a
- * department that spends it, and those stay with the rest of the year's
- * account.
+ * The second list runs City Council through Library, the stretch of the book
+ * where each page is something the city runs and what it costs. It stops there
+ * rather than at the end of "General Fund Budgets", because what follows --
+ * Debt Service, State Assessments, Employee Benefits, Liability, Overlay &
+ * Reserves -- is money the city owes rather than something that spends it, and
+ * those stay with the rest of the year's account.
  *
- * Sixty lines under one heading is a list nobody reads to the end of. Two
- * headed lists are two questions -- how the year works, and what a department
- * costs -- and a reader arrives with one of them.
+ * `ALSO_A_BUDGET` is for a page that belongs in that list but is printed
+ * somewhere else in the book: Education is page 26, and a reader looking for
+ * what the schools cost looks where the fire department is.
+ *
+ * Neither list carries a heading. These are not all departments -- Education,
+ * Outdoor Lighting, Refuse and Snow & Ice Removal are things the city funds
+ * rather than offices it staffs -- and a column headed "Departments" would be
+ * wrong about part of what is under it.
+ *
+ * Sixty lines in one list is a list nobody reads to the end of. Two are two
+ * questions -- how the year works, and what a thing costs -- and a reader
+ * arrives with one of them.
  */
-const FIRST_DEPARTMENT = "City Council"
-const LAST_DEPARTMENT = "Library"
+const FIRST_BUDGET = "City Council"
+const LAST_BUDGET = "Library"
+const ALSO_A_BUDGET = ["Education"]
 
 const split = (lines: BookSection[]) => {
-  const from = lines.findIndex((line) => line.title === FIRST_DEPARTMENT)
-  const to = lines.findIndex((line) => line.title === LAST_DEPARTMENT)
-  if (from < 0 || to < from) throw new Error("The department range is not in the contents")
+  const from = lines.findIndex((line) => line.title === FIRST_BUDGET)
+  const to = lines.findIndex((line) => line.title === LAST_BUDGET)
+  if (from < 0 || to < from) throw new Error("The budget-page range is not in the contents")
+
+  const funded = (line: BookSection, at: number) =>
+    (at >= from && at <= to) || ALSO_A_BUDGET.includes(line.title)
 
   return {
-    contents: [...lines.slice(0, from), ...lines.slice(to + 1)],
+    contents: lines.filter((line, at) => !funded(line, at)),
     // Alphabetical, unlike everything else here, which keeps the book's order.
-    // The book groups its departments by what they do -- the mayor's offices,
-    // then public safety, then public works -- and a reader who wants one of
-    // them knows its name and not its group, so the order that finds it is the
-    // one it is filed under. The left-hand list stays in the book's order,
-    // because that one is an argument and reads in sequence.
-    departments: lines.slice(from, to + 1).sort((a, b) => a.title.localeCompare(b.title, "en")),
+    // The book groups these by what they do -- the mayor's offices, then public
+    // safety, then public works -- and a reader who wants one knows its name
+    // and not its group, so the order that finds it is the one it is filed
+    // under. The left-hand list stays in the book's order, because that one is
+    // an argument and reads in sequence.
+    departments: lines.filter(funded).sort((a, b) => a.title.localeCompare(b.title, "en")),
   }
 }
 
@@ -168,7 +180,11 @@ export const load: PageLoad = () => ({
       // Strategic Goals" (16): they are four bullets and five on one subject,
       // and the page here carries both under the headings the book prints.
       ["Goals", 15],
-      ["Net School Spending", 26],
+      // "Net School Spending" (26), with "Regional Schools" (150) and "School
+      // Department" (152) under it: one page for what the city spends on
+      // schools, filed with the budget pages rather than here in the book's
+      // order, since that is where a reader looks for a thing the city runs.
+      ["Education", 26],
       ["Capital Planning", 28],
       ["2027 Revenue Estimates", 48],
       ["2027 Revenue Summary", 64],
@@ -195,8 +211,6 @@ export const load: PageLoad = () => ({
       ["Economic Development & Planning", 131],
       ["Police Department", 135],
       ["Fire Department", 143],
-      ["Regional Schools", 150],
-      ["School Department", 152],
       ["Highway Department", 153],
       ["Outdoor Lighting", 159],
       ["Parking", 160],

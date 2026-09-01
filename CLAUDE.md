@@ -111,9 +111,10 @@ calendar.** The bar's menu lists every fiscal year the city publishes — a book
 here where one is written, the city's own PDF where it is not, and each year's
 audit report beside it, which is the only place those are linked. `/budget`
 itself is not a page: it was one, and reaching a book through it cost a hop.
-`/budget/<year>` is a budget book's own table of contents -- in two lists, the
-year's own account in the book's order, and an alphabetical **Departments**
-column taking the book's run from City Council to Library -- and
+`/budget/<year>` is a budget book's own table of contents -- two unheaded
+lists, the year's own account in the book's order and an alphabetical column of
+everything the city funds, from the book's run of City Council to Library plus
+anything `ALSO_A_BUDGET` names -- and
 `/budget/<year>/<section>` is one section of it transcribed. None of it is
 scraped: the city's page is 22 rows that change twice a year, so the list lives
 in `src/lib/data/budget.json`, scraped by `budget:update`. Every route is static and each contents line links to a

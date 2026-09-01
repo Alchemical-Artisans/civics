@@ -210,12 +210,19 @@ that every contents link resolves still knows what to expect.
 Every other line the book's contents carries is listed, whether or not it has a
 page here.
 
-**The contents is two lists, and neither is headed "Table of Contents".** The
-left one is the book's account of the year, in the book's order; the right one
-is headed **Departments** and is alphabetical. Its lines are the stretch of the
-book from City Council to Library, where each page is an office and what it
-costs, sorted by name afterwards — the book groups them by what they do, and a
-reader who wants one knows its name rather than its group. It stops at Library
+**The contents is two lists, and neither carries a heading.** The left one is
+the book's account of the year, in the book's order. The right one is
+alphabetical, and its lines are the stretch of the book from City Council to
+Library, where each page is something the city funds and what it costs — sorted
+by name afterwards, because the book groups them by what they do and a reader
+who wants one knows its name rather than its group.
+
+That list has no title because no short one is true of it: "Departments" would
+be wrong about Education, Outdoor Lighting, Refuse and Snow & Ice Removal, which
+are things the city funds rather than offices it staffs. `ALSO_A_BUDGET` in
+`fy2027/+page.ts` is how a page printed elsewhere in the book joins that list
+anyway — Education is page 26, and a reader looking for what the schools cost
+looks where the fire department is. It stops at Library
 rather than at the end of "General Fund Budgets", because Debt Service, State
 Assessments, Employee Benefits and Liability, Overlay & Reserves are money the
 city owes rather than departments that spend it. Sixty lines under one heading
@@ -359,6 +366,17 @@ below.
    contents offering them separately makes a reader choose between. The line's
    page number is the first of the two, so the header's source link opens where
    the pair begins.
+
+   The sections it covers need not all be transcribed. `education` is "Net
+   School Spending" (26), "Regional Schools" (150) and "School Department"
+   (152); only the first has been read off the page, and the other two are links
+   into the city's file at the page the book gives them, under a heading of ours
+   — "Elsewhere in the book", the one line on any of these pages that is not the
+   book's. That is the same thing a contents line does for a section nobody has
+   written up, so covering them loses nothing; when either is transcribed it
+   becomes an `<h2>` and drops off the list. Its `+page.ts` builds those links
+   from the book URL on the layout above it, which is why that one takes
+   `parent()`.
 
 ## A section whose tables are charted
 

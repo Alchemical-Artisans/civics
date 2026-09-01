@@ -126,25 +126,15 @@
     </div>
 
     <!--
-      Two lists and no "Table of Contents" over them: what the year is, and
-      what each department costs. Sixty lines under one heading is a list
-      nobody reads to the end of, and a reader arrives wanting one question or
-      the other.
-
-      Placed rather than ordered, so the heading sits over the right-hand list
-      on a wide screen and above the departments it names on a narrow one,
-      where the two lists are one after the other.
+      Two lists and no heading over either: what the year is, and what each of
+      the things the city funds costs. Sixty lines in one list is a list nobody
+      reads to the end of, and a reader arrives wanting one question or the
+      other -- but the second list is not all departments, and a name short
+      enough to head a column is wrong about part of what is under it.
     -->
     <div class="sm:grid sm:grid-cols-2 sm:items-start sm:gap-x-10">
-      <div class="sm:col-start-1 sm:row-start-2">
-        {@render list(contents)}
-      </div>
-
-      <h2 class="mt-8 sm:col-start-2 sm:row-start-1 sm:mt-0">Departments</h2>
-
-      <div class="sm:col-start-2 sm:row-start-2">
-        {@render list(departments)}
-      </div>
+      {@render list(contents)}
+      {@render list(departments)}
     </div>
   </div>
 </div>
