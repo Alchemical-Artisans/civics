@@ -64,22 +64,28 @@ the audit reports, do have text layers if they are ever written up.
 
 ## The chart on a book's front page
 
-`/budget/<year>` opens on the budget at a glance: two ranked bar charts,
+`/budget/<year>` opens on the budget at a glance: two pie charts,
 appropriations and revenue, drawn by
-[`src/lib/BudgetBars.svelte`](../src/lib/BudgetBars.svelte) from figures in the
+[`src/lib/BudgetPie.svelte`](../src/lib/BudgetPie.svelte) from figures in the
 book page's own `+page.ts`.
 
-**Ranked bars, not the pie the book draws.** A pie asks the reader to compare
-angles, which nobody does well past the biggest two or three slices, and it caps
-out at a handful of categories — the book's own pie collapses fourteen spending
-categories into five. Bars carry all of them, in order, with the figure printed
-beside each. One series, so one colour and no legend; the heading says what is
-plotted. There is no tooltip, because every value is already on the page and a
-hover layer would put a script on a page that needs none.
+**A pie, floated left, with the figures beside it.** The question a budget's
+front page answers is what share of one pot each category takes, and a pie says
+"half of it is schools" without the reader doing arithmetic. What a pie cannot
+do is let anyone compare its small slices, so the legend does that: ranked
+largest first, with the dollar figure and the share printed for every category,
+including the ones drawn as a hairline — Overlay is 1/589th of Education. The
+legend runs in columns beside the drawing, which is why the book page drops the
+reading column and takes the full width (`+layout.svelte` keeps `max-w-3xl` for
+a section, which is prose, and `max-w-none` for the book page, which is not).
+There is no tooltip, because every value is already on the page and a hover
+layer would put a script on a page that needs none.
 
-Both charts are scaled to one shared maximum. They are two halves of the same
-total and a reader will compare them; scaled separately, Education
-($147,158,454) and Tax Levy ($146,107,374) would draw the same length.
+Colour is the ranking, not the category: fourteen categorical hues cannot be
+told apart, so it is one hue stepped light-to-dark by size, and identity comes
+from the legend's label rather than from the colour. The two pies are the same
+circle divided two ways — both tables come to the same total — so they can be
+read against each other without any shared scale.
 
 **The figures come from page 78, not from the pie on page 65.** The pie is the
 book's own high-level view of revenue, and it does not add up: its five slices
@@ -191,7 +197,7 @@ chart shows and there is nothing to transcribe.
 src/lib/data/budget.json                   the committed listing, scraped
 src/lib/budget.ts                          reads it; slugs and contents helpers
 src/lib/budget.spec.ts                     unit tests for them
-src/lib/BudgetBars.svelte                  the ranked bar chart on a book page
+src/lib/BudgetPie.svelte                   the pie charts on a book page
 src/lib/BudgetTable.svelte                 a transcribed table, rendered from data
 src/lib/budget-table.ts                    that data's shape, and `amount`/`column`
 src/routes/budget/<year>/<section>/tables.ts  a shared section's tables

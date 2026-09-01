@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Router } from "$lib/router"
-  import BudgetBars from "$lib/BudgetBars.svelte"
+  import BudgetPie from "$lib/BudgetPie.svelte"
   import type { BookSection } from "$lib/budget"
 
   let { data } = $props()
@@ -18,16 +18,6 @@
 
   const inBrief = $derived(Router.budgetSection(book.id, overview.section.slug))
 
-  // One scale across both charts. They are two halves of the same total, so a
-  // reader will compare them; scaled separately, Tax Levy and Education would
-  // draw the same length while differing by a million dollars.
-  const scale = $derived(
-    Math.max(
-      ...overview.appropriations.map((r) => r.amount),
-      ...overview.revenue.map((r) => r.amount),
-    ),
-  )
-
   // A section written up here opens on this site; one that is not opens the
   // city's PDF at the page the book's own contents give for it. Either way the
   // reader lands on the section, which is the whole point of the page.
@@ -37,10 +27,14 @@
 
 {#snippet list(sections: BookSection[])}
   <!-- Not a `prose` list: the page numbers want a column of their own, and the
-       leader rule between title and number is what the book itself prints. -->
-  <ol class="not-prose mt-2 list-none space-y-0 p-0">
+       leader rule between title and number is what the book itself prints.
+       Sixty-odd lines of it, so it runs in columns on a page this wide rather
+       than as one strip down the left. -->
+  <ol class="not-prose mt-2 list-none space-y-0 p-0 sm:columns-2 sm:gap-x-10 xl:columns-3">
     {#each sections as section (section.slug)}
-      <li class="flex items-baseline gap-2 border-b border-slate-100 py-1.5 text-sm">
+      <li
+        class="flex break-inside-avoid items-baseline gap-2 border-b border-slate-100 py-1.5 text-sm"
+      >
         <a
           class="text-slate-800 underline decoration-slate-300 hover:decoration-slate-800"
           href={linkFor(section)}
@@ -61,8 +55,8 @@
 <!--
   The two halves of one number, which is what a budget is: everything the city
   expects to take in, and everything it plans to spend. Both tables are on page
-  78 and both come to the same total, so the two charts are the same size and
-  can be read against each other.
+  78 and both come to the same total, so the two pies are one circle divided two
+  ways and can be read against each other.
 -->
 <h2>Appropriations</h2>
 
@@ -71,13 +65,13 @@
   <a href={inBrief}>2027 Budget in Brief</a>.
 </p>
 
-<BudgetBars rows={overview.appropriations} scaleTo={scale} />
+<BudgetPie rows={overview.appropriations} />
 
 <h2>Revenue</h2>
 
 <p class="text-sm">{money.format(overview.total)}, from the same page.</p>
 
-<BudgetBars rows={overview.revenue} scaleTo={scale} />
+<BudgetPie rows={overview.revenue} />
 
 <h2>Table of Contents</h2>
 

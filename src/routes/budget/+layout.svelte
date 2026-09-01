@@ -9,6 +9,12 @@
   // A section page names itself and says where in the book it came from, set
   // by its own `+page.ts`. Absent on the book's own table of contents.
   const section = $derived(page.data.section)
+
+  // A section is prose and keeps a reading column; the book's own front page is
+  // not. That page is two pies and sixty-odd contents lines, all of which run
+  // in columns beside each other, and squeezing them into a 48rem strip left
+  // most of the screen as margin.
+  const column = $derived(data.isSection ? "max-w-3xl" : "max-w-none")
 </script>
 
 <svelte:head>
@@ -17,7 +23,7 @@
   </title>
 </svelte:head>
 
-<div class="mx-auto max-w-3xl px-4 py-8">
+<div class="mx-auto px-4 py-8 {column}">
   <!-- Up only. The calendar used to hang off the right of this row, because
        the book page is where `/` lands everyone and the other half of the site
        had to be reachable from it; the header does that now, on every page. -->

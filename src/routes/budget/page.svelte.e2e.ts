@@ -53,20 +53,27 @@ test.describe("budget pages", () => {
     await expect(page.getByRole("heading", { name: "Appropriations" })).toBeVisible()
     await expect(page.getByRole("heading", { name: "Revenue", exact: true })).toBeVisible()
 
-    const bars = page.getByRole("listitem").filter({ hasText: "$" })
-    expect(await bars.count()).toBeGreaterThan(20)
-    // Every figure is printed beside its bar, so the chart carries its own
-    // values rather than hiding them behind a hover.
-    await expect(bars.first()).toContainText("Education")
-    await expect(bars.first()).toContainText("$147,158,454")
+    const figures = page.getByRole("listitem").filter({ hasText: "$" })
+    expect(await figures.count()).toBeGreaterThan(20)
+    // Every figure is printed in the legend, so the chart carries its own
+    // values rather than hiding them behind a hover or an angle.
+    await expect(figures.first()).toContainText("Education")
+    await expect(figures.first()).toContainText("$147,158,454")
+    await expect(figures.first()).toContainText("51.6%")
   })
 
-  test("scales both charts against one maximum so they can be compared", async ({ page }) => {
-    // Education and Tax Levy are within a million of each other; scaled
-    // separately they would draw identically and the comparison would lie.
-    const html = await (await page.request.get(`/budget/${books[0]}`)).text()
-    const widths = [...html.matchAll(/width: max\(2px, ([\d.]+)%\)/g)].map((m) => Number(m[1]))
-    expect(widths.filter((w) => w === 100)).toHaveLength(1)
+  test("draws one slice per legend row, in each chart", async ({ page }) => {
+    // A category left out of the drawing is a pie that lies about its shares,
+    // and one drawn without a legend row is a wedge nobody can name.
+    await page.goto(`/budget/${books[0]}`)
+    const charts = page.locator(".budget-chart")
+    await expect(charts).toHaveCount(2)
+
+    for (const chart of await charts.all()) {
+      const rows = await chart.locator(".budget-legend > li").count()
+      expect(rows).toBeGreaterThan(5)
+      expect(await chart.locator("svg path").count()).toBe(rows)
+    }
   })
 
   test("a contents line with no page here opens the city's PDF at that page", async ({ page }) => {
