@@ -21,8 +21,13 @@
   <title>{headingOf(page.data)} - City of Haverhill</title>
 </svelte:head>
 
-<div class="mx-auto px-4 py-8 {column}">
-  <!-- Nothing above the page but the page. The bar at the top of the window
+<div class="mx-auto px-4 pt-4 pb-8 {column}">
+  <!-- Little padding at the top and more at the bottom, because there is
+       nothing above the page any more: with the heading and the "back" line
+       gone, an even `py-8` left the first pie hanging under a band of empty
+       white that read as a mistake rather than as breathing room.
+
+       Nothing above the page but the page. The bar at the top of the window
        names it, says what the book covers and links the city's own file, and
        its menu of years is the way to any other book -- shorter than the "back"
        line a book and a section each used to carry here, which is what that
