@@ -1,4 +1,5 @@
-<!-- The page's own heading, which the contents page renames. -->
+<!-- The section's own printed heading. The page is called "Appropriations",
+     which is what the chart that opens it is headed. -->
 <h2>10-Year Appropriation Projection (2027 to 2031)</h2>
 
 <h3>The anticipated general fund budget is founded on the following assumptions:</h3>

@@ -208,10 +208,20 @@ The revenue section is routed at `revenue` and titled **Revenue** rather than by
 the book's own name for it — a chart headed "Revenue" that opens
 "2027 Revenue Estimates" reads as two different things, and the year is in the
 bar above every page of the book anyway. It carries "2027 Revenue Summary"
-(page 64) as well, which is the same year's revenue rolled up: the book prints
-the two sixteen pages apart with the forecasts in between, and a reader who
-wants to know about revenue wants both. Its page number is 48, the first of
-them, so the bar's source link opens where the run begins.
+(64) and "10-Year Revenue Forecast" (67) as well — where the money comes from,
+rolled up, and carried out to 2036. The book prints the three across twenty
+pages with other things between them, and a reader who wants to know about
+revenue wants all three. Its page number is 48, the first of them, so the bar's
+source link opens where the run begins.
+
+**`appropriations` is the same idea on the spending side**, opened from the
+other pie's heading, and holds "10-Year Appropriation Forecast" (69) so far. It
+is a category rather than a section: the book's account of what the year spends
+is spread through "2027 Budget Requests" (72), "2027 Budget Challenges" (73) and
+the department pages, and each becomes an `<h2>` there under its own printed
+heading as it is transcribed. The pies themselves are page 78, which is
+2027 Budget in Brief and keeps its contents line — it is the table both charts
+are drawn from rather than either side's own account.
 
 A chart title that is a link says so with a 2px underline rather than the
 hairline the contents lines carry, and the pie's heading needs `font-semibold`

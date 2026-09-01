@@ -78,16 +78,21 @@
       away rather than restated under every heading.
     -->
     <h2>
-      Appropriations
+      <a
+        class="font-semibold text-slate-900 underline decoration-slate-400 decoration-2 underline-offset-4 hover:decoration-slate-900"
+        href={Router.budgetSection(book.id, "appropriations")}
+      >
+        Appropriations
+      </a>
       <span class="font-normal text-slate-500 tabular-nums">{money.format(overview.total)}</span>
     </h2>
 
     <BudgetPie rows={overview.appropriations} />
 
-    <!-- The heading is the way into the section every figure in this chart
-         comes from, which is why "Revenue" has no line in the contents below.
-         Appropriations has no such section to open: page 78's table is what
-         it is drawn from, and that is 2027 Budget in Brief, in the contents. -->
+    <!-- Each heading opens the side of the book its chart is about, which is
+         why neither has a line in the contents below. The pies themselves are
+         page 78, which is 2027 Budget in Brief and does have one: it is the
+         table both are drawn from, rather than either side's own account. -->
     <h2>
       <!-- `font-semibold` because `prose` gives a link its own weight of 500,
            which is lighter than the heading it sits in and made this one read

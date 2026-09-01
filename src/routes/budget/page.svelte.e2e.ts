@@ -35,7 +35,7 @@ const unlinked = [
  * each is a bar, and the bar's own name is the link. A contents line as well
  * would offer the same page twice on one screen.
  */
-const charted = ["fiscal-reserves", "outstanding-debt", "revenue"]
+const charted = ["fiscal-reserves", "outstanding-debt", "revenue", "appropriations"]
 
 test.describe("budget pages", () => {
   test("the book opens on the budget at a glance, before its contents", async ({ page }) => {
@@ -173,6 +173,9 @@ test.describe("budget pages", () => {
     ).toBeVisible()
     await expect(page.getByRole("heading", { name: "Revenue Forecast" })).toBeVisible()
 
+    // Page 67, the ten years after it.
+    await expect(page.getByRole("heading", { name: "10-Year Revenue Projection" })).toBeVisible()
+
     // The bar's source link opens the book where the run begins.
     expect(await page.locator('header a[href*="#page="]').getAttribute("href")).toMatch(/#page=48$/)
 
@@ -182,6 +185,27 @@ test.describe("budget pages", () => {
     const every = page.locator("article > div ol li")
     await expect(every.filter({ hasText: "Revenue Summary" })).toHaveCount(0)
     await expect(every.filter({ hasText: "Revenue Estimates" })).toHaveCount(0)
+  })
+
+  test("opens the spending side from its own chart", async ({ page }) => {
+    await page.goto(`/budget/${books[0]}`)
+
+    // Both pie headings are links now, each to the side of the book its chart
+    // is about, and neither section has a line in the contents.
+    await expect(page.getByRole("link", { name: "Appropriations", exact: true })).toHaveAttribute(
+      "href",
+      /\/appropriations$/,
+    )
+    const every = page.locator("article > div ol li")
+    await expect(every.filter({ hasText: "Appropriation Forecast" })).toHaveCount(0)
+    await expect(every.filter({ hasText: "Revenue Forecast" })).toHaveCount(0)
+
+    await page.goto(`/budget/${books[0]}/appropriations`)
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Appropriations")
+    await expect(
+      page.getByRole("heading", { name: /^10-Year Appropriation Projection/ }),
+    ).toBeVisible()
+    expect(await page.locator('header a[href*="#page="]').getAttribute("href")).toMatch(/#page=69$/)
   })
 
   test("carries capital planning under Projects", async ({ page }) => {

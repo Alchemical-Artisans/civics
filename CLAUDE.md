@@ -168,9 +168,9 @@ Notable pieces:
   **`src/lib/chart-colours.ts`**, one validated sequence, restarted per pie and
   per bar.
 - **`src/lib/BudgetPie.svelte`** is the pie chart a budget book opens with --
-  two of them, appropriations and revenue, the second headed with a link to
-  `revenue`, the section its figures are explained in, which is why that section
-  has no contents line. A wedge names itself and prints its dollars and share on
+  two of them, appropriations and revenue, each headed with a link to the side of
+  the book it is about -- `appropriations` and `revenue`, which gather that
+  side's sections and so have no contents lines of their own. A wedge names itself and prints its dollars and share on
   hover or focus, which
   makes it the one page here carrying a script. Every wedge is focusable, both
   so a keyboard reaches the chart at all and because the smallest wedges are a
