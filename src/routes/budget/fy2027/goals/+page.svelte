@@ -1,4 +1,5 @@
-<!-- The page's own heading, which the contents page shortens. -->
+<!-- Each half keeps the heading the book prints over it, which is neither of
+     the names its contents page gives them. -->
 <h2>Mayor's 2027 Budgetary Goals</h2>
 
 <p>
@@ -22,5 +23,22 @@
   <li>
     Develop a long-term, stable budget using a 10-year projection model as a tool to ensure that
     current budget decisions and initiatives will be supported by future revenue growth.
+  </li>
+</ul>
+
+<h2>Long-Term Perspective Strategic Goals</h2>
+
+<p>The long-term strategic goals influencing the 2027 budget process include the following:</p>
+
+<ul>
+  <li>Ensure long-range forecasts will maintain reserves in accordance with internal policies.</li>
+  <li>
+    Ensure that debt ratios will comply with state statutes and the city's financial policies.
+  </li>
+  <li>Continue to meet or exceed the statutory net school spending requirements.</li>
+  <li>Allocate funding for maintenance of capital equipment, buildings, and infrastructure.</li>
+  <li>
+    Plan for long-range capital projects such as a Fire Station, JG Whittier Middle School, and
+    Whittier Technical High School.
   </li>
 </ul>

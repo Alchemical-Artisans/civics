@@ -71,8 +71,10 @@ export const load: PageLoad = () => ({
    * contents lists is listed, whether or not it has a page here.
    */
   contents: contents("fy2027", [
-    ["2027 Budget Goals", 15],
-    ["Long-Term Strategic Goals", 16],
+    // One line for the book's two, "2027 Budget Goals" (15) and "Long-Term
+    // Strategic Goals" (16): they are four bullets and five on one subject,
+    // and the page here carries both under the headings the book prints.
+    ["Goals", 15],
     ["Fiscal Reserves", 17],
     ["Outstanding Debt", 21],
     ["Net School Spending", 26],

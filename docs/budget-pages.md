@@ -274,6 +274,14 @@ below.
    "2027 Budget Goals" is printed "Mayor's 2027 Budgetary Goals" — the printed
    one is the first `<h2>`.
 
+   A page may cover more than one of the book's sections, in which case the
+   contents here carries one line for them and each keeps its own printed
+   heading: `goals` is the book's "2027 Budget Goals" (page 15) and "Long-Term
+   Strategic Goals" (page 16), four bullets and five on one subject, which a
+   contents offering them separately makes a reader choose between. The line's
+   page number is the first of the two, so the header's source link opens where
+   the pair begins.
+
 ## A section whose tables are charted
 
 A transcription is ordinarily plain markup. The exception is a section whose
