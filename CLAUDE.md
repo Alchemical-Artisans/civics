@@ -125,16 +125,20 @@ its sections were read off rendered pages by hand. See
 Notable pieces:
 
 - **`src/lib/SiteHeader.svelte`** is the bar on every page: the mark, the page's
-  own name, the menu of fiscal years, and a link to the calendar. On the budget half it
+  own name, the budget with its menu of fiscal years, and the calendar. On the budget half it
   carries what the page used to head itself with — the name (its only `<h1>`),
   the fiscal year the book covers, and an "Original Source" link to the city's
   file, opened at a section's own page — all from `src/lib/heading.ts`, which
   reads `page.data`; a budget book is called `2027 Budget`, never "FY2027
   Mayor's Budget". The bar runs the width of the window, because a bar narrower
-  than the page under it reads as a mistake. Its budget entry is a `<details>`
-  menu of every fiscal year — plain HTML, so it works before anything hydrates —
-  which is both the list `/budget` used to be and the reason no budget page
-  carries a back link any more. The current section is
+  than the page under it reads as a mistake. Its budget entry is a link to this
+  year's book with a menu of every fiscal year under it — the list `/budget`
+  used to be, and the reason no budget page carries a back link any more. The
+  word navigates, so the caret beside it is a separate `<button>`: that is the
+  whole control on a touch screen, where there is no hover. The hover itself is
+  written both in CSS (so a page that has not hydrated still opens the menu) and
+  in the component, which takes over on mount via `:not(.live)` — otherwise
+  `:hover` would hold open a menu Escape had just closed. The current section is
   matched on `page.route.id`, never on `page.url.pathname` against a
   `Router`-built href -- with `paths.relative` on, that comparison cannot match
   during prerendering and starts matching after hydration, so the served markup

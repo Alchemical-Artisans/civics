@@ -254,16 +254,32 @@ will see. The calendar has no other entry point from `/`, so it has to be there.
 [`src/lib/SiteHeader.svelte`](../src/lib/SiteHeader.svelte) sits above every
 page: the mark, which goes to `/`, the page's own name where the page does not
 head itself (see [budget-pages.md](budget-pages.md)), and each half of the site
-at the right. The calendar is a link. The budget is a `<details>` menu of every
-fiscal year the city publishes, because the list used to be a page — `/budget` —
-and reaching a book through it cost a hop that landing on the budget was meant
-to remove. The menu is also why no budget page carries a way back up any more.
+at the right. The calendar is a link. So is the budget — it goes to this year's
+book, the same place `/` forwards to — with a menu of every fiscal year the
+city publishes under it, because that list used to be a page, `/budget`, and
+reaching a book through it cost a hop. The menu is also why no budget page
+carries a way back up any more.
 
-It opens, closes and takes the keyboard as a `<details>`, with no script, which
-matters on a site whose pages are readable before anything hydrates; the script
-in the component is only the three habits a browser does not give one for free
-— closing on a click past it, on Escape, and once the reader has gone
-somewhere, since SvelteKit navigates without replacing the bar.
+**The word and the caret beside it are two controls.** A word that navigates
+cannot also be the thing you press to see a list, so the word is the link and
+the caret is a `<button>` with `aria-expanded`. On a pointer the menu opens on
+hover and the caret is barely needed; on a touch screen there is no hover to
+give and the caret is the whole control, which is why it is padded out to a
+thumb rather than drawn on the link.
+
+**The hover is written twice, and only one of them is ever in force.** In CSS,
+so a page that has not hydrated — or a reader running no script at all — still
+gets every year the city publishes; and in the component, so the caret's
+`aria-expanded` says what is actually on screen. `.budget-item:not(.live)`
+hands the job from the first to the second the moment the component mounts,
+which is also what lets Escape and a second press close a menu the pointer is
+still sitting on: CSS `:hover`, left in play, would hold it open. The e2e suite
+runs the no-script case in a context with `javaScriptEnabled: false` and the
+touch case in one with `isMobile`, which is what makes `(hover: hover)` false.
+
+The rest of the script is the habits a browser gives no menu for free: closing
+on a press past it, on Escape, and once the reader has gone somewhere, since
+SvelteKit navigates without replacing the bar.
 
 The pages used to carry these links themselves — a line above the calendar's
 heading pointing at the budget, another under the budget's table pointing back,

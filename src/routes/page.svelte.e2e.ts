@@ -67,59 +67,73 @@ test.describe("the site header", () => {
       // no img role to find it by.
       await expect(header.locator("img")).toBeVisible()
       await expect(header.getByRole("link", { name: "Haverhill Public Documents" })).toBeVisible()
-      // The budget half is a menu rather than a link, so it is the `<summary>`
-      // that names it.
-      await expect(header.locator("summary")).toHaveText(/Budget/)
+      await expect(header.getByRole("link", { name: "Budget", exact: true })).toBeVisible()
       await expect(header.getByRole("link", { name: "Calendar", exact: true })).toBeVisible()
     }
   })
 
-  test("its budget menu lists every fiscal year the city publishes", async ({ page }) => {
-    // Everything the deleted `/budget` page used to list, one click from
-    // anywhere instead of a page of its own.
+  test("the word Budget opens this year's book", async ({ page }) => {
+    // The same destination `/` forwards to. It is a link and not the thing you
+    // press to see the years, because a word that navigates cannot be both.
+    await page.goto("/calendar")
+    await page.getByRole("banner").getByRole("link", { name: "Budget", exact: true }).click()
+    await expect(page).toHaveURL(`/budget/${newest}`)
+  })
+
+  test("hovering Budget lists every fiscal year the city publishes", async ({ page }) => {
+    // Everything the deleted `/budget` page used to list, under the pointer
+    // instead of behind a page of its own.
     await page.goto("/calendar")
     const header = page.getByRole("banner")
-    await header.locator("summary").click()
+    const years = header.locator("#budget-years")
+
+    await expect(years).toBeHidden()
+    await header.getByRole("link", { name: "Budget", exact: true }).hover()
+    await expect(years).toBeVisible()
 
     // 2006 through 2027, one row each.
-    await expect(header.locator("details li")).toHaveCount(22)
-    await expect(header.getByRole("link", { name: /^FY2027/ })).toBeVisible()
-    await expect(header.getByRole("link", { name: /^FY2006/ })).toBeVisible()
+    await expect(years.locator("li")).toHaveCount(22)
+    await expect(years.getByRole("link", { name: /^FY2027/ })).toBeVisible()
+    await expect(years.getByRole("link", { name: /^FY2006/ })).toBeVisible()
   })
 
   test("a year with no page here opens the city's own file", async ({ page }) => {
     await page.goto("/calendar")
     const header = page.getByRole("banner")
-    await header.locator("summary").click()
+    await header.getByRole("link", { name: "Budget", exact: true }).hover()
 
     // Asserted on attributes rather than by following them, so the suite never
     // reaches out to the city's CDN. The audit reports are here too: this menu
     // is the only place on the site that links them.
-    const file = header.locator('details a[href^="https://"]').first()
+    const file = header.locator('#budget-years a[href^="https://"]').first()
     await expect(file).toHaveAttribute("target", "_blank")
     expect(await file.getAttribute("rel")).toContain("noopener")
     await expect(header.getByRole("link", { name: /^Audit/ }).first()).toBeVisible()
   })
 
-  test("its budget menu opens a book, and closes behind itself", async ({ page }) => {
+  test("picking a year opens its book, and the menu closes behind itself", async ({ page }) => {
     await page.goto("/calendar")
     const header = page.getByRole("banner")
-    await header.locator("summary").click()
+    await header.getByRole("link", { name: "Budget", exact: true }).hover()
     await header.getByRole("link", { name: `FY${newest.slice(2)}` }).click()
 
     await expect(page).toHaveURL(`/budget/${newest}`)
-    // A `<details>` is not closed by navigating under it, which on a site that
-    // keeps the bar across a navigation would leave the menu hanging open.
-    await expect(header.locator("details[open]")).toHaveCount(0)
+    // Nothing else would close it: the bar survives the navigation under it,
+    // and the pointer is still inside the menu that is no longer wanted.
+    await expect(header.locator("#budget-years")).toBeHidden()
   })
 
   test("closes the budget menu on Escape", async ({ page }) => {
     await page.goto("/calendar")
     const header = page.getByRole("banner")
-    await header.locator("summary").click()
-    await expect(header.locator("details[open]")).toHaveCount(1)
+    const years = header.locator("#budget-years")
+
+    await header.getByRole("link", { name: "Budget", exact: true }).hover()
+    await expect(years).toBeVisible()
+    // Still hovered, which is the case CSS alone could not close -- the reason
+    // the component takes the hover over from it once it has mounted.
     await page.keyboard.press("Escape")
-    await expect(header.locator("details[open]")).toHaveCount(0)
+    await expect(years).toBeHidden()
   })
 
   test("its calendar link opens the calendar", async ({ page }) => {
@@ -147,16 +161,14 @@ test.describe("the site header", () => {
     /** The text of whichever header link the served HTML marks as current. */
     const marked = async (at: string) => {
       const html = await (await page.request.get(at)).text()
-      // A link for the calendar, a `<summary>` for the budget menu.
-      const link = html.match(/<(a|summary)[^>]*aria-current="page"[^>]*>([\s\S]*?)<\/\1>/)
-      return link?.[2].replace(/<[^>]*>/g, "").trim() ?? null
+      const link = html.match(/<a[^>]*aria-current="page"[^>]*>([\s\S]*?)<\/a>/)
+      return link?.[1].replace(/<[^>]*>/g, "").trim() ?? null
     }
 
     expect(await marked("/calendar")).toBe("Calendar")
-    // The budget half names itself and then the caret that says it opens.
-    expect(await marked(`/budget/${newest}`)).toMatch(/^Budget/)
+    expect(await marked(`/budget/${newest}`)).toBe("Budget")
     // Three levels down still marks its half of the site.
-    expect(await marked(`/budget/${newest}/${section}`)).toMatch(/^Budget/)
+    expect(await marked(`/budget/${newest}/${section}`)).toBe("Budget")
 
     // `/` is in neither section; it only forwards.
     expect(await marked("/")).toBeNull()
@@ -170,17 +182,85 @@ test.describe("the site header", () => {
       "aria-current",
       "page",
     )
-    await expect(header.locator("summary")).not.toHaveAttribute("aria-current", "page")
+    await expect(header.getByRole("link", { name: "Budget", exact: true })).not.toHaveAttribute(
+      "aria-current",
+      "page",
+    )
 
     // A section three levels down still marks its half of the site.
     await page.goto(`/budget/${newest}/${section}`)
-    await expect(header.locator("summary")).toHaveAttribute("aria-current", "page")
+    await expect(header.getByRole("link", { name: "Budget", exact: true })).toHaveAttribute(
+      "aria-current",
+      "page",
+    )
 
     // And inside the menu, the book the reader is actually in.
-    await header.locator("summary").click()
+    await header.getByRole("link", { name: "Budget", exact: true }).hover()
     await expect(header.getByRole("link", { name: `FY${newest.slice(2)}` })).toHaveAttribute(
       "aria-current",
       "true",
     )
+  })
+})
+
+test.describe("the site header on a touch screen", () => {
+  // A phone: no hover to give, and a tap on the word beside the caret
+  // navigates. `isMobile` is what makes `(hover: hover)` false in the page, so
+  // this is the only place the caret is the whole control.
+  test.use({ hasTouch: true, isMobile: true, viewport: { width: 390, height: 800 } })
+
+  test("the caret opens the menu, and closes it again", async ({ page }) => {
+    await page.goto("/calendar")
+    const header = page.getByRole("banner")
+    const caret = header.getByRole("button", { name: "Every fiscal year" })
+    const years = header.locator("#budget-years")
+
+    await expect(years).toBeHidden()
+    await expect(caret).toHaveAttribute("aria-expanded", "false")
+
+    await caret.tap()
+    await expect(years).toBeVisible()
+    await expect(caret).toHaveAttribute("aria-expanded", "true")
+
+    await caret.tap()
+    await expect(years).toBeHidden()
+  })
+
+  test("tapping the word opens this year's book instead", async ({ page }) => {
+    await page.goto("/calendar")
+    const header = page.getByRole("banner")
+    await header.getByRole("link", { name: "Budget", exact: true }).tap()
+    await expect(page).toHaveURL(`/budget/${newest}`)
+  })
+
+  test("a tap outside puts the menu away", async ({ page }) => {
+    await page.goto("/calendar")
+    const header = page.getByRole("banner")
+    const years = header.locator("#budget-years")
+
+    await header.getByRole("button", { name: "Every fiscal year" }).tap()
+    await expect(years).toBeVisible()
+    // A point on the page rather than an element: the menu covers the top
+    // right of it, and what is being tested is the tap landing anywhere else.
+    await page.touchscreen.tap(20, 500)
+    await expect(years).toBeHidden()
+  })
+})
+
+test.describe("the site header with no script", () => {
+  // The pages are prerendered and readable before anything hydrates, and the
+  // menu is written to hold that: hidden markup revealed by a CSS `:hover`,
+  // which the component takes over from once it has mounted.
+  test.use({ javaScriptEnabled: false })
+
+  test("still opens the budget menu on hover", async ({ page }) => {
+    await page.goto("/calendar")
+    const header = page.getByRole("banner")
+    const years = header.locator("#budget-years")
+
+    await expect(years).toBeHidden()
+    await header.getByRole("link", { name: "Budget", exact: true }).hover()
+    await expect(years).toBeVisible()
+    await expect(years.getByRole("link", { name: /^FY2006/ })).toBeVisible()
   })
 })

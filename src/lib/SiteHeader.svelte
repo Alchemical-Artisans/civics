@@ -10,6 +10,7 @@
   replaces all of them.
 -->
 <script lang="ts">
+  import { onMount } from "svelte"
   import { page } from "$app/state"
   import { Router } from "$lib/router"
   import { barOf } from "$lib/heading"
@@ -44,20 +45,58 @@
 
   const bar = $derived(barOf(page.data))
 
-  // The menu is a `<details>`, so it opens, closes and takes the keyboard with
-  // no script at all -- which matters on a site whose pages are all prerendered
-  // and readable before anything hydrates. The script below is only the two
-  // habits a browser does not give a `<details>` for free: closing when the
-  // reader clicks past it or presses Escape, and closing once they have gone
-  // somewhere.
-  let menu: HTMLDetailsElement | undefined = $state()
+  /** The newest book with a page here: where the word "Budget" goes. */
+  const newest = $derived(years.find((year) => year.written))
 
-  const close = () => {
-    if (menu) menu.open = false
+  // The menu opens under the pointer and closes when it leaves, which is the
+  // only way to have "Budget" be a link to this year's book *and* a way to
+  // every other year: a word that navigates cannot also be the thing you press
+  // to see a list. The caret beside it is that press, and it is what a touch
+  // screen -- which has no hover to give -- uses instead.
+  //
+  // The hover is written twice on purpose: in the CSS below, so it works on a
+  // page that has not hydrated or that runs no script at all, and here, so the
+  // caret's `aria-expanded` says what is actually on screen. The two agree
+  // because both are the same condition.
+  let shown = $state(false)
+  let item: HTMLElement | undefined = $state()
+
+  // Which of the two is in charge. Before the page hydrates the CSS is, because
+  // it is the only thing there; from mount on the state above is, so that
+  // Escape and a second press on the caret can close a menu the pointer is
+  // still sitting on -- which CSS `:hover`, left in play, would hold open.
+  let live = $state(false)
+  onMount(() => (live = true))
+
+  const close = () => (shown = false)
+
+  // Only a mouse. A tap fires `pointerenter` as well, and on a phone that
+  // would open the menu under the finger already on its way to the link.
+  const enter = (event: PointerEvent) => {
+    if (event.pointerType === "mouse") shown = true
   }
 
-  // Closing after a click on one of the menu's own links takes a line too: the
-  // page changes under a `<details>` that stays exactly as it was, because
+  // Not while the reader is in it: the menu they pressed the caret to open, and
+  // are tabbing through, should not vanish because the mouse wandered off.
+  const leave = (event: PointerEvent) => {
+    if (event.pointerType !== "mouse") return
+    if (item?.contains(document.activeElement)) return
+    shown = false
+  }
+
+  // Tab through the years and the menu stays up; tab past the last of them and
+  // it closes. `focusout` fires before the next element takes focus, so where
+  // focus is going is `relatedTarget` rather than anything readable from here.
+  //
+  // There is no matching `focusin`. Focus does not open the menu -- pressing
+  // the caret does, by keyboard exactly as by thumb -- because a click gives
+  // the button focus a moment before it fires, and a menu that opens on focus
+  // would then be closed again by the press that opened it.
+  const left = (event: FocusEvent) => {
+    if (!item?.contains(event.relatedTarget as Node | null)) close()
+  }
+
+  // The page changes under a menu that stays exactly as it was, because
   // SvelteKit navigates without replacing the bar.
   $effect(() => {
     if (page.url.pathname) close()
@@ -65,7 +104,7 @@
 
   $effect(() => {
     const past = (event: PointerEvent) => {
-      if (menu?.open && !menu.contains(event.target as Node)) close()
+      if (shown && !item?.contains(event.target as Node)) close()
     }
     const escape = (event: KeyboardEvent) => {
       if (event.key === "Escape") close()
@@ -122,32 +161,66 @@
          the right and wrap as a pair on a narrow screen. -->
     <nav class="ml-auto flex items-center gap-4 text-sm" aria-label="Sections">
       <!--
-        The budget half is a menu of years rather than a link to a page listing
-        them. The list was a page once, `/budget`, and every reader who wanted a
-        book paid a hop through it; here the same twenty-two years are one click
-        from anywhere on the site, and the year a reader is in stays visible
-        while they pick another. It also replaces the way back up: a book and
-        its sections used to carry a "back" line of their own, which is the
-        first thing the menu makes redundant.
+        The budget half is a word and a menu under it. The word goes where `/`
+        goes -- this year's book -- and the menu is every year the city
+        publishes, which was a page once, `/budget`, that every reader wanting a
+        book paid a hop through. Between them they also replace the way back up:
+        a book and its sections used to carry a "back" line of their own.
       -->
-      <!-- `aria-current="page"` on the summary is the same section marker the
-           calendar link carries; the year inside gets `"true"` -- the current
-           item of a set -- rather than a second "page" for the one page. -->
-      <details class="relative" bind:this={menu}>
-        <summary
-          class="cursor-pointer list-none underline decoration-slate-300 hover:decoration-slate-900 [&::-webkit-details-marker]:hidden {current.budget
-            ? 'font-medium text-slate-900'
-            : 'text-slate-600'}"
-          aria-current={current.budget ? "page" : undefined}
+      <!-- `aria-current="page"` on the link is the same section marker the
+           calendar link carries; the year inside the menu gets `"true"` -- the
+           current item of a set -- rather than a second "page" for one page. -->
+      <!-- `role="none"`: the wrapper is where hovering is noticed and where the
+           menu is positioned from, and nothing more -- the link, the caret and
+           the list under it carry every bit of the meaning. -->
+      <div
+        role="none"
+        class="budget-item relative flex items-center gap-1"
+        class:open={shown}
+        class:live
+        bind:this={item}
+        onpointerenter={enter}
+        onpointerleave={leave}
+        onfocusout={left}
+      >
+        {#if newest}
+          <a
+            class="underline decoration-slate-300 hover:decoration-slate-900 {current.budget
+              ? 'font-medium text-slate-900'
+              : 'text-slate-600'}"
+            href={Router.budgetBook(newest.id)}
+            aria-current={current.budget ? "page" : undefined}
+          >
+            Budget
+          </a>
+        {:else}
+          <!-- No book is written up, so the word leads nowhere and the years
+               in the menu are all links to the city's own files. -->
+          <span class="text-slate-600">Budget</span>
+        {/if}
+
+        <!-- The caret is the whole control on a touch screen, so it is a
+             button of its own rather than a decoration on the link, and it is
+             padded out to something a thumb can hit. -->
+        <button
+          class="-m-2 cursor-pointer p-2 text-slate-500 hover:text-slate-900"
+          type="button"
+          aria-expanded={shown}
+          aria-controls="budget-years"
+          onclick={() => (shown = !shown)}
         >
-          Budget <span aria-hidden="true">&#9662;</span>
-        </summary>
+          <span aria-hidden="true">&#9662;</span>
+          <span class="sr-only">Every fiscal year</span>
+        </button>
 
         <!-- Taller than most screens if it ran to its content, so it scrolls
              within itself; `right-0` because the menu hangs off the end of the
-             bar and would otherwise run off the window on a phone. -->
+             bar and would otherwise run off the window on a phone. It sits
+             against the bar rather than below a gap, so crossing into it does
+             not take the pointer out of what it is hovering. -->
         <ul
-          class="absolute right-0 z-50 m-0 mt-2 max-h-[70vh] w-60 list-none overflow-y-auto rounded border border-slate-200 bg-white p-1 shadow-lg"
+          class="budget-years absolute top-full right-0 z-50 m-0 max-h-[70vh] w-60 list-none overflow-y-auto rounded border border-slate-200 bg-white p-1 shadow-lg"
+          id="budget-years"
         >
           {#each years as year (year.id)}
             <li class="flex items-baseline justify-between gap-3 px-2 py-1 hover:bg-slate-50">
@@ -194,7 +267,7 @@
             </li>
           {/each}
         </ul>
-      </details>
+      </div>
 
       <a
         class="underline decoration-slate-300 hover:decoration-slate-900 {current.calendar
@@ -208,3 +281,32 @@
     </nav>
   </div>
 </header>
+
+<style>
+  /*
+    The menu is hidden markup rather than markup that is not there, so hovering
+    reveals it with no script: a reader whose page has not hydrated, or who runs
+    none at all, still gets every year the city publishes. `:not(.live)` hands
+    that job over the moment the component mounts, so there is never a page
+    where CSS and the component disagree about what is on screen.
+
+    `@media (hover: hover)` keeps it off a touch screen, where a tap counts as a
+    hover and then stays hovered until something else is touched -- the menu
+    would open on the way to the link and sit there afterwards. The caret is
+    what a touch screen presses instead, and `.open` is that press.
+  */
+  .budget-years {
+    display: none;
+  }
+
+  .budget-item.open .budget-years {
+    display: block;
+  }
+
+  @media (hover: hover) {
+    .budget-item:not(.live):hover .budget-years,
+    .budget-item:not(.live):focus-within .budget-years {
+      display: block;
+    }
+  }
+</style>

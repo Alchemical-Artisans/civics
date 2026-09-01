@@ -138,7 +138,7 @@ test.describe("budget pages", () => {
     // The way back up, now that no page carries one of its own: the bar's menu
     // of years, which reaches any book from any page.
     const header = page.getByRole("banner")
-    await header.locator("summary").click()
+    await header.getByRole("link", { name: "Budget", exact: true }).hover()
     await header.getByRole("link", { name: `FY${books[0].slice(2)}` }).click()
     await expect(page).toHaveURL(new RegExp(`/budget/${books[0]}$`))
   })

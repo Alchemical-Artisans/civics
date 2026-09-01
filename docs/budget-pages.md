@@ -17,8 +17,9 @@ page at its root:
 
 **There is no `/budget`.** The list of fiscal years was a page once, and every
 reader who wanted a book paid a hop through it to get there; the same
-twenty-two years are now the menu behind **Budget** in the bar at the top of
-every page — `src/lib/SiteHeader.svelte`, from `budgetYears` on the root
+twenty-two years are now the menu under **Budget** in the bar at the top of
+every page — the word itself links to this year's book, and the caret beside it
+is what opens the menu where there is no pointer to hover with — `src/lib/SiteHeader.svelte`, from `budgetYears` on the root
 layout's load. A year written up here links to its book, a year that is still
 just a PDF links to the city's file, and each year's audit report hangs off the
 end of its row, which makes the menu the only place on the site those are
