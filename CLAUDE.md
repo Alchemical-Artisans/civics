@@ -167,8 +167,10 @@ Notable pieces:
   push anything out from under itself. It is a drawing rather than a section of its own,
   and its entries are `budget-calendar.ts` beside the book's `+page.ts`. A box
   holds a date and a summary — the only text on these pages that is not the
-  book's — and the book's own sentence appears under the row on hover or focus,
-  and sits hidden in the box for a screen reader. The stage the process has
+  book's — and the book's own sentence comes up as a tooltip over the box on
+  hover or focus, drawn outside the scrolling strip because `overflow-x` clips
+  vertically too, and sits hidden in the box for a screen reader. Nothing else
+  is in the footer: no label, no today's date, only the boxes and the mark. The stage the process has
   reached, meaning the last entry that has begun, is the one box in amber --
   the only thing on a page that is otherwise all one blue. Boxes
   are evenly spaced because two entries are a day apart; only the mark is placed

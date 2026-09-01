@@ -204,20 +204,28 @@ ended when the council adopted the budget on 6/16/26, so its mark now sits at
 the end of the axis and stays there; a book being written while its calendar is
 running is the case this is built for.
 
-**It is a footer, so it is built to be short.** One line above the boxes carries
-what the calendar is and what day it is, and carries the book's sentence instead
-while a box is under the pointer — the same line doing both, because only one of
-them is ever wanted at once and a lane for each would double what this costs the
-window. It is two lines tall whether or not anything is in it, so the row never
-moves under the pointer.
+**It is a footer, so it is built to be short:** the boxes and the mark, and
+nothing else. There was a line above them naming the calendar and printing
+today's date, and it went — the date is what the mark already says, and a strip
+of chrome is a poor trade for the bottom of every window. The row itself carries
+the name, as the `<ol>`'s `aria-label`, which costs no height.
+
+**The book's sentence is a tooltip.** It comes up over the box under the pointer
+(or holding focus), and it is drawn outside the scrolling strip: `overflow-x`
+clips vertically as well, so a tooltip drawn inside the strip would be cut in
+half by it. That means its horizontal place is measured — the box's own
+rectangle against the component's — rather than worked out from the index, which
+is both shorter than "position in the row less the scroll" and right while the
+row is being scrolled. It is pulled back from either edge so the first and last
+boxes get a tooltip and not a scrollbar, and it is `aria-hidden`, because the
+box already carries the same sentence for a screen reader.
 
 Twelve boxes need more width than a phone has, so the row keeps its width and
-scrolls inside itself, the way a wide table in a section does. Only the row: the
-line above it stays put, or scrolling to the end of the calendar would carry off
-the sentence being scrolled to. On a narrow window the row is scrolled on load
-to put the highlighted box in the middle, which is otherwise six boxes off
-screen. Nothing pushes a fixed footer out from under itself, so `+layout.svelte`
-pads the book page by more than the footer's tallest.
+scrolls inside itself, the way a wide table in a section does. On a narrow window
+it is scrolled on load to put the highlighted box in the middle, which is
+otherwise six boxes off screen. Nothing pushes a fixed footer out from under
+itself, so `+layout.svelte` pads the book page by more than the footer's
+tallest.
 
 **The book's contents still lists "Budget Calendar"**, and that line opens the
 city's PDF at page 13 like any section with no page here — the drawing is on the

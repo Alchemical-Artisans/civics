@@ -18,16 +18,20 @@
   three states are a fill apart rather than an outline apart -- an outline heavy
   enough to see across a page of twelve boxes reads as a box drawn twice.
 
-  It is a footer, so it is built to be short. One line above the boxes carries
-  the date today is, and carries the book's sentence instead while a box is
-  under the pointer -- the same line doing both, because only one of them is
-  ever wanted at once and a lane held open for each would double what this costs
-  the window.
+  It is a footer, so it is built to be short: the boxes and the mark, and
+  nothing else. There was a line above them naming the calendar and printing
+  today's date, and it went -- the date is what the mark already says, and a
+  strip of chrome is a poor trade for the bottom of every window.
 
   Each box holds a few words. The book's own sentence runs to twenty-odd, which
-  is a paragraph in a box this wide, so it is a mouseover away instead --
-  unshortened, and in the box for a screen reader either way. The summaries are
-  ours; everything else here is the book's.
+  is a paragraph in a box this wide, so it comes up as a tooltip over the box
+  instead -- unshortened, and in the box for a screen reader either way. The
+  summaries are ours; everything else here is the book's.
+
+  The tooltip is drawn outside the scrolling strip and placed from the box's
+  measured position, because the strip scrolls horizontally: `overflow-x: auto`
+  clips what leaves the box vertically as well, so a tooltip drawn inside it
+  above the row would be cut in half.
 
   Boxes are evenly spaced rather than placed by date. Two entries are a day
   apart (2/6 and 2/5) and the last is eight weeks after the one before it, so by
@@ -120,18 +124,6 @@
   /** True while an entry's own day, or its own run of days, is today. */
   const underWay = (step: Step) => today >= step.on && today <= ends(step)
 
-  const longDate = (date: string) => {
-    const [y, m, d] = date.split("-").map(Number)
-    // UTC, like every other date on this site: the local constructor moves a
-    // date west of UTC onto the day before.
-    return new Intl.DateTimeFormat("en-US", {
-      month: "long",
-      day: "numeric",
-      year: "numeric",
-      timeZone: "UTC",
-    }).format(new Date(Date.UTC(y, m - 1, d)))
-  }
-
   /**
    * Where the reader looks first, brought into view.
    *
@@ -156,31 +148,56 @@
   /** The box under the pointer, or the one holding focus. */
   let active = $state<number | null>(null)
   const shown = $derived(active === null ? null : steps[active])
+
+  /**
+   * Where the tooltip points: the middle of that box, in pixels across this
+   * component, measured when the box is entered rather than worked out from the
+   * index. The row scrolls, so a box's place on screen is its place in the row
+   * less however far the strip has been scrolled -- and measuring is both
+   * shorter than that sum and right while it is being scrolled.
+   *
+   * Then pulled back from either edge, so a tooltip on January or on June is a
+   * tooltip and not a horizontal scrollbar.
+   */
+  let root = $state<HTMLElement | null>(null)
+  let spot = $state(0)
+
+  const TOOLTIP = 256
+
+  const show = (i: number, box: HTMLElement) => {
+    active = i
+    if (!root) return
+
+    const edge = root.getBoundingClientRect()
+    const middle = box.getBoundingClientRect()
+    const half = Math.min(TOOLTIP, edge.width) / 2
+    spot = Math.min(
+      Math.max(middle.left + middle.width / 2 - edge.left, half),
+      Math.max(edge.width - half, half),
+    )
+  }
 </script>
 
-<div class="budget-timeline not-prose">
+<div class="budget-timeline not-prose relative" bind:this={root}>
   <!--
-    The line above the boxes: what the calendar is and what day it is, until a
-    box is hovered, and then that box's own sentence in the book's words. Two
-    lines tall whether or not anything is in it, so the row below never moves
-    under the pointer.
-  -->
-  <div class="flex h-8 items-start gap-3 text-xs">
-    <span class="shrink-0 pt-0.5 text-[11px] tracking-wide text-slate-400 uppercase">
-      Budget Calendar
-    </span>
+    The book's own sentence for the box under the pointer, over the page rather
+    than in a lane of its own: a footer costs the window whatever it is tall,
+    and this is wanted about a second in every hundred.
 
-    {#if shown}
-      <!-- Hidden from assistive technology: the box carries this same
-           sentence, and announcing it twice is worse than once. -->
-      <p class="budget-detail m-0 leading-snug text-slate-700" aria-hidden="true">
-        <span class="font-medium text-slate-900">{shown.date}</span>
-        {shown.step}
-      </p>
-    {:else}
-      <p class="m-0 pt-0.5 text-[11px] text-slate-500">Today, {longDate(today)}</p>
-    {/if}
-  </div>
+    Hidden from assistive technology, since the box carries the same sentence
+    and announcing it twice is worse than once. `pointer-events-none` so it
+    cannot come between the pointer and the box that summoned it.
+  -->
+  {#if shown}
+    <p
+      class="budget-detail pointer-events-none absolute bottom-full z-10 m-0 mb-2 w-64 max-w-[80vw] -translate-x-1/2 rounded-md border border-slate-200 bg-white px-3 py-2 text-xs leading-snug text-slate-700 shadow-lg"
+      style="left: {spot}px"
+      aria-hidden="true"
+    >
+      <span class="font-medium text-slate-900">{shown.date}</span>
+      {shown.step}
+    </p>
+  {/if}
 
   <!--
     Twelve boxes need room a phone does not have, so the row keeps its width and
@@ -192,7 +209,9 @@
   <div class="overflow-x-auto" bind:this={strip}>
     <div class="min-w-[72rem]">
       <div class="relative pb-1">
-        <ol class="m-0 grid list-none grid-cols-12 gap-1.5 p-0">
+        <!-- Named here rather than in a line above the boxes: the row is what
+             the name belonged to, and this way it costs no height. -->
+        <ol class="m-0 grid list-none grid-cols-12 gap-1.5 p-0" aria-label="Budget calendar">
           {#each steps as step, i (step.date)}
             {@const status = standing(i)}
             <!-- The box is the list item itself: a `<div>` inside it taking the
@@ -207,9 +226,9 @@
                   ? 'bg-amber-400 ring-1 ring-amber-500'
                   : 'bg-sky-50 ring-1 ring-sky-200'} {active === i ? 'shadow-md' : ''}"
               tabindex="0"
-              onpointerenter={() => (active = i)}
+              onpointerenter={(event) => show(i, event.currentTarget)}
               onpointerleave={() => (active = null)}
-              onfocus={() => (active = i)}
+              onfocus={(event) => show(i, event.currentTarget)}
               onblur={() => (active = null)}
             >
               <span
@@ -251,7 +270,8 @@
 
         <!-- Today, over the boxes. Dashed and pale: where an entry is happening it
            crosses that entry's own box, and a solid rule through it is harder to
-           read than a dashed one behind. The line above says which day it is. -->
+           read than a dashed one behind. It is the only thing here that says
+           what day it is, which is all the date was ever for. -->
         <div
           class="budget-today absolute top-0 bottom-1 -translate-x-1/2 border-l border-dashed border-slate-400"
           style="left: {now}%"

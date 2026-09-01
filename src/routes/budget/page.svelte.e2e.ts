@@ -85,8 +85,11 @@ test.describe("budget pages", () => {
     // Fixed to the bottom of the window, so it is on screen at the top of the
     // page as well as the end of it.
     const footer = page.locator("article footer")
-    await expect(footer).toContainText("Budget Calendar")
     await expect(footer).toHaveCSS("position", "fixed")
+    // The row is named where the row is: there is no line of chrome above it
+    // saying what the boxes are, and no date printed beside that.
+    await expect(footer.getByRole("list", { name: "Budget calendar" })).toBeVisible()
+    await expect(footer).not.toContainText("Today,")
 
     // A box per entry, in the book's order, each showing its date and a few
     // words and carrying the book's own sentence for a reader who cannot hover.
@@ -104,20 +107,27 @@ test.describe("budget pages", () => {
     // calendar ended at adoption, so that is the last box, and stays so.
     await expect(entries.last()).toContainText("This is where the budget is.")
 
-    // Which is also where the mark sits: at the end of the row, with the day
-    // itself named on the line above it.
-    await expect(footer).toContainText("Today,")
+    // Which is also where the mark sits: at the end of the row, and the mark is
+    // now the only thing here that says what day it is.
     await expect(page.locator(".budget-today")).toHaveAttribute("style", "left: 100%")
   })
 
   test("gives the book's own wording for the step under the pointer", async ({ page }) => {
     await page.goto(`/budget/${books[0]}`)
-    await page.locator(".budget-timeline li").nth(1).hover()
+    const box = page.locator(".budget-timeline li").nth(1)
+    await box.hover()
 
     const detail = page.locator(".budget-detail")
     await expect(detail).toContainText("1/15/26")
     await expect(detail).toContainText("Finance prepared revenue projections")
     await expect(detail).toContainText("assessed debt capacity.")
+
+    // A tooltip: above the box it belongs to, and gone when the pointer is.
+    const over = (await detail.boundingBox())!
+    const under = (await box.boundingBox())!
+    expect(over.y + over.height).toBeLessThanOrEqual(under.y)
+    await page.mouse.move(0, 0)
+    await expect(detail).toBeHidden()
   })
 
   test("a contents line with no page here opens the city's PDF at that page", async ({ page }) => {

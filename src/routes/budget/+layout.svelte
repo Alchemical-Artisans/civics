@@ -13,7 +13,7 @@
   // the budget calendar -- which is out of the flow and so cannot push anything
   // out from under itself. The padding is what keeps the last line of the page
   // clear of it, and is a little more than the tallest the footer gets.
-  const column = $derived(data.isSection ? "max-w-3xl" : "max-w-none pb-40")
+  const column = $derived(data.isSection ? "max-w-3xl" : "max-w-none pb-32")
 </script>
 
 <svelte:head>
