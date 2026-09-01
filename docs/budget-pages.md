@@ -139,8 +139,12 @@ the book's wording whether or not anything can be hovered.
 **One box is highlighted: the stage the process has reached.** That is the last
 entry that has begun — the entry itself while it is happening, and the one
 behind it in the weeks between two entries, which is the stage the budget is at
-until the next one begins. It is filled solid with a halo; boxes behind it are
-filled pale, boxes ahead of it are white and grey. FY2027's calendar ended at
+until the next one begins. It is the one box in amber: everything else on the
+page is the site's blue, so the highlight is the only thing on the screen that
+is not, and it is found without being looked for. Boxes behind it are filled
+pale blue, boxes ahead of it are white and grey — a fill apart rather than an
+outline apart, because an outline heavy enough to see across twelve boxes reads
+as a box drawn twice. FY2027's calendar ended at
 adoption, so its highlight now rests on the last box for good. All three states
 are spelled out for a screen reader, which cannot see which box is lit.
 

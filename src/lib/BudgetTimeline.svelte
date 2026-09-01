@@ -12,6 +12,12 @@
   thing with a beginning and an end, twelve of them fill the width evenly, and a
   box is somewhere for words to live.
 
+  The stage the budget has reached is the one box in another colour. Everything
+  else on this page is the site's blue, so amber is the only thing on the screen
+  that is not, which is the whole job: to be found without being looked for. The
+  three states are a fill apart rather than an outline apart -- an outline heavy
+  enough to see across a page of twelve boxes reads as a box drawn twice.
+
   Each box holds a few words. The book's own sentence runs to twenty-odd, which
   is a paragraph in a box this wide, so it is a mouseover away instead --
   unshortened, and in the box for a screen reader either way. The summaries are
@@ -162,7 +168,7 @@
             'ahead'
               ? 'bg-white ring-1 ring-slate-200'
               : status === 'current'
-                ? 'bg-sky-700 ring-2 ring-sky-700 ring-offset-2'
+                ? 'bg-amber-400 ring-1 ring-amber-500'
                 : 'bg-sky-50 ring-1 ring-sky-200'} {active === i ? 'shadow-md' : ''}"
             tabindex="0"
             onpointerenter={() => (active = i)}
@@ -171,11 +177,9 @@
             onblur={() => (active = null)}
           >
             <span
-              class="block text-xs font-medium {status === 'current'
-                ? 'text-white'
-                : status === 'ahead'
-                  ? 'text-slate-400'
-                  : 'text-slate-900'}"
+              class="block text-xs font-medium {status === 'ahead'
+                ? 'text-slate-400'
+                : 'text-slate-900'}"
             >
               {step.date}
             </span>
@@ -184,7 +188,7 @@
                  than wrap it. -->
             <span
               class="mt-0.5 block text-xs leading-snug break-normal {status === 'current'
-                ? 'text-sky-50'
+                ? 'text-slate-800'
                 : status === 'ahead'
                   ? 'text-slate-400'
                   : 'text-slate-600'}"
