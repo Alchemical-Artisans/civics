@@ -25,6 +25,13 @@ describe("amount", () => {
     expect(amount("$(0)")).toBe(0)
   })
 
+  // The reserve dials print both in one cell: "$13,985,452 (7.85%)".
+  it("reads the dollars out of a cell that also carries a share", () => {
+    expect(amount("$13,985,452 (7.85%)")).toBe(13985452)
+    expect(amount("$0 (0%)")).toBe(0)
+    expect(amount("$5,347,848 (3%)")).toBe(5347848)
+  })
+
   it("is null for a cell holding no money", () => {
     expect(amount("")).toBeNull()
     // The book's own mark for a year with no entry.

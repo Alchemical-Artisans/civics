@@ -99,12 +99,23 @@ the name, which says the July-to-June the year means. Everything naming a book �
 the bar, the tab, the way back up from a section, the fallback text on `/` —
 says it through `bookName`.
 
-## The chart on a book's front page
+## The charts on a book's front page
 
-`/budget/<year>` opens on the budget at a glance: two pie charts,
-appropriations and revenue, drawn by
-[`src/lib/BudgetPie.svelte`](../src/lib/BudgetPie.svelte) from figures in the
-book page's own `+page.ts`.
+`/budget/<year>` opens on the budget at a glance: the year, and what the year
+sits on.
+
+| Chart                   | What it draws                                              | From                                      |
+| ----------------------- | ---------------------------------------------------------- | ----------------------------------------- |
+| Appropriations, Revenue | two pies, one circle divided two ways                      | page 78, `2027-budget-in-brief/tables.ts` |
+| Reserves                | three balances against the policy band each has to sit in  | page 17, `fiscal-reserves/tables.ts`      |
+| Debt                    | one pie of what the city owes, by what it was borrowed for | page 21, `outstanding-debt/tables.ts`     |
+
+The two pies are the year — everything expected in, everything planned out — and
+sit in the narrow left column. Reserves and debt are the standing position
+underneath it, which is a different question, so they sit together above the
+table of contents rather than beside the pies. Every one of them reads its
+figures out of the section's own transcription; see "A section whose tables are
+charted" below.
 
 **A pie, and the figures inside it.** The question a budget's front page
 answers is what share of one pot each category takes, and a pie says "half of it
@@ -135,7 +146,26 @@ identifies the mark, which here is the label on hover and the white gap between
 wedges.
 
 The two pies are the same circle divided two ways — both tables come to the same
-total — so they can be read against each other without any shared scale.
+total — so they can be read against each other without any shared scale. The
+debt pie is the same idea for a different pot: six purposes adding to the
+$175,745,444 the section states in its own sentence, which `overview.spec.ts`
+checks the six lines against.
+
+**Reserves are bars and not a pie**, because the question is not what share of
+one pot each takes: it is whether a balance is inside the band the city's own
+policy sets for it.
+[`src/lib/BudgetRange.svelte`](../src/lib/BudgetRange.svelte) draws each as a
+track from zero to a little past the ceiling, the band the policy allows, and
+the balance over it — a bar stopping short of the band says "below the floor"
+without the reader reading a figure, which is the case free cash is in this
+year. Where a policy sets a floor and no ceiling, as the stabilization fund's
+does, the band runs to the end of the track, because above the floor is where
+the policy is satisfied.
+
+It is the one chart here with no script behind it at all. Everything it draws is
+printed beside it — the balance and its share above the track, the floor and
+ceiling below — so nothing is a hover away and nothing is carried by colour, and
+the bars themselves are `aria-hidden` decoration over text that already says it.
 
 **Two contents lines are left out: "Mayor's Budget Message" (page 2) and
 "Budget Calendar" (page 13).** Neither has a page here — the message was
@@ -285,9 +315,10 @@ below.
 ## A section whose tables are charted
 
 A transcription is ordinarily plain markup. The exception is a section whose
-figures something else on the site also shows — right now that is
-`2027-budget-in-brief`, whose page-78 tables are what the book's front page
-charts. Those tables live in a `tables.ts` beside the page:
+figures something else on the site also shows — `2027-budget-in-brief`, whose
+page-78 tables are the two pies; `fiscal-reserves`, whose three dials are the
+reserve bars; and `outstanding-debt`, whose page-21 list is the debt pie. Those
+tables live in a `tables.ts` beside the page:
 
 ```ts
 export const APPROPRIATIONS: BudgetTableData = {
@@ -308,6 +339,17 @@ different — the book writes a parenthesised zero, an en dash for a year with n
 entry, and percentages in the same row as dollars. `amount()` reads numbers back
 out for the chart: parentheses are the book's negative sign, and anything
 holding no money comes back null rather than as a wrong number.
+
+**A table the book prints with no header row sets `unheaded: true`,** and one it
+sets a caption over carries that as `caption`. The reserve dials and the debt
+list are a label and a figure per line with nothing over the columns, so the
+column names in the data are handles for `column()` and `cell()` to find a
+column by — never anything a reader sees.
+
+`amount()` reads the _dollar figure_ out of a cell, not every digit in it: the
+dials print the share beside the money in one cell, "$13,985,452 (7.85%)", and
+taking the digits off the whole string made that thirteen billion and, because
+of the parentheses around the share, negative.
 
 Do this only where a table is genuinely shared. A table nothing else reads is
 clearer written out as markup, next to the prose it belongs to.
@@ -351,6 +393,7 @@ src/lib/data/budget.json                   the committed listing, scraped
 src/lib/budget.ts                          reads it; slugs and contents helpers
 src/lib/budget.spec.ts                     unit tests for them
 src/lib/BudgetPie.svelte                   the pie charts on a book page
+src/lib/BudgetRange.svelte                 the reserve bars beside them
 src/lib/BudgetTimeline.svelte              the budget calendar, drawn as boxes
 src/routes/budget/<year>/budget-calendar.ts   that calendar, transcribed
 src/lib/BudgetTable.svelte                 a transcribed table, rendered from data

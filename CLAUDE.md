@@ -148,6 +148,12 @@ Notable pieces:
   `contents`. `sectionSlug` is `meetingId`'s rule except that apostrophes are
   dropped rather than collapsed — half this book's titles carry one, and
   `mayor-s-budget-message` reads as a typo.
+- **`src/lib/BudgetRange.svelte`** is the other chart a book opens with: three
+  reserve balances, each against the band the city's own policy puts it in, above
+  the table of contents alongside a pie of what the city owes. The pies beside
+  them are the year; these are the position it sits on. Every figure is printed
+  beside the bar, so the bars are `aria-hidden` and there is no script behind
+  them.
 - **`src/lib/BudgetPie.svelte`** is the pie chart a budget book opens with: a
   wedge names itself and prints its dollars and share on hover or focus, which
   makes it the one page here carrying a script. Every wedge is focusable, both
@@ -157,7 +163,11 @@ Notable pieces:
   gets its figures: a
   transcribed table is data (cells as the strings the book prints), `BudgetTable`
   renders it, and `column()` reads a year out of it for the chart. One copy, so
-  the chart cannot contradict the table it links to. The figures come from the
+  the chart cannot contradict the table it links to. Same arrangement for the
+  reserve dials (`fiscal-reserves/tables.ts`) and the debt list
+  (`outstanding-debt/tables.ts`); both are `unheaded`, meaning the book prints
+  nothing over their columns and neither does the page, so their column names
+  are handles for `column()` rather than transcription. The figures come from the
   book's page-78 tables, not its own revenue pie on page 65, which is $3,458,864
   short of the total it prints.
 - **`src/lib/BudgetTimeline.svelte`** draws page 13, the budget calendar, as the

@@ -1,3 +1,12 @@
+<script lang="ts">
+  // A script here because these three tables are charted on the book's front
+  // page as well; see docs/budget-pages.md. Nothing on the page is generated --
+  // `BudgetTable` prints the cells exactly as `tables.ts` holds them, which is
+  // exactly as the book sets them.
+  import BudgetTable from "$lib/BudgetTable.svelte"
+  import { FUND_BALANCE, FREE_CASH, STABILIZATION } from "./tables"
+</script>
+
 <p>
   <em>
     The city will monitor reserves to ensure they are adequate and sustainable for future fiscal
@@ -16,27 +25,7 @@
   or 7.85% of general fund revenue. This is up from June 2024, which was $12,569,995 or 7.36%.
 </p>
 
-<!--
-  A dial with the actual balance against the ends of the policy band. Nothing
-  is labelled on it beyond these three figures, so the three figures are the
-  transcription.
--->
-<table>
-  <tbody>
-    <tr>
-      <th scope="row">Minimum</th>
-      <td>$8,913,079</td>
-    </tr>
-    <tr>
-      <th scope="row">Actual</th>
-      <td>$13,985,452 (7.85%)</td>
-    </tr>
-    <tr>
-      <th scope="row">Maximum</th>
-      <td>$26,739,238</td>
-    </tr>
-  </tbody>
-</table>
+<BudgetTable table={FUND_BALANCE} />
 
 <h2>Fund Balance</h2>
 
@@ -107,22 +96,7 @@
   1.51%.
 </p>
 
-<table>
-  <tbody>
-    <tr>
-      <th scope="row">Minimum</th>
-      <td>$3,565,232</td>
-    </tr>
-    <tr>
-      <th scope="row">Anticipated</th>
-      <td>$0 (0%)</td>
-    </tr>
-    <tr>
-      <th scope="row">Maximum</th>
-      <td>$14,260,927</td>
-    </tr>
-  </tbody>
-</table>
+<BudgetTable table={FREE_CASH} />
 
 <h2>Stabilization Reserve</h2>
 
@@ -137,15 +111,4 @@
   or 4.41%.
 </p>
 
-<table>
-  <tbody>
-    <tr>
-      <th scope="row">Minimum Balance</th>
-      <td>$5,347,848 (3%)</td>
-    </tr>
-    <tr>
-      <th scope="row">Actual Balance</th>
-      <td>$8,001,094 (4.49%)</td>
-    </tr>
-  </tbody>
-</table>
+<BudgetTable table={STABILIZATION} />

@@ -41,8 +41,9 @@ test.describe("budget pages", () => {
     ).toBeVisible()
     await expect(page.getByRole("heading", { name: /^Revenue \$285,272,159$/ })).toBeVisible()
 
+    // Three pies now: the year's two halves, and the debt the city carries.
     const charts = page.locator(".budget-chart")
-    await expect(charts).toHaveCount(2)
+    await expect(charts).toHaveCount(3)
 
     // Every wedge says what it is and what it costs as its accessible name,
     // whether or not anyone can hover something a third of a degree wide.
@@ -52,6 +53,54 @@ test.describe("budget pages", () => {
     for (const wedge of await wedges.all()) {
       expect(await wedge.getAttribute("aria-label")).toMatch(/\$[\d,]+/)
     }
+  })
+
+  test("charts the reserves and the debt above the contents", async ({ page }) => {
+    await page.goto(`/budget/${books[0]}`)
+
+    // Above the contents, which is where the standing position belongs: the
+    // pies beside it are the year, these two are what the year sits on.
+    const reserves = page.locator(".budget-range")
+    await expect(page.getByRole("heading", { name: "Reserves" })).toBeVisible()
+    await expect(reserves.locator("> div")).toHaveCount(3)
+
+    // Every figure the bars draw is printed beside them, so none of this is a
+    // hover away and none of it is carried by colour.
+    await expect(reserves).toContainText("Fund Balance")
+    await expect(reserves).toContainText("$13,985,452")
+    await expect(reserves).toContainText("7.85%")
+    await expect(reserves).toContainText("Policy $8,913,079 to $26,739,238")
+
+    // Free cash is projected at nothing against a floor of $3.5 million, which
+    // is the case the band is drawn for.
+    await expect(reserves).toContainText("$0")
+    await expect(reserves).toContainText("Policy $3,565,232 to $14,260,927")
+
+    // Policy #4 sets a floor and no ceiling.
+    await expect(reserves).toContainText("Policy $5,347,848 or more")
+
+    await expect(page.getByRole("heading", { name: /^Debt \$175,745,444$/ })).toBeVisible()
+    const debt = page.locator(".budget-chart").last()
+    await expect(debt.getByRole("img")).toHaveCount(6)
+    await expect(debt.getByRole("img").first()).toHaveAttribute(
+      "aria-label",
+      "School Department, $71,517,300, 40.7%",
+    )
+  })
+
+  test("charts what the sections themselves print", async ({ page }) => {
+    // The front page reads these out of the sections' own transcriptions, so
+    // the two cannot disagree. This is that claim, end to end.
+    await page.goto(`/budget/${books[0]}/fiscal-reserves`)
+    await expect(page.getByRole("article")).toContainText("$13,985,452 (7.85%)")
+
+    await page.goto(`/budget/${books[0]}/outstanding-debt`)
+    const table = page.getByRole("table").first()
+    await expect(table).toContainText("School Department")
+    await expect(table).toContainText("$71,517,300")
+    // The book prints no headings over these two columns, so neither does the
+    // page: the names in the data are what a chart asks for a column by.
+    await expect(table.locator("thead")).toHaveCount(0)
   })
 
   test("names and prices the wedge under the pointer", async ({ page }) => {

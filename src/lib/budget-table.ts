@@ -25,8 +25,22 @@ export interface BudgetRow {
 }
 
 export interface BudgetTableData {
-  /** Every column heading, the row-heading column first. */
+  /**
+   * Every column heading, the row-heading column first.
+   *
+   * Where `unheaded` is set the book prints none of these and neither does the
+   * page: the names are then handles for `column` and `cell` to find a column
+   * by, and nothing a reader sees.
+   */
   columns: string[]
+  /** The book's own caption, where it sets one over the table. */
+  caption?: string
+  /**
+   * True for a table the book prints with no header row -- the reserve dials
+   * and the debt-by-function list are a label and a figure per line, with
+   * nothing over the columns.
+   */
+  unheaded?: boolean
   rows: BudgetRow[]
 }
 
@@ -37,20 +51,25 @@ export interface BudgetTableData {
  * entry, and a percentage -- a chart asking for a dollar column should get
  * nothing rather than 4.2 if it asks for the wrong one. Parentheses are the
  * book's negative sign, so "$(1,781,111)" is negative and "$(0)" is zero.
+ *
+ * It is the cell's *dollar figure* and not every digit in the cell: the reserve
+ * dials print the share beside the money in one cell, "$13,985,452 (7.85%)",
+ * and reading the digits off the whole string made that thirteen billion and,
+ * because of the parentheses around the share, negative.
  */
 export function amount(cell: string): number | null {
-  const text = cell.trim()
-  if (!text || !text.includes("$")) return null
+  // `\(?` after the dollar sign for the book's "$(617,924)"; the parentheses
+  // that mean a negative are always inside the figure, never around a share.
+  const figure = cell.match(/\$\s*(\()?\s*([\d,]+)/)
+  if (!figure) return null
 
-  const digits = text.replace(/[^0-9]/g, "")
-  if (!digits) return null
+  const value = Number(figure[2].replace(/,/g, ""))
+  if (!Number.isFinite(value)) return null
 
-  const value = Number(digits)
   // `-0` otherwise, for the book's "$(0)" -- which is a real cell, the 2027
   // surplus line. It compares equal to 0 but not identically, so it would fail
   // a strict equality check and serialise as "-0" in prerendered JSON.
-  const negative = /\(.*\)/.test(text)
-  return negative && value !== 0 ? -value : value
+  return figure[1] && value !== 0 ? -value : value
 }
 
 /**

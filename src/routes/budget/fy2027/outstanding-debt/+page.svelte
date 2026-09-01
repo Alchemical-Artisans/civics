@@ -1,3 +1,10 @@
+<script lang="ts">
+  // A script here because this table is the pie on the book's front page as
+  // well; see docs/budget-pages.md.
+  import BudgetTable from "$lib/BudgetTable.svelte"
+  import { LONG_TERM_DEBT } from "./tables"
+</script>
+
 <!-- The page's own heading, which the contents page renames. -->
 <h2>Long Term Debt</h2>
 
@@ -13,35 +20,7 @@
   the city's equalized valuation. This translates into $175,745,444 in outstanding bonds.
 </p>
 
-<table>
-  <caption>Long Term Debt</caption>
-  <tbody>
-    <tr>
-      <th scope="row">Water</th>
-      <td>$55,755,389</td>
-    </tr>
-    <tr>
-      <th scope="row">Wastewater</th>
-      <td>$36,457,555</td>
-    </tr>
-    <tr>
-      <th scope="row">General Government</th>
-      <td>$5,880,000</td>
-    </tr>
-    <tr>
-      <th scope="row">Public Works</th>
-      <td>$1,455,200</td>
-    </tr>
-    <tr>
-      <th scope="row">Public Safety</th>
-      <td>$4,680,000</td>
-    </tr>
-    <tr>
-      <th scope="row">School Department</th>
-      <td>$71,517,300</td>
-    </tr>
-  </tbody>
-</table>
+<BudgetTable table={LONG_TERM_DEBT} />
 
 <h2>Annual Debt Payments</h2>
 

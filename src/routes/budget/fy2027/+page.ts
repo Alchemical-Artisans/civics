@@ -1,8 +1,11 @@
 import type { PageLoad } from "./$types"
 import { contents } from "$lib/budget"
-import { amount, cell, column } from "$lib/budget-table"
+import { amount, cell, column, sum, type BudgetTableData } from "$lib/budget-table"
 import { APPROPRIATIONS, REVENUE } from "./2027-budget-in-brief/tables"
+import { FUND_BALANCE, FREE_CASH, STABILIZATION } from "./fiscal-reserves/tables"
+import { LONG_TERM_DEBT } from "./outstanding-debt/tables"
 import { CALENDAR } from "./budget-calendar"
+import type { Band } from "$lib/BudgetRange.svelte"
 
 /**
  * The budget at a glance, from the two tables on page 78.
@@ -45,6 +48,55 @@ const revenue = column(REVENUE, CHARTED, { exclude: NOT_A_CATEGORY })
  */
 const total = amount(cell(APPROPRIATIONS, "Grand Total", CHARTED))!
 
+/**
+ * The reserve dials of "Fiscal Reserves" (page 17) and the debt of
+ * "Outstanding Debt" (page 21), read out of those sections' own transcriptions
+ * for the same reason the pies are read out of page 78's: one copy of a figure,
+ * so the front page cannot contradict the section it links to.
+ *
+ * `figure` is the dollars in a cell that also carries a share -- the book
+ * prints "$13,985,452 (7.85%)" in one cell of the dial -- and `share` is what
+ * is left of it, which the chart prints beside the money as the book does.
+ */
+const figure = (table: BudgetTableData, label: string) => amount(cell(table, label, "Amount"))!
+
+const share = (table: BudgetTableData, label: string) =>
+  cell(table, label, "Amount").match(/\(([\d.]+%)\)/)?.[1]
+
+const reserves: Band[] = [
+  {
+    label: "Fund Balance",
+    minimum: figure(FUND_BALANCE, "Minimum"),
+    actual: figure(FUND_BALANCE, "Actual"),
+    maximum: figure(FUND_BALANCE, "Maximum"),
+    share: share(FUND_BALANCE, "Actual"),
+  },
+  {
+    label: "Free Cash",
+    minimum: figure(FREE_CASH, "Minimum"),
+    actual: figure(FREE_CASH, "Anticipated"),
+    maximum: figure(FREE_CASH, "Maximum"),
+    share: share(FREE_CASH, "Anticipated"),
+  },
+  {
+    // Policy #4 sets a floor and no ceiling, so this bar has a band with no
+    // far end rather than a made-up one.
+    label: "Stabilization",
+    minimum: figure(STABILIZATION, "Minimum Balance"),
+    actual: figure(STABILIZATION, "Actual Balance"),
+    share: share(STABILIZATION, "Actual Balance"),
+  },
+]
+
+const debt = column(LONG_TERM_DEBT, "Amount")
+
+/**
+ * What the city owes, which the six lines add up to and the section states in
+ * its own sentence: $175,745,444. Summed rather than transcribed a third time;
+ * `overview.spec.ts` is where that sum is checked against the sentence.
+ */
+const debtTotal = sum(debt)
+
 export const load: PageLoad = () => ({
   calendar: CALENDAR,
 
@@ -61,6 +113,11 @@ export const load: PageLoad = () => ({
     revenue,
     total,
   },
+
+  /** The two charts above the contents: page 17's dials and page 21's list. */
+  reserves,
+  debt,
+  debtTotal,
 
   /**
    * The book's contents page, in its order, less two lines: "Mayor's Budget

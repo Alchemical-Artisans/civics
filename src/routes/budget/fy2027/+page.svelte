@@ -1,6 +1,7 @@
 <script lang="ts">
   import { Router } from "$lib/router"
   import BudgetPie from "$lib/BudgetPie.svelte"
+  import BudgetRange from "$lib/BudgetRange.svelte"
   import BudgetTimeline from "$lib/BudgetTimeline.svelte"
   import type { BookSection } from "$lib/budget"
 
@@ -10,6 +11,8 @@
   const contents = $derived(data.contents as BookSection[])
   const overview = $derived(data.overview)
   const calendar = $derived(data.calendar)
+  const reserves = $derived(data.reserves)
+  const debt = $derived(data.debt)
 
   const money = new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -89,6 +92,34 @@
   </div>
 
   <div>
+    <!--
+      What the city has put by and what it owes, above the contents rather than
+      beside the pies: the pies are the year -- what comes in and what goes out
+      of it -- and these two are the standing position underneath it, which is a
+      different question and reads as one when the two are together.
+
+      Side by side from `sm`, where there is room for the bars to be worth
+      drawing; stacked below it. Each is a section of the book one line of the
+      contents below opens, which is where every figure on them is printed.
+    -->
+    <div class="mb-8 flex flex-wrap items-start gap-x-10 gap-y-6">
+      <div class="max-w-md min-w-[16rem] flex-1">
+        <h2>Reserves</h2>
+        <BudgetRange rows={reserves} />
+      </div>
+
+      <div>
+        <h2>
+          Debt
+          <span class="font-normal text-slate-500 tabular-nums">
+            {money.format(data.debtTotal)}
+          </span>
+        </h2>
+
+        <BudgetPie rows={debt} />
+      </div>
+    </div>
+
     <h2>Table of Contents</h2>
 
     {@render list(contents)}

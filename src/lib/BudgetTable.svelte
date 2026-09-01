@@ -16,13 +16,20 @@
 </script>
 
 <table>
-  <thead>
-    <tr>
-      {#each table.columns as heading (heading)}
-        <th scope="col">{heading}</th>
-      {/each}
-    </tr>
-  </thead>
+  {#if table.caption}<caption>{table.caption}</caption>{/if}
+  <!-- Some of these tables are a label and a figure per line with nothing over
+       the columns -- the reserve dials, the debt-by-function list. Their column
+       names exist so a chart can ask for one by name, and printing them would
+       be putting a header on a table the book does not give one. -->
+  {#if !table.unheaded}
+    <thead>
+      <tr>
+        {#each table.columns as heading (heading)}
+          <th scope="col">{heading}</th>
+        {/each}
+      </tr>
+    </thead>
+  {/if}
   <tbody>
     {#each table.rows as row (row.label)}
       <tr>
