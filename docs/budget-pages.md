@@ -121,7 +121,9 @@ Below `lg` it stacks, charts first.
 ## The calendar at the foot of a book page
 
 Page 13 is the budget calendar, and it is drawn rather than transcribed into a
-section of its own: a row of boxes across the foot of the book's front page, by
+section of its own: the book front page's footer, fixed to the bottom of the
+window, so the process stays in view while the contents scrolls past it. It is
+drawn by
 [`src/lib/BudgetTimeline.svelte`](../src/lib/BudgetTimeline.svelte) from
 [`fy2027/budget-calendar.ts`](../src/routes/budget/fy2027/budget-calendar.ts).
 The process the two charts above it are the outcome of ends up on the same
@@ -162,10 +164,20 @@ ended when the council adopted the budget on 6/16/26, so its mark now sits at
 the end of the axis and stays there; a book being written while its calendar is
 running is the case this is built for.
 
-Twelve boxes need more width than a phone has, so the drawing keeps its width
-and scrolls inside itself, the way a wide table in a section does. The room the
-sentence appears in is held open whether or not anything is hovered, so the page
-does not jump under the pointer.
+**It is a footer, so it is built to be short.** One line above the boxes carries
+what the calendar is and what day it is, and carries the book's sentence instead
+while a box is under the pointer — the same line doing both, because only one of
+them is ever wanted at once and a lane for each would double what this costs the
+window. It is two lines tall whether or not anything is in it, so the row never
+moves under the pointer.
+
+Twelve boxes need more width than a phone has, so the row keeps its width and
+scrolls inside itself, the way a wide table in a section does. Only the row: the
+line above it stays put, or scrolling to the end of the calendar would carry off
+the sentence being scrolled to. On a narrow window the row is scrolled on load
+to put the highlighted box in the middle, which is otherwise six boxes off
+screen. Nothing pushes a fixed footer out from under itself, so `+layout.svelte`
+pads the book page by more than the footer's tallest.
 
 **The book's contents still lists "Budget Calendar"**, and that line opens the
 city's PDF at page 13 like any section with no page here — the drawing is on the
@@ -253,10 +265,10 @@ Two things complicate that in this book:
 - **The book's contents skip pages.** Its front matter and process pages —
   Council Members, City Hall of Haverhill, Mayor's Budget Team, Budget Phases —
   carry headings but no contents entry, and fall inside the run for "Mayor's
-  Budget Message", which the book page does not list at all. They are listed
-  separately on the book page, under
-  "Not in the book's contents", from a second `contents()` call. That list runs
-  only as far as the book has been transcribed.
+  Budget Message", which the book page does not list at all. The book page
+  listed them under "Not in the book's contents" for a while and does not any
+  more: the contents is the book's contents, and a page it leaves out is a page
+  a section covers when someone writes that section.
 - **A table is often split across pages for room, not for meaning.** The
   five-year capital requests run pages 30–35 under page titles like "Building
   Improvements Continued & Computer Equipment", which name whatever finishes on

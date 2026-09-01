@@ -8,7 +8,6 @@
 
   const book = $derived(data.book)
   const contents = $derived(data.contents as BookSection[])
-  const unlisted = $derived(data.unlisted as BookSection[])
   const overview = $derived(data.overview)
   const calendar = $derived(data.calendar)
 
@@ -93,23 +92,18 @@
     <h2>Table of Contents</h2>
 
     {@render list(contents)}
-
-    <h2>Not in the book's contents</h2>
-
-    <p class="text-sm">
-      Pages with a heading of their own that the contents page above does not list, so following it
-      alone skips them.
-    </p>
-
-    {@render list(unlisted)}
   </div>
 </div>
 
 <!--
-  The calendar last, across the foot of the page: it is the process the two
-  charts above are the outcome of, and page 13 of the book drawn the way the
-  book draws it, turned on its side.
+  The calendar is the page's footer, fixed to the bottom of the window: it is
+  the process everything above it is the outcome of, so it belongs under all of
+  it and stays there while the contents scrolls past. The layout pads the page
+  by more than this is tall, because a fixed footer cannot push anything out
+  from under itself.
 -->
-<h2>Budget Calendar</h2>
-
-<BudgetTimeline steps={calendar} asOf={data.asOf} />
+<footer
+  class="fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 bg-white/95 px-4 py-2 backdrop-blur"
+>
+  <BudgetTimeline steps={calendar} asOf={data.asOf} />
+</footer>

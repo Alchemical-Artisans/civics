@@ -18,6 +18,18 @@ const directories = (at: string) =>
 const books = directories(dir)
 const sections = directories(join(dir, books[0]))
 
+/**
+ * Sections written up that the book's own contents page does not list -- its
+ * front matter -- so the book page has no line to link them from. They render
+ * at their own URLs; nothing on the site points at them.
+ */
+const unlinked = [
+  "budget-phases",
+  "city-hall-of-haverhill",
+  "council-members",
+  "mayors-budget-team",
+]
+
 test.describe("budget pages", () => {
   test("lists every fiscal year the city publishes", async ({ page }) => {
     await page.goto("/budget")
@@ -94,9 +106,14 @@ test.describe("budget pages", () => {
     await expect(chart.locator(".budget-tooltip")).toContainText("$250,000")
   })
 
-  test("draws the budget calendar across the foot of the page", async ({ page }) => {
+  test("draws the budget calendar as the page's footer", async ({ page }) => {
     await page.goto(`/budget/${books[0]}`)
-    await expect(page.getByRole("heading", { name: "Budget Calendar" })).toBeVisible()
+
+    // Fixed to the bottom of the window, so it is on screen at the top of the
+    // page as well as the end of it.
+    const footer = page.locator("article footer")
+    await expect(footer).toContainText("Budget Calendar")
+    await expect(footer).toHaveCSS("position", "fixed")
 
     // A box per entry, in the book's order, each showing its date and a few
     // words and carrying the book's own sentence for a reader who cannot hover.
@@ -114,10 +131,10 @@ test.describe("budget pages", () => {
     // calendar ended at adoption, so that is the last box, and stays so.
     await expect(entries.last()).toContainText("This is where the budget is.")
 
-    // Which is also where the mark sits: at the end of the row.
-    const today = page.locator(".budget-today")
-    await expect(today).toContainText("Today,")
-    await expect(today).toHaveAttribute("style", "left: 100%")
+    // Which is also where the mark sits: at the end of the row, with the day
+    // itself named on the line above it.
+    await expect(footer).toContainText("Today,")
+    await expect(page.locator(".budget-today")).toHaveAttribute("style", "left: 100%")
   })
 
   test("gives the book's own wording for the step under the pointer", async ({ page }) => {
@@ -153,7 +170,7 @@ test.describe("budget pages", () => {
     await page.goto(`/budget/${books[0]}`)
     const local = await page.locator('li a:not([href*="#page="])').all()
     const hrefs = await Promise.all(local.map((link) => link.getAttribute("href")))
-    expect(hrefs.length).toBe(sections.length)
+    expect(hrefs.length).toBe(sections.filter((name) => !unlinked.includes(name)).length)
     for (const href of hrefs) {
       const response = await page.goto(new URL(href!, page.url()).toString())
       expect(response?.status()).toBe(200)

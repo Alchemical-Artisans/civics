@@ -1,6 +1,6 @@
 <!--
-  The budget calendar as a row of boxes, with a mark showing where in that
-  calendar today falls.
+  The budget calendar as a row of boxes, in the footer fixed to the bottom of a
+  book's front page, with a mark showing where in that calendar today falls.
 
   The book draws this page as a timeline down a vertical axis, entries
   alternating either side of it. Turned on its side it is the same drawing and
@@ -17,6 +17,12 @@
   that is not, which is the whole job: to be found without being looked for. The
   three states are a fill apart rather than an outline apart -- an outline heavy
   enough to see across a page of twelve boxes reads as a box drawn twice.
+
+  It is a footer, so it is built to be short. One line above the boxes carries
+  the date today is, and carries the book's sentence instead while a box is
+  under the pointer -- the same line doing both, because only one of them is
+  ever wanted at once and a lane held open for each would double what this costs
+  the window.
 
   Each box holds a few words. The book's own sentence runs to twenty-odd, which
   is a paragraph in a box this wide, so it is a mouseover away instead --
@@ -126,123 +132,130 @@
     }).format(new Date(Date.UTC(y, m - 1, d)))
   }
 
+  /**
+   * Where the reader looks first, brought into view.
+   *
+   * The row is wider than a narrow window, and it scrolls from its start --
+   * which on a phone is January, six boxes away from the stage the budget is
+   * actually at. So the strip is scrolled to put that box in the middle,
+   * whenever it is off screen. Only in the browser, and only after `today` has
+   * been settled by `onMount`, which is what `reached` here waits for.
+   */
+  let strip = $state<HTMLElement | null>(null)
+  $effect(() => {
+    const box = reached < 0 ? null : strip?.querySelectorAll<HTMLElement>("li")[reached]
+    if (!strip || !box) return
+
+    const over = strip.scrollWidth - strip.clientWidth
+    if (over <= 0) return
+
+    const middle = box.offsetLeft + box.offsetWidth / 2 - strip.clientWidth / 2
+    strip.scrollLeft = Math.min(Math.max(middle, 0), over)
+  })
+
   /** The box under the pointer, or the one holding focus. */
   let active = $state<number | null>(null)
   const shown = $derived(active === null ? null : steps[active])
-
-  /**
-   * The sentence sits under the row, and it is wider than a box, so it is
-   * pulled towards the middle at either end rather than hanging off the side of
-   * a drawing that scrolls.
-   */
-  const detailAt = $derived(active === null ? 50 : Math.min(Math.max(at(active), 14), 86))
-
-  /**
-   * The today label hangs off its own mark, and at the ends of the calendar --
-   * where this book's mark sits, past the last box -- half of it would be
-   * outside the drawing, which scrolls and so clips it. At the ends it hangs
-   * inwards instead.
-   */
-  const labelShift = $derived(now > 90 ? "-100%" : now < 10 ? "0%" : "-50%")
 </script>
 
-<!--
-  Twelve boxes need room a phone does not have, so the drawing keeps its width
-  and scrolls inside itself, the way the wide tables in a budget section do.
--->
-<div class="budget-timeline not-prose -mx-1 overflow-x-auto px-1 pt-2 pb-4">
-  <div class="min-w-[72rem]">
-    <!-- Three lanes: the today mark's label, the boxes, and the room the book's
-         own sentence appears in. The last is held open whether or not anything
-         is hovered, so the page does not jump under the pointer. -->
-    <div class="relative pt-8 pb-20">
-      <ol class="m-0 grid list-none grid-cols-12 gap-1.5 p-0">
-        {#each steps as step, i (step.date)}
-          {@const status = standing(i)}
-          <!-- The box is the list item itself: a `<div>` inside it taking the
+<div class="budget-timeline not-prose">
+  <!--
+    The line above the boxes: what the calendar is and what day it is, until a
+    box is hovered, and then that box's own sentence in the book's words. Two
+    lines tall whether or not anything is in it, so the row below never moves
+    under the pointer.
+  -->
+  <div class="flex h-8 items-start gap-3 text-xs">
+    <span class="shrink-0 pt-0.5 text-[11px] tracking-wide text-slate-400 uppercase">
+      Budget Calendar
+    </span>
+
+    {#if shown}
+      <!-- Hidden from assistive technology: the box carries this same
+           sentence, and announcing it twice is worse than once. -->
+      <p class="budget-detail m-0 leading-snug text-slate-700" aria-hidden="true">
+        <span class="font-medium text-slate-900">{shown.date}</span>
+        {shown.step}
+      </p>
+    {:else}
+      <p class="m-0 pt-0.5 text-[11px] text-slate-500">Today, {longDate(today)}</p>
+    {/if}
+  </div>
+
+  <!--
+    Twelve boxes need room a phone does not have, so the row keeps its width and
+    scrolls inside itself, the way the wide tables in a budget section do. Only
+    the row: the line above it is the width of the window and stays put, or
+    scrolling to the far end of the calendar would carry off the sentence the
+    reader is scrolling to read.
+  -->
+  <div class="overflow-x-auto" bind:this={strip}>
+    <div class="min-w-[72rem]">
+      <div class="relative pb-1">
+        <ol class="m-0 grid list-none grid-cols-12 gap-1.5 p-0">
+          {#each steps as step, i (step.date)}
+            {@const status = standing(i)}
+            <!-- The box is the list item itself: a `<div>` inside it taking the
                pointer would be a static element with a handler, and the entry is
                one thing either way. -->
-          <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
-          <li
-            class="m-0 rounded-md px-2 py-2 text-center transition-shadow outline-none {status ===
-            'ahead'
-              ? 'bg-white ring-1 ring-slate-200'
-              : status === 'current'
-                ? 'bg-amber-400 ring-1 ring-amber-500'
-                : 'bg-sky-50 ring-1 ring-sky-200'} {active === i ? 'shadow-md' : ''}"
-            tabindex="0"
-            onpointerenter={() => (active = i)}
-            onpointerleave={() => (active = null)}
-            onfocus={() => (active = i)}
-            onblur={() => (active = null)}
-          >
-            <span
-              class="block text-xs font-medium {status === 'ahead'
-                ? 'text-slate-400'
-                : 'text-slate-900'}"
+            <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+            <li
+              class="m-0 rounded-md px-2 py-1.5 text-center transition-shadow outline-none {status ===
+              'ahead'
+                ? 'bg-white ring-1 ring-slate-200'
+                : status === 'current'
+                  ? 'bg-amber-400 ring-1 ring-amber-500'
+                  : 'bg-sky-50 ring-1 ring-sky-200'} {active === i ? 'shadow-md' : ''}"
+              tabindex="0"
+              onpointerenter={() => (active = i)}
+              onpointerleave={() => (active = null)}
+              onfocus={() => (active = i)}
+              onblur={() => (active = null)}
             >
-              {step.date}
-            </span>
-            <!-- `break-normal` because the page's prose wrapper breaks long
+              <span
+                class="block text-xs font-medium {status === 'ahead'
+                  ? 'text-slate-400'
+                  : 'text-slate-900'}"
+              >
+                {step.date}
+              </span>
+              <!-- `break-normal` because the page's prose wrapper breaks long
                  words, and a box this narrow would hyphenate a summary rather
                  than wrap it. -->
-            <span
-              class="mt-0.5 block text-xs leading-snug break-normal {status === 'current'
-                ? 'text-slate-800'
-                : status === 'ahead'
-                  ? 'text-slate-400'
-                  : 'text-slate-600'}"
-            >
-              {step.summary}
-            </span>
+              <span
+                class="mt-0.5 block text-xs leading-snug break-normal {status === 'current'
+                  ? 'text-slate-800'
+                  : status === 'ahead'
+                    ? 'text-slate-400'
+                    : 'text-slate-600'}"
+              >
+                {step.summary}
+              </span>
 
-            <!-- The book's own sentence, and where the budget has got to: both
+              <!-- The book's own sentence, and where the budget has got to: both
                  are in the box for a reader who cannot hover it or see which
                  side of the mark it is on. -->
-            <span class="sr-only">
-              {step.step}
-              {status === "ahead"
-                ? "Ahead."
-                : status === "done"
-                  ? "Done."
-                  : underWay(step)
-                    ? "Happening now."
-                    : "Done. This is where the budget is."}
-            </span>
-          </li>
-        {/each}
-      </ol>
+              <span class="sr-only">
+                {step.step}
+                {status === "ahead"
+                  ? "Ahead."
+                  : status === "done"
+                    ? "Done."
+                    : underWay(step)
+                      ? "Happening now."
+                      : "Done. This is where the budget is."}
+              </span>
+            </li>
+          {/each}
+        </ol>
 
-      <!--
-        The hovered box's own sentence, in the book's words. Hidden from
-        assistive technology because the box already carries it.
-      -->
-      {#if shown}
+        <!-- Today, over the boxes. Dashed and pale: where an entry is happening it
+           crosses that entry's own box, and a solid rule through it is harder to
+           read than a dashed one behind. The line above says which day it is. -->
         <div
-          class="budget-detail absolute bottom-4 w-80 -translate-x-1/2 rounded-md bg-white px-3 py-2 text-xs leading-snug text-slate-700 shadow-md ring-1 ring-slate-200"
-          style="left: {detailAt}%"
-          aria-hidden="true"
-        >
-          <span class="font-medium text-slate-900">{shown.date}</span>
-          {shown.step}
-        </div>
-      {/if}
-
-      <!-- Today. Drawn over the boxes, because it is the one thing on this
-           drawing that is not the book. -->
-      <div class="budget-today absolute top-0 bottom-20" style="left: {now}%">
-        <!-- Dashed and pale: it runs the height of the boxes, so where an entry
-             is happening it crosses that entry's own box, and a solid rule
-             through it is harder to read than a dashed one behind. -->
-        <span
-          class="absolute inset-y-0 left-0 -translate-x-1/2 border-l border-dashed border-slate-400"
-        ></span>
-        <span
-          class="absolute top-0 left-0 rounded-full bg-slate-900 px-2 py-0.5 text-[11px] whitespace-nowrap text-white"
-          style="transform: translateX({labelShift})"
-        >
-          Today, {longDate(today)}
-        </span>
+          class="budget-today absolute top-0 bottom-1 -translate-x-1/2 border-l border-dashed border-slate-400"
+          style="left: {now}%"
+        ></div>
       </div>
     </div>
   </div>

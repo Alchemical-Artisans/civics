@@ -144,9 +144,11 @@ Notable pieces:
   the chart cannot contradict the table it links to. The figures come from the
   book's page-78 tables, not its own revenue pie on page 65, which is $3,458,864
   short of the total it prints.
-- **`src/lib/BudgetTimeline.svelte`** draws page 13, the budget calendar, across
-  the foot of that same page: a row of twelve boxes with a mark showing where
-  today falls in the process. It is a drawing rather than a section of its own,
+- **`src/lib/BudgetTimeline.svelte`** draws page 13, the budget calendar, as the
+  book page's footer, fixed to the bottom of the window: a row of twelve boxes
+  with a mark showing where today falls in the process. `+layout.svelte` pads
+  the book page by more than the footer is tall, since a fixed footer cannot
+  push anything out from under itself. It is a drawing rather than a section of its own,
   and its entries are `budget-calendar.ts` beside the book's `+page.ts`. A box
   holds a date and a summary — the only text on these pages that is not the
   book's — and the book's own sentence appears under the row on hover or focus,

@@ -14,7 +14,12 @@
   // not. That page is two pies and sixty-odd contents lines, all of which run
   // in columns beside each other, and squeezing them into a 48rem strip left
   // most of the screen as margin.
-  const column = $derived(data.isSection ? "max-w-3xl" : "max-w-none")
+  //
+  // The book page also ends in a footer fixed to the bottom of the window --
+  // the budget calendar -- which is out of the flow and so cannot push anything
+  // out from under itself. The padding is what keeps the last line of the page
+  // clear of it, and is a little more than the tallest the footer gets.
+  const column = $derived(data.isSection ? "max-w-3xl" : "max-w-none pb-40")
 </script>
 
 <svelte:head>
@@ -79,13 +84,6 @@
   >
     {@render children()}
   </article>
-
-  <footer class="mt-8 border-t border-slate-200 pt-4 text-xs text-slate-500">
-    <p>
-      Transcribed by hand from the city's budget book, which is published as page images with no
-      text layer. The city's own file, linked above, is the record.
-    </p>
-  </footer>
 </div>
 
 <style>

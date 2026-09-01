@@ -132,22 +132,4 @@ export const load: PageLoad = () => ({
     ["Financial Reserve Policies", 227],
     ["Glossary", 231],
   ]),
-
-  /**
-   * Pages the book's contents page leaves out.
-   *
-   * The book's front matter and its process pages carry headings of their own
-   * but no contents entry, so following the contents alone skips them
-   * entirely. Titles here are the headings those pages print. Page 9 is a
-   * divider reading "2027 Budget" with nothing else on it and gets no entry.
-   *
-   * The list runs as far as the book has been transcribed, so it grows with
-   * the sections rather than being complete now.
-   */
-  unlisted: contents("fy2027", [
-    ["Council Members", 3],
-    ["City Hall of Haverhill", 5],
-    ["Mayor's Budget Team", 10],
-    ["Budget Phases", 11],
-  ]),
 })
