@@ -112,7 +112,8 @@ calendar.** `/budget` lists every fiscal year the city publishes,
 scraped: the city's page is 22 rows that change twice a year, so the list lives
 in `src/lib/data/budget.json`, scraped by `budget:update`. Every route is static and each contents line links to a
 section here when the directory exists and into the city's PDF at that page when
-it does not, so writing a section up is creating one directory. The FY2027 book
+it does not, so writing a section up is creating one directory. The page numbers
+are what those PDF links are built from; the contents shows titles only. The FY2027 book
 has no text layer at all — it is a Canva export flattened to page images — so
 its sections were read off rendered pages by hand. See
 [docs/budget-pages.md](docs/budget-pages.md).

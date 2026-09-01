@@ -100,6 +100,13 @@ wedges.
 The two pies are the same circle divided two ways — both tables come to the same
 total — so they can be read against each other without any shared scale.
 
+**The contents lists titles and nothing else.** The book prints a page number
+beside each of its own contents lines because paper is the only way through it;
+here the line itself is the way through, opening the section on this site or the
+city's PDF at that page, so which page it is stays the link's business. The
+numbers are still in the data — they are what `Router.pdfPage` builds an unwritten
+section's link from — they are just not printed.
+
 **The book page is not a reading column.** `+layout.svelte` keeps `max-w-3xl`
 for a section, which is prose, and gives the book page `max-w-none`: from `lg`
 the two pies sit in a narrow left column with the table of contents beside them,

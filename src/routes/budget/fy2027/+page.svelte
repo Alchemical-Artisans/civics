@@ -24,15 +24,15 @@
 </script>
 
 {#snippet list(sections: BookSection[])}
-  <!-- Not a `prose` list: the page numbers want a column of their own, and the
-       leader rule between title and number is what the book itself prints.
-       Sixty-odd lines of it, so it runs in columns once there is room for two
-       rather than as one strip down the page. -->
+  <!-- Not a `prose` list, and no page numbers: the book prints them beside its
+       own contents because paper is the only way through it, and here the line
+       is the way through -- it opens the section, on this site or at that page
+       of the city's PDF, and which page that is stays the link's business rather
+       than the reader's. Sixty-odd lines of it, so it runs in columns once
+       there is room for two rather than as one strip down the page. -->
   <ol class="not-prose mt-2 list-none space-y-0 p-0 sm:columns-2 sm:gap-x-10 2xl:columns-3">
     {#each sections as section (section.slug)}
-      <li
-        class="flex break-inside-avoid items-baseline gap-2 border-b border-slate-100 py-1.5 text-sm"
-      >
+      <li class="break-inside-avoid border-b border-slate-100 py-1.5 text-sm">
         <a
           class="text-slate-800 underline decoration-slate-300 hover:decoration-slate-800"
           href={linkFor(section)}
@@ -43,8 +43,6 @@
               , in the city's PDF, opens in a new tab</span
             >{/if}
         </a>
-        <span class="grow border-b border-dotted border-slate-200"></span>
-        <span class="text-slate-500 tabular-nums">{section.page}</span>
       </li>
     {/each}
   </ol>

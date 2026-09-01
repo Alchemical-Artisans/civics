@@ -10,11 +10,18 @@ import { fileURLToPath } from "node:url"
  * which is the whole point of the page under test.
  */
 const budget = fileURLToPath(new URL("./budget", import.meta.url))
-const newest = readdirSync(budget, { withFileTypes: true })
-  .filter((entry) => entry.isDirectory() && existsSync(join(budget, entry.name, "+page.svelte")))
-  .map((entry) => entry.name)
-  .sort()
-  .at(-1)!
+const written = (at: string) =>
+  readdirSync(at, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory() && existsSync(join(at, entry.name, "+page.svelte")))
+    .map((entry) => entry.name)
+    .sort()
+
+const newest = written(budget).at(-1)!
+
+/** Any section of that book, for the pages three levels down. Read from disk
+    for the same reason: a section written up today and dropped tomorrow should
+    not take a test with it. */
+const section = written(join(budget, newest))[0]
 
 test.describe("the site root", () => {
   test("opens the most recent budget book", async ({ page }) => {
@@ -105,7 +112,7 @@ test.describe("the site header", () => {
     expect(await marked("/calendar")).toBe("Calendar")
     expect(await marked(`/budget/${newest}`)).toBe("Budget")
     // Three levels down still marks its half of the site.
-    expect(await marked(`/budget/${newest}/mayors-budget-message`)).toBe("Budget")
+    expect(await marked(`/budget/${newest}/${section}`)).toBe("Budget")
     // `/` is in neither section; it only forwards.
     expect(await marked("/")).toBeNull()
   })
@@ -124,7 +131,7 @@ test.describe("the site header", () => {
     )
 
     // A section three levels down still marks its half of the site.
-    await page.goto(`/budget/${newest}/mayors-budget-message`)
+    await page.goto(`/budget/${newest}/${section}`)
     await expect(header.getByRole("link", { name: "Budget", exact: true })).toHaveAttribute(
       "aria-current",
       "page",
