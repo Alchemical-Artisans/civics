@@ -104,11 +104,11 @@ says it through `bookName`.
 `/budget/<year>` opens on the budget at a glance: the year, and what the year
 sits on.
 
-| Chart                   | What it draws                                              | From                                      |
-| ----------------------- | ---------------------------------------------------------- | ----------------------------------------- |
-| Appropriations, Revenue | two pies, one circle divided two ways                      | page 78, `2027-budget-in-brief/tables.ts` |
-| Reserves                | three balances against the policy band each has to sit in  | page 17, `fiscal-reserves/tables.ts`      |
-| Debt                    | one pie of what the city owes, by what it was borrowed for | page 21, `outstanding-debt/tables.ts`     |
+| Chart                   | What it draws                                                | From                                      |
+| ----------------------- | ------------------------------------------------------------ | ----------------------------------------- |
+| Appropriations, Revenue | two pies, one circle divided two ways                        | page 78, `2027-budget-in-brief/tables.ts` |
+| Reserves                | one bar: what the city holds, in the proportions it holds it | page 17, `fiscal-reserves/tables.ts`      |
+| Debt                    | one pie of what the city owes, by what it was borrowed for   | page 21, `outstanding-debt/tables.ts`     |
 
 The two pies are the year — everything expected in, everything planned out — and
 sit in the narrow left column. Reserves and debt are the standing position
@@ -151,21 +151,27 @@ debt pie is the same idea for a different pot: six purposes adding to the
 $175,745,444 the section states in its own sentence, which `overview.spec.ts`
 checks the six lines against.
 
-**Reserves are bars and not a pie**, because the question is not what share of
-one pot each takes: it is whether a balance is inside the band the city's own
-policy sets for it.
-[`src/lib/BudgetRange.svelte`](../src/lib/BudgetRange.svelte) draws each as a
-track from zero to a little past the ceiling, the band the policy allows, and
-the balance over it — a bar stopping short of the band says "below the floor"
-without the reader reading a figure, which is the case free cash is in this
-year. Where a policy sets a floor and no ceiling, as the stabilization fund's
-does, the band runs to the end of the track, because above the floor is where
-the policy is satisfied.
+**Reserves are one bar, and it ignores the policy bands.**
+[`src/lib/BudgetStack.svelte`](../src/lib/BudgetStack.svelte) draws the three
+balances as segments of a single bar with the total on the heading line. What
+the city is _allowed_ to hold — a floor for each fund and a ceiling for two of
+them — is the section's own subject, and drawing all of it here took more of
+this page than the answer is worth; the front page's question is how much there
+is. The three tracks-with-bands this started as are in the history if a later
+year wants them back.
+
+**The total is arithmetic of ours.** The book never adds these three, and free
+cash is certified out of the undesignated fund balance, so a year holding both
+would count some of the money twice. This year's free cash is $0, which is what
+makes the sum sound, and `overview.spec.ts` asserts exactly that — so the year
+free cash comes back, the test fails and the sum gets looked at again rather
+than quietly double-counting.
 
 It is the one chart here with no script behind it at all. Everything it draws is
-printed beside it — the balance and its share above the track, the floor and
-ceiling below — so nothing is a hover away and nothing is carried by colour, and
-the bars themselves are `aria-hidden` decoration over text that already says it.
+printed under it, one line per fund with the share the book gives, so nothing is
+a hover away and nothing is carried by colour: the bar itself is `aria-hidden`
+decoration over a list that already says it. A fund worth nothing keeps its line
+and draws no segment.
 
 **Two contents lines are left out: "Mayor's Budget Message" (page 2) and
 "Budget Calendar" (page 13).** Neither has a page here — the message was
@@ -393,7 +399,7 @@ src/lib/data/budget.json                   the committed listing, scraped
 src/lib/budget.ts                          reads it; slugs and contents helpers
 src/lib/budget.spec.ts                     unit tests for them
 src/lib/BudgetPie.svelte                   the pie charts on a book page
-src/lib/BudgetRange.svelte                 the reserve bars beside them
+src/lib/BudgetStack.svelte                 the reserves, as one bar in parts
 src/lib/BudgetTimeline.svelte              the budget calendar, drawn as boxes
 src/routes/budget/<year>/budget-calendar.ts   that calendar, transcribed
 src/lib/BudgetTable.svelte                 a transcribed table, rendered from data

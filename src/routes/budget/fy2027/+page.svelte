@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Router } from "$lib/router"
   import BudgetPie from "$lib/BudgetPie.svelte"
-  import BudgetRange from "$lib/BudgetRange.svelte"
+  import BudgetStack from "$lib/BudgetStack.svelte"
   import BudgetTimeline from "$lib/BudgetTimeline.svelte"
   import type { BookSection } from "$lib/budget"
 
@@ -98,14 +98,20 @@
       of it -- and these two are the standing position underneath it, which is a
       different question and reads as one when the two are together.
 
-      Side by side from `sm`, where there is room for the bars to be worth
-      drawing; stacked below it. Each is a section of the book one line of the
-      contents below opens, which is where every figure on them is printed.
+      Side by side from `sm`, stacked below it. Each is a section of the book
+      one line of the contents below opens, which is where the policy behind
+      each of these figures is written out.
     -->
     <div class="mb-8 flex flex-wrap items-start gap-x-10 gap-y-6">
       <div class="max-w-md min-w-[16rem] flex-1">
-        <h2>Reserves</h2>
-        <BudgetRange rows={reserves} />
+        <h2>
+          Reserves
+          <span class="font-normal text-slate-500 tabular-nums">
+            {money.format(data.reservesTotal)}
+          </span>
+        </h2>
+
+        <BudgetStack rows={reserves} />
       </div>
 
       <div>

@@ -5,7 +5,7 @@ import { APPROPRIATIONS, REVENUE } from "./2027-budget-in-brief/tables"
 import { FUND_BALANCE, FREE_CASH, STABILIZATION } from "./fiscal-reserves/tables"
 import { LONG_TERM_DEBT } from "./outstanding-debt/tables"
 import { CALENDAR } from "./budget-calendar"
-import type { Band } from "$lib/BudgetRange.svelte"
+import type { Part } from "$lib/BudgetStack.svelte"
 
 /**
  * The budget at a glance, from the two tables on page 78.
@@ -56,37 +56,46 @@ const total = amount(cell(APPROPRIATIONS, "Grand Total", CHARTED))!
  *
  * `figure` is the dollars in a cell that also carries a share -- the book
  * prints "$13,985,452 (7.85%)" in one cell of the dial -- and `share` is what
- * is left of it, which the chart prints beside the money as the book does.
+ * is left of it, which the bar prints beside the money as the book does.
  */
 const figure = (table: BudgetTableData, label: string) => amount(cell(table, label, "Amount"))!
 
 const share = (table: BudgetTableData, label: string) =>
   cell(table, label, "Amount").match(/\(([\d.]+%)\)/)?.[1]
 
-const reserves: Band[] = [
+/**
+ * What the city actually holds, and nothing about what it is allowed to hold.
+ *
+ * The section is three policies, each with a floor and most with a ceiling, and
+ * the front page charted all of that until it was clear the bands are the
+ * section's subject and not this page's: here the question is how much there
+ * is. So the balances alone, as one bar in three parts.
+ *
+ * The parts are added up, which the book never does. It is sound this year --
+ * free cash is certified out of the undesignated fund balance, so a year with
+ * both would count some of the money twice, and this year's free cash is $0 --
+ * but it is arithmetic of ours over the book's figures, which is why the total
+ * is drawn from the parts rather than quoted as though the book stated it.
+ */
+const reserves: Part[] = [
   {
     label: "Fund Balance",
-    minimum: figure(FUND_BALANCE, "Minimum"),
-    actual: figure(FUND_BALANCE, "Actual"),
-    maximum: figure(FUND_BALANCE, "Maximum"),
+    amount: figure(FUND_BALANCE, "Actual"),
     share: share(FUND_BALANCE, "Actual"),
   },
   {
-    label: "Free Cash",
-    minimum: figure(FREE_CASH, "Minimum"),
-    actual: figure(FREE_CASH, "Anticipated"),
-    maximum: figure(FREE_CASH, "Maximum"),
-    share: share(FREE_CASH, "Anticipated"),
-  },
-  {
-    // Policy #4 sets a floor and no ceiling, so this bar has a band with no
-    // far end rather than a made-up one.
     label: "Stabilization",
-    minimum: figure(STABILIZATION, "Minimum Balance"),
-    actual: figure(STABILIZATION, "Actual Balance"),
+    amount: figure(STABILIZATION, "Actual Balance"),
     share: share(STABILIZATION, "Actual Balance"),
   },
+  {
+    label: "Free Cash",
+    amount: figure(FREE_CASH, "Anticipated"),
+    share: share(FREE_CASH, "Anticipated"),
+  },
 ]
+
+const reservesTotal = sum(reserves)
 
 const debt = column(LONG_TERM_DEBT, "Amount")
 
@@ -114,8 +123,9 @@ export const load: PageLoad = () => ({
     total,
   },
 
-  /** The two charts above the contents: page 17's dials and page 21's list. */
+  /** The two charts above the contents: page 17's balances and page 21's list. */
   reserves,
+  reservesTotal,
   debt,
   debtTotal,
 

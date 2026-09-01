@@ -64,30 +64,25 @@ describe("page 21, the debt the front page charts", () => {
   })
 })
 
-describe("page 17, the reserve dials the front page charts", () => {
-  // Each dial is a floor, a balance, and a ceiling where the policy sets one.
-  // A chart drawing a balance against a band is wrong if the band is not a
-  // band, so the order is what is pinned rather than the figures.
-  it("has a balance inside its band, or visibly outside it", () => {
-    const dial = (table: typeof FUND_BALANCE, floor: string, at: string) => ({
-      floor: amount(cell(table, floor, "Amount"))!,
-      at: amount(cell(table, at, "Amount"))!,
-    })
+describe("page 17, the reserves the front page charts", () => {
+  // The front page adds the three balances into one bar. The book never adds
+  // them, so the sum is arithmetic of ours: this is what it comes to, and it
+  // is here so that a correction to any dial has to account for the total.
+  it("holds $21,986,546 across the three funds", () => {
+    const held = [
+      amount(cell(FUND_BALANCE, "Actual", "Amount"))!,
+      amount(cell(STABILIZATION, "Actual Balance", "Amount"))!,
+      amount(cell(FREE_CASH, "Anticipated", "Amount"))!,
+    ]
+    expect(held.reduce((a, b) => a + b, 0)).toBe(21986546)
+  })
 
-    const balance = dial(FUND_BALANCE, "Minimum", "Actual")
-    expect(balance.at).toBeGreaterThan(balance.floor)
-    expect(balance.at).toBeLessThan(amount(cell(FUND_BALANCE, "Maximum", "Amount"))!)
-
-    // The one that is out of policy, and the reason the chart draws a floor at
-    // all: free cash is projected at nothing against a floor of $3.5 million.
-    const cash = dial(FREE_CASH, "Minimum", "Anticipated")
-    expect(cash.at).toBe(0)
-    expect(cash.floor).toBeGreaterThan(0)
-
-    // Policy #4 sets no ceiling, so the dial has two rows and not three.
-    expect(STABILIZATION.rows).toHaveLength(2)
-    const stabilization = dial(STABILIZATION, "Minimum Balance", "Actual Balance")
-    expect(stabilization.at).toBeGreaterThan(stabilization.floor)
+  // Free cash is certified out of the undesignated fund balance, so a year
+  // with both would count some of the money twice. This year's is nothing,
+  // which is what makes the sum above sound -- and this is the assertion that
+  // will fail when that stops being true.
+  it("has no free cash to double-count", () => {
+    expect(amount(cell(FREE_CASH, "Anticipated", "Amount"))).toBe(0)
   })
 
   // The share is printed in the same cell as the money, and the front page

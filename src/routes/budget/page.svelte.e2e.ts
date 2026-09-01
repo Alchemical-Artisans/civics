@@ -60,24 +60,27 @@ test.describe("budget pages", () => {
 
     // Above the contents, which is where the standing position belongs: the
     // pies beside it are the year, these two are what the year sits on.
-    const reserves = page.locator(".budget-range")
-    await expect(page.getByRole("heading", { name: "Reserves" })).toBeVisible()
-    await expect(reserves.locator("> div")).toHaveCount(3)
+    await expect(page.getByRole("heading", { name: /^Reserves \$21,986,546$/ })).toBeVisible()
 
-    // Every figure the bars draw is printed beside them, so none of this is a
+    // One bar, in the proportions the city holds them. Free cash is nothing
+    // this year, so it keeps its line and draws no segment.
+    const reserves = page.locator(".budget-stack")
+    await expect(reserves.locator("li")).toHaveCount(3)
+    await expect(reserves.locator("div > div")).toHaveCount(2)
+
+    // Every figure the bar draws is printed under it, so none of this is a
     // hover away and none of it is carried by colour.
     await expect(reserves).toContainText("Fund Balance")
     await expect(reserves).toContainText("$13,985,452")
     await expect(reserves).toContainText("7.85%")
-    await expect(reserves).toContainText("Policy $8,913,079 to $26,739,238")
-
-    // Free cash is projected at nothing against a floor of $3.5 million, which
-    // is the case the band is drawn for.
+    await expect(reserves).toContainText("Stabilization")
+    await expect(reserves).toContainText("$8,001,094")
+    await expect(reserves).toContainText("Free Cash")
     await expect(reserves).toContainText("$0")
-    await expect(reserves).toContainText("Policy $3,565,232 to $14,260,927")
 
-    // Policy #4 sets a floor and no ceiling.
-    await expect(reserves).toContainText("Policy $5,347,848 or more")
+    // What the city is allowed to hold is the section's subject, not this
+    // page's: no floor, no ceiling, no band.
+    await expect(reserves).not.toContainText("Policy")
 
     await expect(page.getByRole("heading", { name: /^Debt \$175,745,444$/ })).toBeVisible()
     const debt = page.locator(".budget-chart").last()

@@ -148,12 +148,15 @@ Notable pieces:
   `contents`. `sectionSlug` is `meetingId`'s rule except that apostrophes are
   dropped rather than collapsed — half this book's titles carry one, and
   `mayor-s-budget-message` reads as a typo.
-- **`src/lib/BudgetRange.svelte`** is the other chart a book opens with: three
-  reserve balances, each against the band the city's own policy puts it in, above
-  the table of contents alongside a pie of what the city owes. The pies beside
-  them are the year; these are the position it sits on. Every figure is printed
-  beside the bar, so the bars are `aria-hidden` and there is no script behind
-  them.
+- **`src/lib/BudgetStack.svelte`** is the other chart a book opens with: the
+  reserves as one bar in three parts, above the table of contents alongside a
+  pie of what the city owes. The pies beside them are the year; these are the
+  position it sits on. It shows what the city holds and not what its policies
+  allow it to hold -- the bands are the section's subject, not this page's. The
+  total is ours, not the book's: free cash is certified out of the fund balance,
+  so `overview.spec.ts` pins this year's free cash at $0 and will fail the year
+  adding the three would double-count. Every figure is printed under the bar, so
+  the bar is `aria-hidden` and there is no script behind it.
 - **`src/lib/BudgetPie.svelte`** is the pie chart a budget book opens with: a
   wedge names itself and prints its dollars and share on hover or focus, which
   makes it the one page here carrying a script. Every wedge is focusable, both
