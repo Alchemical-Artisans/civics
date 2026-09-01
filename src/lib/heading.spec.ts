@@ -7,7 +7,7 @@ describe("barOf", () => {
   it("names a budget book by its year, and says what that year covers", () => {
     const bar = barOf({ book: BOOK })
     expect(bar.name).toBe("2027 Budget")
-    expect(bar.dates).toBe("Budget Plan July 1, 2026 to June 30, 2027")
+    expect(bar.dates).toBe("July 1, 2026 to June 30, 2027")
     expect(bar.source).toBe(BOOK.budget)
   })
 

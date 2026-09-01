@@ -43,7 +43,7 @@ export function barOf(data: PageNaming): PageBar {
 
     // A fiscal year is named for the year it ends in, which is worth saying
     // once where the name is rather than nowhere.
-    dates: book ? `Budget Plan July 1, ${book.year - 1} to June 30, ${book.year}` : null,
+    dates: book ? `July 1, ${book.year - 1} to June 30, ${book.year}` : null,
 
     // A section knows where it sits in the book, so its link opens the reader
     // at that page rather than at the front of a PDF running to hundreds.
