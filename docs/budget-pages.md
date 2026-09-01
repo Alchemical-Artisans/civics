@@ -367,6 +367,11 @@ below.
    page number is the first of the two, so the header's source link opens where
    the pair begins.
 
+   A page may also be a **category** with one section in it so far, named for
+   what will join it rather than for what it holds: `projects` is "Capital
+   Planning" (28), and the book's other project pages become `<h2>`s under it as
+   they are read off the page. The contents line is the category's name.
+
    The sections it covers need not all be transcribed. `education` is "Net
    School Spending" (26), "Regional Schools" (150) and "School Department"
    (152); only the first has been read off the page, and the other two are links

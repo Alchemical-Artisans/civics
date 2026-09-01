@@ -152,6 +152,25 @@ test.describe("budget pages", () => {
     await expect(every.filter({ hasText: "School Department" })).toHaveCount(0)
   })
 
+  test("carries capital planning under Projects", async ({ page }) => {
+    await page.goto(`/budget/${books[0]}/projects`)
+
+    // A category, not a section: the book's page is under the heading it is
+    // printed with, and the page is named for what more of the book will join.
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Projects")
+    await expect(page.getByRole("heading", { name: "Capital Planning" })).toBeVisible()
+    await expect(page.getByRole("article")).toContainText("5-Year Capital Requests by Category")
+
+    // The bar's source link opens the book where that section begins.
+    expect(await page.locator('header a[href*="#page="]').getAttribute("href")).toMatch(/#page=28$/)
+
+    // And the contents says Projects, not Capital Planning.
+    await page.goto(`/budget/${books[0]}`)
+    const every = page.locator("article > div ol li")
+    await expect(every.filter({ hasText: "Projects" })).toHaveCount(1)
+    await expect(every.filter({ hasText: "Capital Planning" })).toHaveCount(0)
+  })
+
   test("puts the three school sections on one page", async ({ page }) => {
     await page.goto(`/budget/${books[0]}/education`)
 

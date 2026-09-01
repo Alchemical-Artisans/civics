@@ -1,3 +1,8 @@
+<!-- The section of the book this page carries, under the name it is printed
+     with. The page itself is "Projects", which is a category and not a section:
+     more of the book belongs under it than has been transcribed. -->
+<h2>Capital Planning</h2>
+
 <p>
   The city keeps a continuous inventory of all capital requirements to effectively connect grant
   opportunities with its needs and to plan for long-term budgeting and strategic objectives. These

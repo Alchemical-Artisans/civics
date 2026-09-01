@@ -185,7 +185,9 @@ export const load: PageLoad = () => ({
       // schools, filed with the budget pages rather than here in the book's
       // order, since that is where a reader looks for a thing the city runs.
       ["Education", 26],
-      ["Capital Planning", 28],
+      // "Capital Planning" (28), under a name that has room for the book's
+      // other project pages as they are transcribed.
+      ["Projects", 28],
       ["2027 Revenue Estimates", 48],
       ["2027 Revenue Summary", 64],
       ["10-Year Revenue Forecast", 67],
