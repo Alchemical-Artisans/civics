@@ -55,13 +55,11 @@ const total = amount(cell(APPROPRIATIONS, "Grand Total", CHARTED))!
  * so the front page cannot contradict the section it links to.
  *
  * `figure` is the dollars in a cell that also carries a share -- the book
- * prints "$13,985,452 (7.85%)" in one cell of the dial -- and `share` is what
- * is left of it, which the bar prints beside the money as the book does.
+ * prints "$13,985,452 (7.85%)" in one cell of the dial. The share stays in the
+ * section: it is a share of city revenue, and in a bar divided into parts a
+ * percentage reads as a share of the bar.
  */
 const figure = (table: BudgetTableData, label: string) => amount(cell(table, label, "Amount"))!
-
-const share = (table: BudgetTableData, label: string) =>
-  cell(table, label, "Amount").match(/\(([\d.]+%)\)/)?.[1]
 
 /**
  * What the city actually holds, and nothing about what it is allowed to hold.
@@ -78,21 +76,9 @@ const share = (table: BudgetTableData, label: string) =>
  * is drawn from the parts rather than quoted as though the book stated it.
  */
 const reserves: Part[] = [
-  {
-    label: "Fund Balance",
-    amount: figure(FUND_BALANCE, "Actual"),
-    share: share(FUND_BALANCE, "Actual"),
-  },
-  {
-    label: "Stabilization",
-    amount: figure(STABILIZATION, "Actual Balance"),
-    share: share(STABILIZATION, "Actual Balance"),
-  },
-  {
-    label: "Free Cash",
-    amount: figure(FREE_CASH, "Anticipated"),
-    share: share(FREE_CASH, "Anticipated"),
-  },
+  { label: "Fund Balance", amount: figure(FUND_BALANCE, "Actual") },
+  { label: "Stabilization", amount: figure(STABILIZATION, "Actual Balance") },
+  { label: "Free Cash", amount: figure(FREE_CASH, "Anticipated") },
 ]
 
 const reservesTotal = sum(reserves)

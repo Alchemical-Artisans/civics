@@ -167,11 +167,18 @@ makes the sum sound, and `overview.spec.ts` asserts exactly that — so the year
 free cash comes back, the test fails and the sum gets looked at again rather
 than quietly double-counting.
 
-It is the one chart here with no script behind it at all. Everything it draws is
-printed under it, one line per fund with the share the book gives, so nothing is
-a hover away and nothing is carried by colour: the bar itself is `aria-hidden`
-decoration over a list that already says it. A fund worth nothing keeps its line
-and draws no segment.
+**The figures are in the segments**, the way the pies beside it work: hover a
+segment or tab to it and it names itself and prints its dollars and its share.
+Three lines of legend under a bar this small was more chrome than chart. What a
+segment reports is its share of the reserves and not the share of city revenue
+the book prints beside each balance — in a bar divided into parts a percentage
+reads as a part of the bar, and the two numbers are nothing alike; the revenue
+share stays on the section's page beside the policy it answers to.
+
+A fund worth nothing draws no segment, because there is no honest width for $0.
+It keeps a line of its own in an `sr-only` list, so walking the chart still
+reaches every fund the book lists — every other figure is the segment's own
+accessible name, so nothing here is only visible to a mouse.
 
 **Two contents lines are left out: "Mayor's Budget Message" (page 2) and
 "Budget Calendar" (page 13).** Neither has a page here — the message was

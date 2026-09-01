@@ -155,8 +155,11 @@ Notable pieces:
   allow it to hold -- the bands are the section's subject, not this page's. The
   total is ours, not the book's: free cash is certified out of the fund balance,
   so `overview.spec.ts` pins this year's free cash at $0 and will fail the year
-  adding the three would double-count. Every figure is printed under the bar, so
-  the bar is `aria-hidden` and there is no script behind it.
+  adding the three would double-count. A segment names and prices itself on hover
+  or focus, as a pie wedge does, and reports its share of the reserves rather
+  than the share of revenue the book prints -- in a divided bar a percentage
+  reads as a part of the bar. A fund worth $0 draws no segment and keeps an
+  `sr-only` line instead.
 - **`src/lib/BudgetPie.svelte`** is the pie chart a budget book opens with: a
   wedge names itself and prints its dollars and share on hover or focus, which
   makes it the one page here carrying a script. Every wedge is focusable, both

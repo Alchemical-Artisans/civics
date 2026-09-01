@@ -63,20 +63,25 @@ test.describe("budget pages", () => {
     await expect(page.getByRole("heading", { name: /^Reserves \$21,986,546$/ })).toBeVisible()
 
     // One bar, in the proportions the city holds them. Free cash is nothing
-    // this year, so it keeps its line and draws no segment.
+    // this year, so it draws no segment and keeps a line for a screen reader.
     const reserves = page.locator(".budget-stack")
-    await expect(reserves.locator("li")).toHaveCount(3)
-    await expect(reserves.locator("div > div")).toHaveCount(2)
+    const segments = reserves.getByRole("img")
+    await expect(segments).toHaveCount(2)
+    await expect(segments.first()).toHaveAttribute("aria-label", "Fund Balance, $13,985,452, 63.6%")
+    await expect(segments.last()).toHaveAttribute("aria-label", "Stabilization, $8,001,094, 36.4%")
+    await expect(reserves.locator("li")).toHaveText(["Free Cash, $0"])
 
-    // Every figure the bar draws is printed under it, so none of this is a
-    // hover away and none of it is carried by colour.
-    await expect(reserves).toContainText("Fund Balance")
-    await expect(reserves).toContainText("$13,985,452")
-    await expect(reserves).toContainText("7.85%")
-    await expect(reserves).toContainText("Stabilization")
-    await expect(reserves).toContainText("$8,001,094")
-    await expect(reserves).toContainText("Free Cash")
-    await expect(reserves).toContainText("$0")
+    // The figures are in the segments, the way the pies beside them work.
+    await expect(reserves.locator(".budget-tooltip")).toHaveCount(0)
+    await segments.first().hover()
+    const tooltip = reserves.locator(".budget-tooltip")
+    await expect(tooltip).toContainText("Fund Balance")
+    await expect(tooltip).toContainText("$13,985,452")
+    await expect(tooltip).toContainText("63.6%")
+
+    // Reachable without a mouse, like every other wedge on this page.
+    await segments.last().focus()
+    await expect(tooltip).toContainText("Stabilization")
 
     // What the city is allowed to hold is the section's subject, not this
     // page's: no floor, no ceiling, no band.
