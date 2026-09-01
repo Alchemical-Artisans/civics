@@ -213,13 +213,14 @@ test.describe("budget pages", () => {
     await expect(
       page.getByRole("heading", { name: "Summary Department Budget Requests" }),
     ).toBeVisible()
+    await expect(page.getByRole("heading", { name: /^Other Budget Reductions/ })).toBeVisible()
 
     // The bar's source link opens the book where the run begins.
     expect(await page.locator('header a[href*="#page="]').getAttribute("href")).toMatch(/#page=28$/)
 
     // None of the three keeps a line in the contents.
     await page.goto(`/budget/${books[0]}`)
-    for (const gone of ["Projects", "Capital Planning", "Budget Requests"]) {
+    for (const gone of ["Projects", "Capital Planning", "Budget Requests", "Budget Challenges"]) {
       await expect(page.locator("article > div ol li").filter({ hasText: gone })).toHaveCount(0)
     }
   })

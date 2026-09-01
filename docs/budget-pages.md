@@ -216,20 +216,25 @@ source link opens where the run begins.
 
 **`appropriations` is the same idea on the spending side**, opened from the
 other pie's heading, and holds "Capital Planning" (28), "10-Year Appropriation
-Forecast" (69) and "2027 Budget Requests" (72), in the book's order.
+Forecast" (69), "2027 Budget Requests" (72) and "2027 Budget Challenges" (73),
+in the book's order.
 
 Appropriations is the umbrella because it is the precise word, not a loose one:
 an appropriation is the City Council's authorisation to spend a stated amount,
 for a stated purpose, from a stated source, in one fiscal year, and nothing is
 spent without one — which is why the appropriations table comes to the same
-total as revenue. The three sections are that authorisation from three sides:
-what departments asked to add to it (the requests are increments to existing
-budgets, not money of their own), where it is going (the forecast), and what the
-city wants to build or buy. The last of those is mostly **not** in this year's
+total as revenue. The sections are that authorisation from every side the book takes it
+from: what departments asked to add to it (the requests are increments to
+existing budgets, not money of their own), what had to come out of it to balance
+and what is driving it up (the challenges), where it is going (the forecast),
+and what the city wants to build or buy. The last of those is mostly **not** in this year's
 appropriation at all: capital over $250,000 is borrowed, the page-78 table's
 "Capital – Pay as you go" line is empty for 2027, and the funding decision was
 postponed — capital reaches the operating budget years later as debt service.
-"2027 Budget Challenges" (73) is the obvious next section for this page. The pies themselves are page 78, which is
+The remaining candidates are the appropriation lines the book gives pages of
+their own — Debt Service (200), State Assessments (209), Employee Benefits (211)
+and Liability, Overlay & Reserves (213) — none of which is transcribed, so each
+would arrive as a link the way Regional Schools did on `education`. The pies themselves are page 78, which is
 2027 Budget in Brief and keeps its contents line — it is the table both charts
 are drawn from rather than either side's own account.
 
