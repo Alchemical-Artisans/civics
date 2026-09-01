@@ -100,6 +100,11 @@ wedges.
 The two pies are the same circle divided two ways — both tables come to the same
 total — so they can be read against each other without any shared scale.
 
+**One contents line is left out: "Mayor's Budget Message" (page 2).** Nothing on
+the site links to the message, so the line that opened the city's PDF at it is
+gone from `fy2027/+page.ts` rather than left pointing there. Every other line
+the book's contents carries is listed, whether or not it has a page here.
+
 **The contents lists titles and nothing else.** The book prints a page number
 beside each of its own contents lines because paper is the only way through it;
 here the line itself is the way through, opening the section on this site or the
@@ -195,7 +200,8 @@ Two things complicate that in this book:
 - **The book's contents skip pages.** Its front matter and process pages —
   Council Members, City Hall of Haverhill, Mayor's Budget Team, Budget Phases —
   carry headings but no contents entry, and fall inside the run for "Mayor's
-  Budget Message". They are listed separately on the book page, under
+  Budget Message", which the book page does not list at all. They are listed
+  separately on the book page, under
   "Not in the book's contents", from a second `contents()` call. That list runs
   only as far as the book has been transcribed.
 - **A table is often split across pages for room, not for meaning.** The

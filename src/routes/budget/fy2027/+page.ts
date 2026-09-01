@@ -51,8 +51,14 @@ export const load: PageLoad = () => ({
     total,
   },
 
+  /**
+   * The book's contents page, in its order, with one line left out: "Mayor's
+   * Budget Message" (page 2). Nothing here links to the message, so the entry
+   * that opened the city's PDF at it is gone rather than left pointing there.
+   * Everything else the contents lists is listed, whether or not it has a page
+   * here.
+   */
   contents: contents("fy2027", [
-    ["Mayor's Budget Message", 2],
     ["Budget Calendar", 13],
     ["2027 Budget Goals", 15],
     ["Long-Term Strategic Goals", 16],
