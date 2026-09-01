@@ -104,18 +104,16 @@ says it through `bookName`.
 `/budget/<year>` opens on the budget at a glance: the year, and what the year
 sits on.
 
-| Chart                   | What it draws                                                | From                                      |
-| ----------------------- | ------------------------------------------------------------ | ----------------------------------------- |
-| Appropriations, Revenue | two pies, one circle divided two ways                        | page 78, `2027-budget-in-brief/tables.ts` |
-| Reserves                | one bar: what the city holds, in the proportions it holds it | page 17, `fiscal-reserves/tables.ts`      |
-| Debt                    | one pie of what the city owes, by what it was borrowed for   | page 21, `outstanding-debt/tables.ts`     |
+| Chart                   | What it draws                                      | From                                                                        |
+| ----------------------- | -------------------------------------------------- | --------------------------------------------------------------------------- |
+| Appropriations, Revenue | two pies, one circle divided two ways              | page 78, `2027-budget-in-brief/tables.ts`                                   |
+| Reserves and Debt       | two bars on one scale, each divided into its parts | page 17, `fiscal-reserves/tables.ts`; page 21, `outstanding-debt/tables.ts` |
 
 The two pies are the year — everything expected in, everything planned out — and
 sit in the narrow left column. Reserves and debt are the standing position
-underneath it, which is a different question, so they sit together above the
-table of contents rather than beside the pies. Every one of them reads its
-figures out of the section's own transcription; see "A section whose tables are
-charted" below.
+underneath it, which is a different question, so they sit above the table of
+contents rather than beside the pies. Both read their figures out of the
+sections' own transcriptions; see "A section whose tables are charted" below.
 
 **A pie, and the figures inside it.** The question a budget's front page
 answers is what share of one pot each category takes, and a pie says "half of it
@@ -151,14 +149,23 @@ debt pie is the same idea for a different pot: six purposes adding to the
 $175,745,444 the section states in its own sentence, which `overview.spec.ts`
 checks the six lines against.
 
-**Reserves are one bar, and it ignores the policy bands.**
-[`src/lib/BudgetStack.svelte`](../src/lib/BudgetStack.svelte) draws the three
-balances as segments of a single bar with the total on the heading line. What
-the city is _allowed_ to hold — a floor for each fund and a ceiling for two of
-them — is the section's own subject, and drawing all of it here took more of
-this page than the answer is worth; the front page's question is how much there
-is. The three tracks-with-bands this started as are in the history if a later
-year wants them back.
+**Reserves and debt are one chart on one scale, and it ignores the policy
+bands.** [`src/lib/BudgetStack.svelte`](../src/lib/BudgetStack.svelte) draws a
+bar per row, full width, each divided into what it is made of and each measured
+against the longest — so $22 million of reserves is drawn as the eighth of $176
+million of debt that it is, which is the only useful thing to do with the two
+figures and needs no arithmetic from the reader. What the city is _allowed_ to
+hold — a floor for each fund, a ceiling for two of them, a debt limit set in
+statute — is what those sections are about, each bar's own name opens the
+section it is drawn from, and drawing all of it here took more of the page than
+the answer is worth. The three tracks-with-bands this started
+as are in the history if a later year wants them back.
+
+Colour restarts on each bar, as it does on each of the two pies: a bar is its
+own whole, and running one sequence through both would hand the largest thing
+the city owes a hue picked by what came before it. Hovering a segment fades the
+others **in its own bar only** — the two bars are there to be compared, and
+fading one of them defeats the chart.
 
 **The total is arithmetic of ours.** The book never adds these three, and free
 cash is certified out of the undesignated fund balance, so a year holding both
@@ -169,24 +176,50 @@ than quietly double-counting.
 
 **The figures are in the segments**, the way the pies beside it work: hover a
 segment or tab to it and it names itself and prints its dollars and its share.
-Three lines of legend under a bar this small was more chrome than chart. What a
-segment reports is its share of the reserves and not the share of city revenue
-the book prints beside each balance — in a bar divided into parts a percentage
-reads as a part of the bar, and the two numbers are nothing alike; the revenue
-share stays on the section's page beside the policy it answers to.
+Lines of legend under bars this small were more chrome than chart. A segment's
+width is its share of the _scale_, which is what makes the bars comparable, and
+the share it reports is of its _own bar_, which is the whole it is a part of.
+Neither is the share of city revenue the book prints beside each reserve balance
+— in a bar divided into parts a percentage reads as a part of the bar, and the
+numbers are nothing alike; that one stays on the section's page beside the
+policy it answers to.
 
-A fund worth nothing draws no segment, because there is no honest width for $0.
-It keeps a line of its own in an `sr-only` list, so walking the chart still
-reaches every fund the book lists — every other figure is the segment's own
-accessible name, so nothing here is only visible to a mouse.
+A part worth nothing draws no segment, because there is no honest width for $0.
+It keeps an `sr-only` line of its own, so walking the chart still reaches every
+fund the book lists — every other figure is the segment's own accessible name,
+so nothing here is only visible to a mouse.
 
-**Two contents lines are left out: "Mayor's Budget Message" (page 2) and
-"Budget Calendar" (page 13).** Neither has a page here — the message was
-dropped, the calendar is the footer — and a line for a part of the book the site
-does not carry is a line that sends the reader into the city's PDF instead, so
-both are gone from `fy2027/+page.ts`. **Dropping a page means dropping its
-contents line with it.** Every other line the book's contents carries is listed,
-whether or not it has a page here.
+**The totals are the chart's own arithmetic.** Each bar adds its parts up rather
+than being handed a total beside them, so there is no second copy of a figure to
+fall out of step; `overview.spec.ts` is where those sums are checked against what
+the book states.
+
+**Four contents lines are left out.** "Mayor's Budget Message" (page 2) and
+"Budget Calendar" (page 13) have no page here — the message was dropped, the
+calendar is the footer — and a line for a part of the book the site does not
+carry is a line that sends the reader into the city's PDF instead. **Dropping a
+page means dropping its contents line with it.**
+
+"Fiscal Reserves" (17) and "Outstanding Debt" (21) do have pages, and the chart
+above the contents is where they open from: each bar's name is the link. A line
+here as well would offer the same page twice on one screen. **A section the page
+already links some other way does not get a contents line either** — the e2e
+suite keeps a `charted` list of them, beside the `unlinked` one, so the check
+that every contents link resolves still knows what to expect.
+
+Every other line the book's contents carries is listed, whether or not it has a
+page here.
+
+**The contents is two lists, and neither is headed "Table of Contents".** The
+left one is the book's account of the year; the right one is headed
+**Departments** and runs City Council through Library, which is the stretch of
+the book where each page is an office and what it costs. It stops at Library
+rather than at the end of "General Fund Budgets", because Debt Service, State
+Assessments, Employee Benefits and Liability, Overlay & Reserves are money the
+city owes rather than departments that spend it. Sixty lines under one heading
+is a list nobody reads to the end of; two headed lists are two questions, and a
+reader arrives with one of them. `fy2027/+page.ts` splits the transcribed
+contents on those two named entries, and throws if it cannot find them.
 
 **The contents lists titles and nothing else.** The book prints a page number
 beside each of its own contents lines because paper is the only way through it;
@@ -406,7 +439,8 @@ src/lib/data/budget.json                   the committed listing, scraped
 src/lib/budget.ts                          reads it; slugs and contents helpers
 src/lib/budget.spec.ts                     unit tests for them
 src/lib/BudgetPie.svelte                   the pie charts on a book page
-src/lib/BudgetStack.svelte                 the reserves, as one bar in parts
+src/lib/BudgetStack.svelte                 reserves and debt, two bars on one scale
+src/lib/chart-colours.ts                   the one colour order every chart uses
 src/lib/BudgetTimeline.svelte              the budget calendar, drawn as boxes
 src/routes/budget/<year>/budget-calendar.ts   that calendar, transcribed
 src/lib/BudgetTable.svelte                 a transcribed table, rendered from data

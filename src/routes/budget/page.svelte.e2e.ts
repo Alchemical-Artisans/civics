@@ -30,6 +30,13 @@ const unlinked = [
   "mayors-budget-team",
 ]
 
+/**
+ * Sections the book page opens from its chart rather than from its contents:
+ * each is a bar, and the bar's own name is the link. A contents line as well
+ * would offer the same page twice on one screen.
+ */
+const charted = ["fiscal-reserves", "outstanding-debt"]
+
 test.describe("budget pages", () => {
   test("the book opens on the budget at a glance, before its contents", async ({ page }) => {
     await page.goto(`/budget/${books[0]}`)
@@ -41,9 +48,8 @@ test.describe("budget pages", () => {
     ).toBeVisible()
     await expect(page.getByRole("heading", { name: /^Revenue \$285,272,159$/ })).toBeVisible()
 
-    // Three pies now: the year's two halves, and the debt the city carries.
     const charts = page.locator(".budget-chart")
-    await expect(charts).toHaveCount(3)
+    await expect(charts).toHaveCount(2)
 
     // Every wedge says what it is and what it costs as its accessible name,
     // whether or not anyone can hover something a third of a degree wide.
@@ -59,41 +65,120 @@ test.describe("budget pages", () => {
     await page.goto(`/budget/${books[0]}`)
 
     // Above the contents, which is where the standing position belongs: the
-    // pies beside it are the year, these two are what the year sits on.
-    await expect(page.getByRole("heading", { name: /^Reserves \$21,986,546$/ })).toBeVisible()
+    // pies beside it are the year, this is what the year sits on.
+    await expect(page.getByRole("heading", { name: "Reserves and Debt" })).toBeVisible()
 
-    // One bar, in the proportions the city holds them. Free cash is nothing
-    // this year, so it draws no segment and keeps a line for a screen reader.
-    const reserves = page.locator(".budget-stack")
-    const segments = reserves.getByRole("img")
-    await expect(segments).toHaveCount(2)
-    await expect(segments.first()).toHaveAttribute("aria-label", "Fund Balance, $13,985,452, 63.6%")
-    await expect(segments.last()).toHaveAttribute("aria-label", "Stabilization, $8,001,094, 36.4%")
-    await expect(reserves.locator("li")).toHaveText(["Free Cash, $0"])
+    // One chart, two bars, each divided into what it is made of.
+    const chart = page.locator(".budget-stack")
+    const bars = chart.locator(".budget-series")
+    await expect(bars).toHaveCount(2)
+    await expect(bars.first()).toContainText("$21,986,546")
+    await expect(bars.last()).toContainText("$175,745,444")
 
-    // The figures are in the segments, the way the pies beside them work.
-    await expect(reserves.locator(".budget-tooltip")).toHaveCount(0)
-    await segments.first().hover()
-    const tooltip = reserves.locator(".budget-tooltip")
+    // Each bar's name is the way into the section it is drawn from, and the
+    // only way: neither has a line in the contents below.
+    await expect(bars.first().getByRole("link", { name: "Reserves" })).toHaveAttribute(
+      "href",
+      /fiscal-reserves$/,
+    )
+    await expect(bars.last().getByRole("link", { name: "Debt" })).toHaveAttribute(
+      "href",
+      /outstanding-debt$/,
+    )
+    const contents = page.locator("article ol li")
+    await expect(contents.filter({ hasText: "Fiscal Reserves" })).toHaveCount(0)
+    await expect(contents.filter({ hasText: "Outstanding Debt" })).toHaveCount(0)
+
+    // Free cash is nothing this year, so it draws no segment and keeps a line
+    // for a screen reader instead.
+    const held = bars.first().getByRole("img")
+    await expect(held).toHaveCount(2)
+    await expect(held.first()).toHaveAttribute(
+      "aria-label",
+      "Reserves, Fund Balance, $13,985,452, 63.6%",
+    )
+    await expect(bars.first()).toContainText("Reserves, Free Cash, $0")
+
+    // Largest first, whatever order the book's own list is in.
+    const owed = bars.last().getByRole("img")
+    await expect(owed).toHaveCount(6)
+    await expect(owed.first()).toHaveAttribute(
+      "aria-label",
+      "Debt, School Department, $71,517,300, 40.7%",
+    )
+    await expect(owed.last()).toHaveAttribute("aria-label", "Debt, Public Works, $1,455,200, 0.8%")
+  })
+
+  test("splits the contents into the year and the departments", async ({ page }) => {
+    await page.goto(`/budget/${books[0]}`)
+
+    // Two lists, one headed. Sixty lines under a single "Table of Contents" is
+    // a list nobody reads to the end of.
+    // `> div`, because the calendar in the footer is a list too.
+    const lists = page.locator("article > div ol")
+    await expect(lists).toHaveCount(2)
+    await expect(page.getByRole("heading", { name: "Departments" })).toBeVisible()
+    await expect(page.getByRole("heading", { name: "Table of Contents" })).toHaveCount(0)
+
+    // A department at a time, City Council through Library.
+    // `toContainText`, because a line with no page here carries an `sr-only`
+    // note saying it opens the city's PDF.
+    const departments = lists.last().locator("li")
+    await expect(departments.first()).toContainText("City Council")
+    await expect(departments.last()).toContainText("Library")
+
+    // What the city owes rather than a department that spends it, so these
+    // stay with the year's own account on the left.
+    const year = lists.first().locator("li")
+    await expect(year.filter({ hasText: "Debt Service" })).toHaveCount(1)
+    await expect(year.filter({ hasText: "Employee Benefits" })).toHaveCount(1)
+    await expect(year.filter({ hasText: "Glossary" })).toHaveCount(1)
+  })
+
+  test("draws both bars to one scale", async ({ page }) => {
+    // The point of the chart: $22 million against $176 million, so the
+    // reserves are the eighth of the debt that they are rather than a bar the
+    // same length drawn beside it.
+    await page.goto(`/budget/${books[0]}`)
+    const bars = page.locator(".budget-stack .budget-series")
+
+    const drawn = async (bar: ReturnType<typeof bars.nth>) => {
+      const boxes = await Promise.all(
+        (await bar.getByRole("img").all()).map((segment) => segment.boundingBox()),
+      )
+      return boxes.reduce((width, box) => width + (box?.width ?? 0), 0)
+    }
+
+    const reserves = await drawn(bars.first())
+    const debt = await drawn(bars.last())
+    expect(reserves / debt).toBeGreaterThan(0.11)
+    expect(reserves / debt).toBeLessThan(0.14)
+  })
+
+  test("names and prices the segment under the pointer", async ({ page }) => {
+    await page.goto(`/budget/${books[0]}`)
+    const chart = page.locator(".budget-stack")
+    await expect(chart.locator(".budget-tooltip")).toHaveCount(0)
+
+    const held = chart.locator(".budget-series").first().getByRole("img")
+    await held.first().hover()
+    const tooltip = chart.locator(".budget-tooltip")
     await expect(tooltip).toContainText("Fund Balance")
     await expect(tooltip).toContainText("$13,985,452")
+    // Its share of its own bar, not of the scale both bars are drawn to.
     await expect(tooltip).toContainText("63.6%")
 
-    // Reachable without a mouse, like every other wedge on this page.
-    await segments.last().focus()
-    await expect(tooltip).toContainText("Stabilization")
-
-    // What the city is allowed to hold is the section's subject, not this
-    // page's: no floor, no ceiling, no band.
-    await expect(reserves).not.toContainText("Policy")
-
-    await expect(page.getByRole("heading", { name: /^Debt \$175,745,444$/ })).toBeVisible()
-    const debt = page.locator(".budget-chart").last()
-    await expect(debt.getByRole("img")).toHaveCount(6)
-    await expect(debt.getByRole("img").first()).toHaveAttribute(
-      "aria-label",
-      "School Department, $71,517,300, 40.7%",
+    // Hovering a reserve fades the other reserves and leaves the debt alone:
+    // the two bars are there to be compared, and fading one defeats that.
+    await expect(held.last()).toHaveCSS("opacity", "0.4")
+    await expect(chart.locator(".budget-series").last().getByRole("img").first()).toHaveCSS(
+      "opacity",
+      "1",
     )
+
+    // Reachable without a mouse, like every wedge on this page.
+    await chart.locator(".budget-series").last().getByRole("img").first().focus()
+    await expect(tooltip).toContainText("School Department")
   })
 
   test("charts what the sections themselves print", async ({ page }) => {
@@ -222,7 +307,9 @@ test.describe("budget pages", () => {
     await page.goto(`/budget/${books[0]}`)
     const local = await page.locator('article li a:not([href*="#page="])').all()
     const hrefs = await Promise.all(local.map((link) => link.getAttribute("href")))
-    expect(hrefs.length).toBe(sections.filter((name) => !unlinked.includes(name)).length)
+    expect(hrefs.length).toBe(
+      sections.filter((name) => !unlinked.includes(name) && !charted.includes(name)).length,
+    )
     for (const href of hrefs) {
       const response = await page.goto(new URL(href!, page.url()).toString())
       expect(response?.status()).toBe(200)

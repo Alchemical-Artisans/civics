@@ -19,11 +19,14 @@
   smallest of them reachable at all -- Overlay is 1/589th of Education, about a
   third of a degree, and no mouse will ever land on it.
 
-  Colour is the category, from a fixed order (see COLOURS). Fourteen hues is
+  Colour is the category, from the one order every chart here uses
+  (`$lib/chart-colours`). Fourteen hues is
   more than colour alone can carry, which is why nothing here is identified by
   colour: the wedge under the pointer says its own name.
 -->
 <script lang="ts">
+  import { COLOURS } from "$lib/chart-colours"
+
   export interface Slice {
     /** The category, exactly as the budget book's table prints it. */
     label: string
@@ -32,35 +35,6 @@
   }
 
   let { rows }: { rows: Slice[] } = $props()
-
-  /**
-   * The wedge colours, in the order they are handed out -- biggest category
-   * first, so a category keeps its colour whatever else is in the book.
-   *
-   * Ordered so that neighbouring wedges are far apart in hue, then checked
-   * with the palette validator rather than by eye: every step clears the
-   * lightness band, the chroma floor and 3:1 against the page, and the closest
-   * adjacent pair under simulated deuteranopia is Lime/Rose at dE 6.3 -- inside
-   * the 6-8 band that is allowed only where something other than colour
-   * identifies the mark, which here is the label on hover and the white gap
-   * between wedges.
-   */
-  const COLOURS = [
-    "#0369a1",
-    "#ea580c",
-    "#0d9488",
-    "#7c3aed",
-    "#65a30d",
-    "#e11d48",
-    "#0891b2",
-    "#d97706",
-    "#4f46e5",
-    "#16a34a",
-    "#a21caf",
-    "#a16207",
-    "#2563eb",
-    "#db2777",
-  ]
 
   const sorted = $derived([...rows].sort((a, b) => b.amount - a.amount))
   const total = $derived(sorted.reduce((sum, row) => sum + row.amount, 0))

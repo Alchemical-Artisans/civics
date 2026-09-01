@@ -1,6 +1,6 @@
 import type { PageLoad } from "./$types"
-import { contents } from "$lib/budget"
-import { amount, cell, column, sum, type BudgetTableData } from "$lib/budget-table"
+import { contents, type BookSection } from "$lib/budget"
+import { amount, cell, column, type BudgetTableData } from "$lib/budget-table"
 import { APPROPRIATIONS, REVENUE } from "./2027-budget-in-brief/tables"
 import { FUND_BALANCE, FREE_CASH, STABILIZATION } from "./fiscal-reserves/tables"
 import { LONG_TERM_DEBT } from "./outstanding-debt/tables"
@@ -81,16 +81,37 @@ const reserves: Part[] = [
   { label: "Free Cash", amount: figure(FREE_CASH, "Anticipated") },
 ]
 
-const reservesTotal = sum(reserves)
-
 const debt = column(LONG_TERM_DEBT, "Amount")
 
 /**
- * What the city owes, which the six lines add up to and the section states in
- * its own sentence: $175,745,444. Summed rather than transcribed a third time;
- * `overview.spec.ts` is where that sum is checked against the sentence.
+ * The contents in two lists: the book's own account of the year, and the
+ * departments whose budgets follow it.
+ *
+ * The department column is a department at a time: City Council through
+ * Library, which is the run of the book where each page is an office and what
+ * it costs. It stops there rather than at the end of "General Fund Budgets",
+ * because what follows -- Debt Service, State Assessments, Employee Benefits,
+ * Liability, Overlay & Reserves -- is money the city owes rather than a
+ * department that spends it, and those stay with the rest of the year's
+ * account.
+ *
+ * Sixty lines under one heading is a list nobody reads to the end of. Two
+ * headed lists are two questions -- how the year works, and what a department
+ * costs -- and a reader arrives with one of them.
  */
-const debtTotal = sum(debt)
+const FIRST_DEPARTMENT = "City Council"
+const LAST_DEPARTMENT = "Library"
+
+const split = (lines: BookSection[]) => {
+  const from = lines.findIndex((line) => line.title === FIRST_DEPARTMENT)
+  const to = lines.findIndex((line) => line.title === LAST_DEPARTMENT)
+  if (from < 0 || to < from) throw new Error("The department range is not in the contents")
+
+  return {
+    contents: [...lines.slice(0, from), ...lines.slice(to + 1)],
+    departments: lines.slice(from, to + 1),
+  }
+}
 
 export const load: PageLoad = () => ({
   calendar: CALENDAR,
@@ -109,82 +130,94 @@ export const load: PageLoad = () => ({
     total,
   },
 
-  /** The two charts above the contents: page 17's balances and page 21's list. */
+  /**
+   * The chart above the contents: page 17's balances and page 21's list, as two
+   * bars on one scale. Each bar's total is the sum of its parts, added up by
+   * the chart itself rather than passed alongside them, so there is no second
+   * copy of a figure to fall out of step. What those sums come to, and why
+   * adding the reserves is sound this year at all, is `overview.spec.ts`.
+   */
   reserves,
-  reservesTotal,
   debt,
-  debtTotal,
 
   /**
-   * The book's contents page, in its order, less two lines: "Mayor's Budget
-   * Message" (page 2) and "Budget Calendar" (page 13). Neither has a page here
-   * any more -- the message was dropped, and the calendar is the footer -- and
-   * a contents line for a part of the book the site does not carry is a line
-   * that sends the reader into the city's PDF instead. Everything else the
-   * contents lists is listed, whether or not it has a page here.
+   * The book's contents page, in its order, less four lines.
+   *
+   * "Mayor's Budget Message" (page 2) and "Budget Calendar" (page 13) have no
+   * page here at all -- the message was dropped, and the calendar is the footer
+   * -- and a contents line for a part of the book the site does not carry is a
+   * line that sends the reader into the city's PDF instead.
+   *
+   * "Fiscal Reserves" (17) and "Outstanding Debt" (21) do have pages, and the
+   * chart above the contents is where they are opened from: each bar's own name
+   * is the link. A line here as well would offer the same page twice on one
+   * screen.
+   *
+   * Everything else the contents lists is listed, whether or not it has a page
+   * here.
    */
-  contents: contents("fy2027", [
-    // One line for the book's two, "2027 Budget Goals" (15) and "Long-Term
-    // Strategic Goals" (16): they are four bullets and five on one subject,
-    // and the page here carries both under the headings the book prints.
-    ["Goals", 15],
-    ["Fiscal Reserves", 17],
-    ["Outstanding Debt", 21],
-    ["Net School Spending", 26],
-    ["Capital Planning", 28],
-    ["2027 Revenue Estimates", 48],
-    ["2027 Revenue Summary", 64],
-    ["10-Year Revenue Forecast", 67],
-    ["10-Year Appropriation Forecast", 69],
-    ["2027 Budget Requests", 72],
-    ["2027 Budget Challenges", 73],
-    ["2027 Budget in Brief", 76],
-    ["2027 Estimated Tax Bill Impact", 79],
-    ["General Fund Budgets", 80],
-    ["City Council", 81],
-    ["Mayor's Office", 84],
-    ["Constituent Services", 87],
-    ["Finance Division", 91],
-    ["Auditor's Office", 92],
-    ["Treasurer's & Collector's Office", 96],
-    ["Assessor's Office", 101],
-    ["Purchasing", 105],
-    ["Building Maintenance", 109],
-    ["Legal", 112],
-    ["Human Resources", 117],
-    ["Information Technology", 121],
-    ["City Clerk", 126],
-    ["Economic Development & Planning", 131],
-    ["Police Department", 135],
-    ["Fire Department", 143],
-    ["Regional Schools", 150],
-    ["School Department", 152],
-    ["Highway Department", 153],
-    ["Outdoor Lighting", 159],
-    ["Parking", 160],
-    ["Parks", 162],
-    ["Public Works Administration", 165],
-    ["Refuse", 167],
-    ["Snow & Ice Removal", 169],
-    ["Street Marking", 170],
-    ["Vehicle Maintenance", 171],
-    ["Inspectional Services", 173],
-    ["Public Health", 180],
-    ["Senior Center", 182],
-    ["Veterans Services", 184],
-    ["Citizens Center", 187],
-    ["Recreation Department", 190],
-    ["Stadium", 193],
-    ["Library", 195],
-    ["Debt Service", 200],
-    ["State Assessments", 209],
-    ["Employee Benefits", 211],
-    ["Liability, Overlay & Reserves", 213],
-    ["Organizational Chart", 216],
-    ["Position Summary", 217],
-    ["Fund Accounting", 218],
-    ["Budget Policies", 221],
-    ["Financial Reserve Policies", 227],
-    ["Glossary", 231],
-  ]),
+  ...split(
+    contents("fy2027", [
+      // One line for the book's two, "2027 Budget Goals" (15) and "Long-Term
+      // Strategic Goals" (16): they are four bullets and five on one subject,
+      // and the page here carries both under the headings the book prints.
+      ["Goals", 15],
+      ["Net School Spending", 26],
+      ["Capital Planning", 28],
+      ["2027 Revenue Estimates", 48],
+      ["2027 Revenue Summary", 64],
+      ["10-Year Revenue Forecast", 67],
+      ["10-Year Appropriation Forecast", 69],
+      ["2027 Budget Requests", 72],
+      ["2027 Budget Challenges", 73],
+      ["2027 Budget in Brief", 76],
+      ["2027 Estimated Tax Bill Impact", 79],
+      ["General Fund Budgets", 80],
+      ["City Council", 81],
+      ["Mayor's Office", 84],
+      ["Constituent Services", 87],
+      ["Finance Division", 91],
+      ["Auditor's Office", 92],
+      ["Treasurer's & Collector's Office", 96],
+      ["Assessor's Office", 101],
+      ["Purchasing", 105],
+      ["Building Maintenance", 109],
+      ["Legal", 112],
+      ["Human Resources", 117],
+      ["Information Technology", 121],
+      ["City Clerk", 126],
+      ["Economic Development & Planning", 131],
+      ["Police Department", 135],
+      ["Fire Department", 143],
+      ["Regional Schools", 150],
+      ["School Department", 152],
+      ["Highway Department", 153],
+      ["Outdoor Lighting", 159],
+      ["Parking", 160],
+      ["Parks", 162],
+      ["Public Works Administration", 165],
+      ["Refuse", 167],
+      ["Snow & Ice Removal", 169],
+      ["Street Marking", 170],
+      ["Vehicle Maintenance", 171],
+      ["Inspectional Services", 173],
+      ["Public Health", 180],
+      ["Senior Center", 182],
+      ["Veterans Services", 184],
+      ["Citizens Center", 187],
+      ["Recreation Department", 190],
+      ["Stadium", 193],
+      ["Library", 195],
+      ["Debt Service", 200],
+      ["State Assessments", 209],
+      ["Employee Benefits", 211],
+      ["Liability, Overlay & Reserves", 213],
+      ["Organizational Chart", 216],
+      ["Position Summary", 217],
+      ["Fund Accounting", 218],
+      ["Budget Policies", 221],
+      ["Financial Reserve Policies", 227],
+      ["Glossary", 231],
+    ]),
+  ),
 })

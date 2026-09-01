@@ -27,7 +27,7 @@ test.describe("the site root", () => {
   test("opens the most recent budget book", async ({ page }) => {
     await page.goto("/")
     await expect(page).toHaveURL(`/budget/${newest}`)
-    await expect(page.getByRole("heading", { name: "Table of Contents" })).toBeVisible()
+    await expect(page.getByRole("heading", { name: "Departments" })).toBeVisible()
   })
 
   test("leaves the site when the back button is pressed", async ({ page }) => {

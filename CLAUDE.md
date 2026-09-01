@@ -111,7 +111,9 @@ calendar.** The bar's menu lists every fiscal year the city publishes — a book
 here where one is written, the city's own PDF where it is not, and each year's
 audit report beside it, which is the only place those are linked. `/budget`
 itself is not a page: it was one, and reaching a book through it cost a hop.
-`/budget/<year>` is a budget book's own table of contents, and
+`/budget/<year>` is a budget book's own table of contents -- in two lists, the
+year's own account and a **Departments** column running City Council to Library
+-- and
 `/budget/<year>/<section>` is one section of it transcribed. None of it is
 scraped: the city's page is 22 rows that change twice a year, so the list lives
 in `src/lib/data/budget.json`, scraped by `budget:update`. Every route is static and each contents line links to a
@@ -148,18 +150,22 @@ Notable pieces:
   `contents`. `sectionSlug` is `meetingId`'s rule except that apostrophes are
   dropped rather than collapsed — half this book's titles carry one, and
   `mayor-s-budget-message` reads as a typo.
-- **`src/lib/BudgetStack.svelte`** is the other chart a book opens with: the
-  reserves as one bar in three parts, above the table of contents alongside a
-  pie of what the city owes. The pies beside them are the year; these are the
-  position it sits on. It shows what the city holds and not what its policies
-  allow it to hold -- the bands are the section's subject, not this page's. The
-  total is ours, not the book's: free cash is certified out of the fund balance,
-  so `overview.spec.ts` pins this year's free cash at $0 and will fail the year
-  adding the three would double-count. A segment names and prices itself on hover
-  or focus, as a pie wedge does, and reports its share of the reserves rather
-  than the share of revenue the book prints -- in a divided bar a percentage
-  reads as a part of the bar. A fund worth $0 draws no segment and keeps an
-  `sr-only` line instead.
+- **`src/lib/BudgetStack.svelte`** is the other chart a book opens with: what
+  the city holds and what it owes, as two full-width bars on one scale above the
+  table of contents, each divided into its parts. The pies beside them are the
+  year; this is the position it sits on, and one scale is what makes $22M of
+  reserves read as the eighth of $176M of debt that it is. It shows what the
+  city has, not what its policies allow it to have -- the bands are those
+  sections' subject, not this page's, and each bar's name is the link to its
+  section, which is why neither has a line in the contents below. The reserves total is ours, not the
+  book's: free cash is certified out of the fund balance, so `overview.spec.ts`
+  pins this year's free cash at $0 and will fail the year adding the three would
+  double-count. A segment names and prices itself on hover or focus, as a pie
+  wedge does, reporting its share of its own bar; hovering fades only that bar,
+  since the two are there to be compared. A part worth $0 draws no segment and
+  keeps an `sr-only` line instead. Colour for every chart here comes from
+  **`src/lib/chart-colours.ts`**, one validated sequence, restarted per pie and
+  per bar.
 - **`src/lib/BudgetPie.svelte`** is the pie chart a budget book opens with: a
   wedge names itself and prints its dollars and share on hover or focus, which
   makes it the one page here carrying a script. Every wedge is focusable, both

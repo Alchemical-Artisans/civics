@@ -9,6 +9,7 @@
 
   const book = $derived(data.book)
   const contents = $derived(data.contents as BookSection[])
+  const departments = $derived(data.departments as BookSection[])
   const overview = $derived(data.overview)
   const calendar = $derived(data.calendar)
   const reserves = $derived(data.reserves)
@@ -32,9 +33,9 @@
        own contents because paper is the only way through it, and here the line
        is the way through -- it opens the section, on this site or at that page
        of the city's PDF, and which page that is stays the link's business rather
-       than the reader's. Sixty-odd lines of it, so it runs in columns once
-       there is room for two rather than as one strip down the page. -->
-  <ol class="not-prose mt-2 list-none space-y-0 p-0 sm:columns-2 sm:gap-x-10 2xl:columns-3">
+       than the reader's. The two lists are the page's columns, so a list is one
+       strip and not two. -->
+  <ol class="not-prose mt-2 list-none space-y-0 p-0">
     {#each sections as section (section.slug)}
       <li class="break-inside-avoid border-b border-slate-100 py-1.5 text-sm">
         <a
@@ -95,40 +96,56 @@
     <!--
       What the city has put by and what it owes, above the contents rather than
       beside the pies: the pies are the year -- what comes in and what goes out
-      of it -- and these two are the standing position underneath it, which is a
-      different question and reads as one when the two are together.
+      of it -- and this is the standing position underneath it, which is a
+      different question.
 
-      Side by side from `sm`, stacked below it. Each is a section of the book
-      one line of the contents below opens, which is where the policy behind
-      each of these figures is written out.
+      One chart and not two, on one scale, because the only useful thing to do
+      with these two figures is hold them against each other. Full width, so the
+      shorter bar is still long enough to be divided into what it is made of.
     -->
-    <div class="mb-8 flex flex-wrap items-start gap-x-10 gap-y-6">
-      <div class="max-w-md min-w-[16rem] flex-1">
-        <h2>
-          Reserves
-          <span class="font-normal text-slate-500 tabular-nums">
-            {money.format(data.reservesTotal)}
-          </span>
-        </h2>
+    <div class="mb-8">
+      <h2>Reserves and Debt</h2>
 
-        <BudgetStack rows={reserves} />
-      </div>
-
-      <div>
-        <h2>
-          Debt
-          <span class="font-normal text-slate-500 tabular-nums">
-            {money.format(data.debtTotal)}
-          </span>
-        </h2>
-
-        <BudgetPie rows={debt} />
-      </div>
+      <!-- Each bar's name opens the section it is drawn from, which is why
+           neither has a line in the contents below: the same page offered twice,
+           once as a chart and once as a line, is a page offered twice. -->
+      <BudgetStack
+        rows={[
+          {
+            label: "Reserves",
+            href: Router.budgetSection(book.id, "fiscal-reserves"),
+            parts: reserves,
+          },
+          {
+            label: "Debt",
+            href: Router.budgetSection(book.id, "outstanding-debt"),
+            parts: debt,
+          },
+        ]}
+      />
     </div>
 
-    <h2>Table of Contents</h2>
+    <!--
+      Two lists and no "Table of Contents" over them: what the year is, and
+      what each department costs. Sixty lines under one heading is a list
+      nobody reads to the end of, and a reader arrives wanting one question or
+      the other.
 
-    {@render list(contents)}
+      Placed rather than ordered, so the heading sits over the right-hand list
+      on a wide screen and above the departments it names on a narrow one,
+      where the two lists are one after the other.
+    -->
+    <div class="sm:grid sm:grid-cols-2 sm:items-start sm:gap-x-10">
+      <div class="sm:col-start-1 sm:row-start-2">
+        {@render list(contents)}
+      </div>
+
+      <h2 class="mt-8 sm:col-start-2 sm:row-start-1 sm:mt-0">Departments</h2>
+
+      <div class="sm:col-start-2 sm:row-start-2">
+        {@render list(departments)}
+      </div>
+    </div>
   </div>
 </div>
 
