@@ -183,7 +183,9 @@ entry that has begun — the entry itself while it is happening, and the one
 behind it in the weeks between two entries, which is the stage the budget is at
 until the next one begins. It is the one box in amber: everything else on the
 page is the site's blue, so the highlight is the only thing on the screen that
-is not, and it is found without being looked for. Boxes behind it are filled
+is not, and it is found without being looked for. A pale amber — the weight of a
+highlighter, not of a warning, since the box sits below two charts and a table
+of contents and is not what the page is about. Boxes behind it are filled
 pale blue, boxes ahead of it are white and grey — a fill apart rather than an
 outline apart, because an outline heavy enough to see across twelve boxes reads
 as a box drawn twice. FY2027's calendar ended at
