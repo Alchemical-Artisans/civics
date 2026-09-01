@@ -161,6 +161,29 @@ test.describe("budget pages", () => {
     await expect(every.filter({ hasText: "School Department" })).toHaveCount(0)
   })
 
+  test("gathers the revenue sections on one page", async ({ page }) => {
+    await page.goto(`/budget/${books[0]}/revenue`)
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Revenue")
+
+    // Page 48, the estimates, and page 64, the summary of the same year, which
+    // the book prints sixteen pages apart with the forecasts in between.
+    await expect(page.getByRole("heading", { name: "2027 Revenue Projection" })).toBeVisible()
+    await expect(
+      page.getByRole("heading", { name: /^Summary of General Fund Revenue/ }),
+    ).toBeVisible()
+    await expect(page.getByRole("heading", { name: "Revenue Forecast" })).toBeVisible()
+
+    // The bar's source link opens the book where the run begins.
+    expect(await page.locator('header a[href*="#page="]').getAttribute("href")).toMatch(/#page=48$/)
+
+    // Neither section has a line in the contents: the pie's heading is the way
+    // to both.
+    await page.goto(`/budget/${books[0]}`)
+    const every = page.locator("article > div ol li")
+    await expect(every.filter({ hasText: "Revenue Summary" })).toHaveCount(0)
+    await expect(every.filter({ hasText: "Revenue Estimates" })).toHaveCount(0)
+  })
+
   test("carries capital planning under Projects", async ({ page }) => {
     await page.goto(`/budget/${books[0]}/projects`)
 

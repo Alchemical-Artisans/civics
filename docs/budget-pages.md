@@ -207,7 +207,16 @@ A line in the contents as well would offer the same page twice on one screen.
 The revenue section is routed at `revenue` and titled **Revenue** rather than by
 the book's own name for it — a chart headed "Revenue" that opens
 "2027 Revenue Estimates" reads as two different things, and the year is in the
-bar above every page of the book anyway. Appropriations has no such link: page
+bar above every page of the book anyway. It carries "2027 Revenue Summary"
+(page 64) as well, which is the same year's revenue rolled up: the book prints
+the two sixteen pages apart with the forecasts in between, and a reader who
+wants to know about revenue wants both. Its page number is 48, the first of
+them, so the bar's source link opens where the run begins.
+
+A chart title that is a link says so with a 2px underline rather than the
+hairline the contents lines carry, and the pie's heading needs `font-semibold`
+put back on the anchor — `prose` gives a link a weight of its own, 500, which is
+lighter than the heading it sits in. Appropriations has no such link: page
 78's table is what it is drawn from, and that is 2027 Budget in Brief, which
 the contents lists. **A section the page
 already links some other way does not get a contents line either** — the e2e

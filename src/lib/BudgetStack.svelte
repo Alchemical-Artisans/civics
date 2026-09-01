@@ -145,8 +145,11 @@
              the only link to it: a contents line below saying the same thing
              again would be the same page offered twice. -->
         {#if bar.href}
+          <!-- The same underline the pie's heading carries: these three are
+               the page's chart titles, and a title is the last thing a reader
+               expects to be a link, so it says so plainly. -->
           <a
-            class="font-medium text-slate-900 underline decoration-slate-300 hover:decoration-slate-900"
+            class="font-medium text-slate-900 underline decoration-slate-400 decoration-2 underline-offset-2 hover:decoration-slate-900"
             href={bar.href}
           >
             {bar.label}

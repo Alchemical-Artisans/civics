@@ -89,8 +89,13 @@
          Appropriations has no such section to open: page 78's table is what
          it is drawn from, and that is 2027 Budget in Brief, in the contents. -->
     <h2>
+      <!-- `font-semibold` because `prose` gives a link its own weight of 500,
+           which is lighter than the heading it sits in and made this one read
+           as less than the heading beside it. The underline is the heavy one:
+           a heading is the last thing a reader expects to be a link, so a
+           hairline under it is not enough to say that it is. -->
       <a
-        class="underline decoration-slate-300 hover:decoration-slate-900"
+        class="font-semibold text-slate-900 underline decoration-slate-400 decoration-2 underline-offset-4 hover:decoration-slate-900"
         href={Router.budgetSection(book.id, "revenue")}
       >
         Revenue
