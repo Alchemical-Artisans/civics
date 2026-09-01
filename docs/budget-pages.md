@@ -211,9 +211,11 @@ Every other line the book's contents carries is listed, whether or not it has a
 page here.
 
 **The contents is two lists, and neither is headed "Table of Contents".** The
-left one is the book's account of the year; the right one is headed
-**Departments** and runs City Council through Library, which is the stretch of
-the book where each page is an office and what it costs. It stops at Library
+left one is the book's account of the year, in the book's order; the right one
+is headed **Departments** and is alphabetical. Its lines are the stretch of the
+book from City Council to Library, where each page is an office and what it
+costs, sorted by name afterwards — the book groups them by what they do, and a
+reader who wants one knows its name rather than its group. It stops at Library
 rather than at the end of "General Fund Budgets", because Debt Service, State
 Assessments, Employee Benefits and Liability, Overlay & Reserves are money the
 city owes rather than departments that spend it. Sixty lines under one heading

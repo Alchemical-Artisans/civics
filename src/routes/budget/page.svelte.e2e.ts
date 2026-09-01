@@ -120,12 +120,19 @@ test.describe("budget pages", () => {
     await expect(page.getByRole("heading", { name: "Departments" })).toBeVisible()
     await expect(page.getByRole("heading", { name: "Table of Contents" })).toHaveCount(0)
 
-    // A department at a time, City Council through Library.
+    // A department at a time, by name rather than by the book's grouping: a
+    // reader who wants one of them knows what it is called.
+    //
     // `toContainText`, because a line with no page here carries an `sr-only`
     // note saying it opens the city's PDF.
     const departments = lists.last().locator("li")
-    await expect(departments.first()).toContainText("City Council")
-    await expect(departments.last()).toContainText("Library")
+    await expect(departments.first()).toContainText("Assessor's Office")
+    await expect(departments.last()).toContainText("Veterans Services")
+
+    const named = await departments.evaluateAll((lines) =>
+      lines.map((line) => line.textContent?.split(",")[0].trim() ?? ""),
+    )
+    expect(named).toEqual([...named].sort((a, b) => a.localeCompare(b, "en")))
 
     // What the city owes rather than a department that spends it, so these
     // stay with the year's own account on the left.

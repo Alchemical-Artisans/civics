@@ -87,9 +87,9 @@ const debt = column(LONG_TERM_DEBT, "Amount")
  * The contents in two lists: the book's own account of the year, and the
  * departments whose budgets follow it.
  *
- * The department column is a department at a time: City Council through
- * Library, which is the run of the book where each page is an office and what
- * it costs. It stops there rather than at the end of "General Fund Budgets",
+ * The department column is a department at a time, alphabetically: City Council
+ * through Library is the run of the book where each page is an office and what
+ * it costs, and those lines are then sorted by name. It stops there rather than at the end of "General Fund Budgets",
  * because what follows -- Debt Service, State Assessments, Employee Benefits,
  * Liability, Overlay & Reserves -- is money the city owes rather than a
  * department that spends it, and those stay with the rest of the year's
@@ -109,7 +109,13 @@ const split = (lines: BookSection[]) => {
 
   return {
     contents: [...lines.slice(0, from), ...lines.slice(to + 1)],
-    departments: lines.slice(from, to + 1),
+    // Alphabetical, unlike everything else here, which keeps the book's order.
+    // The book groups its departments by what they do -- the mayor's offices,
+    // then public safety, then public works -- and a reader who wants one of
+    // them knows its name and not its group, so the order that finds it is the
+    // one it is filed under. The left-hand list stays in the book's order,
+    // because that one is an argument and reads in sequence.
+    departments: lines.slice(from, to + 1).sort((a, b) => a.title.localeCompare(b.title, "en")),
   }
 }
 
