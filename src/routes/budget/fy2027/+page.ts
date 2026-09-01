@@ -166,10 +166,11 @@ export const load: PageLoad = () => ({
    * -- and a contents line for a part of the book the site does not carry is a
    * line that sends the reader into the city's PDF instead.
    *
-   * "Fiscal Reserves" (17) and "Outstanding Debt" (21) do have pages, and the
-   * chart above the contents is where they are opened from: each bar's own name
-   * is the link. A line here as well would offer the same page twice on one
-   * screen.
+   * "Fiscal Reserves" (17), "Outstanding Debt" (21) and "2027 Revenue
+   * Estimates" (48) do have pages, and a chart is where each is opened from:
+   * the two bars carry their own names as links, and the revenue pie's heading
+   * carries the third. A line here as well would offer the same page twice on
+   * one screen.
    *
    * Everything else the contents lists is listed, whether or not it has a page
    * here.
@@ -188,7 +189,6 @@ export const load: PageLoad = () => ({
       // "Capital Planning" (28), under a name that has room for the book's
       // other project pages as they are transcribed.
       ["Projects", 28],
-      ["2027 Revenue Estimates", 48],
       ["2027 Revenue Summary", 64],
       ["10-Year Revenue Forecast", 67],
       ["10-Year Appropriation Forecast", 69],

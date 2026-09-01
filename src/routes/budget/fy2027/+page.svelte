@@ -84,8 +84,17 @@
 
     <BudgetPie rows={overview.appropriations} />
 
+    <!-- The heading is the way into the section every figure in this chart
+         comes from, which is why "Revenue" has no line in the contents below.
+         Appropriations has no such section to open: page 78's table is what
+         it is drawn from, and that is 2027 Budget in Brief, in the contents. -->
     <h2>
-      Revenue
+      <a
+        class="underline decoration-slate-300 hover:decoration-slate-900"
+        href={Router.budgetSection(book.id, "revenue")}
+      >
+        Revenue
+      </a>
       <span class="font-normal text-slate-500 tabular-nums">{money.format(overview.total)}</span>
     </h2>
 

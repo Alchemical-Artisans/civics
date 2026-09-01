@@ -1,4 +1,5 @@
-<!-- The page's own heading, which the contents page renames. -->
+<!-- The page's own printed heading. The page is called "Revenue", which is
+     what the chart that opens it is headed. -->
 <h2>2027 Revenue Projection</h2>
 
 <p>

@@ -35,7 +35,7 @@ const unlinked = [
  * each is a bar, and the bar's own name is the link. A contents line as well
  * would offer the same page twice on one screen.
  */
-const charted = ["fiscal-reserves", "outstanding-debt"]
+const charted = ["fiscal-reserves", "outstanding-debt", "revenue"]
 
 test.describe("budget pages", () => {
   test("the book opens on the budget at a glance, before its contents", async ({ page }) => {
@@ -46,7 +46,16 @@ test.describe("budget pages", () => {
     await expect(
       page.getByRole("heading", { name: /^Appropriations \$285,272,159$/ }),
     ).toBeVisible()
+    // The revenue heading opens the section every figure in that pie comes
+    // from, and is the only way to it: it has no line in the contents.
     await expect(page.getByRole("heading", { name: /^Revenue \$285,272,159$/ })).toBeVisible()
+    await expect(page.getByRole("link", { name: "Revenue", exact: true })).toHaveAttribute(
+      "href",
+      /\/revenue$/,
+    )
+    await expect(
+      page.locator("article > div ol li").filter({ hasText: "Revenue Estimates" }),
+    ).toHaveCount(0)
 
     const charts = page.locator(".budget-chart")
     await expect(charts).toHaveCount(2)

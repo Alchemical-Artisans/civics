@@ -167,8 +167,11 @@ Notable pieces:
   keeps an `sr-only` line instead. Colour for every chart here comes from
   **`src/lib/chart-colours.ts`**, one validated sequence, restarted per pie and
   per bar.
-- **`src/lib/BudgetPie.svelte`** is the pie chart a budget book opens with: a
-  wedge names itself and prints its dollars and share on hover or focus, which
+- **`src/lib/BudgetPie.svelte`** is the pie chart a budget book opens with --
+  two of them, appropriations and revenue, the second headed with a link to
+  `revenue`, the section its figures are explained in, which is why that section
+  has no contents line. A wedge names itself and prints its dollars and share on
+  hover or focus, which
   makes it the one page here carrying a script. Every wedge is focusable, both
   so a keyboard reaches the chart at all and because the smallest wedges are a
   third of a degree wide; each carries its figures as its accessible name, so

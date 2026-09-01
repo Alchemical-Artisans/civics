@@ -200,9 +200,16 @@ calendar is the footer — and a line for a part of the book the site does not
 carry is a line that sends the reader into the city's PDF instead. **Dropping a
 page means dropping its contents line with it.**
 
-"Fiscal Reserves" (17) and "Outstanding Debt" (21) do have pages, and the chart
-above the contents is where they open from: each bar's name is the link. A line
-here as well would offer the same page twice on one screen. **A section the page
+"Fiscal Reserves" (17), "Outstanding Debt" (21) and "2027 Revenue Estimates"
+(48) do have pages, and a chart is where each of them opens from: the two bars
+carry their own names as links, and the revenue pie's heading carries the third.
+A line in the contents as well would offer the same page twice on one screen.
+The revenue section is routed at `revenue` and titled **Revenue** rather than by
+the book's own name for it — a chart headed "Revenue" that opens
+"2027 Revenue Estimates" reads as two different things, and the year is in the
+bar above every page of the book anyway. Appropriations has no such link: page
+78's table is what it is drawn from, and that is 2027 Budget in Brief, which
+the contents lists. **A section the page
 already links some other way does not get a contents line either** — the e2e
 suite keeps a `charted` list of them, beside the `unlinked` one, so the check
 that every contents link resolves still knows what to expect.
