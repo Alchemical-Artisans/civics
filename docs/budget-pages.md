@@ -231,10 +231,13 @@ and what the city wants to build or buy. The last of those is mostly **not** in 
 appropriation at all: capital over $250,000 is borrowed, the page-78 table's
 "Capital – Pay as you go" line is empty for 2027, and the funding decision was
 postponed — capital reaches the operating budget years later as debt service.
-The remaining candidates are the appropriation lines the book gives pages of
-their own — Debt Service (200), State Assessments (209), Employee Benefits (211)
-and Liability, Overlay & Reserves (213) — none of which is transcribed, so each
-would arrive as a link the way Regional Schools did on `education`. The pies themselves are page 78, which is
+Three lines of the appropriation itself are on that page too — Debt Service
+(200), State Assessments (209) and Employee Benefits (211) — as links into the
+city's file, the way Regional Schools sits on `education`, because none is
+transcribed. They are a different kind of thing from the four sections above
+them: those are accounts _of_ the year's spending, and these are parts _of_ it,
+each a line in the page-78 table the pie is drawn from. "Liability, Overlay &
+Reserves" (213) is the fourth of that kind and still has a contents line. The pies themselves are page 78, which is
 2027 Budget in Brief and keeps its contents line — it is the table both charts
 are drawn from rather than either side's own account.
 

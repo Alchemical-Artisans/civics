@@ -1,9 +1,19 @@
 import type { PageLoad } from "./$types"
+import { Router } from "$lib/router"
 
 /**
  * Everything the book says about where the money goes: "Capital Planning"
  * (page 28), "10-Year Appropriation Forecast" (69), "2027 Budget Requests" (72)
- * and "2027 Budget Challenges" (73), in the book's order.
+ * and "2027 Budget Challenges" (73), in the book's order, and three of the
+ * appropriation's own lines -- Debt Service (200), State Assessments (209) and
+ * Employee Benefits (211) -- which nobody has transcribed and which are
+ * therefore links into the city's file at the page the book gives them.
+ *
+ * Those three are a different kind of thing from the four above: the four are
+ * accounts *of* the year's spending, and these are parts *of* it, each a line
+ * in the page-78 table the pie is drawn from. They are here because that is
+ * still the spending side, and because the contents is not the place to keep a
+ * line the reader would have to know is an appropriation to look for.
  *
  * Appropriations is the umbrella, and it is a precise word rather than a
  * category: an appropriation is the City Council's authorisation to spend a
@@ -22,6 +32,15 @@ import type { PageLoad } from "./$types"
  * The page number is the first of them, so the bar's source link opens the
  * city's file where the run begins.
  */
-export const load: PageLoad = () => ({
-  section: { title: "Appropriations", page: 28 },
-})
+export const load: PageLoad = async ({ parent }) => {
+  const { book } = await parent()
+
+  return {
+    section: { title: "Appropriations", page: 28 },
+    elsewhere: [
+      { title: "Debt Service", href: Router.pdfPage(book.budget!, 200) },
+      { title: "State Assessments", href: Router.pdfPage(book.budget!, 209) },
+      { title: "Employee Benefits", href: Router.pdfPage(book.budget!, 211) },
+    ],
+  }
+}

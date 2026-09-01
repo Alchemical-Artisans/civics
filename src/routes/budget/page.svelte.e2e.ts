@@ -147,11 +147,12 @@ test.describe("budget pages", () => {
     // and filed here because this is where a reader looks for it.
     await expect(funded.filter({ hasText: "Education" })).toHaveCount(1)
 
-    // What the city owes rather than something that spends it, so these stay
-    // with the year's own account on the left.
+    // Not something the city funds, so these stay with the year's own account
+    // on the left: a line of the appropriation, the book's front matter, and
+    // its back matter.
     const year = lists.first().locator("li")
-    await expect(year.filter({ hasText: "Debt Service" })).toHaveCount(1)
-    await expect(year.filter({ hasText: "Employee Benefits" })).toHaveCount(1)
+    await expect(year.filter({ hasText: "Liability, Overlay & Reserves" })).toHaveCount(1)
+    await expect(year.filter({ hasText: "General Fund Budgets" })).toHaveCount(1)
     await expect(year.filter({ hasText: "Glossary" })).toHaveCount(1)
 
     // The three lines the Education page covers are gone from both lists.
@@ -218,9 +219,29 @@ test.describe("budget pages", () => {
     // The bar's source link opens the book where the run begins.
     expect(await page.locator('header a[href*="#page="]').getAttribute("href")).toMatch(/#page=28$/)
 
-    // None of the three keeps a line in the contents.
+    // Three lines of the appropriation itself, which nobody has transcribed:
+    // the city's own file, opened at the page the book gives them.
+    for (const [title, at] of [
+      ["Debt Service", 200],
+      ["State Assessments", 209],
+      ["Employee Benefits", 211],
+    ] as const) {
+      const link = page.getByRole("link", { name: new RegExp(`^${title}`) })
+      expect(await link.getAttribute("href")).toMatch(new RegExp(`#page=${at}$`))
+      await expect(link).toHaveAttribute("target", "_blank")
+    }
+
+    // None of them keeps a line in the contents.
     await page.goto(`/budget/${books[0]}`)
-    for (const gone of ["Projects", "Capital Planning", "Budget Requests", "Budget Challenges"]) {
+    for (const gone of [
+      "Projects",
+      "Capital Planning",
+      "Budget Requests",
+      "Budget Challenges",
+      "Debt Service",
+      "State Assessments",
+      "Employee Benefits",
+    ]) {
       await expect(page.locator("article > div ol li").filter({ hasText: gone })).toHaveCount(0)
     }
   })

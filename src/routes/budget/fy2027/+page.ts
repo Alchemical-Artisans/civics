@@ -167,12 +167,14 @@ export const load: PageLoad = () => ({
    * line that sends the reader into the city's PDF instead.
    *
    * "Fiscal Reserves" (17), "Outstanding Debt" (21), "2027 Revenue Estimates"
-   * Eight more do have pages, and a chart is where each of them is opened
-   * from: the two bars carry their own names as links, the revenue pie's
-   * heading carries the three revenue sections (48, 64, 67) and the
-   * appropriations pie's heading the four spending ones (28, 69, 72, 73), each
-   * group being one page here. A line in this list as well would offer the same
-   * page twice on one screen.
+   * Eleven more are reached from a chart rather than from here: the two bars
+   * carry their own names as links, the revenue pie's heading carries the three
+   * revenue sections (48, 64, 67), and the appropriations pie's heading carries
+   * the four spending ones (28, 69, 72, 73) together with three lines of the
+   * appropriation itself -- Debt Service (200), State Assessments (209) and
+   * Employee Benefits (211) -- which have no page here and are links into the
+   * city's file from that page. A line in this list as well would offer the
+   * same thing twice on one screen.
    *
    * Everything else the contents lists is listed, whether or not it has a page
    * here.
@@ -224,9 +226,6 @@ export const load: PageLoad = () => ({
       ["Recreation Department", 190],
       ["Stadium", 193],
       ["Library", 195],
-      ["Debt Service", 200],
-      ["State Assessments", 209],
-      ["Employee Benefits", 211],
       ["Liability, Overlay & Reserves", 213],
       ["Organizational Chart", 216],
       ["Position Summary", 217],

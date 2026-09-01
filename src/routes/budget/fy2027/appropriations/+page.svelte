@@ -1,3 +1,9 @@
+<script lang="ts">
+  // A script here for the appropriation lines this page covers that nobody has
+  // transcribed; see this page's `+page.ts` and docs/budget-pages.md.
+  let { data } = $props()
+</script>
+
 <!-- Page 28. The city's capital requests are on the spending side of the
      book, but note that almost none of them are in this year's appropriation:
      the page-78 table's "Capital - Pay as you go" line is empty for 2027 and
@@ -1708,3 +1714,19 @@
   16 school districts. No municipal units left the GIC in fiscal 2026 and 11 new municipal units
   have joined for 2027.
 </p>
+
+<!-- Ours, not the book's: it heads the parts of the appropriation this page
+     covers and nobody has transcribed. They open the city's own file at the
+     page the book gives them, which is what a contents line does for any
+     section with no page here. -->
+<h2>Elsewhere in the book</h2>
+
+<ul>
+  {#each data.elsewhere as part (part.title)}
+    <li>
+      <a href={part.href} target="_blank" rel="external noopener noreferrer">
+        {part.title}<span class="sr-only">, in the city's PDF, opens in a new tab</span>
+      </a>
+    </li>
+  {/each}
+</ul>
