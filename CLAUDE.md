@@ -171,8 +171,8 @@ Notable pieces:
   hover or focus, drawn outside the scrolling strip because `overflow-x` clips
   vertically too, and sits hidden in the box for a screen reader. Nothing else
   is in the footer: no label, no today's date, only the boxes and the mark. The stage the process has
-  reached, meaning the last entry that has begun, is the one box in amber --
-  the only thing on a page that is otherwise all one blue. Boxes
+  reached, meaning the last entry that has begun, is the one box in pale green,
+  against the pale blue of the entries behind it and the white of those ahead. Boxes
   are evenly spaced because two entries are a day apart; only the mark is placed
   by date. Today comes from
   `+page.ts` at build time so the mark is in the served HTML, and the component

@@ -12,14 +12,14 @@
   thing with a beginning and an end, twelve of them fill the width evenly, and a
   box is somewhere for words to live.
 
-  The stage the budget has reached is the one box in another colour. Everything
-  else on this page is the site's blue, so amber is the only thing on the screen
-  that is not, which is the whole job: to be found without being looked for. A
-  pale amber does that, and a saturated one shouts -- the box sits under two
-  charts and a table of contents and is not what the page is about, so it wants
-  the weight of a highlighter and not of a warning. The three states are a fill
-  apart rather than an outline apart -- an outline heavy enough to see across a
-  page of twelve boxes reads as a box drawn twice.
+  The stage the budget has reached is the one box in another colour: a pale
+  green, against the pale blue of the entries behind it and the white of the
+  ones ahead. Pale because the box sits under two charts and a table of
+  contents and is not what the page is about, so it wants the weight of a
+  highlighter and not of a warning. The three states are a fill apart rather
+  than an outline apart -- an outline heavy enough to see across a page of
+  twelve boxes reads as a box drawn twice -- and no state is left to colour
+  alone: each box says which of the three it is in its own screen-reader text.
 
   It is a footer, so it is built to be short: the boxes and the mark, and
   nothing else. There was a line above them naming the calendar and printing
@@ -226,7 +226,7 @@
               'ahead'
                 ? 'bg-white ring-1 ring-slate-200'
                 : status === 'current'
-                  ? 'bg-amber-200 ring-1 ring-amber-400'
+                  ? 'bg-green-200 ring-1 ring-green-400'
                   : 'bg-sky-50 ring-1 ring-sky-200'} {active === i ? 'shadow-md' : ''}"
               tabindex="0"
               onpointerenter={(event) => show(i, event.currentTarget)}
