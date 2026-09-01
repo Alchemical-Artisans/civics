@@ -167,12 +167,12 @@ export const load: PageLoad = () => ({
    * line that sends the reader into the city's PDF instead.
    *
    * "Fiscal Reserves" (17), "Outstanding Debt" (21), "2027 Revenue Estimates"
-   * (48), "2027 Revenue Summary" (64), "10-Year Revenue Forecast" (67) and
-   * "10-Year Appropriation Forecast" (69) do have pages, and a chart is where
-   * each is opened from: the two bars carry their own names as links, the
-   * revenue pie's heading carries the three revenue sections, which are one
-   * page here, and the appropriations pie's heading carries the last. A line
-   * here as well would offer the same page twice on one screen.
+   * Seven more do have pages, and a chart is where each of them is opened
+   * from: the two bars carry their own names as links, the revenue pie's
+   * heading carries the three revenue sections (48, 64, 67) and the
+   * appropriations pie's heading the three spending ones (28, 69, 72), each
+   * trio being one page here. A line in this list as well would offer the same
+   * page twice on one screen.
    *
    * Everything else the contents lists is listed, whether or not it has a page
    * here.
@@ -188,10 +188,6 @@ export const load: PageLoad = () => ({
       // schools, filed with the budget pages rather than here in the book's
       // order, since that is where a reader looks for a thing the city runs.
       ["Education", 26],
-      // "Capital Planning" (28), under a name that has room for the book's
-      // other project pages as they are transcribed.
-      ["Projects", 28],
-      ["2027 Budget Requests", 72],
       ["2027 Budget Challenges", 73],
       ["2027 Budget in Brief", 76],
       ["2027 Estimated Tax Bill Impact", 79],

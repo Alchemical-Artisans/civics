@@ -215,11 +215,21 @@ revenue wants all three. Its page number is 48, the first of them, so the bar's
 source link opens where the run begins.
 
 **`appropriations` is the same idea on the spending side**, opened from the
-other pie's heading, and holds "10-Year Appropriation Forecast" (69) so far. It
-is a category rather than a section: the book's account of what the year spends
-is spread through "2027 Budget Requests" (72), "2027 Budget Challenges" (73) and
-the department pages, and each becomes an `<h2>` there under its own printed
-heading as it is transcribed. The pies themselves are page 78, which is
+other pie's heading, and holds "Capital Planning" (28), "10-Year Appropriation
+Forecast" (69) and "2027 Budget Requests" (72), in the book's order.
+
+Appropriations is the umbrella because it is the precise word, not a loose one:
+an appropriation is the City Council's authorisation to spend a stated amount,
+for a stated purpose, from a stated source, in one fiscal year, and nothing is
+spent without one — which is why the appropriations table comes to the same
+total as revenue. The three sections are that authorisation from three sides:
+what departments asked to add to it (the requests are increments to existing
+budgets, not money of their own), where it is going (the forecast), and what the
+city wants to build or buy. The last of those is mostly **not** in this year's
+appropriation at all: capital over $250,000 is borrowed, the page-78 table's
+"Capital – Pay as you go" line is empty for 2027, and the funding decision was
+postponed — capital reaches the operating budget years later as debt service.
+"2027 Budget Challenges" (73) is the obvious next section for this page. The pies themselves are page 78, which is
 2027 Budget in Brief and keeps its contents line — it is the table both charts
 are drawn from rather than either side's own account.
 
@@ -393,10 +403,11 @@ below.
    page number is the first of the two, so the header's source link opens where
    the pair begins.
 
-   A page may also be a **category** with one section in it so far, named for
-   what will join it rather than for what it holds: `projects` is "Capital
-   Planning" (28), and the book's other project pages become `<h2>`s under it as
-   they are read off the page. The contents line is the category's name.
+   A page may also be a **category**, named for what belongs on it rather than
+   for the sections it happens to hold — `revenue` and `appropriations` are the
+   two halves of the budget, and each gathers the book's sections on its side as
+   they are transcribed. The contents line is the category's name, where it has
+   one at all; those two are opened from their charts instead.
 
    The sections it covers need not all be transcribed. `education` is "Net
    School Spending" (26), "Regional Schools" (150) and "School Department"

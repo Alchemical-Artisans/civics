@@ -202,29 +202,26 @@ test.describe("budget pages", () => {
 
     await page.goto(`/budget/${books[0]}/appropriations`)
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("Appropriations")
+
+    // The spending side of the book, in its order: what the city wants to
+    // build (28), where the spending is going (69), and what departments asked
+    // to add to it (72).
+    await expect(page.getByRole("heading", { name: "Capital Planning" })).toBeVisible()
     await expect(
       page.getByRole("heading", { name: /^10-Year Appropriation Projection/ }),
     ).toBeVisible()
-    expect(await page.locator('header a[href*="#page="]').getAttribute("href")).toMatch(/#page=69$/)
-  })
+    await expect(
+      page.getByRole("heading", { name: "Summary Department Budget Requests" }),
+    ).toBeVisible()
 
-  test("carries capital planning under Projects", async ({ page }) => {
-    await page.goto(`/budget/${books[0]}/projects`)
-
-    // A category, not a section: the book's page is under the heading it is
-    // printed with, and the page is named for what more of the book will join.
-    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Projects")
-    await expect(page.getByRole("heading", { name: "Capital Planning" })).toBeVisible()
-    await expect(page.getByRole("article")).toContainText("5-Year Capital Requests by Category")
-
-    // The bar's source link opens the book where that section begins.
+    // The bar's source link opens the book where the run begins.
     expect(await page.locator('header a[href*="#page="]').getAttribute("href")).toMatch(/#page=28$/)
 
-    // And the contents says Projects, not Capital Planning.
+    // None of the three keeps a line in the contents.
     await page.goto(`/budget/${books[0]}`)
-    const every = page.locator("article > div ol li")
-    await expect(every.filter({ hasText: "Projects" })).toHaveCount(1)
-    await expect(every.filter({ hasText: "Capital Planning" })).toHaveCount(0)
+    for (const gone of ["Projects", "Capital Planning", "Budget Requests"]) {
+      await expect(page.locator("article > div ol li").filter({ hasText: gone })).toHaveCount(0)
+    }
   })
 
   test("puts the three school sections on one page", async ({ page }) => {
