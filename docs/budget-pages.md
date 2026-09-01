@@ -100,10 +100,13 @@ wedges.
 The two pies are the same circle divided two ways — both tables come to the same
 total — so they can be read against each other without any shared scale.
 
-**One contents line is left out: "Mayor's Budget Message" (page 2).** Nothing on
-the site links to the message, so the line that opened the city's PDF at it is
-gone from `fy2027/+page.ts` rather than left pointing there. Every other line
-the book's contents carries is listed, whether or not it has a page here.
+**Two contents lines are left out: "Mayor's Budget Message" (page 2) and
+"Budget Calendar" (page 13).** Neither has a page here — the message was
+dropped, the calendar is the footer — and a line for a part of the book the site
+does not carry is a line that sends the reader into the city's PDF instead, so
+both are gone from `fy2027/+page.ts`. **Dropping a page means dropping its
+contents line with it.** Every other line the book's contents carries is listed,
+whether or not it has a page here.
 
 **The contents lists titles and nothing else.** The book prints a page number
 beside each of its own contents lines because paper is the only way through it;
