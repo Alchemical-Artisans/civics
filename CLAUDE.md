@@ -131,9 +131,12 @@ Notable pieces:
   `contents`. `sectionSlug` is `meetingId`'s rule except that apostrophes are
   dropped rather than collapsed — half this book's titles carry one, and
   `mayor-s-budget-message` reads as a typo.
-- **`src/lib/BudgetPie.svelte`** is the pie chart a budget book opens with —
-  floated left, with a ranked legend of every category's dollars and share
-  running in columns beside it — and **`src/lib/budget-table.ts`** is how it
+- **`src/lib/BudgetPie.svelte`** is the pie chart a budget book opens with: a
+  wedge names itself and prints its dollars and share on hover or focus, which
+  makes it the one page here carrying a script. Every wedge is focusable, both
+  so a keyboard reaches the chart at all and because the smallest wedges are a
+  third of a degree wide; each carries its figures as its accessible name, so
+  nothing is only visible to a mouse. **`src/lib/budget-table.ts`** is how it
   gets its figures: a
   transcribed table is data (cells as the strings the book prints), `BudgetTable`
   renders it, and `column()` reads a year out of it for the chart. One copy, so

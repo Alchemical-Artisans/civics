@@ -53,27 +53,42 @@ test.describe("budget pages", () => {
     await expect(page.getByRole("heading", { name: "Appropriations" })).toBeVisible()
     await expect(page.getByRole("heading", { name: "Revenue", exact: true })).toBeVisible()
 
-    const figures = page.getByRole("listitem").filter({ hasText: "$" })
-    expect(await figures.count()).toBeGreaterThan(20)
-    // Every figure is printed in the legend, so the chart carries its own
-    // values rather than hiding them behind a hover or an angle.
-    await expect(figures.first()).toContainText("Education")
-    await expect(figures.first()).toContainText("$147,158,454")
-    await expect(figures.first()).toContainText("51.6%")
-  })
-
-  test("draws one slice per legend row, in each chart", async ({ page }) => {
-    // A category left out of the drawing is a pie that lies about its shares,
-    // and one drawn without a legend row is a wedge nobody can name.
-    await page.goto(`/budget/${books[0]}`)
     const charts = page.locator(".budget-chart")
     await expect(charts).toHaveCount(2)
 
-    for (const chart of await charts.all()) {
-      const rows = await chart.locator(".budget-legend > li").count()
-      expect(rows).toBeGreaterThan(5)
-      expect(await chart.locator("svg path").count()).toBe(rows)
+    // Every wedge says what it is and what it costs as its accessible name,
+    // whether or not anyone can hover something a third of a degree wide.
+    const wedges = charts.first().getByRole("img")
+    expect(await wedges.count()).toBeGreaterThan(5)
+    await expect(wedges.first()).toHaveAttribute("aria-label", "Education, $147,158,454, 51.6%")
+    for (const wedge of await wedges.all()) {
+      expect(await wedge.getAttribute("aria-label")).toMatch(/\$[\d,]+/)
     }
+  })
+
+  test("names and prices the wedge under the pointer", async ({ page }) => {
+    await page.goto(`/budget/${books[0]}`)
+    const chart = page.locator(".budget-chart").first()
+    const box = (await chart.boundingBox())!
+
+    // Right of centre and below it, which is inside Education -- the wedge
+    // running from twelve o'clock through half the circle.
+    await page.mouse.move(box.x + box.width * 0.7, box.y + box.height * 0.7)
+
+    const tooltip = chart.locator(".budget-tooltip")
+    await expect(tooltip).toContainText("Education")
+    await expect(tooltip).toContainText("$147,158,454")
+    await expect(tooltip).toContainText("51.6%")
+  })
+
+  test("reaches the wedge no mouse can hit with the keyboard", async ({ page }) => {
+    // Overlay is 1/589th of Education, about a third of a degree. Focus is the
+    // only way to it, which is why every wedge takes focus.
+    await page.goto(`/budget/${books[0]}`)
+    const chart = page.locator(".budget-chart").first()
+    await chart.getByRole("img").last().focus()
+    await expect(chart.locator(".budget-tooltip")).toContainText("Overlay")
+    await expect(chart.locator(".budget-tooltip")).toContainText("$250,000")
   })
 
   test("a contents line with no page here opens the city's PDF at that page", async ({ page }) => {

@@ -69,23 +69,38 @@ appropriations and revenue, drawn by
 [`src/lib/BudgetPie.svelte`](../src/lib/BudgetPie.svelte) from figures in the
 book page's own `+page.ts`.
 
-**A pie, floated left, with the figures beside it.** The question a budget's
-front page answers is what share of one pot each category takes, and a pie says
-"half of it is schools" without the reader doing arithmetic. What a pie cannot
-do is let anyone compare its small slices, so the legend does that: ranked
-largest first, with the dollar figure and the share printed for every category,
-including the ones drawn as a hairline — Overlay is 1/589th of Education. The
-legend runs in columns beside the drawing, which is why the book page drops the
-reading column and takes the full width (`+layout.svelte` keeps `max-w-3xl` for
-a section, which is prose, and `max-w-none` for the book page, which is not).
-There is no tooltip, because every value is already on the page and a hover
-layer would put a script on a page that needs none.
+**A pie, and the figures inside it.** The question a budget's front page
+answers is what share of one pot each category takes, and a pie says "half of it
+is schools" without the reader doing arithmetic. Hover a wedge, or tab to it,
+and it names itself and prints its dollars and its share. Printing all fourteen
+figures beside the drawing instead — which the page did briefly — spent the
+width the book's own table of contents wants, and restated a table that is
+transcribed in full one click away at 2027 Budget in Brief.
 
-Colour is the ranking, not the category: fourteen categorical hues cannot be
-told apart, so it is one hue stepped light-to-dark by size, and identity comes
-from the legend's label rather than from the colour. The two pies are the same
-circle divided two ways — both tables come to the same total — so they can be
-read against each other without any shared scale.
+**This is the one page on the site with a script behind it,** because hover is
+the whole feature. Nothing is lost without it: every wedge carries its label,
+its dollars and its share as its accessible name, so a screen reader gets all
+fourteen by walking them, and the transcription behind the link has every figure
+as text. Every wedge is focusable, which is also the only way to reach the ones
+drawn as a hairline — Overlay is 1/589th of Education, about a third of a
+degree, and no mouse will land on it.
+
+**Colour is the category**, from a fixed order in the component, assigned
+largest first. The order was checked with a palette validator rather than by
+eye: every step clears the lightness band, the chroma floor, and 3:1 against the
+page, and the closest adjacent pair under simulated deuteranopia is ΔE 6.3 —
+inside the band that is allowed only where something other than colour
+identifies the mark, which here is the label on hover and the white gap between
+wedges.
+
+The two pies are the same circle divided two ways — both tables come to the same
+total — so they can be read against each other without any shared scale.
+
+**The book page is not a reading column.** `+layout.svelte` keeps `max-w-3xl`
+for a section, which is prose, and gives the book page `max-w-none`: from `lg`
+the two pies sit in a narrow left column with the table of contents beside them,
+which is what most readers came for and would otherwise start below the fold.
+Below `lg` it stacks, charts first.
 
 **The figures come from page 78, not from the pie on page 65.** The pie is the
 book's own high-level view of revenue, and it does not add up: its five slices
