@@ -118,6 +118,44 @@ the two pies sit in a narrow left column with the table of contents beside them,
 which is what most readers came for and would otherwise start below the fold.
 Below `lg` it stacks, charts first.
 
+## The calendar at the foot of a book page
+
+Page 13 is the budget calendar, and it is drawn rather than transcribed into a
+section of its own: a horizontal timeline across the foot of the book's front
+page, by [`src/lib/BudgetTimeline.svelte`](../src/lib/BudgetTimeline.svelte)
+from [`fy2027/budget-calendar.ts`](../src/routes/budget/fy2027/budget-calendar.ts).
+The process the two charts above it are the outcome of ends up on the same
+screen as the outcome.
+
+**The book draws it the same way, on its side.** Its page 13 is a timeline down
+a vertical axis with the entries alternating either side; this is that turned
+ninety degrees, entries alternating above and below. Every date and every
+sentence is the book's — nothing is summarised into a label.
+
+**Entries are evenly spaced; the today mark is not.** Two entries are a day
+apart and the last is eight weeks after the one before it, so spacing by date
+would pile the middle up and leave the end empty. The mark is still placed by
+date, interpolated between the entries either side of it, so where the budget
+has got to is honest even where the spacing is not. An entry behind the mark is
+drawn solid, one under it takes a halo, and one ahead of it is hollow and grey —
+with the same three states spelled out for a screen reader, which cannot see
+which side of the mark an entry is on.
+
+**Today comes from the browser, over a build-time default.** `+page.ts` puts the
+build date in the page so the mark is in the HTML that is served, and the
+component replaces it on mount with the reader's own date. FY2027's calendar
+ended when the council adopted the budget on 6/16/26, so its mark now sits at
+the end of the axis and stays there; a book being written while its calendar is
+running is the case this is built for.
+
+Twelve entries carrying their own wording need more width than a phone has, so
+the drawing keeps its width and scrolls inside itself, the way a wide table in a
+section does.
+
+**The book's contents still lists "Budget Calendar"**, and that line opens the
+city's PDF at page 13 like any section with no page here — the drawing is on the
+front page, and the record is still the book.
+
 **The figures come from page 78, not from the pie on page 65.** The pie is the
 book's own high-level view of revenue, and it does not add up: its five slices
 total $281,813,295 against the $285,272,159 printed above them. The gap is
@@ -230,6 +268,8 @@ src/lib/data/budget.json                   the committed listing, scraped
 src/lib/budget.ts                          reads it; slugs and contents helpers
 src/lib/budget.spec.ts                     unit tests for them
 src/lib/BudgetPie.svelte                   the pie charts on a book page
+src/lib/BudgetTimeline.svelte              the budget calendar, drawn on its side
+src/routes/budget/<year>/budget-calendar.ts   that calendar, transcribed
 src/lib/BudgetTable.svelte                 a transcribed table, rendered from data
 src/lib/budget-table.ts                    that data's shape, and `amount`/`column`
 src/routes/budget/<year>/<section>/tables.ts  a shared section's tables

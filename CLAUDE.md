@@ -144,6 +144,14 @@ Notable pieces:
   the chart cannot contradict the table it links to. The figures come from the
   book's page-78 tables, not its own revenue pie on page 65, which is $3,458,864
   short of the total it prints.
+- **`src/lib/BudgetTimeline.svelte`** draws page 13, the budget calendar, across
+  the foot of that same page: the book's own vertical timeline turned on its
+  side, entries alternating above and below the axis, with a mark showing where
+  today falls in the process. It is a drawing rather than a section of its own,
+  and its entries are `budget-calendar.ts` beside the book's `+page.ts`. Entries
+  are evenly spaced because two of them are a day apart; only the mark is placed
+  by date. Today comes from `+page.ts` at build time so the mark is in the served
+  HTML, and the component replaces it on mount with the reader's own date.
 - **`src/lib/router.ts`** builds _every_ internal URL. Never write a path inline
   and never use SvelteKit's `resolve()` — `Router` applies `base` (the
   `BASE_PATH` env knob for a non-root deploy) exactly once, and

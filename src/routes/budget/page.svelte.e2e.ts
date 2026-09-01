@@ -94,6 +94,27 @@ test.describe("budget pages", () => {
     await expect(chart.locator(".budget-tooltip")).toContainText("$250,000")
   })
 
+  test("draws the budget calendar across the foot of the page", async ({ page }) => {
+    await page.goto(`/budget/${books[0]}`)
+    await expect(page.getByRole("heading", { name: "Budget Calendar" })).toBeVisible()
+
+    // Every entry the book prints, in its order and its own words.
+    const entries = page.locator(".budget-timeline li")
+    await expect(entries).toHaveCount(12)
+    await expect(entries.first()).toContainText("1/9/26")
+    await expect(entries.first()).toContainText(
+      "Mayor distributed budget directives to departments.",
+    )
+    await expect(entries.last()).toContainText("6/16/26")
+    await expect(entries.last()).toContainText("Budget Adoption by City Council.")
+
+    // This book's calendar ended when the council adopted the budget, so the
+    // mark sits at the end of the axis and stays there.
+    const today = page.locator(".budget-today")
+    await expect(today).toContainText("Today,")
+    await expect(today).toHaveAttribute("style", "left: 100%")
+  })
+
   test("a contents line with no page here opens the city's PDF at that page", async ({ page }) => {
     await page.goto(`/budget/${books[0]}`)
     const outward = page.locator('li a[href*="#page="]').first()

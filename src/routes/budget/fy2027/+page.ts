@@ -2,6 +2,7 @@ import type { PageLoad } from "./$types"
 import { contents } from "$lib/budget"
 import { amount, cell, column } from "$lib/budget-table"
 import { APPROPRIATIONS, REVENUE } from "./2027-budget-in-brief/tables"
+import { CALENDAR } from "./budget-calendar"
 
 /**
  * The budget at a glance, from the two tables on page 78.
@@ -45,6 +46,16 @@ const revenue = column(REVENUE, CHARTED, { exclude: NOT_A_CATEGORY })
 const total = amount(cell(APPROPRIATIONS, "Grand Total", CHARTED))!
 
 export const load: PageLoad = () => ({
+  calendar: CALENDAR,
+
+  /**
+   * The day this page was built, so the timeline's today mark is in the HTML
+   * that is served rather than appearing when a script runs. The browser
+   * replaces it with the reader's own date on mount; this is what a reader
+   * without a script sees, and it is never more stale than the last deploy.
+   */
+  asOf: new Date().toISOString().slice(0, 10),
+
   overview: {
     appropriations,
     revenue,

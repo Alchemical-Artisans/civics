@@ -1,6 +1,7 @@
 <script lang="ts">
   import { Router } from "$lib/router"
   import BudgetPie from "$lib/BudgetPie.svelte"
+  import BudgetTimeline from "$lib/BudgetTimeline.svelte"
   import type { BookSection } from "$lib/budget"
 
   let { data } = $props()
@@ -9,6 +10,7 @@
   const contents = $derived(data.contents as BookSection[])
   const unlisted = $derived(data.unlisted as BookSection[])
   const overview = $derived(data.overview)
+  const calendar = $derived(data.calendar)
 
   const money = new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -102,3 +104,12 @@
     {@render list(unlisted)}
   </div>
 </div>
+
+<!--
+  The calendar last, across the foot of the page: it is the process the two
+  charts above are the outcome of, and page 13 of the book drawn the way the
+  book draws it, turned on its side.
+-->
+<h2>Budget Calendar</h2>
+
+<BudgetTimeline steps={calendar} asOf={data.asOf} />
