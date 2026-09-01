@@ -97,7 +97,7 @@ src/lib/
   Note.svelte              the information popover in a document page's header
   SiteHeader.svelte        the bar on every page: the mark, budget, calendar
   BudgetPie.svelte         the pie charts a budget book opens with
-  BudgetTimeline.svelte    the budget calendar, drawn across the foot of one
+  BudgetTimeline.svelte    the budget calendar, as boxes across the foot of one
   BudgetTable.svelte       a transcribed budget table, rendered from its data
   budget-table.ts          that table's shape, and reading figures back out
   budget-table.spec.ts     unit tests for it

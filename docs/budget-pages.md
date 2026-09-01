@@ -121,25 +121,29 @@ Below `lg` it stacks, charts first.
 ## The calendar at the foot of a book page
 
 Page 13 is the budget calendar, and it is drawn rather than transcribed into a
-section of its own: a horizontal timeline across the foot of the book's front
-page, by [`src/lib/BudgetTimeline.svelte`](../src/lib/BudgetTimeline.svelte)
-from [`fy2027/budget-calendar.ts`](../src/routes/budget/fy2027/budget-calendar.ts).
+section of its own: a row of boxes across the foot of the book's front page, by
+[`src/lib/BudgetTimeline.svelte`](../src/lib/BudgetTimeline.svelte) from
+[`fy2027/budget-calendar.ts`](../src/routes/budget/fy2027/budget-calendar.ts).
 The process the two charts above it are the outcome of ends up on the same
 screen as the outcome.
 
-**The book draws it the same way, on its side.** Its page 13 is a timeline down
-a vertical axis with the entries alternating either side; this is that turned
-ninety degrees, entries alternating above and below. Every date and every
-sentence is the book's — nothing is summarised into a label.
+**A box per step, holding a few words.** A step of a process has a beginning and
+an end, twelve boxes fill the width evenly, and a box is somewhere for words to
+live. The book's own sentence for a step runs to twenty-odd words — a paragraph
+in a box that wide — so the box carries a summary and the sentence appears
+underneath the row on mouseover or focus, unshortened. The summaries are the one
+thing on these pages that is not the book's: each is built from its own entry's
+nouns, and the sentence is in the box as well, hidden, so a screen reader gets
+the book's wording whether or not anything can be hovered.
 
-**Entries are evenly spaced; the today mark is not.** Two entries are a day
-apart and the last is eight weeks after the one before it, so spacing by date
-would pile the middle up and leave the end empty. The mark is still placed by
-date, interpolated between the entries either side of it, so where the budget
-has got to is honest even where the spacing is not. An entry behind the mark is
-drawn solid, one under it takes a halo, and one ahead of it is hollow and grey —
+**Boxes are evenly spaced; the today mark is not.** Two entries are a day apart
+and the last is eight weeks after the one before it, so spacing by date would
+pile the middle up and leave the end empty. The mark is still placed by date,
+interpolated between the entries either side of it, so where the budget has got
+to is honest even where the spacing is not. A box behind the mark is filled
+pale, the one under it is filled solid, and one ahead of it is white and grey —
 with the same three states spelled out for a screen reader, which cannot see
-which side of the mark an entry is on.
+which side of the mark a box is on.
 
 **Today comes from the browser, over a build-time default.** `+page.ts` puts the
 build date in the page so the mark is in the HTML that is served, and the
@@ -148,9 +152,10 @@ ended when the council adopted the budget on 6/16/26, so its mark now sits at
 the end of the axis and stays there; a book being written while its calendar is
 running is the case this is built for.
 
-Twelve entries carrying their own wording need more width than a phone has, so
-the drawing keeps its width and scrolls inside itself, the way a wide table in a
-section does.
+Twelve boxes need more width than a phone has, so the drawing keeps its width
+and scrolls inside itself, the way a wide table in a section does. The room the
+sentence appears in is held open whether or not anything is hovered, so the page
+does not jump under the pointer.
 
 **The book's contents still lists "Budget Calendar"**, and that line opens the
 city's PDF at page 13 like any section with no page here — the drawing is on the
@@ -268,7 +273,7 @@ src/lib/data/budget.json                   the committed listing, scraped
 src/lib/budget.ts                          reads it; slugs and contents helpers
 src/lib/budget.spec.ts                     unit tests for them
 src/lib/BudgetPie.svelte                   the pie charts on a book page
-src/lib/BudgetTimeline.svelte              the budget calendar, drawn on its side
+src/lib/BudgetTimeline.svelte              the budget calendar, drawn as boxes
 src/routes/budget/<year>/budget-calendar.ts   that calendar, transcribed
 src/lib/BudgetTable.svelte                 a transcribed table, rendered from data
 src/lib/budget-table.ts                    that data's shape, and `amount`/`column`

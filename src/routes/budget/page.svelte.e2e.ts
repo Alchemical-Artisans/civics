@@ -98,21 +98,33 @@ test.describe("budget pages", () => {
     await page.goto(`/budget/${books[0]}`)
     await expect(page.getByRole("heading", { name: "Budget Calendar" })).toBeVisible()
 
-    // Every entry the book prints, in its order and its own words.
+    // A box per entry, in the book's order, each showing its date and a few
+    // words and carrying the book's own sentence for a reader who cannot hover.
     const entries = page.locator(".budget-timeline li")
     await expect(entries).toHaveCount(12)
     await expect(entries.first()).toContainText("1/9/26")
+    await expect(entries.first()).toContainText("Directives to departments")
     await expect(entries.first()).toContainText(
       "Mayor distributed budget directives to departments.",
     )
     await expect(entries.last()).toContainText("6/16/26")
-    await expect(entries.last()).toContainText("Budget Adoption by City Council.")
+    await expect(entries.last()).toContainText("Budget adopted")
 
     // This book's calendar ended when the council adopted the budget, so the
-    // mark sits at the end of the axis and stays there.
+    // mark sits at the end of the row and stays there.
     const today = page.locator(".budget-today")
     await expect(today).toContainText("Today,")
     await expect(today).toHaveAttribute("style", "left: 100%")
+  })
+
+  test("gives the book's own wording for the step under the pointer", async ({ page }) => {
+    await page.goto(`/budget/${books[0]}`)
+    await page.locator(".budget-timeline li").nth(1).hover()
+
+    const detail = page.locator(".budget-detail")
+    await expect(detail).toContainText("1/15/26")
+    await expect(detail).toContainText("Finance prepared revenue projections")
+    await expect(detail).toContainText("assessed debt capacity.")
   })
 
   test("a contents line with no page here opens the city's PDF at that page", async ({ page }) => {
