@@ -251,7 +251,8 @@ will see. The calendar has no other entry point from `/`, so it has to be there.
 ### Getting between the two halves
 
 [`src/lib/SiteHeader.svelte`](../src/lib/SiteHeader.svelte) sits above every
-page: the mark, which goes to `/`, and a link to each half. Its budget link goes
+page: the mark, which goes to `/`, the page's own name where the page does not
+head itself (see [budget-pages.md](budget-pages.md)), and a link to each half. Its budget link goes
 to the newest _book_, the same destination `/` forwards to, rather than to
 `/budget` — sending it to the list of fiscal years would put back the hop that
 landing on the budget was meant to remove. The list is still one level up from

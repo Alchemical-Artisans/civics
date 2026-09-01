@@ -12,6 +12,7 @@
 <script lang="ts">
   import { page } from "$app/state"
   import { Router } from "$lib/router"
+  import { barOf } from "$lib/heading"
   import mark from "$lib/assets/favicon.svg"
 
   let {
@@ -45,16 +46,47 @@
     budget: within("/budget"),
     calendar: within("/calendar"),
   })
+
+  const bar = $derived(barOf(page.data))
 </script>
 
 <header class="border-b border-slate-200 bg-white">
-  <div class="mx-auto flex max-w-6xl flex-wrap items-center gap-x-6 gap-y-2 px-4 py-3">
+  <div class="flex flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3">
     <a class="flex items-center gap-2 text-slate-900 hover:text-slate-600" href={Router.home()}>
       <!-- Decorative: the name sits right beside it, so a screen reader
            announcing the mark as well would only say the same thing twice. -->
       <img class="h-7 w-7" src={mark} alt="" />
       <span class="font-semibold tracking-tight">Haverhill Public Documents</span>
     </a>
+
+    {#if bar.name}
+      <!-- The page's one `<h1>`, and everything that used to sit under it. It
+           is in the bar rather than the page because the bar is where a reader
+           looks to know where they are, and the page below it is the thing
+           itself. -->
+      <span class="text-slate-300" aria-hidden="true">/</span>
+      <h1 class="m-0 truncate text-base font-medium tracking-tight text-slate-900">
+        {bar.name}
+      </h1>
+    {/if}
+
+    {#if bar.dates}
+      <p class="m-0 text-xs text-slate-500">{bar.dates}</p>
+    {/if}
+
+    {#if bar.source}
+      <!-- The city's own file, which is the record. Named for what it is
+           rather than for what it contains, because on a section it is the same
+           file opened at that section's page. -->
+      <a
+        class="text-xs text-slate-600 underline decoration-slate-300 hover:text-slate-900"
+        href={bar.source}
+        target="_blank"
+        rel="external noopener noreferrer"
+      >
+        Original Source<span class="sr-only">, PDF, opens in a new tab</span>
+      </a>
+    {/if}
 
     <!-- `ml-auto` rather than `justify-between`, so the two stay together at
          the right and wrap as a pair on a narrow screen. -->

@@ -95,7 +95,9 @@ scripts/
 
 src/lib/
   Note.svelte              the information popover in a document page's header
-  SiteHeader.svelte        the bar on every page: the mark, budget, calendar
+  SiteHeader.svelte        the bar on every page: mark, page name, budget, calendar
+  heading.ts               what that bar says about a page, from `page.data`
+  heading.spec.ts          unit tests for it
   BudgetPie.svelte         the pie charts a budget book opens with
   BudgetTimeline.svelte    the budget calendar, as boxes across the foot of one
   BudgetTable.svelte       a transcribed budget table, rendered from its data

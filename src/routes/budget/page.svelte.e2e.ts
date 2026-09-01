@@ -162,7 +162,7 @@ test.describe("budget pages", () => {
     await expect(page.locator('header a[href*="#page="]')).toHaveCount(1)
 
     // Scoped past the site header, which is a nav of its own on every page.
-    await page.getByRole("link", { name: `FY${books[0].slice(2)} Mayor's Budget` }).click()
+    await page.getByRole("link", { name: `${books[0].slice(2)} Budget` }).click()
     await expect(page).toHaveURL(new RegExp(`/budget/${books[0]}$`))
   })
 

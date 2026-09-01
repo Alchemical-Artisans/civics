@@ -120,8 +120,15 @@ its sections were read off rendered pages by hand. See
 
 Notable pieces:
 
-- **`src/lib/SiteHeader.svelte`** is the bar on every page: the mark, and links
-  to the budget and the calendar. Its budget link goes to the newest _book_,
+- **`src/lib/SiteHeader.svelte`** is the bar on every page: the mark, the page's
+  own name, and links to the budget and the calendar. On the budget half it
+  carries what the page used to head itself with — the name (its only `<h1>`),
+  the fiscal year the book covers, and an "Original Source" link to the city's
+  file, opened at a section's own page — all from `src/lib/heading.ts`, which
+  reads `page.data`; a budget book is called `2027 Budget`, never "FY2027
+  Mayor's Budget". The bar runs the width of the window, because a bar narrower
+  than the page under it reads as a mistake. Its budget link goes to the newest
+  _book_,
   the same place `/` forwards to, not to `/budget`. The current section is
   matched on `page.route.id`, never on `page.url.pathname` against a
   `Router`-built href -- with `paths.relative` on, that comparison cannot match

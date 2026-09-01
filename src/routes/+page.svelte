@@ -23,6 +23,7 @@
   // so back goes where the visitor came from; `page.svelte.e2e.ts` holds that
   // down.
   import { Router } from "$lib/router"
+  import { bookName } from "$lib/heading"
 
   let { data } = $props()
 
@@ -30,7 +31,7 @@
   // front door and the header's budget link are the same destination.
   const book = $derived(data.budgetBook)
   const destination = $derived(book ? Router.budgetBook(book.id) : Router.budget())
-  const label = $derived(book ? `the FY${book.year} Mayor's Budget` : "the city's budget reports")
+  const label = $derived(book ? `the ${bookName(book.year)}` : "the city's budget reports")
 </script>
 
 <svelte:head>

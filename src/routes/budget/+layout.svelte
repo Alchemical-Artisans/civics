@@ -1,14 +1,11 @@
 <script lang="ts">
   import { page } from "$app/state"
   import { Router } from "$lib/router"
+  import { bookName, headingOf } from "$lib/heading"
 
   let { data, children } = $props()
 
   const book = $derived(data.book)
-
-  // A section page names itself and says where in the book it came from, set
-  // by its own `+page.ts`. Absent on the book's own table of contents.
-  const section = $derived(page.data.section)
 
   // A section is prose and keeps a reading column; the book's own front page is
   // not. That page is two pies and sixty-odd contents lines, all of which run
@@ -23,9 +20,8 @@
 </script>
 
 <svelte:head>
-  <title>
-    {section ? section.title : `FY${book.year} Mayor's Budget`} - City of Haverhill
-  </title>
+  <!-- The same name the bar at the top shows, from the same place. -->
+  <title>{headingOf(page.data)} - City of Haverhill</title>
 </svelte:head>
 
 <div class="mx-auto px-4 py-8 {column}">
@@ -38,7 +34,7 @@
         class="text-sm text-slate-600 underline hover:text-slate-900"
         href={Router.budgetBook(book.id)}
       >
-        &larr; FY{book.year} Mayor's Budget
+        &larr; {bookName(book.year)}
       </a>
     {:else}
       <a class="text-sm text-slate-600 underline hover:text-slate-900" href={Router.budget()}>
@@ -47,34 +43,9 @@
     {/if}
   </nav>
 
-  <header class="mb-6 border-b border-slate-200 pb-6">
-    <h1 class="text-2xl font-bold tracking-tight text-slate-900">
-      {section ? section.title : `FY${book.year} Mayor's Budget`}
-    </h1>
-    <p class="mt-2 text-sm text-slate-600">
-      Budget Plan July 1, {book.year - 1} to June 30, {book.year}
-    </p>
-
-    <!-- The book itself, which is the record. A section knows where it sits in
-	       it, so its link opens the reader at that page rather than at the front
-	       of a PDF running to hundreds. -->
-    {#if book.budget}
-      <p class="mt-4 text-sm">
-        <a
-          class="text-slate-600 underline hover:text-slate-900"
-          href={section ? Router.pdfPage(book.budget, section.page) : book.budget}
-          target="_blank"
-          rel="external noopener noreferrer"
-        >
-          {#if section}
-            This section in the city's budget book, page {section.page}
-          {:else}
-            The city's budget book
-          {/if}<span class="sr-only">, PDF, opens in a new tab</span>
-        </a>
-      </p>
-    {/if}
-  </header>
+  <!-- No header here at all. The bar at the top of the window names the page,
+       says what the book covers and links the city's own file, so anything here
+       would say it a second time in the space the page wants. -->
 
   <!-- The transcription is the child route: an ordinary Svelte component,
 	     checked and formatted like the rest of the source. Same arrangement as a

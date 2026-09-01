@@ -62,6 +62,30 @@ reports no fonts and `pdftotext` yields 245 blank pages. Every section under
 `fy2027/` was read off the rendered pages by hand. FY2025 and FY2026, and all
 the audit reports, do have text layers if they are ever written up.
 
+## What names a budget page
+
+Nothing on a budget page heads it. The bar across the top of the window does:
+the page's name, the fiscal year the book covers, and an **Original Source**
+link to the city's own file — on a section, that file opened at the section's
+page. A book page was spending four lines on a heading, a date line and a link
+above the two charts anyone came for, and the bar was already there saying where
+the reader was.
+
+[`src/lib/heading.ts`](../src/lib/heading.ts) is where all three come from.
+`page.data` is a merge of every load above the route, and which key holds what
+depends on how far down the route is — a section names itself and gives its page
+in its own `+page.ts`, the book is named by the layout that looked it up — so
+the bar asks `barOf(page.data)` and this answers. Off the budget half it answers
+nothing, because the calendar still heads its own pages.
+
+**A book is called "2027 Budget".** Not "FY2027 Mayor's Budget", which is how
+the city files it: "Mayor's" distinguishes the book from nothing, since the city
+publishes one budget for a year, and a reader who has never heard of the others
+is left wondering which budget this is not. The fiscal year is the line beside
+the name, which says the July-to-June the year means. Everything naming a book —
+the bar, the tab, the way back up from a section, the fallback text on `/` —
+says it through `bookName`.
+
 ## The chart on a book's front page
 
 `/budget/<year>` opens on the budget at a glance: two pie charts,
