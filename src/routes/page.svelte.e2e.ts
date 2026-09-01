@@ -59,7 +59,7 @@ test.describe("the site root", () => {
 
 test.describe("the site header", () => {
   test("carries the mark and both sections on every kind of page", async ({ page }) => {
-    for (const at of ["/", "/calendar", "/budget", `/budget/${newest}`]) {
+    for (const at of ["/", "/calendar", `/budget/${newest}`, `/budget/${newest}/${section}`]) {
       await page.goto(at)
       const header = page.getByRole("banner")
       // Located as an element, not by role: the mark is decorative (`alt=""`)
@@ -67,17 +67,59 @@ test.describe("the site header", () => {
       // no img role to find it by.
       await expect(header.locator("img")).toBeVisible()
       await expect(header.getByRole("link", { name: "Haverhill Public Documents" })).toBeVisible()
-      await expect(header.getByRole("link", { name: "Budget", exact: true })).toBeVisible()
+      // The budget half is a menu rather than a link, so it is the `<summary>`
+      // that names it.
+      await expect(header.locator("summary")).toHaveText(/Budget/)
       await expect(header.getByRole("link", { name: "Calendar", exact: true })).toBeVisible()
     }
   })
 
-  test("its budget link opens the book, not the list of years", async ({ page }) => {
-    // The same destination `/` forwards to. Sending it to the index would put
-    // back the hop that landing on the budget was meant to remove.
+  test("its budget menu lists every fiscal year the city publishes", async ({ page }) => {
+    // Everything the deleted `/budget` page used to list, one click from
+    // anywhere instead of a page of its own.
     await page.goto("/calendar")
-    await page.getByRole("banner").getByRole("link", { name: "Budget", exact: true }).click()
+    const header = page.getByRole("banner")
+    await header.locator("summary").click()
+
+    // 2006 through 2027, one row each.
+    await expect(header.locator("details li")).toHaveCount(22)
+    await expect(header.getByRole("link", { name: /^FY2027/ })).toBeVisible()
+    await expect(header.getByRole("link", { name: /^FY2006/ })).toBeVisible()
+  })
+
+  test("a year with no page here opens the city's own file", async ({ page }) => {
+    await page.goto("/calendar")
+    const header = page.getByRole("banner")
+    await header.locator("summary").click()
+
+    // Asserted on attributes rather than by following them, so the suite never
+    // reaches out to the city's CDN. The audit reports are here too: this menu
+    // is the only place on the site that links them.
+    const file = header.locator('details a[href^="https://"]').first()
+    await expect(file).toHaveAttribute("target", "_blank")
+    expect(await file.getAttribute("rel")).toContain("noopener")
+    await expect(header.getByRole("link", { name: /^Audit/ }).first()).toBeVisible()
+  })
+
+  test("its budget menu opens a book, and closes behind itself", async ({ page }) => {
+    await page.goto("/calendar")
+    const header = page.getByRole("banner")
+    await header.locator("summary").click()
+    await header.getByRole("link", { name: `FY${newest.slice(2)}` }).click()
+
     await expect(page).toHaveURL(`/budget/${newest}`)
+    // A `<details>` is not closed by navigating under it, which on a site that
+    // keeps the bar across a navigation would leave the menu hanging open.
+    await expect(header.locator("details[open]")).toHaveCount(0)
+  })
+
+  test("closes the budget menu on Escape", async ({ page }) => {
+    await page.goto("/calendar")
+    const header = page.getByRole("banner")
+    await header.locator("summary").click()
+    await expect(header.locator("details[open]")).toHaveCount(1)
+    await page.keyboard.press("Escape")
+    await expect(header.locator("details[open]")).toHaveCount(0)
   })
 
   test("its calendar link opens the calendar", async ({ page }) => {
@@ -105,14 +147,17 @@ test.describe("the site header", () => {
     /** The text of whichever header link the served HTML marks as current. */
     const marked = async (at: string) => {
       const html = await (await page.request.get(at)).text()
-      const link = html.match(/<a[^>]*aria-current="page"[^>]*>([\s\S]*?)<\/a>/)
-      return link?.[1].replace(/<[^>]*>/g, "").trim() ?? null
+      // A link for the calendar, a `<summary>` for the budget menu.
+      const link = html.match(/<(a|summary)[^>]*aria-current="page"[^>]*>([\s\S]*?)<\/\1>/)
+      return link?.[2].replace(/<[^>]*>/g, "").trim() ?? null
     }
 
     expect(await marked("/calendar")).toBe("Calendar")
-    expect(await marked(`/budget/${newest}`)).toBe("Budget")
+    // The budget half names itself and then the caret that says it opens.
+    expect(await marked(`/budget/${newest}`)).toMatch(/^Budget/)
     // Three levels down still marks its half of the site.
-    expect(await marked(`/budget/${newest}/${section}`)).toBe("Budget")
+    expect(await marked(`/budget/${newest}/${section}`)).toMatch(/^Budget/)
+
     // `/` is in neither section; it only forwards.
     expect(await marked("/")).toBeNull()
   })
@@ -125,16 +170,17 @@ test.describe("the site header", () => {
       "aria-current",
       "page",
     )
-    await expect(header.getByRole("link", { name: "Budget", exact: true })).not.toHaveAttribute(
-      "aria-current",
-      "page",
-    )
+    await expect(header.locator("summary")).not.toHaveAttribute("aria-current", "page")
 
     // A section three levels down still marks its half of the site.
     await page.goto(`/budget/${newest}/${section}`)
-    await expect(header.getByRole("link", { name: "Budget", exact: true })).toHaveAttribute(
+    await expect(header.locator("summary")).toHaveAttribute("aria-current", "page")
+
+    // And inside the menu, the book the reader is actually in.
+    await header.locator("summary").click()
+    await expect(header.getByRole("link", { name: `FY${newest.slice(2)}` })).toHaveAttribute(
       "aria-current",
-      "page",
+      "true",
     )
   })
 })

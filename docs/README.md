@@ -15,7 +15,7 @@ link to the original at the top, or as the city's own PDF.
 | [dates.md](./dates.md)                   | How a meeting date is determined, and why that is hard              |
 | [data-format.md](./data-format.md)       | The `meetings.json` schema, field by field                          |
 | [document-pages.md](./document-pages.md) | Writing a page for a meeting document, and why they are hand-made   |
-| [budget-pages.md](./budget-pages.md)     | `/budget`, and writing up a section of a budget book                |
+| [budget-pages.md](./budget-pages.md)     | The budget half, and writing up a section of a budget book          |
 | [calendar-page.md](./calendar-page.md)   | How the page renders, filters, and prerenders                       |
 | [operations.md](./operations.md)         | Running the scripts, refreshing data, and what to do when it breaks |
 | [deployment.md](./deployment.md)         | How the site is published to GitHub Pages                           |
@@ -95,7 +95,7 @@ scripts/
 
 src/lib/
   Note.svelte              the information popover in a document page's header
-  SiteHeader.svelte        the bar on every page: mark, page name, budget, calendar
+  SiteHeader.svelte        the bar on every page: mark, page name, budget menu, calendar
   heading.ts               what that bar says about a page, from `page.data`
   heading.spec.ts          unit tests for it
   BudgetPie.svelte         the pie charts a budget book opens with
@@ -115,12 +115,12 @@ src/lib/
 
 src/routes/
   +page.svelte             `/`, which forwards to the newest budget book
-  +page.ts                 resolves which book that is
-  page.svelte.e2e.ts       end-to-end tests for the forward
+  +layout.ts               resolves which book that is, and every year for the bar
+  +layout.svelte           the bar, on every page
+  page.svelte.e2e.ts       end-to-end tests for the forward and the bar
 
 src/routes/budget/
-  +page@.svelte            /budget, every fiscal year the city publishes
-  +layout.svelte           the header around a budget book and its sections
+  +layout.svelte           the column a budget book and its sections sit in
   <year>/<section>/        one section of a budget book, by hand
   page.svelte.e2e.ts       end-to-end tests
 

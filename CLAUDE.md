@@ -10,9 +10,10 @@ documents — agendas and minutes — as a browsable month calendar at
 developer's machine and the results are committed, so the build is offline and
 the reader's browser never talks to the city's servers.
 
-It also republishes the city's budget and audit reports at `/budget`, where the
-current budget book is readable a section at a time rather than as one PDF
-running to hundreds of pages.
+It also republishes the city's budget and audit reports, where the current
+budget book is readable a section at a time rather than as one PDF running to
+hundreds of pages. There is no page listing the fiscal years: the list is the
+menu behind **Budget** in the bar at the top of every page.
 
 `docs/` is the authoritative reference and is unusually complete. Start at
 [docs/README.md](docs/README.md), which maps the rest:
@@ -105,8 +106,11 @@ or SvelteKit's `redirect()` — see
 break, in ways the e2e suite now pins. The header carries the link to
 each half, so no page needs its own sideways link.
 
-**`/budget` is the same idea one level deeper, and shares nothing with the
-calendar.** `/budget` lists every fiscal year the city publishes,
+**The budget is the same idea one level deeper, and shares nothing with the
+calendar.** The bar's menu lists every fiscal year the city publishes — a book
+here where one is written, the city's own PDF where it is not, and each year's
+audit report beside it, which is the only place those are linked. `/budget`
+itself is not a page: it was one, and reaching a book through it cost a hop.
 `/budget/<year>` is a budget book's own table of contents, and
 `/budget/<year>/<section>` is one section of it transcribed. None of it is
 scraped: the city's page is 22 rows that change twice a year, so the list lives
@@ -121,15 +125,16 @@ its sections were read off rendered pages by hand. See
 Notable pieces:
 
 - **`src/lib/SiteHeader.svelte`** is the bar on every page: the mark, the page's
-  own name, and links to the budget and the calendar. On the budget half it
+  own name, the menu of fiscal years, and a link to the calendar. On the budget half it
   carries what the page used to head itself with — the name (its only `<h1>`),
   the fiscal year the book covers, and an "Original Source" link to the city's
   file, opened at a section's own page — all from `src/lib/heading.ts`, which
   reads `page.data`; a budget book is called `2027 Budget`, never "FY2027
   Mayor's Budget". The bar runs the width of the window, because a bar narrower
-  than the page under it reads as a mistake. Its budget link goes to the newest
-  _book_,
-  the same place `/` forwards to, not to `/budget`. The current section is
+  than the page under it reads as a mistake. Its budget entry is a `<details>`
+  menu of every fiscal year — plain HTML, so it works before anything hydrates —
+  which is both the list `/budget` used to be and the reason no budget page
+  carries a back link any more. The current section is
   matched on `page.route.id`, never on `page.url.pathname` against a
   `Router`-built href -- with `paths.relative` on, that comparison cannot match
   during prerendering and starts matching after hydration, so the served markup

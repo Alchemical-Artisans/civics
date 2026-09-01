@@ -1,18 +1,30 @@
 # Budget pages
 
-`/budget` republishes the City of Haverhill's
+The budget half republishes the City of Haverhill's
 [Budget and Audit Reports](https://www.haverhillma.gov/government/budget-and-finance/financial-reports/budget-and-audit-reports/)
 page: every Mayor's budget and audited financial statement back to FY2006. The
 city's page is a flat list of 44 PDF links with no way in but downloading a
 whole book, so this one turns the newest book into pages a section at a time.
 
-The shape mirrors the calendar exactly one level deeper:
+The shape mirrors the calendar one level deeper, except that the budget has no
+page at its root:
 
 ```
-/calendar                          /budget
+/calendar                          the menu of years in the bar
 /calendar/meetings/<id>            /budget/<year id>
 /calendar/meetings/<id>/<item>     /budget/<year id>/<section>
 ```
+
+**There is no `/budget`.** The list of fiscal years was a page once, and every
+reader who wanted a book paid a hop through it to get there; the same
+twenty-two years are now the menu behind **Budget** in the bar at the top of
+every page — `src/lib/SiteHeader.svelte`, from `budgetYears` on the root
+layout's load. A year written up here links to its book, a year that is still
+just a PDF links to the city's file, and each year's audit report hangs off the
+end of its row, which makes the menu the only place on the site those are
+linked at all. Because the menu reaches any book from anywhere, no budget page
+carries a way back up: a book and a section each used to open with a "back"
+line, and both are gone.
 
 ## Where the list comes from
 
@@ -332,17 +344,18 @@ scripts/lib/budget.mjs                     the scrape: fetch, parse, diff
 scripts/lib/budget.spec.mjs                unit tests for the parser
 scripts/update-budget.mjs                  writes budget.json
 scripts/update-metadata.mjs                runs every scraper in sequence
-src/routes/budget/+page@.svelte            /budget, the overview of every year
-src/routes/budget/+page.ts                 build-time load for it
+src/routes/+layout.ts                      loads every year, for the bar's menu
+src/lib/SiteHeader.svelte                  that menu, and the rest of the bar
 src/routes/budget/+layout.ts               looks a book up by its id
-src/routes/budget/+layout.svelte           the header around a book and its sections
+src/routes/budget/+layout.svelte           the column a book and its sections sit in
 src/routes/budget/<year>/+page.ts          the book's contents, transcribed
 src/routes/budget/<year>/+page.svelte      renders it as links
 src/routes/budget/<year>/<slug>/           one section, by hand
 src/routes/budget/page.svelte.e2e.ts       end-to-end tests
 ```
 
-`/budget` uses `+page@.svelte` to break out of `budget/+layout.svelte`: it is
-the overview, not a book, so it has no book to put in a header — and breaking
-out is what lets everything under the layout treat the book as present rather
-than checking for null on every page.
+Nothing routes to `/budget` itself, which is what lets `budget/+layout.ts`
+error on an unknown id and everything under it treat the book as present rather
+than checking for null on every page. A visitor with a bookmark from when the
+overview existed gets the site's 404, which is the SPA fallback the adapter
+writes (`fallback: "404.html"`) and so carries the bar once it has hydrated.

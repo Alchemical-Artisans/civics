@@ -31,33 +31,6 @@ const unlinked = [
 ]
 
 test.describe("budget pages", () => {
-  test("lists every fiscal year the city publishes", async ({ page }) => {
-    await page.goto("/budget")
-    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Budget and Audit Reports")
-    // 2006 through 2027, one row each, plus the header row.
-    expect(await page.locator("tbody tr").count()).toBe(22)
-    await expect(page.getByRole("rowheader", { name: "FY2027" })).toBeVisible()
-    await expect(page.getByRole("rowheader", { name: "FY2006" })).toBeVisible()
-  })
-
-  test("a year with no page here links to the city's own file", async ({ page }) => {
-    await page.goto("/budget")
-    // Asserted on attributes rather than by following them, so the suite never
-    // reaches out to the city's CDN.
-    const file = page.locator('tbody a[href^="https://"]').first()
-    await expect(file).toHaveAttribute("target", "_blank")
-    expect(await file.getAttribute("rel")).toContain("noopener")
-  })
-
-  test("a written book opens on its own table of contents", async ({ page }) => {
-    await page.goto("/budget")
-    await page.locator(`a[href$="/budget/${books[0]}"]`).first().click()
-    await expect(page).toHaveURL(new RegExp(`/budget/${books[0]}$`))
-    await expect(page.getByRole("heading", { name: "Table of Contents" })).toBeVisible()
-    // The book's contents, every line of it, whether or not it has a page here.
-    expect(await page.getByRole("listitem").count()).toBeGreaterThan(50)
-  })
-
   test("the book opens on the budget at a glance, before its contents", async ({ page }) => {
     await page.goto(`/budget/${books[0]}`)
 
@@ -149,26 +122,38 @@ test.describe("budget pages", () => {
 
   test("a contents line with no page here opens the city's PDF at that page", async ({ page }) => {
     await page.goto(`/budget/${books[0]}`)
-    const outward = page.locator('li a[href*="#page="]').first()
+    // Scoped to the page: the bar's menu of years is a list of links too.
+    const outward = page.locator('article li a[href*="#page="]').first()
     await expect(outward).toHaveAttribute("target", "_blank")
     expect(await outward.getAttribute("href")).toMatch(/#page=\d+$/)
   })
 
-  test("a section names itself and returns to the book", async ({ page }) => {
+  test("a section names itself, and the bar leads back to its book", async ({ page }) => {
     await page.goto(`/budget/${books[0]}/${sections[0]}`)
     await expect(page.getByRole("heading", { level: 1 })).not.toBeEmpty()
     await expect(page.getByRole("article")).not.toBeEmpty()
     // The header link points into the book at this section's own page.
     await expect(page.locator('header a[href*="#page="]')).toHaveCount(1)
 
-    // Scoped past the site header, which is a nav of its own on every page.
-    await page.getByRole("link", { name: `${books[0].slice(2)} Budget` }).click()
+    // The way back up, now that no page carries one of its own: the bar's menu
+    // of years, which reaches any book from any page.
+    const header = page.getByRole("banner")
+    await header.locator("summary").click()
+    await header.getByRole("link", { name: `FY${books[0].slice(2)}` }).click()
     await expect(page).toHaveURL(new RegExp(`/budget/${books[0]}$`))
+  })
+
+  test("puts nothing above the page but the bar", async ({ page }) => {
+    // A book and a section each used to open with a "back" line. The only
+    // navigation left on a budget page is the header's own.
+    await page.goto(`/budget/${books[0]}/${sections[0]}`)
+    await expect(page.getByRole("navigation")).toHaveCount(1)
+    await expect(page.getByRole("banner").getByRole("navigation")).toHaveCount(1)
   })
 
   test("every section the contents links to actually renders", async ({ page }) => {
     await page.goto(`/budget/${books[0]}`)
-    const local = await page.locator('li a:not([href*="#page="])').all()
+    const local = await page.locator('article li a:not([href*="#page="])').all()
     const hrefs = await Promise.all(local.map((link) => link.getAttribute("href")))
     expect(hrefs.length).toBe(sections.filter((name) => !unlinked.includes(name)).length)
     for (const href of hrefs) {
@@ -176,12 +161,6 @@ test.describe("budget pages", () => {
       expect(response?.status()).toBe(200)
       await expect(page.getByRole("article")).not.toBeEmpty()
     }
-  })
-
-  test("returns to the overview from a book", async ({ page }) => {
-    await page.goto(`/budget/${books[0]}`)
-    await page.getByRole("link", { name: "Back to budget and audit reports" }).click()
-    await expect(page).toHaveURL(/\/budget$/)
   })
 
   test("has no page for a fiscal year the city does not publish", async ({ page }) => {

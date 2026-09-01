@@ -29,9 +29,14 @@
 
   // Resolved on the root layout, which the header needs it for too -- the
   // front door and the header's budget link are the same destination.
+  //
+  // With no book written up there is no budget page to open at all -- the
+  // years the city publishes are links to its own PDFs, in the menu at the top
+  // -- so the forward falls back to the other half of the site rather than
+  // sending a visitor off to the city's CDN.
   const book = $derived(data.budgetBook)
-  const destination = $derived(book ? Router.budgetBook(book.id) : Router.budget())
-  const label = $derived(book ? `the ${bookName(book.year)}` : "the city's budget reports")
+  const destination = $derived(book ? Router.budgetBook(book.id) : Router.calendar())
+  const label = $derived(book ? `the ${bookName(book.year)}` : "the meeting calendar")
 </script>
 
 <svelte:head>

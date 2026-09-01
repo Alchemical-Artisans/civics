@@ -67,24 +67,13 @@ export class Router {
   }
 
   /**
-   * Every budget and audit report the city publishes, by fiscal year.
-   *
-   * A sibling of the calendar rather than a page under it: the budget books are
-   * not meeting documents, they come off a different page of the city's site,
-   * and nothing in `meetings.json` knows about them.
-   */
-  static budget(): string {
-    return path("/budget")
-  }
-
-  /**
    * One fiscal year's budget book, written up here. `id` is a `FiscalYear`'s
    * id from `$lib/budget` -- `fy2027`.
    *
    * Only years somebody has written up have this page; a year that is still
-   * just a PDF is linked straight to the city's copy from the overview, so
-   * there is no generated route behind this the way `[meeting]` sits behind a
-   * meeting.
+   * just a PDF is linked straight to the city's copy from the header's menu of
+   * years, so there is no generated route behind this the way `[meeting]` sits
+   * behind a meeting. `/budget` itself is not a page -- the menu is the list.
    */
   static budgetBook(id: string): string {
     return path(`/budget/${id}`)

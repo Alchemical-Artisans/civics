@@ -36,8 +36,7 @@ describe("Router", () => {
     )
   })
 
-  it("builds the budget overview, a book, and a section of one", () => {
-    expect(Router.budget()).toBe("/budget")
+  it("builds a budget book and a section of one", () => {
     expect(Router.budgetBook("fy2027")).toBe("/budget/fy2027")
     expect(Router.budgetSection("fy2027", "fiscal-reserves")).toBe("/budget/fy2027/fiscal-reserves")
   })

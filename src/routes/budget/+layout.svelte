@@ -1,11 +1,8 @@
 <script lang="ts">
   import { page } from "$app/state"
-  import { Router } from "$lib/router"
-  import { bookName, headingOf } from "$lib/heading"
+  import { headingOf } from "$lib/heading"
 
   let { data, children } = $props()
-
-  const book = $derived(data.book)
 
   // A section is prose and keeps a reading column; the book's own front page is
   // not. That page is two pies and sixty-odd contents lines, all of which run
@@ -25,27 +22,11 @@
 </svelte:head>
 
 <div class="mx-auto px-4 py-8 {column}">
-  <!-- Up only. The calendar used to hang off the right of this row, because
-       the book page is where `/` lands everyone and the other half of the site
-       had to be reachable from it; the header does that now, on every page. -->
-  <nav class="mb-6">
-    {#if data.isSection}
-      <a
-        class="text-sm text-slate-600 underline hover:text-slate-900"
-        href={Router.budgetBook(book.id)}
-      >
-        &larr; {bookName(book.year)}
-      </a>
-    {:else}
-      <a class="text-sm text-slate-600 underline hover:text-slate-900" href={Router.budget()}>
-        &larr; Back to budget and audit reports
-      </a>
-    {/if}
-  </nav>
-
-  <!-- No header here at all. The bar at the top of the window names the page,
-       says what the book covers and links the city's own file, so anything here
-       would say it a second time in the space the page wants. -->
+  <!-- Nothing above the page but the page. The bar at the top of the window
+       names it, says what the book covers and links the city's own file, and
+       its menu of years is the way to any other book -- shorter than the "back"
+       line a book and a section each used to carry here, which is what that
+       line was for. -->
 
   <!-- The transcription is the child route: an ordinary Svelte component,
 	     checked and formatted like the rest of the source. Same arrangement as a

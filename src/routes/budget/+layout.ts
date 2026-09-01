@@ -10,9 +10,9 @@ import { fiscalYears } from "$lib/budget"
  * *last* segment: a section wants the book this lookup already did, not its
  * own name.
  *
- * `/budget` itself is the overview of every fiscal year and is not a book, so
- * it breaks out of this layout with `+page@.svelte` and never reaches here --
- * which is what lets everything below treat `book` as present.
+ * `/budget` itself is not a page: the list of fiscal years is the menu in the
+ * bar at the top of every page, so nothing routes here without a book id and
+ * everything below can treat `book` as present.
  */
 export const load: LayoutLoad = ({ url }) => {
   const segments = url.pathname.replace(/\/+$/, "").split("/")

@@ -218,12 +218,13 @@ it, and a page whose whole content is links onward is that same stop under
 another name.
 
 The destination is resolved, not written out.
-[`src/routes/+page.ts`](../src/routes/+page.ts) takes the first fiscal year
+[`src/routes/+layout.ts`](../src/routes/+layout.ts) takes the first fiscal year
 `fiscalYears()` reports as written, and that list comes back newest first with
 `written` derived from the route directory existing — so creating
 `src/routes/budget/fy2028/` is the whole act of moving the front door. If no
-book is written up at all the forward falls back to `/budget`, which still
-lists every year the city publishes.
+book is written up at all there is no budget page to open — the years the city
+publishes are links to its own PDFs, in the menu at the top — so the forward
+falls back to the calendar rather than sending a visitor off-site.
 
 Two things about the mechanism are deliberate, and both have outlived one change
 of destination already.
@@ -252,22 +253,29 @@ will see. The calendar has no other entry point from `/`, so it has to be there.
 
 [`src/lib/SiteHeader.svelte`](../src/lib/SiteHeader.svelte) sits above every
 page: the mark, which goes to `/`, the page's own name where the page does not
-head itself (see [budget-pages.md](budget-pages.md)), and a link to each half. Its budget link goes
-to the newest _book_, the same destination `/` forwards to, rather than to
-`/budget` — sending it to the list of fiscal years would put back the hop that
-landing on the budget was meant to remove. The list is still one level up from
-the book for anyone who wants an older year.
+head itself (see [budget-pages.md](budget-pages.md)), and each half of the site
+at the right. The calendar is a link. The budget is a `<details>` menu of every
+fiscal year the city publishes, because the list used to be a page — `/budget` —
+and reaching a book through it cost a hop that landing on the budget was meant
+to remove. The menu is also why no budget page carries a way back up any more.
+
+It opens, closes and takes the keyboard as a `<details>`, with no script, which
+matters on a site whose pages are readable before anything hydrates; the script
+in the component is only the three habits a browser does not give one for free
+— closing on a click past it, on Escape, and once the reader has gone
+somewhere, since SvelteKit navigates without replacing the bar.
 
 The pages used to carry these links themselves — a line above the calendar's
 heading pointing at the budget, another under the budget's table pointing back,
-a third on the right of every budget book and section nav. That works until a
-reader is three levels down a book. The header replaced all of them.
+a third on the right of every budget book and section nav, and a "back" line at
+the top of each book and section. That works until a reader is three levels down
+a book. The header replaced all of them.
 
 **The current section is matched on `page.route.id`, not on the URL.** The
-obvious spelling — `page.url.pathname.startsWith(Router.budget())` — is wrong
+obvious spelling — `page.url.pathname.startsWith(Router.budgetBook(id))` — is wrong
 in a way that hides itself. With `paths.relative` on, `base` is a relative
-prefix that differs per page during prerendering, so `Router.budget()` is
-`./budget` on one page and `../budget` on another while the pathname stays
+prefix that differs per page during prerendering, so a Router-built href is
+`./budget/fy2027` on one page and `../budget/fy2027` on another while the pathname stays
 absolute: the comparison never matches and no prerendered page gets
 `aria-current`. It then starts matching once the client takes over and `base`
 goes back to `""`. A browser test notices nothing, because it waits for
