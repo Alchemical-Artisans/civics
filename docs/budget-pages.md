@@ -136,14 +136,20 @@ thing on these pages that is not the book's: each is built from its own entry's
 nouns, and the sentence is in the box as well, hidden, so a screen reader gets
 the book's wording whether or not anything can be hovered.
 
+**One box is highlighted: the stage the process has reached.** That is the last
+entry that has begun — the entry itself while it is happening, and the one
+behind it in the weeks between two entries, which is the stage the budget is at
+until the next one begins. It is filled solid with a halo; boxes behind it are
+filled pale, boxes ahead of it are white and grey. FY2027's calendar ended at
+adoption, so its highlight now rests on the last box for good. All three states
+are spelled out for a screen reader, which cannot see which box is lit.
+
 **Boxes are evenly spaced; the today mark is not.** Two entries are a day apart
 and the last is eight weeks after the one before it, so spacing by date would
 pile the middle up and leave the end empty. The mark is still placed by date,
 interpolated between the entries either side of it, so where the budget has got
-to is honest even where the spacing is not. A box behind the mark is filled
-pale, the one under it is filled solid, and one ahead of it is white and grey —
-with the same three states spelled out for a screen reader, which cannot see
-which side of the mark a box is on.
+to is honest even where the spacing is not — in a gap between two entries it
+sits between them while the highlight stays on the one behind.
 
 **Today comes from the browser, over a build-time default.** `+page.ts` puts the
 build date in the page so the mark is in the HTML that is served, and the

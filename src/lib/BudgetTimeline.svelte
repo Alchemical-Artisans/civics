@@ -89,9 +89,24 @@
     return 0
   })
 
-  /** Where an entry stands against today: behind the mark, under it, ahead. */
-  const standing = (step: Step) =>
-    today > ends(step) ? "done" : today >= step.on ? "current" : "ahead"
+  /**
+   * The entry the process has reached: the last one that has begun. While an
+   * entry is happening that is the entry itself, and in the weeks between two
+   * of them it is the one behind -- which is the stage the budget is at, and
+   * stays at, until the next one begins. Before the first entry nothing has
+   * been reached, so nothing is highlighted.
+   */
+  const reached = $derived.by(() => {
+    let last = -1
+    for (let i = 0; i < steps.length; i++) if (today >= steps[i].on) last = i
+    return last
+  })
+
+  /** Where an entry stands against that: behind it, it, or ahead of it. */
+  const standing = (i: number) => (i === reached ? "current" : i < reached ? "done" : "ahead")
+
+  /** True while an entry's own day, or its own run of days, is today. */
+  const underWay = (step: Step) => today >= step.on && today <= ends(step)
 
   const longDate = (date: string) => {
     const [y, m, d] = date.split("-").map(Number)
@@ -137,7 +152,7 @@
     <div class="relative pt-8 pb-20">
       <ol class="m-0 grid list-none grid-cols-12 gap-1.5 p-0">
         {#each steps as step, i (step.date)}
-          {@const status = standing(step)}
+          {@const status = standing(i)}
           <!-- The box is the list item itself: a `<div>` inside it taking the
                pointer would be a static element with a handler, and the entry is
                one thing either way. -->
@@ -147,7 +162,7 @@
             'ahead'
               ? 'bg-white ring-1 ring-slate-200'
               : status === 'current'
-                ? 'bg-sky-700 ring-2 ring-sky-700'
+                ? 'bg-sky-700 ring-2 ring-sky-700 ring-offset-2'
                 : 'bg-sky-50 ring-1 ring-sky-200'} {active === i ? 'shadow-md' : ''}"
             tabindex="0"
             onpointerenter={() => (active = i)}
@@ -182,7 +197,13 @@
                  side of the mark it is on. -->
             <span class="sr-only">
               {step.step}
-              {status === "done" ? "Done." : status === "current" ? "Happening now." : "Ahead."}
+              {status === "ahead"
+                ? "Ahead."
+                : status === "done"
+                  ? "Done."
+                  : underWay(step)
+                    ? "Happening now."
+                    : "Done. This is where the budget is."}
             </span>
           </li>
         {/each}

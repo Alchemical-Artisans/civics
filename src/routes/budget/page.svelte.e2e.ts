@@ -110,8 +110,11 @@ test.describe("budget pages", () => {
     await expect(entries.last()).toContainText("6/16/26")
     await expect(entries.last()).toContainText("Budget adopted")
 
-    // This book's calendar ended when the council adopted the budget, so the
-    // mark sits at the end of the row and stays there.
+    // The stage the process has reached is the highlighted one. This book's
+    // calendar ended at adoption, so that is the last box, and stays so.
+    await expect(entries.last()).toContainText("This is where the budget is.")
+
+    // Which is also where the mark sits: at the end of the row.
     const today = page.locator(".budget-today")
     await expect(today).toContainText("Today,")
     await expect(today).toHaveAttribute("style", "left: 100%")

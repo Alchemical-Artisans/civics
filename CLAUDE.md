@@ -150,8 +150,10 @@ Notable pieces:
   and its entries are `budget-calendar.ts` beside the book's `+page.ts`. A box
   holds a date and a summary — the only text on these pages that is not the
   book's — and the book's own sentence appears under the row on hover or focus,
-  and sits hidden in the box for a screen reader. Boxes are evenly spaced because
-  two entries are a day apart; only the mark is placed by date. Today comes from
+  and sits hidden in the box for a screen reader. The stage the process has
+  reached, meaning the last entry that has begun, is the highlighted box. Boxes
+  are evenly spaced because two entries are a day apart; only the mark is placed
+  by date. Today comes from
   `+page.ts` at build time so the mark is in the served HTML, and the component
   replaces it on mount with the reader's own date.
 - **`src/lib/router.ts`** builds _every_ internal URL. Never write a path inline
