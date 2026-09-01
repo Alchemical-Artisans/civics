@@ -74,14 +74,18 @@ answers is what share of one pot each category takes, and a pie says "half of it
 is schools" without the reader doing arithmetic. Hover a wedge, or tab to it,
 and it names itself and prints its dollars and its share. Printing all fourteen
 figures beside the drawing instead — which the page did briefly — spent the
-width the book's own table of contents wants, and restated a table that is
-transcribed in full one click away at 2027 Budget in Brief.
+width the book's own table of contents wants, and restated a table the contents
+already links: the figures are page 78, transcribed at 2027 Budget in Brief.
+
+**The heading carries the total, and nothing says where it came from.** It is
+the same figure over both charts, so a line under each said it twice, and the
+provenance is a contents line away rather than restated under every heading.
 
 **This is the one page on the site with a script behind it,** because hover is
 the whole feature. Nothing is lost without it: every wedge carries its label,
 its dollars and its share as its accessible name, so a screen reader gets all
-fourteen by walking them, and the transcription behind the link has every figure
-as text. Every wedge is focusable, which is also the only way to reach the ones
+fourteen by walking them, and the transcription the contents links has every
+figure as text. Every wedge is focusable, which is also the only way to reach the ones
 drawn as a hairline — Overlay is 1/589th of Education, about a third of a
 degree, and no mouse will land on it.
 

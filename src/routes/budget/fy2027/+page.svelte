@@ -16,8 +16,6 @@
     maximumFractionDigits: 0,
   })
 
-  const inBrief = $derived(Router.budgetSection(book.id, overview.section.slug))
-
   // A section written up here opens on this site; one that is not opens the
   // city's PDF at the page the book's own contents give for it. Either way the
   // reader lands on the section, which is the whole point of the page.
@@ -69,18 +67,24 @@
   class="lg:grid lg:grid-cols-[16rem_minmax(0,1fr)] lg:gap-x-12 2xl:grid-cols-[20rem_minmax(0,1fr)]"
 >
   <div>
-    <h2>Appropriations</h2>
-
-    <p class="text-sm">
-      {money.format(overview.total)}, from the table on page {overview.section.page}, transcribed at
-      <a href={inBrief}>2027 Budget in Brief</a>.
-    </p>
+    <!--
+      The total belongs on the heading line: it is the same figure for both
+      charts, and a line of its own under each said so twice. Where it came from
+      is not written out either -- the contents beside these charts links
+      2027 Budget in Brief, which is page 78 transcribed, and that is one line
+      away rather than restated under every heading.
+    -->
+    <h2>
+      Appropriations
+      <span class="font-normal text-slate-500 tabular-nums">{money.format(overview.total)}</span>
+    </h2>
 
     <BudgetPie rows={overview.appropriations} />
 
-    <h2>Revenue</h2>
-
-    <p class="text-sm">{money.format(overview.total)}, from the same page.</p>
+    <h2>
+      Revenue
+      <span class="font-normal text-slate-500 tabular-nums">{money.format(overview.total)}</span>
+    </h2>
 
     <BudgetPie rows={overview.revenue} />
   </div>

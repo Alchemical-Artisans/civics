@@ -49,9 +49,12 @@ test.describe("budget pages", () => {
   test("the book opens on the budget at a glance, before its contents", async ({ page }) => {
     await page.goto(`/budget/${books[0]}`)
 
-    // Both halves of the same total, each ranked largest first.
-    await expect(page.getByRole("heading", { name: "Appropriations" })).toBeVisible()
-    await expect(page.getByRole("heading", { name: "Revenue", exact: true })).toBeVisible()
+    // Both halves of the same total, each ranked largest first, and each
+    // heading carrying that total rather than a line of its own under it.
+    await expect(
+      page.getByRole("heading", { name: /^Appropriations \$285,272,159$/ }),
+    ).toBeVisible()
+    await expect(page.getByRole("heading", { name: /^Revenue \$285,272,159$/ })).toBeVisible()
 
     const charts = page.locator(".budget-chart")
     await expect(charts).toHaveCount(2)

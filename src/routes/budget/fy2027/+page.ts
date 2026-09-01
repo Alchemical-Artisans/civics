@@ -49,8 +49,6 @@ export const load: PageLoad = () => ({
     appropriations,
     revenue,
     total,
-    /** Where these came from, for the link to the transcription. */
-    section: { slug: "2027-budget-in-brief", page: 78 },
   },
 
   contents: contents("fy2027", [
