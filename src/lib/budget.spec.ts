@@ -40,7 +40,9 @@ describe("contents", () => {
   // what decides whether the contents page links here or into the city's PDF.
   it("marks a section written when its route directory exists", () => {
     const [written, absent] = contents("fy2027", [
-      ["Fiscal Reserves", 17],
+      // A section's slug is its title, and "Reserves" is a page here; the
+      // book's own "Fiscal Reserves" is a heading on it rather than a route.
+      ["Reserves", 17],
       ["Glossary", 231],
     ])
     expect(written.written).toBe(true)
@@ -48,7 +50,7 @@ describe("contents", () => {
   })
 
   it("does not credit one book's sections to another", () => {
-    expect(contents("fy2026", [["Fiscal Reserves", 17]])[0].written).toBe(false)
+    expect(contents("fy2026", [["Reserves", 17]])[0].written).toBe(false)
   })
 })
 

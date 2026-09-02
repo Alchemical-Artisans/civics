@@ -1,6 +1,8 @@
 <script lang="ts">
   // A script here for the two parts of the book this page covers that nobody
   // has transcribed; see this page's `+page.ts` and docs/budget-pages.md.
+  import BookElsewhere from "$lib/BookElsewhere.svelte"
+
   let { data } = $props()
 </script>
 
@@ -178,18 +180,4 @@
   <li>Required NSS - 4%</li>
 </ul>
 
-<!-- Ours, not the book's: it heads the two sections of the book this page
-     covers and nobody has transcribed. They open the city's own file at the
-     page the book gives them, which is what a contents line does for any
-     section with no page here. -->
-<h2>Elsewhere in the book</h2>
-
-<ul>
-  {#each data.elsewhere as part (part.title)}
-    <li>
-      <a href={part.href} target="_blank" rel="external noopener noreferrer">
-        {part.title}<span class="sr-only">, in the city's PDF, opens in a new tab</span>
-      </a>
-    </li>
-  {/each}
-</ul>
+<BookElsewhere items={data.elsewhere} book={data.book} />

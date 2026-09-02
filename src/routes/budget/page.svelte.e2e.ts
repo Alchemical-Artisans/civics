@@ -35,7 +35,7 @@ const unlinked = [
  * each is a bar, and the bar's own name is the link. A contents line as well
  * would offer the same page twice on one screen.
  */
-const charted = ["fiscal-reserves", "outstanding-debt", "revenue", "appropriations"]
+const charted = ["reserves", "outstanding-debt", "revenue", "appropriations"]
 
 test.describe("budget pages", () => {
   test("the book opens on the budget at a glance, before its contents", async ({ page }) => {
@@ -88,7 +88,7 @@ test.describe("budget pages", () => {
     // only way: neither has a line in the contents below.
     await expect(bars.first().getByRole("link", { name: "Reserves" })).toHaveAttribute(
       "href",
-      /fiscal-reserves$/,
+      /\/reserves$/,
     )
     await expect(bars.last().getByRole("link", { name: "Debt" })).toHaveAttribute(
       "href",
@@ -151,8 +151,8 @@ test.describe("budget pages", () => {
     // on the left: a line of the appropriation, the book's front matter, and
     // its back matter.
     const year = lists.first().locator("li")
-    await expect(year.filter({ hasText: "Liability, Overlay & Reserves" })).toHaveCount(1)
     await expect(year.filter({ hasText: "General Fund Budgets" })).toHaveCount(1)
+    await expect(year.filter({ hasText: "2027 Estimated Tax Bill Impact" })).toHaveCount(1)
     await expect(year.filter({ hasText: "Glossary" })).toHaveCount(1)
 
     // The three lines the Education page covers are gone from both lists.
@@ -246,6 +246,39 @@ test.describe("budget pages", () => {
     }
   })
 
+  test("links the reserves and the spending that projects them", async ({ page }) => {
+    // The projections for the budget reserve and the excess levy are two rows
+    // of the ten-year appropriation forecast, which cannot be lifted out of
+    // that table -- so the two pages point at each other instead.
+    await page.goto(`/budget/${books[0]}/reserves`)
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Reserves")
+    await expect(page.getByRole("heading", { name: "Fiscal Reserves" })).toBeVisible()
+    await expect(
+      page.getByRole("link", { name: /^10-Year Appropriation Forecast/ }),
+    ).toHaveAttribute("href", /\/appropriations$/)
+
+    // The two reserve sections nobody has transcribed, at their own pages.
+    for (const [title, at] of [
+      ["Liability, Overlay & Reserves", 213],
+      ["Financial Reserve Policies", 227],
+    ] as const) {
+      const link = page.getByRole("link", { name: new RegExp(`^${title.replace("&", "&")}`) })
+      expect(await link.getAttribute("href")).toMatch(new RegExp(`#page=${at}$`))
+    }
+
+    await page.goto(`/budget/${books[0]}/appropriations`)
+    await expect(page.getByRole("link", { name: /^Fiscal Reserves/ })).toHaveAttribute(
+      "href",
+      /\/reserves$/,
+    )
+
+    // Neither reserve section keeps a contents line.
+    await page.goto(`/budget/${books[0]}`)
+    for (const gone of ["Liability, Overlay & Reserves", "Financial Reserve Policies"]) {
+      await expect(page.locator("article > div ol li").filter({ hasText: gone })).toHaveCount(0)
+    }
+  })
+
   test("puts the three school sections on one page", async ({ page }) => {
     await page.goto(`/budget/${books[0]}/education`)
 
@@ -317,7 +350,7 @@ test.describe("budget pages", () => {
   test("charts what the sections themselves print", async ({ page }) => {
     // The front page reads these out of the sections' own transcriptions, so
     // the two cannot disagree. This is that claim, end to end.
-    await page.goto(`/budget/${books[0]}/fiscal-reserves`)
+    await page.goto(`/budget/${books[0]}/reserves`)
     await expect(page.getByRole("article")).toContainText("$13,985,452 (7.85%)")
 
     await page.goto(`/budget/${books[0]}/outstanding-debt`)

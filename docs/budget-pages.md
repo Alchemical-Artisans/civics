@@ -233,13 +233,33 @@ appropriation at all: capital over $250,000 is borrowed, the page-78 table's
 postponed — capital reaches the operating budget years later as debt service.
 Three lines of the appropriation itself are on that page too — Debt Service
 (200), State Assessments (209) and Employee Benefits (211) — as links into the
-city's file, the way Regional Schools sits on `education`, because none is
-transcribed. They are a different kind of thing from the four sections above
-them: those are accounts _of_ the year's spending, and these are parts _of_ it,
-each a line in the page-78 table the pie is drawn from. "Liability, Overlay &
-Reserves" (213) is the fourth of that kind and still has a contents line. The pies themselves are page 78, which is
-2027 Budget in Brief and keeps its contents line — it is the table both charts
-are drawn from rather than either side's own account.
+city's file, because none is transcribed. They are a different kind of thing
+from the four sections above them: those are accounts _of_ the year's spending,
+and these are parts _of_ it, each a line in the page-78 table the pie is drawn
+from. The pies themselves are page 78, which is 2027 Budget in Brief and keeps
+its contents line — it is the table both charts are drawn from rather than
+either side's own account.
+
+**`reserves` is the third bucket**, opened from the reserves bar, and holds
+"Fiscal Reserves" (17) with "Liability, Overlay & Reserves" (213) and
+"Financial Reserve Policies" (227) listed after it.
+
+**The reserve projections stay where the book put them.** They are two rows of
+the ten-year appropriation forecast — "19. Budget Reserve" and "Estimated Excess
+Levy" — and the row that gives them meaning is a third, Budget Surplus /
+(Deficit): the budget balances exactly in 2027 and runs deficits from 2028 that
+consume the excess levy, $1,781,111 against $1,849,847 of headroom, which is the
+sentence `revenue` prints in prose ("this reserve may be nearly exhausted by
+2028"). Rows cannot be lifted out of a table without breaking it, and retyping
+them would be a second copy, so the two pages point at each other instead.
+
+**"Elsewhere in the book"** is the device for that, shared by `education`,
+`appropriations` and `reserves` as
+[`BookElsewhere`](../src/lib/BookElsewhere.svelte). Its items follow the rule
+the contents page follows — a section written up here opens on this site, one
+that is not opens the city's file at its own page — so one list carries both.
+The heading is ours, and so is the choice of what to list: this is the site's
+only "see also", and the book has none, which is reason to keep it short.
 
 A chart title that is a link says so with a 2px underline rather than the
 hairline the contents lines carry, and the pie's heading needs `font-semibold`
@@ -422,7 +442,7 @@ below.
    (152); only the first has been read off the page, and the other two are links
    into the city's file at the page the book gives them, under a heading of ours
    — "Elsewhere in the book", the one line on any of these pages that is not the
-   book's. That is the same thing a contents line does for a section nobody has
+   book's (see [`BookElsewhere`](../src/lib/BookElsewhere.svelte)). That is the same thing a contents line does for a section nobody has
    written up, so covering them loses nothing; when either is transcribed it
    becomes an `<h2>` and drops off the list. Its `+page.ts` builds those links
    from the book URL on the layout above it, which is why that one takes
@@ -510,6 +530,7 @@ src/lib/budget.ts                          reads it; slugs and contents helpers
 src/lib/budget.spec.ts                     unit tests for them
 src/lib/BudgetPie.svelte                   the pie charts on a book page
 src/lib/BudgetStack.svelte                 reserves and debt, two bars on one scale
+src/lib/BookElsewhere.svelte               a category page's "see also" list
 src/lib/chart-colours.ts                   the one colour order every chart uses
 src/lib/BudgetTimeline.svelte              the budget calendar, drawn as boxes
 src/routes/budget/<year>/budget-calendar.ts   that calendar, transcribed

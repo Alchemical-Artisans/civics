@@ -132,7 +132,7 @@
         rows={[
           {
             label: "Reserves",
-            href: Router.budgetSection(book.id, "fiscal-reserves"),
+            href: Router.budgetSection(book.id, "reserves"),
             parts: reserves,
           },
           {

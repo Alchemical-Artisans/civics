@@ -4,8 +4,15 @@
   // `BudgetTable` prints the cells exactly as `tables.ts` holds them, which is
   // exactly as the book sets them.
   import BudgetTable from "$lib/BudgetTable.svelte"
+  import BookElsewhere from "$lib/BookElsewhere.svelte"
   import { FUND_BALANCE, FREE_CASH, STABILIZATION } from "./tables"
+
+  let { data } = $props()
 </script>
+
+<!-- Page 17. The page is "Reserves", which is the bucket; this is the section
+     of the book in it. -->
+<h2>Fiscal Reserves</h2>
 
 <p>
   <em>
@@ -112,3 +119,5 @@
 </p>
 
 <BudgetTable table={STABILIZATION} />
+
+<BookElsewhere items={data.elsewhere} book={data.book} />

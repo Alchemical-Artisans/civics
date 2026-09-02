@@ -2,7 +2,7 @@ import type { PageLoad } from "./$types"
 import { contents, type BookSection } from "$lib/budget"
 import { amount, cell, column, type BudgetTableData } from "$lib/budget-table"
 import { APPROPRIATIONS, REVENUE } from "./2027-budget-in-brief/tables"
-import { FUND_BALANCE, FREE_CASH, STABILIZATION } from "./fiscal-reserves/tables"
+import { FUND_BALANCE, FREE_CASH, STABILIZATION } from "./reserves/tables"
 import { LONG_TERM_DEBT } from "./outstanding-debt/tables"
 import { CALENDAR } from "./budget-calendar"
 import type { Part } from "$lib/BudgetStack.svelte"
@@ -167,14 +167,17 @@ export const load: PageLoad = () => ({
    * line that sends the reader into the city's PDF instead.
    *
    * "Fiscal Reserves" (17), "Outstanding Debt" (21), "2027 Revenue Estimates"
-   * Eleven more are reached from a chart rather than from here: the two bars
+   * Thirteen more are reached from a chart rather than from here: the two bars
    * carry their own names as links, the revenue pie's heading carries the three
    * revenue sections (48, 64, 67), and the appropriations pie's heading carries
    * the four spending ones (28, 69, 72, 73) together with three lines of the
    * appropriation itself -- Debt Service (200), State Assessments (209) and
    * Employee Benefits (211) -- which have no page here and are links into the
-   * city's file from that page. A line in this list as well would offer the
-   * same thing twice on one screen.
+   * city's file from that page. The reserves bar's link carries "Fiscal
+   * Reserves" (17) the same way, and the reserves page in turn lists the two
+   * reserve sections nobody has transcribed -- "Liability, Overlay & Reserves"
+   * (213) and "Financial Reserve Policies" (227). A line in this list as well
+   * would offer the same thing twice on one screen.
    *
    * Everything else the contents lists is listed, whether or not it has a page
    * here.
@@ -226,12 +229,10 @@ export const load: PageLoad = () => ({
       ["Recreation Department", 190],
       ["Stadium", 193],
       ["Library", 195],
-      ["Liability, Overlay & Reserves", 213],
       ["Organizational Chart", 216],
       ["Position Summary", 217],
       ["Fund Accounting", 218],
       ["Budget Policies", 221],
-      ["Financial Reserve Policies", 227],
       ["Glossary", 231],
     ]),
   ),

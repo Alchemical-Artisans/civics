@@ -170,7 +170,11 @@ Notable pieces:
 - **`src/lib/BudgetPie.svelte`** is the pie chart a budget book opens with --
   two of them, appropriations and revenue, each headed with a link to the side of
   the book it is about -- `appropriations` and `revenue`, which gather that
-  side's sections and so have no contents lines of their own. A wedge names itself and prints its dollars and share on
+  side's sections and so have no contents lines of their own. `reserves` is the
+  third bucket, opened from the reserves bar. A category page ends with
+  **`src/lib/BookElsewhere.svelte`**, the site's only "see also": the parts of
+  the book it belongs with and does not carry, each linking to our page where
+  one exists and to the city's PDF where it does not. A wedge names itself and prints its dollars and share on
   hover or focus, which
   makes it the one page here carrying a script. Every wedge is focusable, both
   so a keyboard reaches the chart at all and because the smallest wedges are a

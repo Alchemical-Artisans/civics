@@ -9,7 +9,11 @@ import { Router } from "$lib/router"
  * Employee Benefits (211) -- which nobody has transcribed and which are
  * therefore links into the city's file at the page the book gives them.
  *
- * Those three are a different kind of thing from the four above: the four are
+ * The reserves are listed with them, pointing the other way: the forecast on
+ * this page carries the projections for the budget reserve and the excess levy,
+ * and the balances those are projections of are on that one.
+ *
+ * The rest are a different kind of thing from the four sections above: those are
  * accounts *of* the year's spending, and these are parts *of* it, each a line
  * in the page-78 table the pie is drawn from. They are here because that is
  * still the spending side, and because the contents is not the place to keep a
@@ -38,6 +42,7 @@ export const load: PageLoad = async ({ parent }) => {
   return {
     section: { title: "Appropriations", page: 28 },
     elsewhere: [
+      { title: "Fiscal Reserves", section: "reserves" },
       { title: "Debt Service", href: Router.pdfPage(book.budget!, 200) },
       { title: "State Assessments", href: Router.pdfPage(book.budget!, 209) },
       { title: "Employee Benefits", href: Router.pdfPage(book.budget!, 211) },
