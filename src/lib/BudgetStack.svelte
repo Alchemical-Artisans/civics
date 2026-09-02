@@ -162,8 +162,12 @@
 
       <!-- `gap` rather than borders between the segments: two fills meeting
            edge to edge read as one shape with a seam, and a gap the colour of
-           the page is what separates them everywhere else on this site. -->
-      <div class="mt-1 flex h-4 gap-0.5 overflow-hidden rounded-full bg-slate-100">
+           the page is what separates them everywhere else on this site.
+
+           Square ends: a rounded bar reads as a pill, a thing with a shape of
+           its own, when what it is is a length being measured against another
+           length. -->
+      <div class="mt-1 flex h-4 gap-0.5 overflow-hidden bg-slate-100">
         {#each bar.parts as part (part.label)}
           {#if part.width > 0}
             <!--

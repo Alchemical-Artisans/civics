@@ -141,10 +141,7 @@
       <div class="budget-column flex h-full w-24 flex-col justify-end">
         <!-- `flex-col-reverse`, so the largest part sits on the ground and the
              columns are read against each other from the same baseline. -->
-        <div
-          class="flex flex-col-reverse gap-px overflow-hidden rounded-t-md"
-          style="height: {column.height}%"
-        >
+        <div class="flex flex-col-reverse gap-px overflow-hidden" style="height: {column.height}%">
           {#each column.parts as part (part.label)}
             {#if part.depth > 0}
               <!--
