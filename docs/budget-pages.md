@@ -375,7 +375,7 @@ page's. This is where they are drawn.
 | ------------------ | --------------------------------------------------------------------------------- | ---------------------------------- |
 | The three policies | a bullet bar per fund on one scale: the band it may hold in, the balance it holds | the three dial tables, pages 17-20 |
 | What came and went | two lines: a year's revenue against its expenditure                               | page 18                            |
-| What they left     | two lines: the fund balance, and the encumbrances against it                      | page 18                            |
+| What they left     | columns on a zero line: the undesignated balance above, encumbrances below        | page 18                            |
 
 **One scale for the three policies, and it is not an assumption.**
 [`BudgetBands.svelte`](../src/lib/BudgetBands.svelte) draws a pale rail the full
@@ -427,15 +427,48 @@ the drawing say whatever suited — two scales can be slid past each other until
 the lines cross wherever you like. So the flows are one chart and what they left
 is the other, and the years belong to the charts rather than to the rows: both
 are given the same four columns, so a reader can look straight down from one to
-the next. `BudgetLines` takes `years` and a value per year per series, `null`
-where the book prints none, and breaks a line across a gap rather than drawing
-through it.
+the next. Both components take `years` and a value per year per
+series, `null` where the book prints none; the line chart breaks across a gap
+rather than drawing through it, and the bar chart draws no bar. What puts a year
+in the same place in both is
+[`chart-frame.ts`](../src/lib/chart-frame.ts), the viewBox and the band
+positions, shared so the alignment is structural rather than a coincidence two
+files have to keep agreeing on. Years sit in the middle of their own band and
+not at the edges of the plot: a bar at the edge would hang over the axis
+figures, and a year has to be in one place for both charts.
 
-**The beginning and ending balances are one line.** They are one figure read
+**What they left is bars, not a line.** Those four figures are not a trend but
+where the city stood at four closes of business, and a line drawn between two
+balances invites the eye to read its slope as though something happened along
+the way, which the book claims nothing about.
+[`BudgetBars.svelte`](../src/lib/BudgetBars.svelte) draws each year as a column
+standing on a zero line: the undesignated balance above it, that year's
+encumbrances below, so a column's span is the distance between what the city
+could spend and what it had already promised. Bars start at zero and the zero
+line is drawn, because a bar's meaning is its length — unlike a line, which is
+read for its shape and may begin where it likes.
+
+**It is charted as the _undesignated_ fund balance**, which is what that figure
+is: money nobody has spoken for, and the only part of a fund balance a Council
+can appropriate. The table's own row says "Ending Fund Balance", but the dial on
+page 17 heads its column "Undesignated Fund Balance" and the prose gives the
+same $13,985,452 for the same date, so the book calls this figure undesignated
+everywhere except in this one table.
+
+**The encumbrances hang below the line because of their sign, not because they
+are taken off the bar above.** The book's row is the _change_ over the year in
+what is set aside for open purchase orders, and the balance beside it is already
+net of that change: adding the two together gives nothing, since one is a stock
+and the other a flow. The book gives no figure at all for what the encumbrance
+reserve stands at, only what it moved by, so no chart here can show the reserve
+itself. A column stacks away from zero in the direction of each figure's sign,
+which is why 2023's $97,098 sits on top of the balance rather than under it —
+that year the reserve released money instead of taking it.
+
+**The beginning and ending balances are one row.** They are one figure read
 twice — every year opens where the last one closed, which `reserves.spec.ts`
-checks against the book's own cells — so the balance runs as a single line from
-the close of 2022 to the close of 2025, under "Fund Balance", which is the
-book's own heading over the table. That is why it starts a year before the
+checks against the book's own cells — so the balance runs as a single row from
+the close of 2022 to the close of 2025. That is why it starts a year before the
 flows: the balance the city carried into 2023 is the balance it closed 2022
 with, and the book names that year nowhere else.
 
@@ -877,6 +910,8 @@ src/lib/BudgetColumns.svelte               spending and revenue, two columns
 src/lib/BudgetStack.svelte                 reserves and debt, two bars on one scale
 src/lib/BudgetBands.svelte                 a fund against the band its policy allows
 src/lib/BudgetLines.svelte                 a table's rows followed across its years
+src/lib/BudgetBars.svelte                  a year's figures either side of zero
+src/lib/chart-frame.ts                     the viewBox and bands those two share
 src/lib/BookElsewhere.svelte               a category page's "see also" list
 src/lib/data/glossary.json                 the book's glossary, transcribed
 src/lib/glossary.ts                        reads it; the definition lookup

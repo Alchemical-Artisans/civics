@@ -5,6 +5,7 @@
   // exactly as the book sets them.
   import BudgetBands from "$lib/BudgetBands.svelte"
   import BudgetLines from "$lib/BudgetLines.svelte"
+  import BudgetBars from "$lib/BudgetBars.svelte"
   import BookElsewhere from "$lib/BookElsewhere.svelte"
   import { amount, cell, type BudgetTableData } from "$lib/budget-table"
   import { FUND_BALANCE, FUND_BALANCE_HISTORY, FREE_CASH, STABILIZATION } from "./tables"
@@ -89,19 +90,31 @@
   ]
 
   /**
-   * What they left behind: one line, not two.
+   * What they left behind, as columns standing on a zero line.
    *
    * "Beginning Fund Balance" and "Ending Fund Balance" are the same figure read
-   * twice -- each year opens where the last one closed -- so they are one line
-   * running from the close of 2022 to the close of 2025, under the name the
-   * book's own heading over this table gives it. The encumbrances are the third
-   * thing that moved it, and they are the same size, so they share the chart.
+   * twice -- each year opens where the last one closed -- so they are one row
+   * running from the close of 2022 to the close of 2025.
+   *
+   * It is charted as "Undesignated Fund Balance", which is the book's own name
+   * for this figure everywhere but in this table: the dial on page 17 heads its
+   * column with it, and the prose gives the same $13,985,452 for the same date.
+   * That is the name worth using, because it says what the figure is -- money
+   * nobody has spoken for, which is the only part of a fund balance a Council
+   * can appropriate.
+   *
+   * The encumbrances go under the line because that is where their sign puts
+   * them, not because they are subtracted from the bar above: the book's row is
+   * the *change* in what is set aside for open purchase orders over the year,
+   * and the balance beside it is already net of that change. The two are a year
+   * and its result, in one place because they are the same size and about the
+   * same money.
    */
   const CLOSING = "Ending Fund Balance"
   const ENCUMBRANCES = "Net Reserve for Encumbrances"
   const balance = [
     {
-      label: "Fund Balance",
+      label: "Undesignated Fund Balance",
       values: years.map((year, at) =>
         at === 0
           ? amount(cell(FUND_BALANCE_HISTORY, "Beginning Fund Balance", BOOK_YEARS[0]))
@@ -174,14 +187,21 @@
 <BudgetLines {years} rows={flows} />
 
 <!--
-  And what they left. The beginning and ending balances are one line rather than
-  two, because they are one figure read twice: every year opens where the last
-  one closed, which `reserves.spec.ts` checks against the book's own cells. The
-  line therefore starts a year before the flows do -- the balance the city
-  carried into 2023 is the balance it closed 2022 with -- which is why the years
-  belong to the charts rather than to the rows.
+  And what they left: columns rather than a line, because these are not a trend
+  but where the city stood at four closes of business. A line between two
+  balances invites the eye to read its slope as though something happened along
+  the way, and the book claims nothing about the months in between.
+
+  The undesignated balance stands above the zero line and the year's
+  encumbrances hang below it, so a column's span is the distance between what
+  the city could spend and what it had already promised. The beginning and
+  ending balances are one row, because they are one figure read twice -- every
+  year opens where the last one closed, which `reserves.spec.ts` checks against
+  the book's own cells -- so it starts a year before the flows do: the balance
+  the city carried into 2023 is the balance it closed 2022 with. That is why the
+  years belong to the charts rather than to the rows.
 -->
-<BudgetLines {years} rows={balance} />
+<BudgetBars {years} rows={balance} />
 
 <h2>Free Cash</h2>
 

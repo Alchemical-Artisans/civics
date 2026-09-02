@@ -219,12 +219,23 @@ Notable pieces:
   whatever suits, so it is two charts sharing a row of years instead. The years
   belong to the chart, not the series: each series gives one value per year and
   `null` where the book prints none, which is what lets the balance start a year
-  earlier and still line up. The beginning and ending balances are one line,
-  because they are one figure read twice; the expenditure line is drawn at what
+  earlier and still line up. The expenditure line is drawn at what
   was spent, since the book's parentheses are its sum's minus sign, and the row
-  labels stay the book's, "Plus" and "Less" included. Neither chart starts at
-  zero -- a line is read for its shape -- and both print the figures at the ends
-  of the axis; zero is drawn only where a line crosses it.
+  labels stay the book's, "Plus" and "Less" included. It does not start at
+  zero -- a line is read for its shape -- and prints the figures at the ends
+  of the axis.
+- **`src/lib/BudgetBars.svelte`** is the other half of that page: each year as a
+  column standing on a zero line, the undesignated fund balance above it and
+  that year's encumbrances below. Bars because these are four closes of business
+  rather than a trend, and they start at zero because a bar's meaning is its
+  length. The beginning and ending balances are one row, being one figure read
+  twice. The encumbrances hang below by their sign and not by subtraction: the
+  book's row is the _change_ in what is set aside for open purchase orders, the
+  balance beside it is already net of that, and the book never says what the
+  reserve itself stands at -- so the two cannot be added, and a year where the
+  change is positive stacks upward instead. **`src/lib/chart-frame.ts`** is the
+  viewBox and the band positions both charts take, so a year is in the same
+  place in each and a reader can look straight down.
 - **`src/lib/GlossaryTerm.svelte`** links a word in the city's prose to the
   book's definition of it: a plain link to that term's entry on
   `/budget/fy2027/glossary`, nothing more. It briefly carried the definition

@@ -34,6 +34,7 @@
 
 <script lang="ts">
   import { COLOURS } from "$lib/chart-colours"
+  import { WIDTH, HEIGHT, LEFT, RIGHT, TOP, FOOT, bandCentre } from "$lib/chart-frame"
 
   let {
     years,
@@ -59,16 +60,6 @@
     maximumFractionDigits: 1,
   })
 
-  // A fixed viewBox scaled to whatever width the page gives it, so these are
-  // the drawing's own units and not pixels.
-  const WIDTH = 640
-  const HEIGHT = 210
-  const LEFT = 62
-  // Room for half of the last year's label, which is centred under its point.
-  const RIGHT = 26
-  const TOP = 10
-  const FOOT = 24
-
   const drawn = $derived(
     rows.flatMap((row) => row.values.filter((value): value is number => value !== null)),
   )
@@ -89,10 +80,7 @@
     return { low: low - pad, high: high + pad }
   })
 
-  const across = (at: number) =>
-    years.length < 2
-      ? LEFT + (WIDTH - LEFT - RIGHT) / 2
-      : LEFT + (at * (WIDTH - LEFT - RIGHT)) / (years.length - 1)
+  const across = (at: number) => bandCentre(at, years.length)
 
   const up = (value: number) =>
     TOP + (1 - (value - bounds.low) / (bounds.high - bounds.low)) * (HEIGHT - TOP - FOOT)

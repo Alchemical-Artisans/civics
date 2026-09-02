@@ -404,22 +404,21 @@ test.describe("budget pages", () => {
   test("draws page 18's table as two charts sharing a row of years", async ({ page }) => {
     await page.goto(`/budget/${books[0]}/reserves`)
 
-    const charts = page.locator(".budget-lines")
-    await expect(charts).toHaveCount(2)
-
     // Two and not one: a year's revenue is a quarter of a billion dollars and
     // the balance it leaves is fourteen million, so one scale draws the balance
     // flat on the floor and two axes on one chart let it say anything.
-    const flows = charts.nth(0)
-    const balance = charts.nth(1)
+    const flows = page.locator(".budget-lines")
+    const balance = page.locator(".budget-bars")
+    await expect(flows).toHaveCount(1)
+    await expect(balance).toHaveCount(1)
 
     // The book's own row labels, sum and all -- and the money at the size it
     // was spent, since the parentheses on the expenditure line are the sum's
     // minus sign rather than a negative amount of spending.
-    const named = (chart: ReturnType<typeof charts.nth>) =>
-      chart.locator("circle").evaluateAll((marks) => marks.map((m) => m.getAttribute("aria-label")))
+    const named = (chart: ReturnType<typeof flows.locator>) =>
+      chart.evaluateAll((marks) => marks.map((m) => m.getAttribute("aria-label")))
 
-    expect(await named(flows)).toEqual([
+    expect(await named(flows.locator("circle"))).toEqual([
       "Plus Fiscal Year Revenue, 2023, $231,470,272",
       "Plus Fiscal Year Revenue, 2024, $244,738,056",
       "Plus Fiscal Year Revenue, 2025, $262,614,748",
@@ -428,22 +427,46 @@ test.describe("budget pages", () => {
       "Less Fiscal Year Expenditures, 2025, $257,460,366",
     ])
 
-    // The beginning and ending balances are one line, because they are one
-    // figure read twice, and it therefore starts a year before the flows do:
-    // what the city carried into 2023 is what it closed 2022 with.
-    expect(await named(balance)).toEqual([
-      "Fund Balance, 2022, $12,429,870",
-      "Fund Balance, 2023, $10,209,394",
-      "Fund Balance, 2024, $12,569,995",
-      "Fund Balance, 2025, $13,985,453",
+    // Bars, not a line: these are four closes of business rather than a trend,
+    // and the balance is charted under the name the dial and the prose give it
+    // -- undesignated, which is the part a Council can appropriate. It starts a
+    // year before the flows do, because what the city carried into 2023 is what
+    // it closed 2022 with.
+    expect(await named(balance.locator("rect"))).toEqual([
+      "Undesignated Fund Balance, 2022, $12,429,870",
+      "Undesignated Fund Balance, 2023, $10,209,394",
       "Net Reserve for Encumbrances, 2023, $97,098",
+      "Undesignated Fund Balance, 2024, $12,569,995",
       "Net Reserve for Encumbrances, 2024, -$617,924",
+      "Undesignated Fund Balance, 2025, $13,985,453",
       "Net Reserve for Encumbrances, 2025, -$3,738,924",
     ])
 
+    // The bars stand on zero and run in the direction of their sign: the
+    // balance above the line, the two years of encumbrances below it.
+    const zero = await balance
+      .locator("svg line")
+      .last()
+      .evaluate((line) => Number(line.getAttribute("y1")))
+
+    const sides = await balance.locator("rect").evaluateAll((bars) =>
+      bars.map((bar) => ({
+        label: bar.getAttribute("aria-label")!,
+        top: Number(bar.getAttribute("y")),
+        depth: Number(bar.getAttribute("height")),
+      })),
+    )
+
+    for (const bar of sides) {
+      const negative = bar.label.includes(", -$")
+      // SVG y grows downwards, so a bar below the zero line starts on it.
+      expect(negative ? bar.top >= zero - 0.5 : bar.top + bar.depth <= zero + 0.5).toBe(true)
+    }
+
     // The same four years under both, in the same places, so a reader can look
-    // straight down from one chart to the other.
-    const axis = (chart: ReturnType<typeof charts.nth>) =>
+    // straight down from one chart to the other. Both take the geometry from
+    // `chart-frame.ts`, which is what makes that true rather than lucky.
+    const axis = (chart: ReturnType<typeof flows.locator>) =>
       chart
         .locator("svg text")
         .evaluateAll((labels) =>
@@ -455,13 +478,13 @@ test.describe("budget pages", () => {
     expect(await axis(flows)).toEqual(await axis(balance))
     expect(await axis(flows)).toHaveLength(4)
 
-    // Every line is named where it is drawn, since a line is told from its
-    // neighbour by colour and nothing else.
+    // Every row is named where it is drawn, since one mark is told from the one
+    // beside it by colour and nothing else.
     await expect(flows.getByRole("listitem")).toHaveCount(2)
     await expect(balance.getByRole("listitem")).toHaveCount(2)
 
-    // Zero is drawn on the chart that crosses it and on the one that does not:
-    // the encumbrances change sign, which no shape on its own says.
+    // Zero is drawn on the chart the bars stand on, and on the line chart only
+    // if a line crosses it -- neither of those does.
     await expect(balance.locator("svg")).toContainText("$0")
     await expect(flows.locator("svg")).not.toContainText("$0")
 
@@ -473,11 +496,11 @@ test.describe("budget pages", () => {
 
   test("names and prices the point under the pointer", async ({ page }) => {
     await page.goto(`/budget/${books[0]}/reserves`)
-    const mark = page.locator(".budget-lines").nth(1).locator("circle").first()
+    const mark = page.locator(".budget-bars").locator("rect").first()
     await mark.hover()
 
-    const tooltip = page.locator(".budget-lines .budget-tooltip")
-    await expect(tooltip).toContainText("Fund Balance")
+    const tooltip = page.locator(".budget-bars .budget-tooltip")
+    await expect(tooltip).toContainText("Undesignated Fund Balance")
     await expect(tooltip).toContainText("2022")
     await expect(tooltip).toContainText("$12,429,870")
 
