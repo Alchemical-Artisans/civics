@@ -144,6 +144,30 @@
   > revenue. This is up from June 2024, which was $12,569,995 or 7.36%.
 </p>
 
+<!--
+  Page 228, not page 17.
+
+  The book's own "Fiscal Reserves" section runs #1, #3, #4 and skips #2, which
+  reads on a page as a policy that went missing. It did not: #2 is the only one
+  of the four with no dial to draw, because it is not a band to sit inside but
+  what has to happen if the fund balance falls out of the bottom of #1's. The
+  book states it in "Financial Reserve Policies" (page 228), which is where this
+  is quoted from, label and all -- that page numbers them "Reserve Policy 2"
+  where the reserves section writes "City Reserve Policy #2:", and the words on
+  this site are the city's, so the label is the one printed over the sentence.
+
+  It sits under #1's result because it is #1's consequence: the floor it names
+  is the left edge of the first bar in the chart above.
+-->
+<p>
+  <strong>Reserve Policy 2:</strong> In the event that the city's undesignated
+  <GlossaryTerm term="Fund">fund</GlossaryTerm> balance falls below 5% of
+  <GlossaryTerm term="General Fund">general fund</GlossaryTerm>
+  <GlossaryTerm term="Revenues">revenues</GlossaryTerm>, less debt exclusions and Chapter 70 Aid,
+  (the "Fund Balance Floor"), a plan for specific expenditure reductions and/or revenue increases
+  shall be submitted to the City Council during the next budget cycle.
+</p>
+
 <h2>Fund Balance</h2>
 
 <p>

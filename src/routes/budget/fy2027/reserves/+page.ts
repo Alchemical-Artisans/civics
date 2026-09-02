@@ -6,7 +6,10 @@ import { Router } from "$lib/router"
  * funds and the policy each answers to.
  *
  * The bucket for reserves the way `revenue` and `appropriations` are the
- * buckets for the two halves of the budget. What else the book says about
+ * buckets for the two halves of the budget. The page carries one paragraph the
+ * section does not: Reserve Policy 2, which the book states on page 228 and
+ * leaves out of pages 17 to 20 because it is the only one of the four with no
+ * dial to draw. What else the book says about
  * reserves is listed at the foot rather than copied here: the policies (227),
  * the appropriated reserve (213) and "Fund Accounting" (218) -- which is what
  * says these funds are separate things at all -- have no page here, and the projections are

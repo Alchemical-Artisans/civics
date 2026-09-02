@@ -368,6 +368,35 @@ test.describe("budget pages", () => {
     }
   })
 
+  test("carries the reserve policy the book's own section leaves out", async ({ page }) => {
+    await page.goto(`/budget/${books[0]}/reserves`)
+    const article = page.getByRole("article")
+
+    // Pages 17 to 20 run #1, #3, #4 and skip #2, which reads as a policy that
+    // went missing. It is not missing: it is the one of the four with no dial
+    // to draw, being what has to happen when the fund balance falls out of the
+    // bottom of #1's band rather than a band of its own. The book states it on
+    // page 228, and that is where this is quoted from.
+    await expect(article).toContainText(
+      "In the event that the city's undesignated fund balance falls below 5%",
+    )
+    await expect(article).toContainText(
+      "shall be submitted to the City Council during the next budget cycle",
+    )
+
+    // Under #1's result, because it is #1's consequence.
+    const second = (await article.getByText(/^Reserve Policy 2:/).boundingBox())!
+    const first = (await article.getByText(/^City Reserve Policy #1:/).boundingBox())!
+    const third = (await article.getByText(/^City Reserve Policy #3:/).boundingBox())!
+    expect(second.y).toBeGreaterThan(first.y)
+    expect(second.y).toBeLessThan(third.y)
+
+    // Labelled as page 228 labels it. The reserves section writes "City Reserve
+    // Policy #2:" for the ones it carries; the words here are the city's, so
+    // the label is the one printed over this sentence and not the other.
+    await expect(article).not.toContainText("City Reserve Policy #2")
+  })
+
   test("draws each reserve against the policy it answers to", async ({ page }) => {
     await page.goto(`/budget/${books[0]}/reserves`)
 

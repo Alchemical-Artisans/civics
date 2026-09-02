@@ -377,6 +377,21 @@ step that produced it. The meeting is also on the calendar half of this site.
 "Fiscal Reserves" (17) with "Liability, Overlay & Reserves" (213), "Fund
 Accounting" (218) and "Financial Reserve Policies" (227) listed after it.
 
+**One paragraph on `reserves` is not from the section it transcribes.** The
+book's "Fiscal Reserves" runs City Reserve Policy #1, #3 and #4 and skips #2,
+which reads on a page as a policy that went missing. It did not: #2 is the only
+one of the four with no dial to draw, because it is not a band to sit inside but
+what has to happen if the fund balance falls out of the bottom of #1's — "a plan
+for specific expenditure reductions and/or revenue increases shall be submitted
+to the City Council during the next budget cycle". The book states it in
+"Financial Reserve Policies" on page 228, and that is where the page quotes it
+from, label included: that page numbers them "Reserve Policy 2" where the
+reserves section writes "City Reserve Policy #2:", and the words here are the
+city's, so the label is the one printed over the sentence rather than the one
+that would match its neighbours. It sits under #1's result because it is #1's
+consequence — the floor it names is the left edge of the first bar in the chart
+above.
+
 ### The two charts on `reserves`
 
 The front page draws the reserves as one bar, deliberately ignoring what the
