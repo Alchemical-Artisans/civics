@@ -43,12 +43,12 @@ test.describe("budget pages", () => {
     await page.goto(`/budget/${books[0]}`)
 
     // The two sides of one budget, each ranked largest first and each heading
-    // carrying the total: what the Council adopted, and what the same orders
-    // say pays for it, water and wastewater included on both sides.
-    await expect(page.getByRole("heading", { name: /^Spending \$305,523,401$/ })).toBeVisible()
+    // carrying the total: everything the city spends, and everything that pays
+    // for it, water and wastewater included on both sides.
+    await expect(page.getByRole("heading", { name: /^Spending \$316,044,835$/ })).toBeVisible()
     // The revenue heading opens the section every figure in that pie comes
     // from, and is the only way to it: it has no line in the contents.
-    await expect(page.getByRole("heading", { name: /^Revenue \$305,523,401$/ })).toBeVisible()
+    await expect(page.getByRole("heading", { name: /^Revenue \$316,044,835$/ })).toBeVisible()
     await expect(page.getByRole("link", { name: "Revenue", exact: true })).toHaveAttribute(
       "href",
       /\/revenue$/,
@@ -64,7 +64,7 @@ test.describe("budget pages", () => {
     // whether or not anyone can hover something a degree wide.
     const wedges = charts.first().getByRole("img")
     expect(await wedges.count()).toBeGreaterThan(5)
-    await expect(wedges.first()).toHaveAttribute("aria-label", "Education, $147,158,454, 48.2%")
+    await expect(wedges.first()).toHaveAttribute("aria-label", "Education, $147,158,454, 46.6%")
     for (const wedge of await wedges.all()) {
       expect(await wedge.getAttribute("aria-label")).toMatch(/\$[\d,]+/)
     }
@@ -376,28 +376,29 @@ test.describe("budget pages", () => {
     // The book's $285,272,159 is the Mayor's proposal for the general fund.
     // What the city spends is the eleven functions the Council voted, plus the
     // two enterprise departments the book does not carry at all.
-    await expect(page.getByRole("heading", { name: /^Spending \$305,523,401$/ })).toBeVisible()
+    await expect(page.getByRole("heading", { name: /^Spending \$316,044,835$/ })).toBeVisible()
 
     const wedges = page.locator(".budget-chart").first().getByRole("img")
     const labels = await wedges.evaluateAll((w) => w.map((el) => el.getAttribute("aria-label")))
     expect(labels.some((l) => l?.startsWith("Wastewater Department, $15,967,043"))).toBe(true)
     expect(labels.some((l) => l?.startsWith("Water Department, $14,805,633"))).toBe(true)
 
-    // Nobody votes these two, so they are not in the budget the chart draws.
-    expect(labels.some((l) => l?.startsWith("State Assessments"))).toBe(false)
-    expect(labels.some((l) => l?.startsWith("Overlay"))).toBe(false)
+    // Charged to the city rather than chosen by it -- the Commonwealth's bill
+    // for charter school tuition, the MBTA and the rest, and the assessors'
+    // overlay for the abatements the year will grant -- but spent either way,
+    // so the chart carries them.
+    expect(labels.some((l) => l?.startsWith("State Assessments, $10,271,435"))).toBe(true)
+    expect(labels.some((l) => l?.startsWith("Overlay, $250,000"))).toBe(true)
 
-    // The other side of the same budget: the sources the same orders name,
-    // with the two departments' own revenue beside them and the transfers out
-    // of it counted once.
+    // The other side of the same budget: the book's sixteen sources, with what
+    // the two departments are billed beside them, net of what those orders
+    // transfer into the general fund and the book already counts.
     const sources = page.locator(".budget-chart").last().getByRole("img")
     const income = await sources.evaluateAll((w) => w.map((el) => el.getAttribute("aria-label")))
-    expect(income.some((l) => l?.startsWith("Taxation and Other Receipts, $268,541,960"))).toBe(
-      true,
-    )
-    expect(income.some((l) => l?.startsWith("Wastewater Revenue, $16,666,024"))).toBe(true)
-    expect(income.some((l) => l?.startsWith("Water Revenue, $15,040,417"))).toBe(true)
-    expect(income.some((l) => l?.includes("Receipts, $234,784"))).toBe(false)
+    expect(income.some((l) => l?.startsWith("TAX LEVY, $146,107,374"))).toBe(true)
+    expect(income.some((l) => l?.startsWith("CH 70 STATE AID, $96,427,042"))).toBe(true)
+    expect(income.some((l) => l?.startsWith("Wastewater Revenue, $15,967,043"))).toBe(true)
+    expect(income.some((l) => l?.startsWith("Water Revenue, $14,805,633"))).toBe(true)
 
     // And the high-level view says none of that: the spending page does, in
     // the city's own words.
@@ -496,17 +497,17 @@ test.describe("budget pages", () => {
     const tooltip = chart.locator(".budget-tooltip")
     await expect(tooltip).toContainText("Education")
     await expect(tooltip).toContainText("$147,158,454")
-    await expect(tooltip).toContainText("48.2%")
+    await expect(tooltip).toContainText("46.6%")
   })
 
   test("reaches the wedge no mouse can hit with the keyboard", async ({ page }) => {
-    // New debt service is 1/303rd of Education, about a degree of the circle.
+    // The overlay is 1/1264th of the circle, about a quarter of a degree.
     // Focus is the only way to it, which is why every wedge takes focus.
     await page.goto(`/budget/${books[0]}`)
     const chart = page.locator(".budget-chart").first()
     await chart.getByRole("img").last().focus()
-    await expect(chart.locator(".budget-tooltip")).toContainText("Debt Service - New")
-    await expect(chart.locator(".budget-tooltip")).toContainText("$485,795")
+    await expect(chart.locator(".budget-tooltip")).toContainText("Overlay")
+    await expect(chart.locator(".budget-tooltip")).toContainText("$250,000")
   })
 
   test("draws the budget calendar as the page's footer", async ({ page }) => {

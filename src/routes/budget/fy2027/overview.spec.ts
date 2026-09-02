@@ -101,58 +101,50 @@ describe("page 17, the reserves the front page charts", () => {
   })
 })
 
-describe("the spending chart", () => {
-  // What the front page draws: the book's functions less the two lines nobody
-  // votes, plus the two enterprise departments. No document states this total,
-  // because no document adds the general fund and the enterprise funds up.
+describe("the two pies", () => {
   const NOT_A_CATEGORY = ["Grand Total", "Budget Surplus (Deficit)"]
-  const drawn = [
-    ...column(APPROPRIATIONS, CHARTED, {
-      exclude: [...NOT_A_CATEGORY, "State Assessments", "Overlay"],
-    }),
+
+  // What each chart draws: the book's own table on each side, and the two
+  // enterprise departments the book does not carry at all.
+  const spending = [
+    ...column(APPROPRIATIONS, CHARTED, { exclude: NOT_A_CATEGORY }),
     ...column(ENTERPRISE, "Amount"),
   ]
 
-  it("is the budget the Council adopted, not the book's proposal", () => {
-    expect(sum(drawn)).toBe(305523401)
-    expect(sum(drawn)).toBe(amount(APPROPRIATED)! + 14805633 + 15967043)
+  // Net of the transfers into the general fund, which the book's own revenue
+  // already counts: $15,040,417 less $234,784, and $16,666,024 less $698,981.
+  const billed = column(ENTERPRISE_REVENUE, "Amount").map((row, at) => ({
+    label: row.label,
+    amount: row.amount - [234784, 698981][at],
+  }))
+
+  const revenue = [...column(REVENUE, CHARTED, { exclude: NOT_A_CATEGORY }), ...billed]
+
+  it("balances, which is what a budget does", () => {
+    expect(sum(revenue)).toBe(316044835)
+    expect(amount(cell(APPROPRIATIONS, "Grand Total", CHARTED))! + sum(billed)).toBe(sum(revenue))
   })
 
-  // The eleven functions left after the two are dropped come to the Council's
-  // order exactly -- and the dollar the book's column is over its own printed
-  // total goes with them, which is worth knowing if either figure is corrected.
-  it("leaves out only what the Council does not vote", () => {
-    const functions = column(APPROPRIATIONS, CHARTED, {
-      exclude: [...NOT_A_CATEGORY, "State Assessments", "Overlay"],
-    })
-    expect(sum(functions)).toBe(amount(APPROPRIATED))
-
-    const charged =
-      amount(cell(APPROPRIATIONS, "State Assessments", CHARTED))! +
-      amount(cell(APPROPRIATIONS, "Overlay", CHARTED))!
-    expect(sum(functions) + charged).toBe(TOTAL + 1)
+  // The book's appropriations column is a dollar over the total printed under
+  // it. The site shows the stated total, so the slices come to a dollar more
+  // than the heading; this is here so a correction has to face that.
+  it("draws a dollar more than the book states", () => {
+    expect(sum(spending)).toBe(316044836)
   })
 
-  // Two sides of one budget: what a budget is.
-  it("balances against the revenue chart beside it", () => {
-    const revenue = [
-      ...column(GENERAL_FUND, "Amount", { exclude: ["Water Receipts", "Wastewater Receipts"] }),
-      ...column(ENTERPRISE_REVENUE, "Amount"),
-    ]
-
-    expect(sum(revenue)).toBe(sum(drawn))
-    expect(sum(revenue)).toBe(305523401)
-
-    // The transfers are counted once, in the departments' own revenue, and not
-    // again as the general fund sources the same order names.
-    expect(revenue.map((r) => r.label)).not.toContain("Water Receipts")
-    expect(sum(revenue) + 234784 + 698981).toBe(305523401 + 933765)
+  it("counts the transfers between the funds once", () => {
+    expect(sum(billed)).toBe(30772676)
+    expect(sum(billed) + 234784 + 698981).toBe(31706441)
   })
 
-  it("carries the water and wastewater departments as slices of their own", () => {
-    expect(drawn.map((r) => r.label)).toContain("Water Department")
-    expect(drawn.map((r) => r.label)).toContain("Wastewater Department")
-    expect(drawn.map((r) => r.label)).not.toContain("State Assessments")
+  // Charged rather than chosen, but spent: the Commonwealth bills the city and
+  // the assessors raise the overlay, and both are in what the city spends.
+  it("keeps the assessments and the overlay in what the city spends", () => {
+    const labels = spending.map((r) => r.label)
+    expect(labels).toContain("State Assessments")
+    expect(labels).toContain("Overlay")
+    expect(labels).toContain("Water Department")
+    expect(labels).toContain("Wastewater Department")
   })
 })
 

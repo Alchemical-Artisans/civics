@@ -6,6 +6,7 @@ import { FUND_BALANCE, FREE_CASH, STABILIZATION } from "./reserves/tables"
 import { LONG_TERM_DEBT } from "./outstanding-debt/tables"
 import { CALENDAR } from "./budget-calendar"
 import { AGENDA, ENTERPRISE, ENTERPRISE_REVENUE, GENERAL_FUND } from "./council-orders"
+import { REVENUE } from "./revenue/tables"
 import type { Part } from "$lib/BudgetStack.svelte"
 
 /**
@@ -38,67 +39,62 @@ const CHARTED = "2027 Proposed"
 const NOT_A_CATEGORY = ["Grand Total", "Budget Surplus (Deficit)"]
 
 /**
- * Two lines of the book's table that the city does not appropriate: the state
- * assessments the Commonwealth charges it, and the assessors' overlay for
- * abatements. Both are raised on the tax rate recapitulation sheet rather than
- * voted -- the book's own glossary says so of the overlay -- and the Council's
- * order of 2 June 2026 leaves both out, which is the whole of the $10,521,435
- * between the book's $285,272,159 and the $274,750,725 it voted.
- */
-const NOT_APPROPRIATED = ["State Assessments", "Overlay"]
-
-/**
- * What the city spends, which is not what the book proposes.
+ * What the city spends: the book's own table, and the two departments it does
+ * not carry.
  *
- * The book's page-78 table is the Mayor's general fund proposal. This is the
- * budget that was adopted: those functions less the two lines nobody votes,
- * plus the water and wastewater departments, which are enterprise funds
- * appropriated in orders of their own and printed nowhere in the book. The
- * eleven remaining functions come to $274,750,725, which is the Council's
- * order to the dollar.
+ * The book's page-78 table is the general fund, every line of it -- including
+ * the state assessments ($10,271,435) and the overlay ($250,000), which the
+ * Council does not appropriate because nobody gets a choice about them: the
+ * Commonwealth bills the city for charter school tuition, school choice, the
+ * MBTA and the rest, and the assessors raise the overlay to cover the property
+ * tax abatements the year will grant. Charged rather than chosen, but spent
+ * either way, which is what this chart is about.
  *
- * The pieces of it a reader needs to be told -- what is left out and why, and
- * that the two departments are paid for out of what households are billed --
- * are on the spending page, in the city's own words. A pie is not the place.
+ * Water and wastewater are the enterprise funds, appropriated in orders of
+ * their own on the Council's agenda of 2 June 2026 and printed nowhere in the
+ * book. What the Council did vote, and what it left to the recap sheet, is set
+ * out on the spending page in the orders' own words.
  */
 const spending = [
-  ...column(APPROPRIATIONS, CHARTED, { exclude: [...NOT_A_CATEGORY, ...NOT_APPROPRIATED] }),
+  ...column(APPROPRIATIONS, CHARTED, { exclude: NOT_A_CATEGORY }),
   ...column(ENTERPRISE, "Amount"),
 ]
 
 /**
- * Where that money comes from, on the same basis: the sources order 13.3 names
- * for the general fund, and what the two enterprise departments are billed for.
+ * Where that money comes from: the book's own revenue table, and what the two
+ * departments are billed.
  *
- * The order's "Water Receipts" and "Wastewater Receipts" lines are left out
- * because they are transfers out of those departments' own revenue, which is
- * charted in full beside them -- counting both would count $933,765 twice. What
- * is left balances against the spending pie exactly, which is what a budget
- * does.
- *
- * It is coarser than the book's page-78 estimate, which breaks the general fund
- * down into sixteen sources: tax levy, Chapter 70, motor vehicle excise and the
- * rest. That table is still transcribed at the foot of the revenue page, which
- * this chart's heading opens. What is drawn here is the adopted budget, and the
- * adopted budget names five sources.
+ * The enterprise slices are net of the transfers the same orders make into the
+ * general fund -- $234,784 of water revenue and $698,981 of wastewater revenue
+ * -- because those are already inside the book's "OTHER AVAILABLE REVENUE
+ * SOURCES", which is the line the Council's own four small sources add up to.
+ * Counting them here as well would count $933,765 twice, and the two sides
+ * would not balance.
  */
-const revenue = [
-  ...column(GENERAL_FUND, "Amount", { exclude: ["Water Receipts", "Wastewater Receipts"] }),
-  ...column(ENTERPRISE_REVENUE, "Amount"),
-]
+const TRANSFERRED: Record<string, string> = {
+  "Water Revenue": "Water Receipts",
+  "Wastewater Revenue": "Wastewater Receipts",
+}
+
+const billed = column(ENTERPRISE_REVENUE, "Amount").map((row) => ({
+  label: row.label,
+  amount: row.amount - amount(cell(GENERAL_FUND, TRANSFERRED[row.label], "Amount"))!,
+}))
+
+const revenue = [...column(REVENUE, CHARTED, { exclude: NOT_A_CATEGORY }), ...billed]
 
 /**
- * What each pie comes to: $305,523,401.
+ * What each pie comes to: $316,044,835, on both sides, because both are the
+ * same budget seen from its two ends.
  *
- * Spending is the sum of what three orders appropriate, which no
- * document states because no document adds the general fund and the enterprise
- * funds together. `overview.spec.ts` checks it against each of them.
- *
- * Both come to it, because both are the same budget seen from its two sides,
- * which is what the book's own two tables are and what these two orders are.
- * `overview.spec.ts` checks that they balance.
+ * Spending is stated rather than summed. The book's own appropriations column
+ * adds up to $285,272,160, a dollar over the total printed under it; the book
+ * prints both, and the site shows the one it states, so the spending pie's
+ * slices come to a dollar more than its heading. Revenue is summed, because
+ * nothing states a total for the general fund and the enterprise funds
+ * together. `overview.spec.ts` holds both of those down.
  */
-const spendingTotal = sum(spending)
+const spendingTotal = amount(cell(APPROPRIATIONS, "Grand Total", CHARTED))! + sum(billed)
 const revenueTotal = sum(revenue)
 
 /**

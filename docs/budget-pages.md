@@ -104,11 +104,11 @@ says it through `bookName`.
 `/budget/<year>` opens on the budget at a glance: the year, and what the year
 sits on.
 
-| Chart             | What it draws                                                 | From                                                                 |
-| ----------------- | ------------------------------------------------------------- | -------------------------------------------------------------------- |
-| Spending          | the budget the Council adopted, water and wastewater included | page 78 less what nobody votes, plus the orders of 2 June 2026       |
-| Revenue           | what pays for it, on the same basis                           | the orders of 2 June 2026, `council-orders.ts`                       |
-| Reserves and Debt | two bars on one scale, each divided into its parts            | page 17, `reserves/tables.ts`; page 21, `outstanding-debt/tables.ts` |
+| Chart             | What it draws                                             | From                                                                 |
+| ----------------- | --------------------------------------------------------- | -------------------------------------------------------------------- |
+| Spending          | everything the city spends, water and wastewater included | page 78 less what nobody votes, plus the orders of 2 June 2026       |
+| Revenue           | what pays for it, on the same basis                       | the orders of 2 June 2026, `council-orders.ts`                       |
+| Reserves and Debt | two bars on one scale, each divided into its parts        | page 17, `reserves/tables.ts`; page 21, `outstanding-debt/tables.ts` |
 
 The two pies are the year — everything the city spends, and everything that pays
 for it — and sit in the narrow left column. Both are the budget the Council
@@ -265,29 +265,29 @@ beside the chart that reads it. The book prints the two sides facing each other
 to show that they balance; the front page makes that point instead, with two
 pies carrying the same total.
 
-**The spending pie is the budget the city adopted, not the one the book
-proposes.** The book's page-78 table is the Mayor's general fund request; the
-chart is that table less the two lines nobody votes — State Assessments
-($10,271,435) and Overlay ($250,000), both raised on the tax rate recapitulation
-sheet rather than appropriated — plus the water and wastewater departments,
-which the book does not carry at all. The eleven functions that remain come to
-$274,750,725, the Council's order to the dollar, and with the two departments
-the pie is **$305,523,401**, a figure no document states because no document
-adds the general fund and the enterprise funds together.
+**The pies are the whole city's budget, not the book's.** The book's page-78
+tables are the general fund, and the front page draws both of them entire —
+including the state assessments ($10,271,435) and the overlay ($250,000), which
+the Council never votes because nobody gets a choice about them: the
+Commonwealth bills the city for charter school tuition, school choice, the MBTA
+and the rest, and the assessors raise the overlay to cover the property tax
+abatements the year will grant. Charged rather than chosen, but spent, which is
+what a chart headed "Spending" is about.
 
-**The revenue pie is the same budget from the other side**: the sources order
-13.3 names for the general fund — taxation and other receipts, free cash, a
-transfer — with what the two departments are billed, $15,040,417 and
-$16,666,024. The order's own "Water Receipts" and "Wastewater Receipts" lines
-are left out, because they are transfers out of that same billed revenue and
-counting both would count $933,765 twice. What is left balances against the
-spending pie exactly.
+What the book leaves out is water and wastewater, and those come from the
+Council's orders: **$14,805,633** and **$15,967,043** on the spending side,
+their own revenue on the other. Both sides come to **$316,044,835**.
 
-It is coarser than the book's estimate, which breaks the general fund into
-sixteen sources — tax levy, Chapter 70, motor vehicle excise and the rest. That
-table is still transcribed at the foot of the revenue page, which the chart's
-heading opens. The adopted budget names five sources, and this chart is the
-adopted budget.
+On the revenue side the two departments are net of what the same orders transfer
+into the general fund — $234,784 and $698,981 — because those are already inside
+the book's "OTHER AVAILABLE REVENUE SOURCES", the line the Council's own four
+small sources add up to. Counting them twice is the one way these two circles
+stop balancing.
+
+The spending total is **stated rather than summed**: the book's appropriations
+column adds to $285,272,160, a dollar over the total printed under it, so the
+pie's slices come to a dollar more than its heading. The book prints both and
+the site shows the one it states. `overview.spec.ts` holds all of this down.
 
 None of that is on the front page. A pie is a shape for one question, and the
 explanation belongs where a reader who wants it goes: the orders are quoted on

@@ -1827,8 +1827,10 @@
 <h2>What the Council appropriated</h2>
 
 <p>
-  The front page's spending chart is these three orders and not the book's own total, which is the
-  proposal they answer.
+  The book is the Mayor's proposal for the <GlossaryTerm term="General Fund"
+    >general fund</GlossaryTerm
+  >. These are the orders the City Council voted on it, and the two departments the book does not
+  carry.
 </p>
 
 {#each ORDERS as order (order.item)}
@@ -1854,14 +1856,25 @@
 <p>
   <strong>{APPROPRIATED}</strong> is what the Council raised and appropriated for the <GlossaryTerm
     term="General Fund">general fund</GlossaryTerm
-  >. The book prints $285,272,159. The difference is the state assessments and the <GlossaryTerm
-    term="Overlay">overlay</GlossaryTerm
-  >, which are charged to the city on the <GlossaryTerm term="Tax Rate Recapitulation Sheet"
+  >. The book prints $285,272,159 for the same year. The difference, $10,521,435, is the state
+  assessments and the <GlossaryTerm term="Overlay">overlay</GlossaryTerm>: the Commonwealth's
+  charges for charter school tuition, school choice, the MBTA and the rest, and the assessors'
+  reserve for the property tax abatements the year will <GlossaryTerm term="Grant"
+    >grant</GlossaryTerm
+  >. Both are raised on the <GlossaryTerm term="Tax Rate Recapitulation Sheet"
     >tax rate recapitulation sheet</GlossaryTerm
-  > rather than voted by it, and which the book counts as appropriations. The water and wastewater departments
-  are appropriated in orders of their own because they are <GlossaryTerm term="Enterprise Funds"
-    >enterprise funds</GlossaryTerm
-  >, paid for out of what households are billed, and they appear nowhere in the book at all.
+  > rather than appropriated, so they are spent without the Council voting them, and the front page's
+  spending chart carries them with everything else the city spends.
+</p>
+
+<p>
+  The water and wastewater departments are appropriated in orders of their own because they are
+  <GlossaryTerm term="Enterprise Funds">enterprise funds</GlossaryTerm>, paid for out of what
+  households are billed rather than out of the tax <GlossaryTerm term="Levy">levy</GlossaryTerm>,
+  and they appear nowhere in the book at all. Each order also appropriates an amount inside the <GlossaryTerm
+    term="General Fund">general fund</GlossaryTerm
+  >, funded from that <GlossaryTerm term="Department">department</GlossaryTerm>'s receipts, which is
+  why the front page counts those transfers once.
 </p>
 
 <BookElsewhere items={data.elsewhere} book={data.book} />
