@@ -132,9 +132,13 @@
      -- the front page hands it the window, less the fixed footer, and makes it
      stick. Where nothing sets a height, `min-h-64` keeps it drawable. -->
 <div class="budget-columns not-prose relative flex h-full flex-col" bind:this={root}>
+  <!-- The columns are as wide as the words under them and no wider. A column
+       carries one number; the width past that is width spent saying nothing,
+       and two narrow columns side by side are easier to compare than two broad
+       ones. -->
   <div class="flex min-h-64 flex-1 items-end gap-6">
     {#each columns as column (column.label)}
-      <div class="budget-column flex h-full flex-1 flex-col justify-end">
+      <div class="budget-column flex h-full w-24 flex-col justify-end">
         <!-- `flex-col-reverse`, so the largest part sits on the ground and the
              columns are read against each other from the same baseline. -->
         <div
@@ -174,7 +178,7 @@
 
   <div class="mt-2 flex gap-6">
     {#each columns as column (column.label)}
-      <p class="m-0 flex-1 text-xs">
+      <p class="m-0 w-24 text-xs">
         {#if column.href}
           <!-- The column's name is the way into the side of the book it is
                drawn from, which is why neither has a line in the contents. -->
@@ -187,7 +191,9 @@
         {:else}
           <span class="font-semibold text-slate-900">{column.label}</span>
         {/if}
-        <span class="mt-0.5 block text-slate-600 tabular-nums">{money.format(column.total)}</span>
+        <span class="mt-0.5 block whitespace-nowrap text-slate-600 tabular-nums">
+          {money.format(column.total)}
+        </span>
       </p>
     {/each}
   </div>
