@@ -46,6 +46,23 @@ export const ENTERPRISE: BudgetTableData = {
   ],
 }
 
+/**
+ * The revenue the enterprise orders name, which is what those departments are
+ * paid for out of: what households are billed. Each is the department's own
+ * appropriation plus the transfer the same order makes into the general fund --
+ * $14,805,633 + $234,784, and $15,967,043 + $698,981 -- so charting these two
+ * beside the general fund's own sources counts the transfers once, where the
+ * order puts them.
+ */
+export const ENTERPRISE_REVENUE: BudgetTableData = {
+  columns: ["Source", "Amount"],
+  unheaded: true,
+  rows: [
+    { label: "Water Revenue", cells: ["$15, 040,417"] },
+    { label: "Wastewater Revenue", cells: ["$16,666,024"] },
+  ],
+}
+
 /** Order 13.3: the general fund appropriation, and how the order funds it. */
 export const GENERAL_FUND: BudgetTableData = {
   columns: ["Source", "Amount"],

@@ -2,11 +2,10 @@ import type { PageLoad } from "./$types"
 import { contents, type BookSection } from "$lib/budget"
 import { amount, cell, column, sum, type BudgetTableData } from "$lib/budget-table"
 import { APPROPRIATIONS } from "./spending/tables"
-import { REVENUE } from "./revenue/tables"
 import { FUND_BALANCE, FREE_CASH, STABILIZATION } from "./reserves/tables"
 import { LONG_TERM_DEBT } from "./outstanding-debt/tables"
 import { CALENDAR } from "./budget-calendar"
-import { AGENDA, ENTERPRISE } from "./council-orders"
+import { AGENDA, ENTERPRISE, ENTERPRISE_REVENUE, GENERAL_FUND } from "./council-orders"
 import type { Part } from "$lib/BudgetStack.svelte"
 
 /**
@@ -24,9 +23,9 @@ import type { Part } from "$lib/BudgetStack.svelte"
  * includes and which is then drawn again as a slice of its own. The page-78
  * tables balance, so the charts are built from those.
  *
- * Labels are the book's, capitals and all: the revenue table shouts and the
- * appropriations table does not. Case-correcting them would be inventing text,
- * and it would stop a reader matching a bar to its row at a glance.
+ * Labels are the book's, capitals and all. Case-correcting them would be
+ * inventing text, and it would stop a reader matching a wedge to its row at a
+ * glance.
  */
 const CHARTED = "2027 Proposed"
 
@@ -67,22 +66,40 @@ const spending = [
   ...column(ENTERPRISE, "Amount"),
 ]
 
-const revenue = column(REVENUE, CHARTED, { exclude: NOT_A_CATEGORY })
+/**
+ * Where that money comes from, on the same basis: the sources order 13.3 names
+ * for the general fund, and what the two enterprise departments are billed for.
+ *
+ * The order's "Water Receipts" and "Wastewater Receipts" lines are left out
+ * because they are transfers out of those departments' own revenue, which is
+ * charted in full beside them -- counting both would count $933,765 twice. What
+ * is left balances against the spending pie exactly, which is what a budget
+ * does.
+ *
+ * It is coarser than the book's page-78 estimate, which breaks the general fund
+ * down into sixteen sources: tax levy, Chapter 70, motor vehicle excise and the
+ * rest. That table is still transcribed at the foot of the revenue page, which
+ * this chart's heading opens. What is drawn here is the adopted budget, and the
+ * adopted budget names five sources.
+ */
+const revenue = [
+  ...column(GENERAL_FUND, "Amount", { exclude: ["Water Receipts", "Wastewater Receipts"] }),
+  ...column(ENTERPRISE_REVENUE, "Amount"),
+]
 
 /**
- * What each pie comes to, which is no longer one figure.
+ * What each pie comes to: $305,523,401.
  *
- * Spending is $305,523,401: the sum of what three orders appropriate, which no
+ * Spending is the sum of what three orders appropriate, which no
  * document states because no document adds the general fund and the enterprise
  * funds together. `overview.spec.ts` checks it against each of them.
  *
- * Revenue is still the book's $285,272,159 -- page 78's estimate for the
- * general fund alone, on the Mayor's basis rather than the Council's, with no
- * water or wastewater in it. The two sides of this page are not yet the same
- * budget, and the spending page is where the difference is set out.
+ * Both come to it, because both are the same budget seen from its two sides,
+ * which is what the book's own two tables are and what these two orders are.
+ * `overview.spec.ts` checks that they balance.
  */
 const spendingTotal = sum(spending)
-const revenueTotal = amount(cell(REVENUE, "Grand Total", CHARTED))!
+const revenueTotal = sum(revenue)
 
 /**
  * The reserve dials of "Fiscal Reserves" (page 17) and the debt of

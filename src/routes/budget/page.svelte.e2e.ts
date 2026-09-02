@@ -42,14 +42,13 @@ test.describe("budget pages", () => {
   test("the book opens on the budget at a glance, before its contents", async ({ page }) => {
     await page.goto(`/budget/${books[0]}`)
 
-    // The two sides of the budget, each ranked largest first and each heading
-    // carrying its own total. They are not the same figure any more: spending
-    // is what the Council adopted with the enterprise funds in it, and revenue
-    // is still the book's estimate for the general fund alone.
+    // The two sides of one budget, each ranked largest first and each heading
+    // carrying the total: what the Council adopted, and what the same orders
+    // say pays for it, water and wastewater included on both sides.
     await expect(page.getByRole("heading", { name: /^Spending \$305,523,401$/ })).toBeVisible()
     // The revenue heading opens the section every figure in that pie comes
     // from, and is the only way to it: it has no line in the contents.
-    await expect(page.getByRole("heading", { name: /^Revenue \$285,272,159$/ })).toBeVisible()
+    await expect(page.getByRole("heading", { name: /^Revenue \$305,523,401$/ })).toBeVisible()
     await expect(page.getByRole("link", { name: "Revenue", exact: true })).toHaveAttribute(
       "href",
       /\/revenue$/,
@@ -387,6 +386,18 @@ test.describe("budget pages", () => {
     // Nobody votes these two, so they are not in the budget the chart draws.
     expect(labels.some((l) => l?.startsWith("State Assessments"))).toBe(false)
     expect(labels.some((l) => l?.startsWith("Overlay"))).toBe(false)
+
+    // The other side of the same budget: the sources the same orders name,
+    // with the two departments' own revenue beside them and the transfers out
+    // of it counted once.
+    const sources = page.locator(".budget-chart").last().getByRole("img")
+    const income = await sources.evaluateAll((w) => w.map((el) => el.getAttribute("aria-label")))
+    expect(income.some((l) => l?.startsWith("Taxation and Other Receipts, $268,541,960"))).toBe(
+      true,
+    )
+    expect(income.some((l) => l?.startsWith("Wastewater Revenue, $16,666,024"))).toBe(true)
+    expect(income.some((l) => l?.startsWith("Water Revenue, $15,040,417"))).toBe(true)
+    expect(income.some((l) => l?.includes("Receipts, $234,784"))).toBe(false)
 
     // And the high-level view says none of that: the spending page does, in
     // the city's own words.

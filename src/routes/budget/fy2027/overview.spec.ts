@@ -4,7 +4,13 @@ import { APPROPRIATIONS, DEPARTMENTS } from "./spending/tables"
 import { REVENUE } from "./revenue/tables"
 import { FUND_BALANCE, FREE_CASH, STABILIZATION } from "./reserves/tables"
 import { LONG_TERM_DEBT } from "./outstanding-debt/tables"
-import { APPROPRIATED, ENTERPRISE, GENERAL_FUND, ORDERS } from "./council-orders"
+import {
+  APPROPRIATED,
+  ENTERPRISE,
+  ENTERPRISE_REVENUE,
+  GENERAL_FUND,
+  ORDERS,
+} from "./council-orders"
 
 /**
  * What the book's own page 78 says about itself.
@@ -125,6 +131,22 @@ describe("the spending chart", () => {
       amount(cell(APPROPRIATIONS, "State Assessments", CHARTED))! +
       amount(cell(APPROPRIATIONS, "Overlay", CHARTED))!
     expect(sum(functions) + charged).toBe(TOTAL + 1)
+  })
+
+  // Two sides of one budget: what a budget is.
+  it("balances against the revenue chart beside it", () => {
+    const revenue = [
+      ...column(GENERAL_FUND, "Amount", { exclude: ["Water Receipts", "Wastewater Receipts"] }),
+      ...column(ENTERPRISE_REVENUE, "Amount"),
+    ]
+
+    expect(sum(revenue)).toBe(sum(drawn))
+    expect(sum(revenue)).toBe(305523401)
+
+    // The transfers are counted once, in the departments' own revenue, and not
+    // again as the general fund sources the same order names.
+    expect(revenue.map((r) => r.label)).not.toContain("Water Receipts")
+    expect(sum(revenue) + 234784 + 698981).toBe(305523401 + 933765)
   })
 
   it("carries the water and wastewater departments as slices of their own", () => {

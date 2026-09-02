@@ -107,14 +107,12 @@ sits on.
 | Chart             | What it draws                                                 | From                                                                 |
 | ----------------- | ------------------------------------------------------------- | -------------------------------------------------------------------- |
 | Spending          | the budget the Council adopted, water and wastewater included | page 78 less what nobody votes, plus the orders of 2 June 2026       |
-| Revenue           | the book's estimate for the general fund                      | page 78, `revenue/tables.ts`                                         |
+| Revenue           | what pays for it, on the same basis                           | the orders of 2 June 2026, `council-orders.ts`                       |
 | Reserves and Debt | two bars on one scale, each divided into its parts            | page 17, `reserves/tables.ts`; page 21, `outstanding-debt/tables.ts` |
 
-The two pies are the year — everything the city spends, and everything it
-expects to take in — and sit in the narrow left column. **They no longer come to
-the same figure**, which is not a fault in either: the spending pie is what was
-adopted, and the revenue pie is still the book's page-78 estimate for the
-general fund on the Mayor's basis. Squaring the two is unfinished work. Reserves and debt are the standing position
+The two pies are the year — everything the city spends, and everything that pays
+for it — and sit in the narrow left column. Both are the budget the Council
+adopted, so both come to $305,523,401, which is what a budget balancing means. Reserves and debt are the standing position
 underneath it, which is a different question, so they sit above the table of
 contents rather than beside the pies. Both read their figures out of the
 sections' own transcriptions; see "A section whose tables are charted" below.
@@ -276,6 +274,20 @@ which the book does not carry at all. The eleven functions that remain come to
 $274,750,725, the Council's order to the dollar, and with the two departments
 the pie is **$305,523,401**, a figure no document states because no document
 adds the general fund and the enterprise funds together.
+
+**The revenue pie is the same budget from the other side**: the sources order
+13.3 names for the general fund — taxation and other receipts, free cash, a
+transfer — with what the two departments are billed, $15,040,417 and
+$16,666,024. The order's own "Water Receipts" and "Wastewater Receipts" lines
+are left out, because they are transfers out of that same billed revenue and
+counting both would count $933,765 twice. What is left balances against the
+spending pie exactly.
+
+It is coarser than the book's estimate, which breaks the general fund into
+sixteen sources — tax levy, Chapter 70, motor vehicle excise and the rest. That
+table is still transcribed at the foot of the revenue page, which the chart's
+heading opens. The adopted budget names five sources, and this chart is the
+adopted budget.
 
 None of that is on the front page. A pie is a shape for one question, and the
 explanation belongs where a reader who wants it goes: the orders are quoted on

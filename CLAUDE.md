@@ -121,11 +121,12 @@ from the book's $285,272,159, and the Council votes $274,750,725 rather than tha
 total -- the difference being state assessments and the overlay, which are
 charged to the city rather than voted. So the pie is page 78's functions less
 those two lines, plus the two departments: $305,523,401.
+The revenue pie is the same orders from the other side -- the sources 13.3 names
+plus what the two departments are billed, less the transfers between them -- so
+the two pies balance at $305,523,401.
 `fy2027/council-orders.ts` transcribes the orders from the agenda of 2 June 2026
 -- a document the calendar half already carries -- and `spending` quotes them,
-which is where that explanation lives; the front page just draws the budget. The
-revenue pie is still the book's general fund estimate, so the two sides do not
-match yet.
+which is where that explanation lives; the front page just draws the budget.
 
 **The budget is the same idea one level deeper, and shares nothing with the
 calendar.** The bar's menu lists every fiscal year the city publishes — a book
