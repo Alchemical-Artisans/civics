@@ -111,10 +111,10 @@ says it through `bookName`.
 `/budget/<year>` opens on the budget at a glance: the year, and what the year
 sits on.
 
-| Chart             | What it draws                                         | From                                                                 |
-| ----------------- | ----------------------------------------------------- | -------------------------------------------------------------------- |
-| Spending, Revenue | two columns on one scale, each divided into its parts | page 78 and pages 63, plus the orders of 2 June 2026                 |
-| Reserves and Debt | two bars on one scale, each divided into its parts    | page 17, `reserves/tables.ts`; page 21, `outstanding-debt/tables.ts` |
+| Chart              | What it draws                                                                     | From                               |
+| ------------------ | --------------------------------------------------------------------------------- | ---------------------------------- |
+| The three policies | a bullet bar per fund on one scale: the band it may hold in, the balance it holds | the three dial tables, pages 17-20 |
+| What they left     | columns on a zero line: the undesignated balance above, encumbrances below        | page 18's bottom rows              |
 
 The two columns are the year — everything the city spends, and everything that
 pays for it — and sit in the narrow left column of the page.
@@ -414,28 +414,30 @@ just says it first, and next to the two funds that are inside their bands.
 no ceiling. The band runs to the end of the rail and the row prints no maximum:
 the only honest thing to draw at a limit that does not exist is nothing.
 
-**The rest of the page is page 18's table, drawn.** That table is three years of
-the fund balance and what moved it — a beginning balance, the year's whole
-revenue and expenditure, the encumbrances carried forward, and the balance left
-at the end — and it is now two line charts and no table, by
-[`BudgetLines.svelte`](../src/lib/BudgetLines.svelte).
+**The rest of the page is the bottom of page 18's table, drawn.** That table is
+three years of the fund balance and what moved it — a beginning balance, the
+year's whole revenue and expenditure, the encumbrances carried forward, and the
+balance left at the end. It is charted rather than printed, and it is charted
+across two pages: what the years left behind is here, and what came in and went
+out is on [`history`](#history).
 
-**Two charts, because the table holds figures of two sizes.** A year's revenue
-is a quarter of a billion dollars; the balance it leaves is fourteen million. On
-one scale the balance is a flat line on the floor, and a second y-axis would let
-the drawing say whatever suited — two scales can be slid past each other until
-the lines cross wherever you like. So the flows are one chart and what they left
-is the other, and the years belong to the charts rather than to the rows: both
-are given the same four columns, so a reader can look straight down from one to
-the next. Both components take `years` and a value per year per
-series, `null` where the book prints none; the line chart breaks across a gap
-rather than drawing through it, and the bar chart draws no bar. What puts a year
-in the same place in both is
-[`chart-frame.ts`](../src/lib/chart-frame.ts), the viewBox and the band
-positions, shared so the alignment is structural rather than a coincidence two
-files have to keep agreeing on. Years sit in the middle of their own band and
-not at the edges of the plot: a bar at the edge would hang over the axis
-figures, and a year has to be in one place for both charts.
+**The split is by subject, not by size.** A year's revenue is a quarter of a
+billion dollars and the balance it leaves is fourteen million, so they could
+never have shared a scale anyway — one scale draws the balance flat on the
+floor, and a second y-axis lets a drawing say whatever suits, since two scales
+can be slid past each other until the lines cross wherever you like. But the
+reason they are on different pages is that only one of them is about reserves.
+
+Both components — [`BudgetLines.svelte`](../src/lib/BudgetLines.svelte) and
+[`BudgetBars.svelte`](../src/lib/BudgetBars.svelte) — take `years` and a value
+per year per series, `null` where the book prints none; the line chart breaks
+across a gap rather than drawing through it, and the bar chart draws no bar.
+Both take their geometry from
+[`chart-frame.ts`](../src/lib/chart-frame.ts) — the viewBox and the band
+positions — so two charts drawn from one table put a year in the same place
+whether they are on one page or two. Years sit in the middle of their own band
+and not at the edges of the plot: a bar at the edge would hang over the axis
+figures.
 
 **What they left is bars, not a line.** Those four figures are not a trend but
 where the city stood at four closes of business, and a line drawn between two
@@ -494,6 +496,22 @@ year with something missing from it, and the year it added is one the book
 itself does not account for. What it showed is still on the page in the city's
 own words: the balance fell in 2023, which is the year the flows above cross.
 
+### history
+
+**`history` is not a section of the book.** The book keeps its history wherever
+the history happened to be needed — three years of revenue and expenditure
+inside the fund balance table on page 18, ten years of forecast inside the
+spending pages — so a reader who wants to know what has been happening has to
+know where to look first. This is the page for that, and it starts with page
+18's top rows.
+
+It is reached from under the two bars on the book's front page, which is the
+same question asked backwards: the bars are what the city stands on today, and
+this is what it has been taking in and spending to get there. There is no
+contents line for it, because it is in no contents — `linkedElsewhere` in the
+e2e suite names it so the "every section the contents links to" count still
+adds up.
+
 **The expenditure line is drawn at what was spent.** The book prints these rows
 inside a sum — "Plus Fiscal Year Revenue", "Less Fiscal Year Expenditures" — and
 sets the expenditure in parentheses, which is the sum's minus sign rather than a
@@ -502,12 +520,11 @@ renaming a row to suit a chart is inventing text. What the picture then shows is
 the year the two lines cross: 2023, when the city spent $233,787,846 against
 $231,470,272 of revenue, which is the dip in the balance below it.
 
-**Neither chart starts at zero, and both say so.** A line chart is read for its
-shape, and revenue moving from $231 million to $263 million against an axis that
-begins at nothing never leaves the top of the plot. The figures at the two ends
-of the axis are drawn whatever else is. Zero itself is drawn only on a chart
-that contains it — the encumbrances change sign, which no shape on its own
-says.
+**The line chart does not start at zero, and says so.** A line chart is read for
+its shape, and revenue moving from $231 million to $263 million against an axis
+that begins at nothing never leaves the top of the plot. The figures at the two
+ends of the axis are drawn whatever else is. The bars on `reserves` do start at
+zero, because a bar's meaning is its length.
 
 **"Fund Accounting" is listed twice, on `reserves` and on `outstanding-debt`.**
 It is the section that says these funds are separate things, which is what the

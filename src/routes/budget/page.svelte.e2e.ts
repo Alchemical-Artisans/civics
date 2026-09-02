@@ -36,7 +36,16 @@ const unlinked = [
  * city's prose links. A contents line as well would offer the same page twice
  * on one screen.
  */
-const linkedElsewhere = ["reserves", "outstanding-debt", "revenue", "spending", "glossary"]
+const linkedElsewhere = [
+  "reserves",
+  "outstanding-debt",
+  "revenue",
+  "spending",
+  "glossary",
+  // Not a section of the book at all, and so in no contents to be dropped
+  // from: it is reached from under the two bars on the front page.
+  "history",
+]
 
 /**
  * The calendar's link to the city's own file, which is on every page of a book.
@@ -401,24 +410,35 @@ test.describe("budget pages", () => {
     )
   })
 
-  test("draws page 18's table as two charts sharing a row of years", async ({ page }) => {
-    await page.goto(`/budget/${books[0]}/reserves`)
+  test("puts what came in and went out on a page of its own", async ({ page }) => {
+    // Page 18's top rows are not about reserves: they are what the city took in
+    // and spent, and they belong with whatever else the book says about years
+    // gone by rather than under a policy about fund balances.
+    await page.goto(`/budget/${books[0]}`)
+    const opens = page.getByRole("link", { name: "History", exact: true })
+    await expect(opens).toBeVisible()
 
-    // Two and not one: a year's revenue is a quarter of a billion dollars and
-    // the balance it leaves is fourteen million, so one scale draws the balance
-    // flat on the floor and two axes on one chart let it say anything.
-    const flows = page.locator(".budget-lines")
-    const balance = page.locator(".budget-bars")
-    await expect(flows).toHaveCount(1)
-    await expect(balance).toHaveCount(1)
+    // Under the two bars, which are the same question asked the other way
+    // round: what the city stands on today, and what it has been taking in and
+    // spending to get there.
+    const bars = (await page.locator(".budget-stack").boundingBox())!
+    const link = (await opens.boundingBox())!
+    expect(link.y).toBeGreaterThan(bars.y + bars.height)
+
+    await opens.click()
+    await expect(page).toHaveURL(/\/budget\/fy2027\/history$/)
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("History")
 
     // The book's own row labels, sum and all -- and the money at the size it
     // was spent, since the parentheses on the expenditure line are the sum's
     // minus sign rather than a negative amount of spending.
-    const named = (chart: ReturnType<typeof flows.locator>) =>
-      chart.evaluateAll((marks) => marks.map((m) => m.getAttribute("aria-label")))
-
-    expect(await named(flows.locator("circle"))).toEqual([
+    const flows = page.locator(".budget-lines")
+    await expect(flows).toHaveCount(1)
+    expect(
+      await flows
+        .locator("circle")
+        .evaluateAll((marks) => marks.map((m) => m.getAttribute("aria-label"))),
+    ).toEqual([
       "Plus Fiscal Year Revenue, 2023, $231,470,272",
       "Plus Fiscal Year Revenue, 2024, $244,738,056",
       "Plus Fiscal Year Revenue, 2025, $262,614,748",
@@ -427,11 +447,30 @@ test.describe("budget pages", () => {
       "Less Fiscal Year Expenditures, 2025, $257,460,366",
     ])
 
+    // Neither line starts at zero -- a line is read for its shape -- so the
+    // figures at the ends of the axis are drawn, and zero is not among them.
+    await expect(flows.locator("svg")).not.toContainText("$0")
+    await expect(flows.getByRole("listitem")).toHaveCount(2)
+
+    // And it is not on the reserves page any more.
+    await page.goto(`/budget/${books[0]}/reserves`)
+    await expect(page.locator(".budget-lines")).toHaveCount(0)
+  })
+
+  test("draws what those years left behind on the reserves page", async ({ page }) => {
+    await page.goto(`/budget/${books[0]}/reserves`)
+
+    const balance = page.locator(".budget-bars")
+    await expect(balance).toHaveCount(1)
+
     // Bars, not a line: these are three closes of business rather than a trend,
     // and the balance is charted under the name the dial and the prose give it
     // -- undesignated, which is the part a Council can appropriate. The book's
     // closing row only: its opening row is the same figure a year earlier, so
     // charting both would be one row drawn twice.
+    const named = (chart: ReturnType<typeof balance.locator>) =>
+      chart.evaluateAll((marks) => marks.map((m) => m.getAttribute("aria-label")))
+
     expect(await named(balance.locator("rect"))).toEqual([
       "Undesignated Fund Balance, 2023, $10,209,394",
       "Net Reserve for Encumbrances, 2023, $97,098",
@@ -441,8 +480,7 @@ test.describe("budget pages", () => {
       "Net Reserve for Encumbrances, 2025, -$3,738,924",
     ])
 
-    // The bars stand on zero and run in the direction of their sign: the
-    // balance above the line, the two years of encumbrances below it.
+    // The bars stand on zero and run in the direction of their sign.
     const zero = await balance
       .locator("svg line")
       .last()
@@ -489,39 +527,12 @@ test.describe("budget pages", () => {
     const sliver = sides.find((bar) => bar.label.includes("$97,098"))!
     expect(sliver.depth).toBeGreaterThanOrEqual(2)
 
-    // The same three years under both, in the same places, so a reader can look
-    // straight down from one chart to the other -- and they are the book's own
-    // columns, so neither chart carries a year with a hole in it. Both take the
-    // geometry from `chart-frame.ts`, which is what makes that true rather than
-    // lucky.
-    const axis = (chart: ReturnType<typeof flows.locator>) =>
-      chart
-        .locator("svg text")
-        .evaluateAll((labels) =>
-          labels
-            .filter((label) => /^\d{4}$/.test(label.textContent ?? ""))
-            .map((label) => `${label.textContent}@${Math.round(Number(label.getAttribute("x")))}`),
-        )
-
-    expect(await axis(flows)).toEqual(await axis(balance))
-    expect((await axis(flows)).map((label) => label.split("@")[0])).toEqual([
-      "2023",
-      "2024",
-      "2025",
-    ])
-
-    // Every row is named where it is drawn, since one mark is told from the one
-    // beside it by colour and nothing else.
-    await expect(flows.getByRole("listitem")).toHaveCount(2)
+    // Zero is drawn, because the bars stand on it.
+    await expect(balance.locator("svg")).toContainText("$0")
     await expect(balance.getByRole("listitem")).toHaveCount(2)
 
-    // Zero is drawn on the chart the bars stand on, and on the line chart only
-    // if a line crosses it -- neither of those does.
-    await expect(balance.locator("svg")).toContainText("$0")
-    await expect(flows.locator("svg")).not.toContainText("$0")
-
-    // And the table is gone: the charts carry every cell of it, and a table
-    // saying again what the picture above it just said is a page read twice.
+    // And no table: the charts carry every cell of page 18 between them, and a
+    // table saying again what a picture just said is a page read twice.
     await expect(page.getByRole("article").getByRole("table")).toHaveCount(0)
     await expect(page.getByRole("article")).not.toContainText("Beginning Fund Balance")
   })

@@ -212,20 +212,21 @@ Notable pieces:
   this year, which is the page's story; stabilization's band has no closing edge,
   because its policy sets no ceiling.
 - **`src/lib/BudgetLines.svelte`** follows a table's rows across the years it
-  gives them for, and is the rest of the reserves page: page 18 is now two line
-  charts and no table. Two, because that table holds a quarter of a billion
-  dollars of revenue and a fund balance of fourteen million -- one scale draws
-  the balance flat on the floor, and a second y-axis lets a drawing say
-  whatever suits, so it is two charts sharing a row of years instead. The years
-  belong to the chart, not the series: each series gives one value per year and
-  `null` where the book prints none, so a row the book is silent about for a
-  year draws nothing there rather than shifting everything along. The
-  expenditure line is drawn at what
-  was spent, since the book's parentheses are its sum's minus sign, and the row
-  labels stay the book's, "Plus" and "Less" included. It does not start at
-  zero -- a line is read for its shape -- and prints the figures at the ends
-  of the axis.
-- **`src/lib/BudgetBars.svelte`** is the other half of that page: each year as a
+  gives them for, and draws `history`: what the city took in and what it spent,
+  from the top of page 18. `history` is not a section of the book -- the book
+  keeps its history wherever the history happened to be needed -- so it has no
+  contents line and is reached from under the two bars on the front page, which
+  is the same question asked backwards. The years belong to the chart, not the
+  series: each series gives one value per year and `null` where the book prints
+  none, so a row the book is silent about for a year draws nothing there rather
+  than shifting everything along. The expenditure line is drawn at what was
+  spent, since the book's parentheses are its sum's minus sign, and the row
+  labels stay the book's, "Plus" and "Less" included. It does not start at zero
+  -- a line is read for its shape -- and prints the figures at the ends of the
+  axis.
+- **`src/lib/BudgetBars.svelte`** draws the other half of that table, on
+  `reserves`, where it belongs -- the flows are the city's, the balance they
+  left is the reserves page's subject. Each year is a
   column standing on a zero line, the undesignated fund balance above it and
   that year's encumbrances below. Bars because these are three closes of
   business rather than a trend, and they start at zero because a bar's meaning

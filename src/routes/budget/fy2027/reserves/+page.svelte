@@ -4,7 +4,6 @@
   // `BudgetTable` prints the cells exactly as `tables.ts` holds them, which is
   // exactly as the book sets them.
   import BudgetBands from "$lib/BudgetBands.svelte"
-  import BudgetLines from "$lib/BudgetLines.svelte"
   import BudgetBars from "$lib/BudgetBars.svelte"
   import BookElsewhere from "$lib/BookElsewhere.svelte"
   import { amount, cell, type BudgetTableData } from "$lib/budget-table"
@@ -61,36 +60,18 @@
   /**
    * The years page 18 accounts for, which are its own columns.
    *
-   * Both charts take them, so a year is in one place on the page and a reader
-   * can look straight down from the flows to what they left.
-   *
-   * The book gives one figure outside these: the balance carried into 2023,
+   * The book gives one figure outside them: the balance carried into 2023,
    * which is the balance the city closed 2022 with. It was charted for a while
    * and is not now -- a column holding one of the two rows this chart draws
    * reads as a year with something missing from it, and the year it added is
-   * one the book itself does not account for. What it showed is still on the
-   * page in the city's own words: the balance fell in 2023, which is the year
-   * the flows above cross.
+   * one the book itself does not account for.
+   *
+   * The top of the same table -- what came in and what went out each of these
+   * years -- is on `history`, which is not about reserves. What it says about
+   * this chart is that 2023, the year the balance fell, is the year the city
+   * spent more than it took in.
    */
   const years = FUND_BALANCE_HISTORY.columns.slice(1)
-
-  /** A row of the table, read across those years. */
-  const row = (label: string) =>
-    years.map((year) => Math.abs(amount(cell(FUND_BALANCE_HISTORY, label, year))!))
-
-  /**
-   * What came in and what went out, at the size of the money.
-   *
-   * The book prints these inside a sum -- "Plus Fiscal Year Revenue", "Less
-   * Fiscal Year Expenditures" -- and writes the expenditure in parentheses,
-   * which is the sum's minus sign rather than a negative amount of spending.
-   * The line is drawn at what was spent; the label is the book's, sum and all,
-   * because renaming a row to suit a chart is inventing text.
-   */
-  const flows = [
-    { label: "Plus Fiscal Year Revenue", values: row("Plus Fiscal Year Revenue") },
-    { label: "Less Fiscal Year Expenditures", values: row("Less Fiscal Year Expenditures") },
-  ]
 
   /**
    * What they left behind, as columns standing on a zero line.
@@ -176,24 +157,8 @@
 </p>
 
 <!--
-  Page 18's whole table, as two charts sharing a row of years.
-
-  Two and not one because the table holds figures of two sizes: a year's revenue
-  and expenditure are a quarter of a billion dollars each, and the balance they
-  leave behind is fourteen million. On one scale the balance is a flat line on
-  the floor; on two axes the drawing could be made to say anything. So the flows
-  are one chart and what they leave is the other, drawn against the same four
-  years so a reader can look straight down from one to the next.
-
-  The flows first, because they are the cause. The book prints them as a sum --
-  "Plus", "Less" -- and the signs are that sum's, not the money's: what the city
-  spent in 2023 is $233,787,846, and the line is drawn at what was spent. The
-  row labels are the book's own, sum and all.
--->
-<BudgetLines {years} rows={flows} />
-
-<!--
-  And what they left: columns rather than a line, because these are not a trend
+  Page 18's bottom rows: what each of those years left behind, as columns rather
+  than a line, because these are not a trend
   but where the city stood at four closes of business. A line between two
   balances invites the eye to read its slope as though something happened along
   the way, and the book claims nothing about the months in between.

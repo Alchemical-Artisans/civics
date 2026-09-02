@@ -164,6 +164,23 @@
           },
         ]}
       />
+
+      <!--
+        Under the bars, because it is the same question asked backwards: they
+        are what the city stands on today, and this is what it has been taking
+        in and spending to get there. It is a page of ours rather than a section
+        of the book -- the book keeps its history wherever the history happened
+        to be needed -- so there is no contents line for it anywhere, and this
+        is the way in.
+      -->
+      <p class="not-prose mt-3 text-sm">
+        <a
+          class="font-semibold text-slate-900 underline decoration-slate-400 decoration-2 underline-offset-2 hover:decoration-slate-900"
+          href={Router.budgetSection(book.id, "history")}
+        >
+          History
+        </a>
+      </p>
     </div>
 
     <!--
