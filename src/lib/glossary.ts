@@ -35,7 +35,7 @@ export const TERMS: Term[] = glossary.terms
 /** Where the transcription came from, for the page that shows it. */
 export const SOURCE = glossary.source
 
-const byName = new Map(TERMS.map((t) => [t.term.toLowerCase(), t]))
+let byName: Map<string, Term> | null = null
 
 /**
  * The definition of a term, matched on the glossary's own name for it and not
@@ -44,6 +44,8 @@ const byName = new Map(TERMS.map((t) => [t.term.toLowerCase(), t]))
  * than rendering an empty tooltip, because that is a typo in a page.
  */
 export function define(term: string): Term {
+  byName ??= new Map(TERMS.map((t) => [t.term.toLowerCase(), t]))
+
   const found = byName.get(term.toLowerCase())
   if (!found) throw new Error(`No glossary term "${term}"`)
   return found

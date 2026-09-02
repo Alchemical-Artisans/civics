@@ -467,47 +467,40 @@ glossary was read off rendered pages like every other section. It lives in
 `$lib` rather than beside the route because three things need it — the page, the
 component, and the script.
 
-**[`GlossaryTerm`](../src/lib/GlossaryTerm.svelte) brings the definition to the
-word, and it is a link rather than a control.** A button that only shows text
-does nothing without a script, nothing in a reader mode, nothing for a crawler,
-and fills the tab order with stops that go nowhere. A link to the term's own
-entry in the glossary is the ordinary technique (WCAG G55): it works with no
-script, is announced as a link, and gives a touch reader somewhere to go rather
-than a tooltip to dismiss.
+**[`GlossaryTerm`](../src/lib/GlossaryTerm.svelte) is a link to the term's own
+entry on that page, and nothing else.** It works with no script, in a reader
+mode and for a crawler; it is announced as a link and reached by the keyboard
+like any other; and a touch reader gets somewhere to go rather than something to
+dismiss.
 
-Three things hang off that:
-
-- **The definition is on the link before anyone asks for it**, as
-  `aria-describedby`, so a screen reader reads the word and then what it means
-  with no hovering or focusing involved. The node it points at is `aria-hidden`,
-  or reading the page straight through would recite the definition of "levy"
-  thirty-one times; a description referenced by id is still computed from hidden
-  text. Its id comes from `$props.id()`, which is unique per use and the same
-  string on the server and in the browser.
-- **The tooltip is CSS.** Hover or focus the word and that same node stops being
-  clipped and becomes a box under it — so it works on a page that has not
-  hydrated, and the pointer can move onto the definition without losing it,
-  which is what WCAG 1.4.13 asks of content shown on hover. It is clipped rather
-  than `display: none` because a hidden node has to stay in the tree the
-  description is read from.
-- **The one script is Escape**, which 1.4.13 also asks for and CSS cannot do.
+It was briefly more than that — the definition sat on the page under the word
+and described the link with `aria-describedby`, with a CSS tooltip on hover —
+and that is worth coming back to, but not in that shape: it read the definition
+of "levy" at every one of its twenty-nine uses on the revenue page, so a screen
+reader got a worse page than a sighted reader, in the name of accessibility. One
+page holding every definition, linked from every use, is the simple version to
+build the next attempt on.
 
 The word on the page is whatever the city wrote — "free cash" mid-sentence,
-"levies" for "Levy" — and `term` is what the glossary heads it. Nothing rewrites
-the city's text.
+"levies" for "Levy" — and `term` is what the glossary heads it, which is what
+the link is built from. The component looks nothing up, so the script below is
+also what checks that the term named is one the book defines; otherwise it would
+be a dead anchor.
 
 **[`scripts/check-glossary.mjs`](../scripts/check-glossary.mjs) is what keeps
 that true.** `npm run glossary:check` — which `npm run lint` calls — scans every
 transcription for the terms the book defines and fails on a use that carries no
 definition. `--fix` wraps them and adds the import; it wrapped 98 uses across
-six pages when it was first run.
+six pages when it was first run. It also fails on a `term=` that names something
+the glossary does not define.
 
 Two rules, both in the script:
 
 - **Every use, not the first.** A reader who arrives halfway down a page, from a
   link or a search, has not passed the paragraph where the word came up first.
-  This is affordable precisely because the wrapper is a link: 71 links in a long
-  document is ordinary, where 71 buttons that do nothing is not.
+  This is affordable precisely because the wrapper is a link and carries no text
+  of its own: 71 links in a long document is ordinary, where 71 buttons that do
+  nothing, or 71 copies of a definition, is not.
 - **A match that is part of a name is not a use.** The book defines "Department"
   and also writes "Water Department", "School Department", "Department of
   Revenue", none of which is the glossary's "principal, functional and

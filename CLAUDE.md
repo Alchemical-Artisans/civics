@@ -186,19 +186,18 @@ Notable pieces:
   keeps an `sr-only` line instead. Colour for every chart here comes from
   **`src/lib/chart-colours.ts`**, one validated sequence, restarted per pie and
   per bar.
-- **`src/lib/GlossaryTerm.svelte`** puts the book's own definition on a word in
-  the city's prose. It is a **link** to the term's entry in the glossary, not a
-  button -- a button showing text does nothing without a script and fills the tab
-  order with stops that go nowhere. The definition rides on the link as
-  `aria-describedby` (on an `aria-hidden` node, so reading the page does not
-  recite it), and the tooltip is pure CSS, so it works unhydrated and the pointer
-  can move onto it; the only script is Escape. The 62 terms are
-  `src/lib/data/glossary.json`, transcribed from pages 232 to 245 -- the one file
-  in `data/` no scraper writes -- and read by the component, by
-  `/budget/fy2027/glossary`, and by **`scripts/check-glossary.mjs`**, which
-  `npm run lint` runs: it fails when a page uses a defined term without its
-  definition, and `--fix` wraps it. Every use is wrapped, not just the first,
-  except where the match is part of a name ("Water Department").
+- **`src/lib/GlossaryTerm.svelte`** links a word in the city's prose to the
+  book's definition of it: a plain link to that term's entry on
+  `/budget/fy2027/glossary`, nothing more. It briefly carried the definition
+  itself, as `aria-describedby` plus a CSS tooltip, which made a screen reader
+  recite the definition of "levy" at all twenty-nine of its uses -- worth
+  revisiting, but not in that shape. The 62 terms are
+  `src/lib/data/glossary.json`, transcribed from pages 232 to 245 (the one file
+  in `data/` no scraper writes), rendered by the glossary page and read by
+  **`scripts/check-glossary.mjs`**, which `npm run lint` runs: it fails when a
+  page uses a defined term without linking it, or names a term the book does not
+  define, and `--fix` wraps them. Every use is linked, not just the first, except
+  where the match is part of a name ("Water Department").
 - **`src/lib/BudgetPie.svelte`** is the pie chart a budget book opens with --
   two of them, appropriations and revenue, each headed with a link to the side of
   the book it is about -- `appropriations` and `revenue`, which gather that

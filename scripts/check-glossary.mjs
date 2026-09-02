@@ -101,7 +101,7 @@ for (const page of pages) {
 
       if (!fix) {
         missing += 1
-        console.log(`${relative(root, file)}: "${use.text}" is not defined (${term})`)
+        console.log(`${relative(root, file)}: "${use.text}" is not linked (${term})`)
         break
       }
 
@@ -130,14 +130,23 @@ for (const page of pages) {
     }
   }
 
+  // The component builds a link out of the term it is given and looks nothing
+  // up, so a name that is not the glossary's would be a dead anchor. This is
+  // the only thing that would notice.
+  for (const [, named] of source.matchAll(/<GlossaryTerm\s+term="([^"]+)"/g)) {
+    if (names.includes(named)) continue
+    console.log(`${relative(root, file)}: "${named}" is not a term the book defines`)
+    missing += 1
+  }
+
   if (fix) writeFileSync(file, source)
 }
 
 if (fix) {
   console.log(`wrapped ${fixed} uses`)
 } else if (missing) {
-  console.log(`\n${missing} use(s) of a defined term are not defined; run with --fix`)
+  console.log(`\n${missing} problem(s); run with --fix to wrap what can be wrapped`)
   process.exit(1)
 } else {
-  console.log(`every use of a defined term carries its definition`)
+  console.log(`every use of a defined term links to its definition`)
 }
