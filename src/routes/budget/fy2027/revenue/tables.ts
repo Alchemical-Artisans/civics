@@ -2,7 +2,7 @@
  * The revenue table of "2027 Budget in Brief", page 78.
  *
  * Data rather than markup for the same reason its opposite number is, in
- * `appropriations/tables.ts`: the front page's revenue pie reads the 2027
+ * `spending/tables.ts`: the front page's revenue pie reads the 2027
  * column out of it, so there is one copy of these figures and both render from
  * it. Nothing here formats anything -- the cells are the strings the book
  * prints.

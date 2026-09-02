@@ -2,9 +2,18 @@ import type { PageLoad } from "./$types"
 import { Router } from "$lib/router"
 
 /**
- * Everything the book says about where the money goes: "Capital Planning"
- * (page 28), "10-Year Appropriation Forecast" (69), "2027 Budget Requests" (72)
- * and "2027 Budget Challenges" (73), in the book's order, and three of the
+ * Everything the book says about where the money goes.
+ *
+ * Called "Spending" rather than "Appropriations", which is the book's word and
+ * the exact one -- an appropriation is the Council's authorisation to spend a
+ * stated amount, for a stated purpose, from a stated source, in one year -- but
+ * a word most readers would have to look up before the page could tell them
+ * anything. It is in the glossary, and the prose here still says it.
+ *
+ * What it holds: the two sets of goals
+ * (pages 15 and 16), "Capital Planning" (28), "10-Year Appropriation Forecast"
+ * (69), "2027 Budget Requests" (72) and "2027 Budget Challenges" (73), in the
+ * book's order, and three of the
  * appropriation's own lines -- Debt Service (200), State Assessments (209) and
  * Employee Benefits (211) -- which nobody has transcribed and which are
  * therefore links into the city's file at the page the book gives them.
@@ -37,6 +46,10 @@ import { Router } from "$lib/router"
  * *not* in this year's appropriation at all -- capital over $250,000 is
  * borrowed, and reaches the budget years later as debt service.
  *
+ * The goals are here rather than in the contents because they are goals for
+ * the spending: what the Mayor set out to do with the year's money, which is
+ * the first thing the rest of this page is an account of.
+ *
  * The page number is the first of them, so the bar's source link opens the
  * city's file where the run begins.
  */
@@ -44,7 +57,7 @@ export const load: PageLoad = async ({ parent }) => {
   const { book } = await parent()
 
   return {
-    section: { title: "Appropriations", page: 28 },
+    section: { title: "Spending", page: 15 },
     elsewhere: [
       { title: "Fiscal Reserves", section: "reserves" },
       { title: "Debt Service", href: Router.pdfPage(book.budget!, 200) },

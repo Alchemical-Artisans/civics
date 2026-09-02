@@ -81,9 +81,9 @@
     <h2>
       <a
         class="font-semibold text-slate-900 underline decoration-slate-400 decoration-2 underline-offset-4 hover:decoration-slate-900"
-        href={Router.budgetSection(book.id, "appropriations")}
+        href={Router.budgetSection(book.id, "spending")}
       >
-        Appropriations
+        Spending
       </a>
       <span class="font-normal text-slate-500 tabular-nums">{money.format(overview.total)}</span>
     </h2>
@@ -163,16 +163,27 @@
     </div>
 
     <!--
-      Two lists and no heading over either: what the year is, and what each of
-      the things the city funds costs. Sixty lines in one list is a list nobody
-      reads to the end of, and a reader arrives wanting one question or the
-      other -- but the second list is not all departments, and a name short
-      enough to head a column is wrong about part of what is under it.
+      What is left of the book's contents once everything with a home has gone
+      to it: one line per thing the city funds. Every other section is reached
+      from a chart, from the bar, from a see-also, or -- for the glossary --
+      from a word in the prose.
+
+      Two lists where anything remains that is not one of those things: what the
+      year is on the left, what it funds on the right. Neither is headed, since
+      no name short enough to head the second column is true of all of it.
     -->
-    <div class="sm:grid sm:grid-cols-2 sm:items-start sm:gap-x-10">
-      {@render list(contents)}
-      {@render list(departments)}
-    </div>
+    {#if contents.length}
+      <div class="sm:grid sm:grid-cols-2 sm:items-start sm:gap-x-10">
+        {@render list(contents)}
+        {@render list(departments)}
+      </div>
+    {:else}
+      <!-- Columns rather than one strip down the page: a list of thirty-four is
+           two columns' worth, and there is no second list to be beside. -->
+      <div class="sm:columns-2 sm:gap-x-10 2xl:columns-3">
+        {@render list(departments)}
+      </div>
+    {/if}
   </div>
 </div>
 

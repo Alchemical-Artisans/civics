@@ -5,7 +5,7 @@
  * the book's front page charts, and a figure transcribed in one place and typed
  * again in another is a figure that will eventually disagree with itself.
  * `BudgetTable` renders these; `$lib/budget-table`'s `column` reads the 2027
- * column out of them for the appropriations pie. Neither formats anything --
+ * column out of them for the spending pie. Neither formats anything --
  * the cells are the strings the book prints.
  *
  * The section's third table is the revenue behind these, and it lives beside

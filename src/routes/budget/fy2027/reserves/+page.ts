@@ -20,7 +20,7 @@ export const load: PageLoad = async ({ parent }) => {
   return {
     section: { title: "Reserves", page: 17 },
     elsewhere: [
-      { title: "10-Year Appropriation Forecast", section: "appropriations" },
+      { title: "10-Year Appropriation Forecast", section: "spending" },
       { title: "Liability, Overlay & Reserves", href: Router.pdfPage(book.budget!, 213) },
       { title: "Fund Accounting", href: Router.pdfPage(book.budget!, 218) },
       { title: "Financial Reserve Policies", href: Router.pdfPage(book.budget!, 227) },

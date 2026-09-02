@@ -199,8 +199,8 @@ Notable pieces:
   define, and `--fix` wraps them. Every use is linked, not just the first, except
   where the match is part of a name ("Water Department").
 - **`src/lib/BudgetPie.svelte`** is the pie chart a budget book opens with --
-  two of them, appropriations and revenue, each headed with a link to the side of
-  the book it is about -- `appropriations` and `revenue`, which gather that
+  two of them, spending and revenue, each headed with a link to the side of
+  the book it is about -- `spending` and `revenue`, which gather that
   side's sections and so have no contents lines of their own. `reserves` is the
   third bucket, opened from the reserves bar. A category page ends with
   **`src/lib/BookElsewhere.svelte`**, the site's only "see also": the parts of
@@ -214,7 +214,7 @@ Notable pieces:
   gets its figures: a
   transcribed table is data (cells as the strings the book prints), `BudgetTable`
   renders it, and `column()` reads a year out of it for the chart. Page 78 is
-  split between `appropriations/tables.ts` and `revenue/tables.ts`, each beside
+  split between `spending/tables.ts` and `revenue/tables.ts`, each beside
   the page that renders it and the chart that reads it. One copy, so
   the chart cannot contradict the table it links to. Same arrangement for the
   reserve dials (`reserves/tables.ts`) and the debt list

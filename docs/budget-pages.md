@@ -106,7 +106,7 @@ sits on.
 
 | Chart                       | What it draws                                                           | From                                                                 |
 | --------------------------- | ----------------------------------------------------------------------- | -------------------------------------------------------------------- |
-| Appropriations, Revenue     | two pies, one circle divided two ways                                   | page 78, `appropriations/tables.ts` + `revenue/tables.ts`            |
+| Appropriations, Revenue     | two pies, one circle divided two ways                                   | page 78, `spending/tables.ts` + `revenue/tables.ts`                  |
 | Appropriated by the Council | two bars on one scale: the general fund, and the enterprise departments | the Council's orders of 2 June 2026, `council-orders.ts`             |
 | Reserves and Debt           | two bars on one scale, each divided into its parts                      | page 17, `reserves/tables.ts`; page 21, `outstanding-debt/tables.ts` |
 
@@ -229,12 +229,16 @@ pages with other things between them, and a reader who wants to know about
 revenue wants all three. Its page number is 48, the first of them, so the bar's
 source link opens where the run begins.
 
-**`appropriations` is the same idea on the spending side**, opened from the
-other pie's heading, and holds "Capital Planning" (28), "10-Year Appropriation
-Forecast" (69), "2027 Budget Requests" (72) and "2027 Budget Challenges" (73),
-in the book's order.
+**`spending` is the same idea on the other side**, opened from the other pie's
+heading, and holds the two sets of goals (15 and 16), "Capital Planning" (28),
+"10-Year Appropriation Forecast" (69), "2027 Budget Requests" (72) and "2027
+Budget Challenges" (73), in the book's order. It is called **Spending** rather
+than "Appropriations", which is the book's word and the exact one but which a
+reader would have to look up before the page could tell them anything; the
+prose on it still says it, and the glossary defines it.
 
-Appropriations is the umbrella because it is the precise word, not a loose one:
+Appropriation is the precise word for what is on that page, even where the page
+is not called it:
 an appropriation is the City Council's authorisation to spend a stated amount,
 for a stated purpose, from a stated source, in one fiscal year, and nothing is
 spent without one — which is why the appropriations table comes to the same
@@ -313,7 +317,7 @@ sentence `revenue` prints in prose ("this reserve may be nearly exhausted by
 them would be a second copy, so the two pages point at each other instead.
 
 **"Elsewhere in the book"** is the device for that, shared by `education`,
-`appropriations` and `reserves` as
+`spending` and `reserves` as
 [`BookElsewhere`](../src/lib/BookElsewhere.svelte). Its items follow the rule
 the contents page follows — a section written up here opens on this site, one
 that is not opens the city's file at its own page — so one list carries both.
@@ -555,7 +559,7 @@ before matching, since a cell is a figure rather than a sentence.
    the pair begins.
 
    A page may also be a **category**, named for what belongs on it rather than
-   for the sections it happens to hold — `revenue` and `appropriations` are the
+   for the sections it happens to hold — `revenue` and `spending` are the
    two halves of the budget, and each gathers the book's sections on its side as
    they are transcribed. The contents line is the category's name, where it has
    one at all; those two are opened from their charts instead.
@@ -574,7 +578,7 @@ before matching, since a cell is a figure rather than a sentence.
 ## A section whose tables are charted
 
 A transcription is ordinarily plain markup. The exception is a section whose
-figures something else on the site also shows — `appropriations` and `revenue`,
+figures something else on the site also shows — `spending` and `revenue`,
 whose halves of page 78 are the two pies; `reserves`, whose three dials are the
 reserve bar; and `outstanding-debt`, whose page-21 list is the debt bar. Those
 tables live in a `tables.ts` beside the page that renders them:

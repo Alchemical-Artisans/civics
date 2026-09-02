@@ -1,7 +1,7 @@
 import type { PageLoad } from "./$types"
 import { contents, type BookSection } from "$lib/budget"
 import { amount, cell, column, type BudgetTableData } from "$lib/budget-table"
-import { APPROPRIATIONS } from "./appropriations/tables"
+import { APPROPRIATIONS } from "./spending/tables"
 import { REVENUE } from "./revenue/tables"
 import { FUND_BALANCE, FREE_CASH, STABILIZATION } from "./reserves/tables"
 import { LONG_TERM_DEBT } from "./outstanding-debt/tables"
@@ -194,6 +194,10 @@ export const load: PageLoad = () => ({
    * prints before the department pages, with nothing on it but its own title,
    * and the list beside this one is what it announces.
    *
+   * The two sets of goals (15 and 16) are on the appropriations page: they are
+   * goals for the spending, and the chart's own heading opens them with the
+   * rest of it.
+   *
    * "Glossary" (231) has a page here and no line either: every term the book
    * defines is a link to its own entry on it, from wherever the city's prose
    * uses the word, so a reader meets the glossary where the word stopped them
@@ -231,7 +235,6 @@ export const load: PageLoad = () => ({
       // One line for the book's two, "2027 Budget Goals" (15) and "Long-Term
       // Strategic Goals" (16): they are four bullets and five on one subject,
       // and the page here carries both under the headings the book prints.
-      ["Goals", 15],
       // "Net School Spending" (26), with "Regional Schools" (150) and "School
       // Department" (152) under it: one page for what the city spends on
       // schools, filed with the budget pages rather than here in the book's

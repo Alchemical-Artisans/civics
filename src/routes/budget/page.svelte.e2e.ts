@@ -36,7 +36,7 @@ const unlinked = [
  * city's prose links. A contents line as well would offer the same page twice
  * on one screen.
  */
-const linkedElsewhere = ["reserves", "outstanding-debt", "revenue", "appropriations", "glossary"]
+const linkedElsewhere = ["reserves", "outstanding-debt", "revenue", "spending", "glossary"]
 
 test.describe("budget pages", () => {
   test("the book opens on the budget at a glance, before its contents", async ({ page }) => {
@@ -44,9 +44,7 @@ test.describe("budget pages", () => {
 
     // Both halves of the same total, each ranked largest first, and each
     // heading carrying that total rather than a line of its own under it.
-    await expect(
-      page.getByRole("heading", { name: /^Appropriations \$285,272,159$/ }),
-    ).toBeVisible()
+    await expect(page.getByRole("heading", { name: /^Spending \$285,272,159$/ })).toBeVisible()
     // The revenue heading opens the section every figure in that pie comes
     // from, and is the only way to it: it has no line in the contents.
     await expect(page.getByRole("heading", { name: /^Revenue \$285,272,159$/ })).toBeVisible()
@@ -120,14 +118,14 @@ test.describe("budget pages", () => {
     await expect(owed.last()).toHaveAttribute("aria-label", "Debt, Public Works, $1,455,200, 0.8%")
   })
 
-  test("splits the contents into the year and what it funds", async ({ page }) => {
+  test("lists what the city funds, and nothing that has a home elsewhere", async ({ page }) => {
     await page.goto(`/budget/${books[0]}`)
 
-    // Two lists and no heading over either: sixty lines in one list is a list
-    // nobody reads to the end of, and the second one is not all departments.
+    // One list, unheaded: every other section of the book is reached from a
+    // chart, the bar, a see-also, or a word in the prose.
     // `> div`, because the calendar in the footer is a list too.
     const lists = page.locator("article > div ol")
-    await expect(lists).toHaveCount(2)
+    await expect(lists).toHaveCount(1)
     await expect(page.getByRole("heading", { name: "Departments" })).toHaveCount(0)
     await expect(page.getByRole("heading", { name: "Table of Contents" })).toHaveCount(0)
 
@@ -136,7 +134,7 @@ test.describe("budget pages", () => {
     //
     // `toContainText`, because a line with no page here carries an `sr-only`
     // note saying it opens the city's PDF.
-    const funded = lists.last().locator("li")
+    const funded = lists.locator("li")
     await expect(funded.first()).toContainText("Assessor's Office")
     await expect(funded.last()).toContainText("Veterans Services")
 
@@ -149,25 +147,17 @@ test.describe("budget pages", () => {
     // and filed here because this is where a reader looks for it.
     await expect(funded.filter({ hasText: "Education" })).toHaveCount(1)
 
-    // Not something the city funds, so these stay with the year's own account
-    // on the left: a line of the appropriation, the book's front matter, and
-    // its back matter.
-    const year = lists.first().locator("li")
-    await expect(year.filter({ hasText: "Goals" })).toHaveCount(1)
-
-    // The divider the book prints before the department pages, with nothing on
-    // it but its own title: the list beside this one is what it announces.
-    await expect(
-      page.locator("article > div ol li").filter({ hasText: "General Fund Budgets" }),
-    ).toHaveCount(0)
-
-    // The three lines the Education page covers are gone from both lists.
-    const every = page.locator("article > div ol li")
-    await expect(every.filter({ hasText: "Net School Spending" })).toHaveCount(0)
-    await expect(every.filter({ hasText: "Regional Schools" })).toHaveCount(0)
-    await expect(every.filter({ hasText: "School Department" })).toHaveCount(0)
+    // Nothing the book says about the year itself is in this list any more.
+    for (const gone of [
+      "Goals",
+      "Glossary",
+      "Budget in Brief",
+      "Debt Service",
+      "Fund Accounting",
+    ]) {
+      await expect(funded.filter({ hasText: gone })).toHaveCount(0)
+    }
   })
-
   test("gathers the revenue sections on one page", async ({ page }) => {
     await page.goto(`/budget/${books[0]}/revenue`)
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("Revenue")
@@ -203,16 +193,16 @@ test.describe("budget pages", () => {
 
     // Both pie headings are links now, each to the side of the book its chart
     // is about, and neither section has a line in the contents.
-    await expect(page.getByRole("link", { name: "Appropriations", exact: true })).toHaveAttribute(
+    await expect(page.getByRole("link", { name: "Spending", exact: true })).toHaveAttribute(
       "href",
-      /\/appropriations$/,
+      /\/spending$/,
     )
     const every = page.locator("article > div ol li")
     await expect(every.filter({ hasText: "Appropriation Forecast" })).toHaveCount(0)
     await expect(every.filter({ hasText: "Revenue Forecast" })).toHaveCount(0)
 
-    await page.goto(`/budget/${books[0]}/appropriations`)
-    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Appropriations")
+    await page.goto(`/budget/${books[0]}/spending`)
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Spending")
 
     // The spending side of the book, in its order: what the city wants to
     // build (28), where the spending is going (69), and what departments asked
@@ -226,8 +216,15 @@ test.describe("budget pages", () => {
     ).toBeVisible()
     await expect(page.getByRole("heading", { name: /^Other Budget Reductions/ })).toBeVisible()
 
-    // The bar's source link opens the book where the run begins.
-    expect(await page.locator('header a[href*="#page="]').getAttribute("href")).toMatch(/#page=28$/)
+    // And the goals the rest of it is an account of, from pages 15 and 16.
+    await expect(page.getByRole("heading", { name: "Mayor's 2027 Budgetary Goals" })).toBeVisible()
+    await expect(
+      page.getByRole("heading", { name: "Long-Term Perspective Strategic Goals" }),
+    ).toBeVisible()
+
+    // The bar's source link opens the book where the run begins, which is now
+    // the goals.
+    expect(await page.locator('header a[href*="#page="]').getAttribute("href")).toMatch(/#page=15$/)
 
     // Three lines of the appropriation itself, which nobody has transcribed:
     // the city's own file, opened at the page the book gives them.
@@ -267,7 +264,7 @@ test.describe("budget pages", () => {
     await expect(page.getByRole("heading", { name: "Fiscal Reserves" })).toBeVisible()
     await expect(
       page.getByRole("link", { name: /^10-Year Appropriation Forecast/ }),
-    ).toHaveAttribute("href", /\/appropriations$/)
+    ).toHaveAttribute("href", /\/spending$/)
 
     // The two reserve sections nobody has transcribed, at their own pages.
     for (const [title, at] of [
@@ -278,7 +275,7 @@ test.describe("budget pages", () => {
       expect(await link.getAttribute("href")).toMatch(new RegExp(`#page=${at}$`))
     }
 
-    await page.goto(`/budget/${books[0]}/appropriations`)
+    await page.goto(`/budget/${books[0]}/spending`)
     await expect(page.getByRole("link", { name: /^Fiscal Reserves/ })).toHaveAttribute(
       "href",
       /\/reserves$/,
@@ -390,9 +387,7 @@ test.describe("budget pages", () => {
 
     // What the Council votes is not the book's total: the difference is the
     // state assessments and the overlay, which are charged to the city.
-    await expect(
-      page.getByRole("heading", { name: /^Appropriations \$285,272,159$/ }),
-    ).toBeVisible()
+    await expect(page.getByRole("heading", { name: /^Spending \$285,272,159$/ })).toBeVisible()
 
     await expect(
       bars.first().getByRole("img", { name: /^General Fund, Taxation and Other Receipts/ }),
