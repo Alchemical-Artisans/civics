@@ -457,22 +457,38 @@ test.describe("budget pages", () => {
       })),
     )
 
+    // Every bar hangs off the zero line and runs the way its sign points.
+    // Nothing is stacked on anything: the balance is already net of the
+    // encumbrance movement -- page 18 only reconciles with that term in -- so
+    // stacking them would draw the same money twice and put the top of a
+    // column at a total the book never states.
     for (const bar of sides) {
       const negative = bar.label.includes(", -$")
-      // SVG y grows downwards, so a bar below the zero line starts on it.
-      expect(negative ? bar.top >= zero - 0.5 : bar.top + bar.depth <= zero + 0.5).toBe(true)
+      // SVG y grows downwards, so a bar below the line starts on it and one
+      // above it ends on it.
+      expect(negative ? bar.top : bar.top + bar.depth).toBeCloseTo(zero, 0)
+      expect(bar.depth).toBeGreaterThan(0)
     }
 
-    // The encumbrances touch the zero line in every year, whichever side of it
-    // they fall: the chart stacks its last row against the line, so the year
-    // they released money puts them at the foot of the column rather than
-    // perched on top of the balance, where a $97,098 sliver would read as part
-    // of the balance's own height.
-    for (const bar of sides.filter((b) => b.label.startsWith("Net Reserve"))) {
-      expect(Math.min(Math.abs(bar.top - zero), Math.abs(bar.top + bar.depth - zero))).toBeLessThan(
-        1.5,
-      )
+    // The encumbrances are drawn in front of the balance rather than beside or
+    // on top of it: a narrower bar from the same line, so the year they
+    // released money instead of taking it is still read against the balance.
+    const widths = await balance.locator("rect").evaluateAll((bars) =>
+      bars.map((bar) => ({
+        label: bar.getAttribute("aria-label")!,
+        span: Number(bar.getAttribute("width")),
+      })),
+    )
+
+    const wide = widths.find((bar) => bar.label.startsWith("Undesignated"))!.span
+    for (const bar of widths) {
+      if (bar.label.startsWith("Net Reserve")) expect(bar.span).toBeLessThan(wide)
     }
+
+    // And a figure too small to draw is still drawn: 2023's $97,098 is a third
+    // of a pixel against a scale of twenty million, and it is a focus target.
+    const sliver = sides.find((bar) => bar.label.includes("$97,098"))!
+    expect(sliver.depth).toBeGreaterThanOrEqual(2)
 
     // The same four years under both, in the same places, so a reader can look
     // straight down from one chart to the other. Both take the geometry from

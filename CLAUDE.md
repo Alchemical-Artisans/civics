@@ -232,11 +232,13 @@ Notable pieces:
   twice. The encumbrances hang below by their sign and not by subtraction: the
   book's row is the _change_ in what is set aside for open purchase orders, the
   balance beside it is already net of that, and the book never says what the
-  reserve itself stands at -- so the two cannot be added, and a year where the
-  change is positive stacks upward instead. The last row given is stacked
-  against the zero line on both sides, so the encumbrances touch it whichever
-  way their sign falls and the balance is always the outer band; segments are
-  still emitted in row order, so the reading order is the page's. **`src/lib/chart-frame.ts`** is the
+  reserve itself stands at -- so nothing is stacked: page 18 only reconciles with
+  the encumbrance term in it, which means the balance is already net of the bar
+  beside it and a stack would draw the same money twice. Bars overlap instead --
+  the first row the width of the band, each one after it narrower and in front
+  -- and every bar hangs off the zero line, so the edge a reader measures from
+  is exact. A non-zero figure is never drawn thinner than two units, since the
+  mark is a focus target too. **`src/lib/chart-frame.ts`** is the
   viewBox and the band positions both charts take, so a year is in the same
   place in each and a reader can look straight down.
 - **`src/lib/GlossaryTerm.svelte`** links a word in the city's prose to the

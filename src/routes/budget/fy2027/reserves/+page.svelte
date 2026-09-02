@@ -110,9 +110,12 @@
    * and its result, in one place because they are the same size and about the
    * same money.
    *
-   * They are given second, and the chart stacks its last row against the zero
-   * line, so the encumbrances sit at the foot of the column in the one year
-   * where they are positive rather than perched on top of the balance.
+   * Nothing is stacked, for the same reason: page 18 only reconciles with the
+   * encumbrance term in it -- 2023 comes to $10,209,394 with it and $10,112,296
+   * without -- so the bar beside it would be the same money drawn twice. They
+   * are given second, and the chart draws each row after the first narrower and
+   * in front, so the year the reserve released money reads against the balance
+   * rather than on top of it.
    */
   const CLOSING = "Ending Fund Balance"
   const ENCUMBRANCES = "Net Reserve for Encumbrances"

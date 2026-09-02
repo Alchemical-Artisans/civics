@@ -7,11 +7,13 @@
   eye to read the slope between them as though something happened along the way;
   a bar says only what the figure was, which is all the book claims.
 
-  Positive and negative are the same column, stacked away from zero in the
-  direction of their sign, so a column's whole span is the distance between the
-  best and worst of what it holds. Nothing is added up: the parts of a column
-  are not necessarily parts of one total, and a stack is only drawn so that two
-  figures about one year can share a place on the page.
+  Nothing is stacked. A stack claims its parts add up to the column, and the
+  rows of a table like this are a figure and the things that moved it -- the
+  figure is already net of them, so stacking would draw the same money twice and
+  put the top of the column at a total no document states. Every bar starts at
+  zero and runs the way its sign points; the first row is the width of the band,
+  and each row after it is narrower and drawn in front of it, so a smaller
+  figure is read against the one behind rather than added to it.
 
   From zero always, and the zero line is drawn. A bar's meaning is its length,
   so a bar chart that begins somewhere else is a bar chart that lies -- unlike a
@@ -71,64 +73,60 @@
   const up = (value: number) =>
     TOP + (1 - (value - bounds.low) / (bounds.high - bounds.low)) * (HEIGHT - TOP - FOOT)
 
-  /** Wide enough to read, narrow enough to leave air between one year and the
-      next: a column is one figure, and the width past that says nothing. */
+  /** The widest bar in a band: wide enough to read, narrow enough to leave air
+      between one year and the next. Rows after the first are drawn narrower
+      than this, in front. */
   const width = $derived(Math.min(56, bandWidth(years.length) * 0.42))
 
   /**
-   * Every segment the chart draws, placed.
+   * Every bar the chart draws, placed.
    *
-   * A year's figures stack away from zero in the direction of their sign, which
-   * is what keeps a column readable when one of them changes sign: the
-   * encumbrances are a small positive in one year of three and a large negative
-   * in another, and either way they are the same colour in the same column.
+   * Every one starts at zero and runs in the direction of its sign. They are
+   * not stacked, because a stack claims its parts add up to the column and
+   * these do not: the rows of a table like page 18's are a figure and the
+   * things that moved it, and the figure is already net of them. Stacking one
+   * on the other would draw the same money twice and put the top of the column
+   * at a total no document states.
    *
-   * The rows are stacked *last first*, so whatever is given last sits against
-   * the zero line and the first row is the outer band -- on both sides. The
-   * rows are given headline first, and the headline is the figure a reader is
-   * meant to read the top of the column as. A year where the smaller figure
-   * happens to be positive would otherwise put it on top, where a $97,098
-   * sliver reads as part of the balance's own height.
+   * So they overlap instead. The first row is the width of the band and is
+   * drawn first; each row after it is narrower and drawn in front, centred, so
+   * a smaller figure is read against the one behind rather than beside it or on
+   * top of it. Where a sign puts a bar the other side of the line there is
+   * nothing to be in front of, and it simply hangs below.
    *
-   * Segments are emitted in the order the rows are given even though they are
-   * placed in the other, so the reading order of the chart -- what a screen
-   * reader walks, what the legend lists -- is the order the page asked for.
+   * Rows are given headline first, which is why they narrow in that order: the
+   * widest bar is the figure the column is about, and its top is that figure.
    */
   const columns = $derived(
     years.map((year, at) => {
-      let above = 0
-      let below = 0
-      // One slot per row, filled back to front. An array rather than a `Map`
-      // because it is scratch inside a derivation and never read as state.
-      const placed: ({ from: number; to: number } | null)[] = rows.map(() => null)
-
-      for (let index = rows.length - 1; index >= 0; index--) {
-        const value = rows[index].values[at]
-        if (value === null || value === 0) continue
-
-        const from = value > 0 ? above : below
-        const to = from + value
-        if (value > 0) above = to
-        else below = to
-        placed[index] = { from, to }
-      }
-
       const parts = rows.flatMap((row, index) => {
-        const span = placed[index]
-        if (!span) return []
+        const value = row.values[at]
+        if (value === null || value === 0) return []
+
+        const span = width * Math.pow(0.45, index)
+
+        // Never thinner than a mark that can be seen. $97,098 against a scale
+        // of twenty million is a third of a pixel, and this is a focus target
+        // as well as a drawing. Nothing at all is drawn for $0, which has no
+        // honest height. The rounding it costs is spent at the far end: the bar
+        // is hung off the zero line, so what a reader measures it from is exact
+        // whatever the clamp does to the other end.
+        const depth = Math.max(Math.abs(up(value) - up(0)), 2)
 
         return [
           {
             label: row.label,
-            value: row.values[at]!,
+            value,
             colour: COLOURS[index % COLOURS.length],
-            top: up(Math.max(span.from, span.to)),
-            depth: Math.abs(up(span.to) - up(span.from)),
+            top: value > 0 ? up(0) - depth : up(0),
+            depth,
+            left: bandCentre(at, years.length) - span / 2,
+            span,
           },
         ]
       })
 
-      return { year, at, left: bandCentre(at, years.length) - width / 2, parts }
+      return { year, at, parts }
     }),
   )
 
@@ -210,10 +208,10 @@
         <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
         <rect
           class="cursor-default transition-opacity outline-none"
-          x={column.left}
+          x={part.left}
           y={part.top}
-          {width}
-          height={Math.max(part.depth, 1)}
+          width={part.span}
+          height={part.depth}
           fill={part.colour}
           opacity={lit(part.label, column.year) ? 1 : 0.4}
           role="img"

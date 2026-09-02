@@ -461,18 +461,26 @@ what is set aside for open purchase orders, and the balance beside it is already
 net of that change: adding the two together gives nothing, since one is a stock
 and the other a flow. The book gives no figure at all for what the encumbrance
 reserve stands at, only what it moved by, so no chart here can show the reserve
-itself. A column stacks away from zero in the direction of each figure's sign,
-so 2023 — the year the reserve released money rather than taking it — draws its
-$97,098 above the line rather than below.
+itself. Each bar runs from zero in the direction of its own sign, so 2023 — the year the
+reserve released money rather than taking it — draws its $97,098 above the line
+rather than below.
 
-**The last row is stacked against the zero line, on both sides.** Rows are given
-headline first, and the headline is what a reader is meant to read the top of a
-column as; a smaller figure that happens to be positive would otherwise perch on
-top of it, where $97,098 reads as part of the balance's own height. So the
-encumbrances touch the line in every year whichever side they fall, and the
-balance is always the outer band. Segments are still emitted in the order the
-rows are given, so the reading order — what a screen reader walks, what the
-legend lists — is the order the page asked for.
+**Nothing is stacked, and the arithmetic is why.** Page 18 only reconciles with
+the encumbrance term in it: 2023 comes to $10,209,394 with it and $10,112,296
+without. So the balance is already net of the movement beside it, and a stack —
+which claims its parts add up to the column — would draw the same money twice
+and put the top of the column at a total the book never states. Instead the bars
+overlap: the first row is the width of the band, and each row after it is
+narrower and drawn in front, centred, so a smaller figure is read against the
+one behind it. Where a sign puts a bar the other side of the line there is
+nothing to be in front of and it simply hangs below.
+
+**A figure too small to draw is still drawn.** $97,098 against a scale of twenty
+million is a third of a pixel, and the mark is a focus target as well as a
+picture, so nothing non-zero is thinner than two units. The rounding that costs
+is spent at the far end: every bar is hung off the zero line, so the edge a
+reader measures from is exact whatever the clamp does to the other one. $0 draws
+nothing at all, having no honest height.
 
 **The beginning and ending balances are one row.** They are one figure read
 twice — every year opens where the last one closed, which `reserves.spec.ts`
