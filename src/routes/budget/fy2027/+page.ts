@@ -212,8 +212,11 @@ export const load: PageLoad = () => ({
    * city's file from that page. The reserves bar's link carries "Fiscal
    * Reserves" (17) the same way, and the reserves page in turn lists the two
    * reserve sections nobody has transcribed -- "Liability, Overlay & Reserves"
-   * (213) and "Financial Reserve Policies" (227). A line in this list as well
-   * would offer the same thing twice on one screen.
+   * (213), "Fund Accounting" (218) and "Financial Reserve Policies" (227), as
+   * the appropriations page lists "Budget Policies" (221) and the debt page
+   * lists "Fund Accounting" too -- half of what it draws is money the general
+   * fund does not owe. A line in this list as well would offer the
+   * same thing twice on one screen.
    *
    * Everything else the contents lists is listed, whether or not it has a page
    * here.
@@ -262,8 +265,6 @@ export const load: PageLoad = () => ({
       ["Recreation Department", 190],
       ["Stadium", 193],
       ["Library", 195],
-      ["Fund Accounting", 218],
-      ["Budget Policies", 221],
       ["Glossary", 231],
     ]),
   ),

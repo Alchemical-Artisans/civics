@@ -152,7 +152,7 @@ test.describe("budget pages", () => {
     // on the left: a line of the appropriation, the book's front matter, and
     // its back matter.
     const year = lists.first().locator("li")
-    await expect(year.filter({ hasText: "Budget Policies" })).toHaveCount(1)
+    await expect(year.filter({ hasText: "Goals" })).toHaveCount(1)
     await expect(year.filter({ hasText: "Glossary" })).toHaveCount(1)
 
     // The divider the book prints before the department pages, with nothing on
@@ -235,6 +235,7 @@ test.describe("budget pages", () => {
       ["Debt Service", 200],
       ["State Assessments", 209],
       ["Employee Benefits", 211],
+      ["Budget Policies", 221],
     ] as const) {
       const link = page.getByRole("link", { name: new RegExp(`^${title}`) })
       expect(await link.getAttribute("href")).toMatch(new RegExp(`#page=${at}$`))
@@ -251,6 +252,7 @@ test.describe("budget pages", () => {
       "Debt Service",
       "State Assessments",
       "Employee Benefits",
+      "Budget Policies",
     ]) {
       await expect(page.locator("article > div ol li").filter({ hasText: gone })).toHaveCount(0)
     }
@@ -282,9 +284,22 @@ test.describe("budget pages", () => {
       /\/reserves$/,
     )
 
+    // "Fund Accounting" (218) is on the reserves page and the debt page both:
+    // it is what says these funds are separate things, and half the debt drawn
+    // on the front page is not the general fund's.
+    for (const at of ["reserves", "outstanding-debt"]) {
+      await page.goto(`/budget/${books[0]}/${at}`)
+      const link = page.getByRole("link", { name: /^Fund Accounting/ })
+      expect(await link.getAttribute("href")).toMatch(/#page=218$/)
+    }
+
     // Neither reserve section keeps a contents line.
     await page.goto(`/budget/${books[0]}`)
-    for (const gone of ["Liability, Overlay & Reserves", "Financial Reserve Policies"]) {
+    for (const gone of [
+      "Liability, Overlay & Reserves",
+      "Financial Reserve Policies",
+      "Fund Accounting",
+    ]) {
       await expect(page.locator("article > div ol li").filter({ hasText: gone })).toHaveCount(0)
     }
   })

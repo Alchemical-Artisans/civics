@@ -9,6 +9,10 @@ import { Router } from "$lib/router"
  * Employee Benefits (211) -- which nobody has transcribed and which are
  * therefore links into the city's file at the page the book gives them.
  *
+ * "Budget Policies" (221) is listed with them: it is the rules the year's
+ * spending is made under, which is this page's subject seen from the process
+ * side, and it sits with the reserve policies on `reserves` as a pair.
+ *
  * The reserves are listed with them, pointing the other way: the forecast on
  * this page carries the projections for the budget reserve and the excess levy,
  * and the balances those are projections of are on that one.
@@ -46,6 +50,7 @@ export const load: PageLoad = async ({ parent }) => {
       { title: "Debt Service", href: Router.pdfPage(book.budget!, 200) },
       { title: "State Assessments", href: Router.pdfPage(book.budget!, 209) },
       { title: "Employee Benefits", href: Router.pdfPage(book.budget!, 211) },
+      { title: "Budget Policies", href: Router.pdfPage(book.budget!, 221) },
     ],
   }
 }

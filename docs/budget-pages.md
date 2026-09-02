@@ -248,7 +248,9 @@ appropriation at all: capital over $250,000 is borrowed, the page-78 table's
 postponed — capital reaches the operating budget years later as debt service.
 Three lines of the appropriation itself are on that page too — Debt Service
 (200), State Assessments (209) and Employee Benefits (211) — as links into the
-city's file, because none is transcribed. They are a different kind of thing
+city's file, because none is transcribed. "Budget Policies" (221) is listed with
+them: it is the rules the year's spending is made under, and it pairs with the
+reserve policies on `reserves`. They are a different kind of thing
 from the four sections above them: those are accounts _of_ the year's spending,
 and these are parts _of_ it, each a line in the page-78 table the pie is drawn
 from. Page 78, which both pies are drawn from, is split the same way: "2027
@@ -290,8 +292,16 @@ sources rather than one, the book first and then whatever a page names in its
 own `sources`; the meeting is also on the calendar half of this site.
 
 **`reserves` is the third bucket**, opened from the reserves bar, and holds
-"Fiscal Reserves" (17) with "Liability, Overlay & Reserves" (213) and
-"Financial Reserve Policies" (227) listed after it.
+"Fiscal Reserves" (17) with "Liability, Overlay & Reserves" (213), "Fund
+Accounting" (218) and "Financial Reserve Policies" (227) listed after it.
+
+**"Fund Accounting" is listed twice, on `reserves` and on `outstanding-debt`.**
+It is the section that says these funds are separate things, which is what the
+reserves page is about and what the debt page needs a reader to know: $92,212,944
+of the $175,745,444 it draws was borrowed for water and wastewater, and is
+serviced out of what households are billed rather than by the general fund,
+whose own debt service for 2027 is $8,834,819. A see-also may appear on more than
+one page where more than one page depends on it.
 
 **The reserve projections stay where the book put them.** They are two rows of
 the ten-year appropriation forecast — "19. Budget Reserve" and "Estimated Excess

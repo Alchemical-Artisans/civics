@@ -1,8 +1,11 @@
 <script lang="ts">
-  // A script here because this table is the pie on the book's front page as
-  // well; see docs/budget-pages.md.
+  // A script here because this table is a bar on the book's front page as well;
+  // see docs/budget-pages.md.
   import BudgetTable from "$lib/BudgetTable.svelte"
+  import BookElsewhere from "$lib/BookElsewhere.svelte"
   import { LONG_TERM_DEBT } from "./tables"
+
+  let { data } = $props()
 </script>
 
 <!-- The page's own heading, which the contents page renames. -->
@@ -178,3 +181,5 @@
     <tr><th scope="row">2026</th><td>$2,562</td><td>$2,698</td></tr>
   </tbody>
 </table>
+
+<BookElsewhere items={data.elsewhere} book={data.book} />
