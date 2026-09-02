@@ -170,6 +170,12 @@ export const load: PageLoad = () => ({
    * prints before the department pages, with nothing on it but its own title,
    * and the list beside this one is what it announces.
    *
+   * "Organizational Chart" (216) and "Position Summary" (217) are gone on their
+   * merits rather than for want of a page. The chart is worth reading and says
+   * nothing about the money, and the position summary is the department pages'
+   * own staffing counted a second time. Both are still in the city's file for
+   * anyone who wants them; neither earns a line on a page about the budget.
+   *
    * "Fiscal Reserves" (17), "Outstanding Debt" (21), "2027 Revenue Estimates"
    * Fifteen more are reached from a chart rather than from here: the two bars
    * carry their own names as links, the revenue pie's heading carries the three
@@ -232,8 +238,6 @@ export const load: PageLoad = () => ({
       ["Recreation Department", 190],
       ["Stadium", 193],
       ["Library", 195],
-      ["Organizational Chart", 216],
-      ["Position Summary", 217],
       ["Fund Accounting", 218],
       ["Budget Policies", 221],
       ["Glossary", 231],

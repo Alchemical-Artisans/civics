@@ -205,6 +205,14 @@ page means dropping its contents line with it.**
 divider the book prints before the department pages, carrying nothing but its
 own title, and the right-hand list is what it announces.
 
+"Organizational Chart" (216) and "Position Summary" (217) are left out on their
+merits. The chart is worth reading and says nothing about the money; the
+position summary counts the department pages' own staffing a second time.
+Neither earns a line on a page about the budget, and both are still in the
+city's file. **A contents line is a judgement about what belongs, not an index
+of the book** — see the note on what this site is for at the top of
+[CLAUDE.md](../CLAUDE.md).
+
 "Fiscal Reserves" (17), "Outstanding Debt" (21) and "2027 Revenue Estimates"
 (48) do have pages, and a chart is where each of them opens from: the two bars
 carry their own names as links, and the revenue pie's heading carries the third.
