@@ -453,6 +453,44 @@ the stated total.
 data, so the two cannot drift apart. See "A section whose tables are charted"
 below.
 
+## The glossary, and the words in the prose
+
+The book ends with a "Glossary of Terms", pages 232 to 245: 62 terms of art the
+city's own prose is full of — levy limit, free cash, cherry sheets, overlay —
+answered 200 pages away from where a reader meets them. Two things are made of
+it.
+
+**`/budget/<year>/glossary` is the glossary itself**, rendered from
+[`src/lib/data/glossary.json`](../src/lib/data/glossary.json). That file is the
+one thing in `data/` no scraper writes: the book has no text layer, so the
+glossary was read off rendered pages like every other section. It lives in
+`$lib` rather than beside the route because three things need it — the page, the
+component, and the script.
+
+**[`GlossaryTerm`](../src/lib/GlossaryTerm.svelte) brings the definition to the
+word.** A page wraps the first use of a term and the book's own definition opens
+over the page on hover, on focus, or on a press — the press being the only way in
+on a phone, and also what pins it so the pointer can leave a definition still
+being read. Escape dismisses it. The word on the page is whatever the city wrote
+("free cash" mid-sentence, "levies" for "Levy"); `term` is what the glossary
+heads it, and nothing rewrites the city's text.
+
+**[`scripts/check-glossary.mjs`](../scripts/check-glossary.mjs) is what keeps
+that true.** `npm run glossary:check` — which `npm run lint` calls — scans every
+transcription for the terms the book defines and fails on one that is used
+without being defined. `--fix` wraps them and adds the import.
+
+Three rules make it liveable, and all three are in the script:
+
+- **The first use in a page, not every use.** "Levy" appears 31 times on the
+  revenue page; 31 dotted underlines is a page nobody can read.
+- **Prose only.** Scripts, comments, tables and headings are blanked before
+  matching — a cell is a figure, not a sentence.
+- **Words the book also uses as ordinary English are exempt** — Fund,
+  Department, Grant, Revenues, Expenditures, Audit, Deficit, Valuation. Nobody
+  reading "the Water Department" wants "a principal, functional and
+  administrative entity created by the manager". They stay in the glossary.
+
 ## Writing a section
 
 1. **Find the section's page number** in the book's own table of contents,
@@ -590,6 +628,10 @@ src/lib/budget.spec.ts                     unit tests for them
 src/lib/BudgetPie.svelte                   the pie charts on a book page
 src/lib/BudgetStack.svelte                 reserves and debt, two bars on one scale
 src/lib/BookElsewhere.svelte               a category page's "see also" list
+src/lib/data/glossary.json                 the book's glossary, transcribed
+src/lib/glossary.ts                        reads it; the definition lookup
+src/lib/GlossaryTerm.svelte                a defined word, with its definition
+scripts/check-glossary.mjs                 checks every term is defined in use
 src/lib/chart-colours.ts                   the one colour order every chart uses
 src/lib/BudgetTimeline.svelte              the budget calendar, drawn as boxes
 src/routes/budget/<year>/budget-calendar.ts   that calendar, transcribed

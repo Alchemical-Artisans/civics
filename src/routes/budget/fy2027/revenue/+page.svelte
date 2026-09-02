@@ -4,6 +4,7 @@
   // place. See docs/budget-pages.md.
   import BudgetTable from "$lib/BudgetTable.svelte"
   import { REVENUE } from "./tables"
+  import GlossaryTerm from "$lib/GlossaryTerm.svelte"
 </script>
 
 <!-- The page's own printed heading. The page is called "Revenue", which is
@@ -24,10 +25,12 @@
     achieved, would result in mid-year budget cuts and/or layoffs.
   </li>
   <li>
-    It generates free cash, which the city has historically used as a source of reserves, to fund
-    capital, to fund snow and ice removal expenses, to fund unforeseen emergency uses such as
-    natural disasters (floods, storms, large snow events), and to partially subsidize the operating
-    budget.
+    It generates <GlossaryTerm term="Free Cash">free cash</GlossaryTerm>, which the city has
+    historically used as a source of reserves, to fund capital, to fund snow and ice removal
+    expenses, to fund unforeseen emergency uses such as natural disasters (floods, storms, large
+    snow events), and to partially subsidize the <GlossaryTerm term="Operating Budget"
+      >operating budget</GlossaryTerm
+    >.
   </li>
   <li>
     It helps build a sustainable budget that has more resilience during periods of economic
@@ -57,9 +60,10 @@
 
 <p>
   These lower-than-anticipated revenue estimates have intensified pressure on property taxes,
-  necessitating the use of an additional $1.1 million from the city's tax levy reserve. This action
-  will diminish the excess reserve to just $1.48 million. Budget forecasts indicate that this
-  reserve may be nearly exhausted by 2028, assuming continued departmental increases of 2.5%,
+  necessitating the use of an additional $1.1 million from the city's tax <GlossaryTerm term="Levy"
+    >levy</GlossaryTerm
+  > reserve. This action will diminish the excess reserve to just $1.48 million. Budget forecasts indicate
+  that this reserve may be nearly exhausted by 2028, assuming continued departmental increases of 2.5%,
   estimated employee benefits rising by 4.5%, and revenue increasing by 3.2%.
 </p>
 
@@ -300,8 +304,9 @@
   Proposition 2 &frac12; places constraints on the amount of levy a city or town can raise and on
   how much the levy can be increased from year to year. A community cannot levy more than 2.5
   percent of the total full and fair cash value of all taxable real and personal property in the
-  community. This is known as the levy ceiling. A community's levy is also constrained in that it
-  can only increase by a certain amount from year to year. This is known as the levy limit. The levy
+  community. This is known as the <GlossaryTerm term="Levy Ceiling">levy ceiling</GlossaryTerm>. A
+  community's levy is also constrained in that it can only increase by a certain amount from year to
+  year. This is known as the <GlossaryTerm term="Levy Limit">levy limit</GlossaryTerm>. The levy
   limit will always be below, or at most, equal to the levy ceiling. The levy limit may not exceed
   the levy ceiling.
 </p>
@@ -315,13 +320,16 @@
     Revenue calculates this increase automatically.
   </li>
   <li>
-    A community can increase its levy limit each year to reflect new growth in the tax base.
-    Assessors must submit information on growth in the tax base for approval by the Department of
-    Revenue as part of the tax rate-setting process.
+    A community can increase its levy limit each year to reflect <GlossaryTerm term="New Growth"
+      >new growth</GlossaryTerm
+    > in the tax base. Assessors must submit information on growth in the tax base for approval by the
+    Department of Revenue as part of the <GlossaryTerm term="Tax Rate">tax rate</GlossaryTerm
+    >-setting process.
   </li>
   <li>
-    A community can increase its levy limit by successfully voting an override. The amount of the
-    override becomes part of the levy limit base.
+    A community can increase its levy limit by successfully voting an <GlossaryTerm term="Override"
+      >override</GlossaryTerm
+    >. The amount of the override becomes part of the levy limit base.
   </li>
 </ul>
 
@@ -355,8 +363,9 @@
 
 <ul>
   <li>
-    The calculation for the Prop. 2&frac12; Levy Limit begins by taking the previous fiscal year's
-    levy limit and applying a 2.5% increase. This amount serves as the Levy Base for the current
+    The calculation for the Prop. 2&frac12; Levy Limit begins by taking the previous <GlossaryTerm
+      term="Fiscal Year">fiscal year</GlossaryTerm
+    >'s levy limit and applying a 2.5% increase. This amount serves as the Levy Base for the current
     fiscal year.
   </li>
   <li>
@@ -451,8 +460,8 @@
   the most common types of local receipts include excise taxes, regulatory fees (such as fines,
   licenses, and permits), user fees (for services such as water, sewer, and garbage), departmental
   revenues, and investment income. Typically, local receipts are deposited into the community's
-  general fund unless they are designated for specific departmental uses in accordance with state
-  regulations.
+  <GlossaryTerm term="General Fund">general fund</GlossaryTerm> unless they are designated for specific
+  departmental uses in accordance with state regulations.
 </p>
 
 <p>
@@ -485,8 +494,10 @@
 
 <p>
   Furthermore, per state regulations, there is a 1% boat excise tax, of which 50% of the annual
-  revenue is allocated to the Waterways Revolving Fund. This fund can be utilized for harbor and
-  waterway maintenance, infrastructure improvements, and enhancing boating safety.
+  revenue is allocated to the Waterways <GlossaryTerm term="Revolving Fund"
+    >Revolving Fund</GlossaryTerm
+  >. This fund can be utilized for harbor and waterway maintenance, infrastructure improvements, and
+  enhancing boating safety.
 </p>
 
 <table>
@@ -955,8 +966,8 @@
 
 <p>
   This revenue group comprises free cash used to support the operating budget, indirect receipts
-  from Enterprise funds for administrative overhead reimbursement, and funding from the Hospital
-  Trust fund, which subsidizes the Public Health department.
+  from <GlossaryTerm term="Enterprise Funds">Enterprise funds</GlossaryTerm> for administrative overhead
+  reimbursement, and funding from the Hospital Trust fund, which subsidizes the Public Health department.
 </p>
 
 <p>
@@ -1155,8 +1166,9 @@
 </blockquote>
 
 <p>
-  Massachusetts Department of Revenue, Division of Local Services, Annual Budget Best Practices,
-  Revenue &amp; Expenditure Forecasting
+  Massachusetts Department of Revenue, Division of Local Services, <GlossaryTerm
+    term="Annual Budget">Annual Budget</GlossaryTerm
+  > Best Practices, Revenue &amp; Expenditure Forecasting
 </p>
 
 <!-- Page 67, "10-Year Revenue Forecast": where the same revenue is going, after

@@ -4,6 +4,7 @@
   import BookElsewhere from "$lib/BookElsewhere.svelte"
   import BudgetTable from "$lib/BudgetTable.svelte"
   import { APPROPRIATIONS, DEPARTMENTS } from "./tables"
+  import GlossaryTerm from "$lib/GlossaryTerm.svelte"
 
   let { data } = $props()
 </script>
@@ -925,8 +926,10 @@
   remain operational, as replacement parts for the others are no longer available. The proposed
   project includes the installation of a modern, energy-efficient heating system, along with new
   thermostats and blower units. The new system is expected to reduce energy consumption leading to a
-  cost savings within the Highway operating budget over time. The City has been awarded $27,000
-  through an Energy Efficiency and Conservation Block Grant (EECBG) to support this project.
+  cost savings within the Highway <GlossaryTerm term="Operating Budget"
+    >operating budget</GlossaryTerm
+  > over time. The City has been awarded $27,000 through an Energy Efficiency and Conservation Block Grant
+  (EECBG) to support this project.
 </p>
 <p><strong>High</strong> &mdash; $130,000</p>
 
@@ -1102,8 +1105,9 @@
 
 <h4>Sidewalks - Annual Repair &amp; Replace - Highway</h4>
 <p>
-  This annual budget allocation will enable the department to remediate all non-compliant curb ramps
-  and poor condition sidewalks over the next 30 years per engineering consultant.
+  This <GlossaryTerm term="Annual Budget">annual budget</GlossaryTerm> allocation will enable the department
+  to remediate all non-compliant curb ramps and poor condition sidewalks over the next 30 years per engineering
+  consultant.
 </p>
 <p><strong>Low</strong> &mdash; $1,100,000</p>
 
@@ -1224,8 +1228,9 @@
     initial funding recommendations. However, the Mayor and CFO have suggested postponing final
     funding decisions, potentially until later in fiscal 2027. This delay would enable a
     reassessment of the economic climate and the exploration of viable, sustainable funding
-    alternatives. It would also allow for the certification of the city's fiscal 2026 free cash and
-    determine any excess available for capital projects.
+    alternatives. It would also allow for the certification of the city's fiscal 2026 <GlossaryTerm
+      term="Free Cash">free cash</GlossaryTerm
+    > and determine any excess available for capital projects.
   </em>
 </p>
 
@@ -1235,8 +1240,9 @@
   <em>
     The funding strategy for significant capital projects, such as JG Whittier Middle School and a
     Fire Station, involves reallocating part of the retiring pension assessment, which will be
-    accessible in 2033. This reallocation will help cover the debt service payment obligations
-    necessary to finance these initiatives.
+    accessible in 2033. This reallocation will help cover the <GlossaryTerm term="Debt Service"
+      >debt service</GlossaryTerm
+    > payment obligations necessary to finance these initiatives.
   </em>
 </p>
 
@@ -1277,8 +1283,8 @@
   </li>
   <li>Reflects a 4.98% increase in employee benefits.</li>
   <li>
-    Accounts for a 1% annual increase in the Overlay (reserve for real estate abatements and
-    exemptions).
+    Accounts for a 1% annual increase in the <GlossaryTerm term="Overlay">Overlay</GlossaryTerm> (reserve
+    for real estate abatements and exemptions).
   </li>
   <li>Incorporates a 1.39% rise in State Assessments, which aligns with the historical average.</li>
   <li>Projects a 2.5% overall annual increase across all departments.</li>
@@ -1292,8 +1298,10 @@
 
 <p>
   This projection leads to a $583,787 budget shortfall in 2029, or 0.19% of the total budget, even
-  if the city uses its entire excess levy reserve. This shortfall is expected to grow to $2.7
-  million by 2032, or .82% of the anticipated total general fund budget.
+  if the city uses its entire excess <GlossaryTerm term="Levy">levy</GlossaryTerm> reserve. This shortfall
+  is expected to grow to $2.7 million by 2032, or .82% of the anticipated total <GlossaryTerm
+    term="General Fund">general fund</GlossaryTerm
+  > budget.
 </p>
 
 <p>
@@ -1633,8 +1641,9 @@
 </ul>
 
 <p>
-  Despite these adjustments, the city remained significantly far from achieving a balanced budget.
-  We undertook a comprehensive reassessment of revenues using actual figures up to March and
+  Despite these adjustments, the city remained significantly far from achieving a <GlossaryTerm
+    term="Balanced Budget">balanced budget</GlossaryTerm
+  >. We undertook a comprehensive reassessment of revenues using actual figures up to March and
   meticulously analyzed departmental budgets line by line to identify potential savings. Ultimately,
   we recommend the following budget adjustments:
 </p>

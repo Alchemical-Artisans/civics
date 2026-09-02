@@ -4,6 +4,7 @@
   import BudgetTable from "$lib/BudgetTable.svelte"
   import BookElsewhere from "$lib/BookElsewhere.svelte"
   import { LONG_TERM_DEBT } from "./tables"
+  import GlossaryTerm from "$lib/GlossaryTerm.svelte"
 
   let { data } = $props()
 </script>
@@ -28,8 +29,11 @@
 <h2>Annual Debt Payments</h2>
 
 <p>
-  <strong>City Debt Policy #2a:</strong> Annual general fund debt service payments shall not exceed 4%
-  of net general fund operating revenue.
+  <strong>City Debt Policy #2a:</strong> Annual <GlossaryTerm term="General Fund"
+    >general fund</GlossaryTerm
+  >
+  <GlossaryTerm term="Debt Service">debt service</GlossaryTerm> payments shall not exceed 4% of net general
+  fund operating revenue.
 </p>
 
 <p>

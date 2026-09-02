@@ -43,7 +43,9 @@ describe("contents", () => {
       // A section's slug is its title, and "Reserves" is a page here; the
       // book's own "Fiscal Reserves" is a heading on it rather than a route.
       ["Reserves", 17],
-      ["Glossary", 231],
+      // Not a page here, and unlikely to become one: the book's own contents
+      // lists it, and the site has no section by that name.
+      ["Mayor's Budget Message", 2],
     ])
     expect(written.written).toBe(true)
     expect(absent.written).toBe(false)

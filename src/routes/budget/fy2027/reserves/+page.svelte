@@ -6,6 +6,7 @@
   import BudgetTable from "$lib/BudgetTable.svelte"
   import BookElsewhere from "$lib/BookElsewhere.svelte"
   import { FUND_BALANCE, FREE_CASH, STABILIZATION } from "./tables"
+  import GlossaryTerm from "$lib/GlossaryTerm.svelte"
 
   let { data } = $props()
 </script>
@@ -23,8 +24,9 @@
 </p>
 
 <p>
-  <strong>City Reserve Policy #1:</strong> The City shall maintain an undesignated fund balance between
-  5% and 15% of general fund revenues, less debt exclusion and Ch. 70.
+  <strong>City Reserve Policy #1:</strong> The City shall maintain an undesignated fund balance
+  between 5% and 15% of <GlossaryTerm term="General Fund">general fund</GlossaryTerm> revenues, less debt
+  exclusion and Ch. 70.
 </p>
 
 <p>
@@ -89,14 +91,16 @@
 <h2>Free Cash</h2>
 
 <p>
-  <strong>City Reserve Policy #3:</strong> The amount to be held in free cash shall not be less than 2%
-  or more than 8% of general fund revenues, less debt exclusion and Ch. 70.
+  <strong>City Reserve Policy #3:</strong> The amount to be held in <GlossaryTerm term="Free Cash"
+    >free cash</GlossaryTerm
+  > shall not be less than 2% or more than 8% of general fund revenues, less debt exclusion and Ch. 70.
 </p>
 
 <p>
-  <strong>Results:</strong> The city is projected to have a free cash balance of $0 at the end of fiscal
-  year 2026, largely due to exceptionally high snow removal costs that exceeded $4.6 million during the
-  past winter. This winter was the coldest and snowiest the area has experienced since 2014-2015. In light
+  <strong>Results:</strong> The city is projected to have a free cash balance of $0 at the end of <GlossaryTerm
+    term="Fiscal Year">fiscal year</GlossaryTerm
+  > 2026, largely due to exceptionally high snow removal costs that exceeded $4.6 million during the past
+  winter. This winter was the coldest and snowiest the area has experienced since 2014-2015. In light
   of these unprecedented expenses, the Mayor and the city's Emergency Management Director have requested
   financial assistance from the Commonwealth. This year's free cash balance marks a significant decrease
   from the city's balance at the end of fiscal year 2025, which was $2,578,279, reflecting a decline of
@@ -108,14 +112,16 @@
 <h2>Stabilization Reserve</h2>
 
 <p>
-  <strong>City Reserve Policy #4:</strong> The city shall maintain a Stabilization Reserve Fund of at
-  least 3% of general fund revenue, less debt exclusion and Chapter 70.
+  <strong>City Reserve Policy #4:</strong> The city shall maintain a Stabilization <GlossaryTerm
+    term="Reserve Fund">Reserve Fund</GlossaryTerm
+  > of at least 3% of general fund revenue, less debt exclusion and Chapter 70.
 </p>
 
 <p>
-  <strong>Results:</strong> The city's stabilization fund is $8,001,094 or 4.49% of general fund revenue,
-  not including Chapter 70 and debt exclusions. This is up from fiscal 2025 which had a balance of $7,533,248
-  or 4.41%.
+  <strong>Results:</strong> The city's <GlossaryTerm term="Stabilization Fund"
+    >stabilization fund</GlossaryTerm
+  > is $8,001,094 or 4.49% of general fund revenue, not including Chapter 70 and debt exclusions. This
+  is up from fiscal 2025 which had a balance of $7,533,248 or 4.41%.
 </p>
 
 <BudgetTable table={STABILIZATION} />

@@ -2,6 +2,7 @@
   // A script here for the two parts of the book this page covers that nobody
   // has transcribed; see this page's `+page.ts` and docs/budget-pages.md.
   import BookElsewhere from "$lib/BookElsewhere.svelte"
+  import GlossaryTerm from "$lib/GlossaryTerm.svelte"
 
   let { data } = $props()
 </script>
@@ -58,9 +59,11 @@
 <blockquote>
   <p>
     <em>
-      "It is important to note that Indirect costs do not include debt service payments made by the
-      General Fund, which will total $5,865,903 in 2027 and represent outstanding School Department
-      debt of $71,517,300."
+      "It is important to note that Indirect costs do not include <GlossaryTerm term="Debt Service"
+        >debt service</GlossaryTerm
+      > payments made by the
+      <GlossaryTerm term="General Fund">General Fund</GlossaryTerm>, which will total $5,865,903 in
+      2027 and represent outstanding School Department debt of $71,517,300."
     </em>
   </p>
 </blockquote>

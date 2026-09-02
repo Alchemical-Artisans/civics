@@ -304,6 +304,60 @@ test.describe("budget pages", () => {
     }
   })
 
+  test("defines the book's own terms where it first uses them", async ({ page }) => {
+    await page.goto(`/budget/${books[0]}/reserves`)
+
+    // The city's prose is full of terms of art. The first use of each on a page
+    // carries the book's own definition, from its glossary.
+    const term = page.locator(".glossary-term button").first()
+    await expect(term).toHaveText("general fund")
+    await expect(page.locator(".glossary-definition")).toHaveCount(0)
+
+    await term.hover()
+    const definition = page.locator(".glossary-definition")
+    await expect(definition).toContainText("General Fund")
+    await expect(definition).toContainText("The fund used to account for most financial resources")
+
+    // Described by it, so a screen reader reads the definition as belonging to
+    // the word rather than as a stray paragraph.
+    const id = await definition.getAttribute("id")
+    await expect(term).toHaveAttribute("aria-describedby", id!)
+
+    // A press pins it, so the pointer can leave a definition still being read;
+    // Escape puts it away. That press is also the only way in on a phone.
+    await term.click()
+    await page.mouse.move(0, 0)
+    await expect(definition).toBeVisible()
+    await page.keyboard.press("Escape")
+    await expect(page.locator(".glossary-definition")).toHaveCount(0)
+  })
+
+  test("carries the whole glossary as a page of its own", async ({ page }) => {
+    await page.goto(`/budget/${books[0]}`)
+    await page
+      .locator("article > div ol li")
+      .filter({ hasText: "Glossary" })
+      .getByRole("link")
+      .click()
+
+    await expect(page).toHaveURL(new RegExp(`/budget/${books[0]}/glossary$`))
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Glossary")
+    await expect(page.getByRole("heading", { name: "Glossary of Terms" })).toBeVisible()
+
+    // Every term the book defines, in its order, each with the page's own
+    // anchor so a definition can be linked to.
+    await expect(page.locator("dt")).toHaveCount(62)
+    await expect(page.locator("dt").first()).toHaveText("Abatement")
+    await expect(page.locator("dt").last()).toHaveText("Warrant")
+    await expect(page.locator("#free-cash")).toHaveText("Free Cash")
+
+    // The bar opens the book where the terms start, not at the divider the
+    // contents names.
+    expect(await page.locator('header a[href*="#page="]').getAttribute("href")).toMatch(
+      /#page=232$/,
+    )
+  })
+
   test("puts the three school sections on one page", async ({ page }) => {
     await page.goto(`/budget/${books[0]}/education`)
 

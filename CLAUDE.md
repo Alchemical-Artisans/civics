@@ -37,6 +37,7 @@ npm run check               # svelte-check against tsconfig
 npm run lint                # prettier --check . && eslint .
 npm run format              # prettier --write .
 
+npm run glossary:check      # every defined term is defined where first used
 npm run test                # unit (once) then e2e
 npm run test:unit           # vitest, watch mode
 npm run test:e2e            # playwright; builds and previews on :4173 first
@@ -185,6 +186,16 @@ Notable pieces:
   keeps an `sr-only` line instead. Colour for every chart here comes from
   **`src/lib/chart-colours.ts`**, one validated sequence, restarted per pie and
   per bar.
+- **`src/lib/GlossaryTerm.svelte`** puts the book's own definition under a word
+  in the city's prose: hover, focus or press it and the definition opens over the
+  page. The 62 terms are `src/lib/data/glossary.json`, transcribed from pages 232
+  to 245 -- the one file in `data/` no scraper writes -- and read by the
+  component, by `/budget/fy2027/glossary`, and by
+  **`scripts/check-glossary.mjs`**, which `npm run lint` runs: it fails when a
+  page uses a term the book defines without defining it, and `--fix` wraps it.
+  The rule is the first use in a page, in prose only (not tables or headings),
+  and words the book also uses as ordinary English (Fund, Department, Grant...)
+  are exempt.
 - **`src/lib/BudgetPie.svelte`** is the pie chart a budget book opens with --
   two of them, appropriations and revenue, each headed with a link to the side of
   the book it is about -- `appropriations` and `revenue`, which gather that

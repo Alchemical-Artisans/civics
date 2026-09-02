@@ -1,3 +1,7 @@
+<script lang="ts">
+  import GlossaryTerm from "$lib/GlossaryTerm.svelte"
+</script>
+
 <!-- Each half keeps the heading the book prints over it, which is neither of
      the names its contents page gives them. -->
 <h2>Mayor's 2027 Budgetary Goals</h2>
@@ -13,11 +17,13 @@
     taxpayers.
   </li>
   <li>
-    Maintain an excess levy of 1.6% of the total available levy to serve as a budgetary reserve, as
-    well as set aside savings for future capital projects.
+    Maintain an excess <GlossaryTerm term="Levy">levy</GlossaryTerm> of 1.6% of the total available levy
+    to serve as a budgetary reserve, as well as set aside savings for future capital projects.
   </li>
   <li>
-    Decrease the city's historical reliance on free cash to subsidize the operating budget in order
+    Decrease the city's historical reliance on <GlossaryTerm term="Free Cash"
+      >free cash</GlossaryTerm
+    > to subsidize the <GlossaryTerm term="Operating Budget">operating budget</GlossaryTerm> in order
     to build a more structurally stable budget and adhere to the city's internal financial policies.
   </li>
   <li>
