@@ -233,7 +233,10 @@ Notable pieces:
   book's row is the _change_ in what is set aside for open purchase orders, the
   balance beside it is already net of that, and the book never says what the
   reserve itself stands at -- so the two cannot be added, and a year where the
-  change is positive stacks upward instead. **`src/lib/chart-frame.ts`** is the
+  change is positive stacks upward instead. The last row given is stacked
+  against the zero line on both sides, so the encumbrances touch it whichever
+  way their sign falls and the balance is always the outer band; segments are
+  still emitted in row order, so the reading order is the page's. **`src/lib/chart-frame.ts`** is the
   viewBox and the band positions both charts take, so a year is in the same
   place in each and a reader can look straight down.
 - **`src/lib/GlossaryTerm.svelte`** links a word in the city's prose to the

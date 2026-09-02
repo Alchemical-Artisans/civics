@@ -462,8 +462,17 @@ net of that change: adding the two together gives nothing, since one is a stock
 and the other a flow. The book gives no figure at all for what the encumbrance
 reserve stands at, only what it moved by, so no chart here can show the reserve
 itself. A column stacks away from zero in the direction of each figure's sign,
-which is why 2023's $97,098 sits on top of the balance rather than under it —
-that year the reserve released money instead of taking it.
+so 2023 — the year the reserve released money rather than taking it — draws its
+$97,098 above the line rather than below.
+
+**The last row is stacked against the zero line, on both sides.** Rows are given
+headline first, and the headline is what a reader is meant to read the top of a
+column as; a smaller figure that happens to be positive would otherwise perch on
+top of it, where $97,098 reads as part of the balance's own height. So the
+encumbrances touch the line in every year whichever side they fall, and the
+balance is always the outer band. Segments are still emitted in the order the
+rows are given, so the reading order — what a screen reader walks, what the
+legend lists — is the order the page asked for.
 
 **The beginning and ending balances are one row.** They are one figure read
 twice — every year opens where the last one closed, which `reserves.spec.ts`

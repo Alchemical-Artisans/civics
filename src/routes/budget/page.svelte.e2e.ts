@@ -463,6 +463,17 @@ test.describe("budget pages", () => {
       expect(negative ? bar.top >= zero - 0.5 : bar.top + bar.depth <= zero + 0.5).toBe(true)
     }
 
+    // The encumbrances touch the zero line in every year, whichever side of it
+    // they fall: the chart stacks its last row against the line, so the year
+    // they released money puts them at the foot of the column rather than
+    // perched on top of the balance, where a $97,098 sliver would read as part
+    // of the balance's own height.
+    for (const bar of sides.filter((b) => b.label.startsWith("Net Reserve"))) {
+      expect(Math.min(Math.abs(bar.top - zero), Math.abs(bar.top + bar.depth - zero))).toBeLessThan(
+        1.5,
+      )
+    }
+
     // The same four years under both, in the same places, so a reader can look
     // straight down from one chart to the other. Both take the geometry from
     // `chart-frame.ts`, which is what makes that true rather than lucky.

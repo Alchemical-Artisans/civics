@@ -78,33 +78,52 @@
   /**
    * Every segment the chart draws, placed.
    *
-   * A year's positives stack up from zero in the order the rows are given and
-   * its negatives stack down, so a row keeps its colour and its side whatever
-   * the sign of any one year -- the encumbrances are a small positive in one
-   * year of three and a large negative in another, and the column has to stay
-   * readable either way.
+   * A year's figures stack away from zero in the direction of their sign, which
+   * is what keeps a column readable when one of them changes sign: the
+   * encumbrances are a small positive in one year of three and a large negative
+   * in another, and either way they are the same colour in the same column.
+   *
+   * The rows are stacked *last first*, so whatever is given last sits against
+   * the zero line and the first row is the outer band -- on both sides. The
+   * rows are given headline first, and the headline is the figure a reader is
+   * meant to read the top of the column as. A year where the smaller figure
+   * happens to be positive would otherwise put it on top, where a $97,098
+   * sliver reads as part of the balance's own height.
+   *
+   * Segments are emitted in the order the rows are given even though they are
+   * placed in the other, so the reading order of the chart -- what a screen
+   * reader walks, what the legend lists -- is the order the page asked for.
    */
   const columns = $derived(
     years.map((year, at) => {
       let above = 0
       let below = 0
+      // One slot per row, filled back to front. An array rather than a `Map`
+      // because it is scratch inside a derivation and never read as state.
+      const placed: ({ from: number; to: number } | null)[] = rows.map(() => null)
 
-      const parts = rows.flatMap((row, index) => {
-        const value = row.values[at]
-        if (value === null || value === 0) return []
+      for (let index = rows.length - 1; index >= 0; index--) {
+        const value = rows[index].values[at]
+        if (value === null || value === 0) continue
 
         const from = value > 0 ? above : below
         const to = from + value
         if (value > 0) above = to
         else below = to
+        placed[index] = { from, to }
+      }
+
+      const parts = rows.flatMap((row, index) => {
+        const span = placed[index]
+        if (!span) return []
 
         return [
           {
             label: row.label,
-            value,
+            value: row.values[at]!,
             colour: COLOURS[index % COLOURS.length],
-            top: up(Math.max(from, to)),
-            depth: Math.abs(up(to) - up(from)),
+            top: up(Math.max(span.from, span.to)),
+            depth: Math.abs(up(span.to) - up(span.from)),
           },
         ]
       })

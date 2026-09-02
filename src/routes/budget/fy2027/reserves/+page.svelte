@@ -109,6 +109,10 @@
    * and the balance beside it is already net of that change. The two are a year
    * and its result, in one place because they are the same size and about the
    * same money.
+   *
+   * They are given second, and the chart stacks its last row against the zero
+   * line, so the encumbrances sit at the foot of the column in the one year
+   * where they are positive rather than perched on top of the balance.
    */
   const CLOSING = "Ending Fund Balance"
   const ENCUMBRANCES = "Net Reserve for Encumbrances"
