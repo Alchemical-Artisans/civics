@@ -285,7 +285,7 @@ their own revenue on the other.
 that is not this year's income — "OTHER AVAILABLE REVENUE SOURCES", which page
 63 breaks into free cash ($5,150,000), an administrative overhead reimbursement
 from the enterprise funds ($935,304), and Hospital Trust money that subsidises
-Public Health ($125,000). Free cash is last year's surplus, and counting it
+Public Health ($125,000) — about half that department's own budget of $261,291. Free cash is last year's surplus, and counting it
 would make the chart balance by hiding the thing worth seeing: the year does not
 pay for itself. The Mayor's own third goal is to stop relying on it, and the
 reserves bar shows the balance it leaves at $0.
@@ -295,6 +295,14 @@ departments are charted at what they are actually billed — $15,040,417 and
 $16,666,024, the orders' own figures — and that money is inside those, on its
 way to the general fund. A slice reading "Transfer From Enterprise" says less
 than the water bill it is part of, and charting both would count it twice.
+
+The trust money stays, as the one thing in that line that is outside income
+arriving in the general fund. It is charted as **Hospital Trust**, which is the
+name the book's prose gives it — "funding from the Hospital Trust fund, which
+subsidizes the Public Health department" — rather than the "Transfer from Trust
+& Agency" its table heads the row with. Both are the book's words; the chart
+takes the one that names the money now that the bucket holds nothing else, and
+the transcription keeps the table exactly as printed.
 
 So the columns come to **$316,044,835** and **$310,893,296**, $5,151,539 apart:
 the free cash, and the $1,539 by which the orders' reimbursement differs from

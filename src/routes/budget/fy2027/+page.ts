@@ -67,7 +67,7 @@ const spending = [
  * AVAILABLE REVENUE SOURCES", which page 63 breaks into free cash ($5,150,000),
  * an administrative overhead reimbursement from the enterprise funds
  * ($935,304), and money from the Hospital Trust that subsidises Public Health
- * ($125,000).
+ * ($125,000) -- about half that department's own budget of $261,291.
  *
  * Free cash is left out: it is last year's surplus, and counting it would make
  * the chart balance by hiding what the chart is for -- the year does not pay
@@ -89,9 +89,19 @@ const NOT_THIS_YEAR = "OTHER AVAILABLE REVENUE SOURCES"
 
 const billed = column(ENTERPRISE_REVENUE, "Amount")
 
+/**
+ * The one thing left in that line, under the book's own name for it.
+ *
+ * Page 63's table heads the row "Transfer from Trust & Agency", which named a
+ * bucket when the bucket held more than one thing. The prose beside it says
+ * what this is: "funding from the Hospital Trust fund, which subsidizes the
+ * Public Health department". Both are the book's words; the chart takes the one
+ * that names the money rather than the ledger it sat in, and the transcription
+ * on the revenue page keeps the table exactly as printed.
+ */
 const trust = column(OTHER_AVAILABLE, CHARTED, {
   exclude: ["Grand Total", "Free Cash (Budget Only)", "Transfer From Enterprise"],
-})
+}).map((row) => ({ ...row, label: "Hospital Trust" }))
 
 const revenue = [
   ...column(REVENUE, CHARTED, { exclude: [...NOT_A_CATEGORY, NOT_THIS_YEAR] }),

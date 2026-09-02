@@ -114,13 +114,18 @@ describe("the two columns", () => {
   // rather than charted beside them.
   const billed = column(ENTERPRISE_REVENUE, "Amount")
 
+  // The trust row is charted under the name the book's prose gives it, "the
+  // Hospital Trust fund, which subsidizes the Public Health department", rather
+  // than the "Transfer from Trust & Agency" its table heads the row with.
+  const trust = column(OTHER_AVAILABLE, CHARTED, {
+    exclude: ["Grand Total", "Free Cash (Budget Only)", "Transfer From Enterprise"],
+  }).map((row) => ({ ...row, label: "Hospital Trust" }))
+
   const revenue = [
     ...column(REVENUE, CHARTED, {
       exclude: [...NOT_A_CATEGORY, "OTHER AVAILABLE REVENUE SOURCES"],
     }),
-    ...column(OTHER_AVAILABLE, CHARTED, {
-      exclude: ["Grand Total", "Free Cash (Budget Only)", "Transfer From Enterprise"],
-    }),
+    ...trust,
     ...billed,
   ]
 
@@ -155,7 +160,9 @@ describe("the two columns", () => {
     expect(sum(column(OTHER_AVAILABLE, CHARTED, { exclude: ["Grand Total"] }))).toBe(
       amount(cell(REVENUE, "OTHER AVAILABLE REVENUE SOURCES", CHARTED)),
     )
-    expect(revenue.map((r) => r.label)).toContain("Transfer from Trust & Agency")
+    expect(trust).toHaveLength(1)
+    expect(trust[0]).toEqual({ label: "Hospital Trust", amount: 125000 })
+    expect(cell(OTHER_AVAILABLE, "Transfer from Trust & Agency", CHARTED)).toBe("$125,000")
     expect(revenue.map((r) => r.label)).not.toContain("Transfer From Enterprise")
     expect(revenue.map((r) => r.label)).not.toContain("Free Cash (Budget Only)")
   })
