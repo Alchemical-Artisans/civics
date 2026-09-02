@@ -1,6 +1,6 @@
 /**
- * What the bar at the top of a page says about that page: its name and the span
- * of time it covers.
+ * What the bar at the top of a page says about that page: what it sits inside,
+ * its name, and the span of time it covers.
  *
  * It said where the original was too, until the budget calendar in the footer
  * took that over. A source link in the bar could say only that the page came
@@ -22,11 +22,13 @@
  * Everything is null off the budget half. The calendar still heads its own
  * pages, so repeating any of it in the bar would say it twice.
  */
+import { Router } from "$lib/router"
+
 export interface PageNaming {
   /** A budget section: its title, and the book page it starts on. */
   section?: { title: string; page: number }
   /** The budget book a page sits in, from the layout that looked it up. */
-  book?: { year: number; budget?: string | null }
+  book?: { id: string; year: number; budget?: string | null }
   /** Everything else a load put in `page.data`, which this does not read. */
   [key: string]: unknown
 }
@@ -34,6 +36,15 @@ export interface PageNaming {
 export interface PageBar {
   /** The page's name, and its only `<h1>`. */
   name: string | null
+  /**
+   * What the page sits inside, outermost first, each a link to it.
+   *
+   * One entry at most so far: the book a section belongs to. The site's own
+   * name is the mark at the far left and is not in here -- it is on every page
+   * of the site, budget or calendar, and it is a link home whatever this
+   * answers.
+   */
+  trail: { name: string; href: string }[]
   /** What the book covers, which is what its year means. */
   dates: string | null
 }
@@ -43,6 +54,13 @@ export function barOf(data: PageNaming): PageBar {
 
   return {
     name: section ? section.title : book ? bookName(book.year) : null,
+
+    // The book, on a section of it. A section used to take the bar over
+    // entirely -- "Haverhill Public Documents / Reserves" -- which named the
+    // page and lost the thing it is part of: there was nothing to say which
+    // year's reserves those were, and no way back to the book but the menu.
+    // The book's own page has no trail, because it is the thing.
+    trail: book && section ? [{ name: bookName(book.year), href: Router.budgetBook(book.id) }] : [],
 
     // A fiscal year is named for the year it ends in, which is worth saying
     // once where the name is rather than nowhere.

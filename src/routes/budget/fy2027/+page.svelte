@@ -98,7 +98,7 @@
     $5,151,539 out of $316 million needs. Below `lg` this is all off -- the page
     is a single column and scrolls as a page.
   -->
-  <div class="lg:h-full">
+  <div class="lg:flex lg:h-full lg:flex-col">
     <!--
       The two sides of the budget as two columns on one scale, rather than two
       pies. A pie says what a side is made of; two pies cannot say whether the
@@ -116,21 +116,40 @@
       Each column's name is the way into the side of the book it is drawn from,
       which is why neither has a line in the contents.
     -->
-    <BudgetColumns
-      rows={[
-        {
-          label: "Spending",
-          href: Router.budgetSection(book.id, "spending"),
-          parts: overview.spending,
-          total: overview.spendingTotal,
-        },
-        {
-          label: "Revenue",
-          href: Router.budgetSection(book.id, "revenue"),
-          parts: overview.revenue,
-        },
-      ]}
-    />
+    <div class="lg:min-h-0 lg:flex-1">
+      <BudgetColumns
+        rows={[
+          {
+            label: "Spending",
+            href: Router.budgetSection(book.id, "spending"),
+            parts: overview.spending,
+            total: overview.spendingTotal,
+          },
+          {
+            label: "Revenue",
+            href: Router.budgetSection(book.id, "revenue"),
+            parts: overview.revenue,
+          },
+        ]}
+      />
+    </div>
+
+    <!--
+      Under the two columns, because it is those two columns in every year the
+      book gives them for: what the city took in against what it spent, which
+      is the one question this page answers for 2027 alone. It is a page of ours
+      rather than a section of the book -- the book keeps its history wherever
+      the history happened to be needed -- so it has no contents line anywhere,
+      and this is the way in.
+    -->
+    <p class="not-prose mt-4 text-xs">
+      <a
+        class="font-semibold text-slate-900 underline decoration-slate-400 decoration-2 underline-offset-2 hover:decoration-slate-900"
+        href={Router.budgetSection(book.id, "history")}
+      >
+        History
+      </a>
+    </p>
   </div>
 
   <div class="lg:flex lg:h-full lg:flex-col lg:overflow-hidden">
@@ -164,23 +183,6 @@
           },
         ]}
       />
-
-      <!--
-        Under the bars, because it is the same question asked backwards: they
-        are what the city stands on today, and this is what it has been taking
-        in and spending to get there. It is a page of ours rather than a section
-        of the book -- the book keeps its history wherever the history happened
-        to be needed -- so there is no contents line for it anywhere, and this
-        is the way in.
-      -->
-      <p class="not-prose mt-3 text-sm">
-        <a
-          class="font-semibold text-slate-900 underline decoration-slate-400 decoration-2 underline-offset-2 hover:decoration-slate-900"
-          href={Router.budgetSection(book.id, "history")}
-        >
-          History
-        </a>
-      </p>
     </div>
 
     <!--

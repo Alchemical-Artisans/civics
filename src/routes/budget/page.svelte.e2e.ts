@@ -418,12 +418,12 @@ test.describe("budget pages", () => {
     const opens = page.getByRole("link", { name: "History", exact: true })
     await expect(opens).toBeVisible()
 
-    // Under the two bars, which are the same question asked the other way
-    // round: what the city stands on today, and what it has been taking in and
-    // spending to get there.
-    const bars = (await page.locator(".budget-stack").boundingBox())!
+    // Under the two columns, which are those same two figures for 2027 alone,
+    // and in their column rather than out in the middle of the page.
+    const columns = (await page.locator(".budget-columns").boundingBox())!
     const link = (await opens.boundingBox())!
-    expect(link.y).toBeGreaterThan(bars.y + bars.height)
+    expect(link.y).toBeGreaterThan(columns.y + columns.height)
+    expect(link.x).toBeLessThan(columns.x + columns.width)
 
     await opens.click()
     await expect(page).toHaveURL(/\/budget\/fy2027\/history$/)
@@ -866,6 +866,28 @@ test.describe("budget pages", () => {
   test("a section names itself, and the bar leads back to its book", async ({ page }) => {
     await page.goto(`/budget/${books[0]}/${sections[0]}`)
     await expect(page.getByRole("heading", { level: 1 })).not.toBeEmpty()
+
+    // The bar reads "Haverhill Public Documents / 2027 Budget / Reserves": a
+    // section used to take it over, which named the page and lost the year it
+    // belonged to. The middle of it is the way back to the book.
+    const bar = page.getByRole("banner")
+    const book = bar.getByRole("link", { name: "2027 Budget", exact: true })
+    expect(await book.getAttribute("href")).toMatch(new RegExp(`/budget/${books[0]}$`))
+
+    const crumb = (await book.boundingBox())!
+    const name = (await page.getByRole("heading", { level: 1 }).boundingBox())!
+    const mark = (await bar.getByRole("link", { name: /Haverhill Public/ }).boundingBox())!
+    expect(crumb.x).toBeGreaterThan(mark.x)
+    expect(crumb.x).toBeLessThan(name.x)
+
+    // The book's own page is the thing, so it carries no crumb of its own.
+    await page.goto(`/budget/${books[0]}`)
+    await expect(
+      page.getByRole("banner").getByRole("link", { name: "2027 Budget", exact: true }),
+    ).toHaveCount(0)
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("2027 Budget")
+
+    await page.goto(`/budget/${books[0]}/${sections[0]}`)
     await expect(page.getByRole("article")).not.toBeEmpty()
     // The way into the book is the calendar's, not the bar's: the bar carries
     // no link to a document on any page now.

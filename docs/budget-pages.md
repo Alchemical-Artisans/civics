@@ -78,9 +78,21 @@ the audit reports, do have text layers if they are ever written up.
 ## What names a budget page
 
 Nothing on a budget page heads it. The bar across the top of the window does:
-the page's name and the fiscal year the book covers. A book page was spending
-four lines on a heading, a date line and a link above the two charts anyone came
-for, and the bar was already there saying where the reader was.
+what the page sits inside, the page's name, and the fiscal year the book covers.
+A book page was spending four lines on a heading, a date line and a link above
+the two charts anyone came for, and the bar was already there saying where the
+reader was.
+
+**A section names the book before it names itself.** The bar reads "Haverhill
+Public Documents / 2027 Budget / Reserves", and the middle of it is a link to
+the book. A section used to take the bar over entirely — "Haverhill Public
+Documents / Reserves" — which named the page and lost the thing it was part of:
+nothing said which year's reserves those were, and the only way back to the book
+was the bar's own menu of years. `barOf` returns that as `trail`, outermost
+first; a book's own page has none, being the thing. They are plain links rather
+than a `<nav>` and a list — the bar already carries one navigation landmark, for
+the two halves of the site, and a second holding a single link is more for a
+screen reader to walk past than it is worth.
 
 **The bar links no document, on any page.** It carried an "Original Source" to
 the city's file, and anything else a page named in its own `sources`; both are
@@ -505,9 +517,9 @@ spending pages — so a reader who wants to know what has been happening has to
 know where to look first. This is the page for that, and it starts with page
 18's top rows.
 
-It is reached from under the two bars on the book's front page, which is the
-same question asked backwards: the bars are what the city stands on today, and
-this is what it has been taking in and spending to get there. There is no
+It is reached from under the two columns on the book's front page, which are
+those same two figures for 2027 alone: what the city takes in against what it
+spends, which is the one question the front page answers for a single year. There is no
 contents line for it, because it is in no contents — `linkedElsewhere` in the
 e2e suite names it so the "every section the contents links to" count still
 adds up.

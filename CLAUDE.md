@@ -163,7 +163,11 @@ Notable pieces:
   produced it. On the budget half it
   carries what the page used to head itself with — the name (its only `<h1>`)
   and the fiscal year the book covers, from `src/lib/heading.ts`, which
-  reads `page.data`; a budget book is called `2027 Budget`, never "FY2027
+  reads `page.data`. A section names the book before itself, as a link:
+  `Haverhill Public Documents / 2027 Budget / Reserves`, which is `barOf`'s
+  `trail` -- a section used to take the bar over, which named the page and lost
+  the year it belonged to. Plain links rather than a second `<nav>`, since the
+  bar already has one. a budget book is called `2027 Budget`, never "FY2027
   Mayor's Budget". The bar runs the width of the window, because a bar narrower
   than the page under it reads as a mistake. Its budget entry is a link to this
   year's book with a menu of every fiscal year under it — the list `/budget`
@@ -215,8 +219,8 @@ Notable pieces:
   gives them for, and draws `history`: what the city took in and what it spent,
   from the top of page 18. `history` is not a section of the book -- the book
   keeps its history wherever the history happened to be needed -- so it has no
-  contents line and is reached from under the two bars on the front page, which
-  is the same question asked backwards. The years belong to the chart, not the
+  contents line and is reached from under the two columns on the front page,
+  which are those same two figures for 2027 alone. The years belong to the chart, not the
   series: each series gives one value per year and `null` where the book prints
   none, so a row the book is silent about for a year draws nothing there rather
   than shifting everything along. The expenditure line is drawn at what was

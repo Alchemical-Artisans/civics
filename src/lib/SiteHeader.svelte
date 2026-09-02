@@ -128,6 +128,27 @@
       <span class="font-semibold tracking-tight">Haverhill Public Documents</span>
     </a>
 
+    <!-- What the page sits inside, before the page's own name: on a section of
+         a budget book that is the book, so the bar reads "Haverhill Public
+         Documents / 2027 Budget / Reserves" and the middle of it is the way
+         back. A section used to take the bar over, which named the page and
+         lost the year it belonged to.
+
+         Plain links rather than a `<nav>` and a list. The bar already carries
+         one navigation landmark, for the two halves of the site, and a second
+         one holding a single link is more for a screen reader to walk past
+         than it is worth -- the mark to the left of these is a link home on
+         the same terms. -->
+    {#each bar.trail as crumb (crumb.href)}
+      <span class="text-slate-300" aria-hidden="true">/</span>
+      <a
+        class="truncate text-base font-medium tracking-tight text-slate-600 hover:text-slate-900"
+        href={crumb.href}
+      >
+        {crumb.name}
+      </a>
+    {/each}
+
     {#if bar.name}
       <!-- The page's one `<h1>`, and everything that used to sit under it. It
            is in the bar rather than the page because the bar is where a reader
