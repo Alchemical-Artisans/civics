@@ -52,7 +52,7 @@ test.describe("budget pages", () => {
     await expect(chart).toContainText("Spending")
     await expect(chart).toContainText("$316,044,835")
     await expect(chart).toContainText("Revenue")
-    await expect(chart).toContainText("$310,894,835")
+    await expect(chart).toContainText("$310,893,296")
 
     // Each name opens the side of the book its column is drawn from, and is the
     // only way to it: neither has a line in the contents.
@@ -398,15 +398,16 @@ test.describe("budget pages", () => {
     expect(labels.some((l) => l?.includes("State Assessments, $10,271,435"))).toBe(true)
     expect(labels.some((l) => l?.includes("Overlay, $250,000"))).toBe(true)
 
-    // The other side of the same budget: the book's sixteen sources, with what
-    // the two departments are billed beside them, net of what those orders
-    // transfer into the general fund and the book already counts.
+    // The other side of the same budget: the book's sources, with what the two
+    // departments are billed beside them -- whole, because the reimbursement
+    // they send the general fund is inside those figures rather than a slice of
+    // its own.
     const sources = page.locator(".budget-column").last().getByRole("img")
     const income = await sources.evaluateAll((w) => w.map((el) => el.getAttribute("aria-label")))
     expect(income.some((l) => l?.includes("TAX LEVY, $146,107,374"))).toBe(true)
     expect(income.some((l) => l?.includes("CH 70 STATE AID, $96,427,042"))).toBe(true)
-    expect(income.some((l) => l?.includes("Wastewater Revenue, $15,967,043"))).toBe(true)
-    expect(income.some((l) => l?.includes("Water Revenue, $14,805,633"))).toBe(true)
+    expect(income.some((l) => l?.includes("Wastewater Revenue, $16,666,024"))).toBe(true)
+    expect(income.some((l) => l?.includes("Water Revenue, $15,040,417"))).toBe(true)
 
     // And the high-level view says none of that: the spending page does, in
     // the city's own words.

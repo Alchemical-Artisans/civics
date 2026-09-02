@@ -109,42 +109,54 @@ describe("the two columns", () => {
     ...column(ENTERPRISE, "Amount"),
   ]
 
-  // Net of the transfers into the general fund, which the book's own revenue
-  // already counts: $15,040,417 less $234,784, and $16,666,024 less $698,981.
-  const billed = column(ENTERPRISE_REVENUE, "Amount").map((row, at) => ({
-    label: row.label,
-    amount: row.amount - [234784, 698981][at],
-  }))
+  // What the two departments are billed, whole: the reimbursement they send the
+  // general fund is inside these, so the book's own line for it is left out
+  // rather than charted beside them.
+  const billed = column(ENTERPRISE_REVENUE, "Amount")
 
   const revenue = [
     ...column(REVENUE, CHARTED, {
       exclude: [...NOT_A_CATEGORY, "OTHER AVAILABLE REVENUE SOURCES"],
     }),
     ...column(OTHER_AVAILABLE, CHARTED, {
-      exclude: ["Grand Total", "Free Cash (Budget Only)"],
+      exclude: ["Grand Total", "Free Cash (Budget Only)", "Transfer From Enterprise"],
     }),
     ...billed,
   ]
 
-  const stated = amount(cell(APPROPRIATIONS, "Grand Total", CHARTED))! + sum(billed)
+  // The spending column is the book's stated total plus what the two
+  // departments appropriate, which is their revenue less what they send the
+  // general fund.
+  const stated =
+    amount(cell(APPROPRIATIONS, "Grand Total", CHARTED))! + sum(column(ENTERPRISE, "Amount"))
 
   // The gap between the columns is the whole point of drawing them: the year
   // does not pay for itself, and last year's surplus closes it.
-  it("is short of what it spends by exactly the free cash", () => {
+  it("is short of what it spends by the free cash it leaves out", () => {
     expect(stated).toBe(316044835)
-    expect(sum(revenue)).toBe(310894835)
-    expect(stated - sum(revenue)).toBe(
-      amount(cell(OTHER_AVAILABLE, "Free Cash (Budget Only)", CHARTED)),
-    )
+    expect(sum(revenue)).toBe(310893296)
+
+    const freeCash = amount(cell(OTHER_AVAILABLE, "Free Cash (Budget Only)", CHARTED))!
+    expect(stated - sum(revenue)).toBe(freeCash + 1539)
   })
 
-  // Page 63 is the only place the book breaks that line open, and the two
-  // transfers left in it are this year's money, unlike the free cash.
-  it("keeps the transfers behind the book's own available-funds line", () => {
+  // That $1,539: the book projected the enterprise reimbursement at $935,304 in
+  // May and the orders set it at $933,765 in June. The chart takes the orders'
+  // figures for the departments, so the difference lands in the gap.
+  it("differs from the book by the month between a projection and a vote", () => {
+    const projected = amount(cell(OTHER_AVAILABLE, "Transfer From Enterprise", CHARTED))!
+    expect(projected - (234784 + 698981)).toBe(1539)
+  })
+
+  // Page 63 is the only place the book breaks that line open. What is taken
+  // from it is the Hospital Trust money that subsidises Public Health; the free
+  // cash and the reimbursement are left out, for different reasons.
+  it("keeps only the trust money from the book's available-funds line", () => {
     expect(sum(column(OTHER_AVAILABLE, CHARTED, { exclude: ["Grand Total"] }))).toBe(
       amount(cell(REVENUE, "OTHER AVAILABLE REVENUE SOURCES", CHARTED)),
     )
-    expect(revenue.map((r) => r.label)).toContain("Transfer From Enterprise")
+    expect(revenue.map((r) => r.label)).toContain("Transfer from Trust & Agency")
+    expect(revenue.map((r) => r.label)).not.toContain("Transfer From Enterprise")
     expect(revenue.map((r) => r.label)).not.toContain("Free Cash (Budget Only)")
   })
 
@@ -154,8 +166,11 @@ describe("the two columns", () => {
     expect(sum(spending)).toBe(316044836)
   })
 
-  it("counts the transfers between the funds once", () => {
-    expect(sum(billed)).toBe(30772676)
+  // Whole, not net: the reimbursement is inside these, which is why the book's
+  // own line for it is not charted beside them.
+  it("charts what the two departments are billed", () => {
+    expect(sum(billed)).toBe(31706441)
+    expect(sum(billed) - (234784 + 698981)).toBe(30772676)
   })
 
   // Charged rather than chosen, but spent: the Commonwealth bills the city and

@@ -115,7 +115,7 @@ pays for it — and sit in the narrow left column of the page.
 **They are columns rather than pies because the first question about a budget is
 whether the two sides are the same size**, and two circles cannot be compared by
 eye. Side by side against one scale, the gap between the tops is the answer:
-$316,044,835 spent against $310,894,835 that comes from somewhere. Reserves and debt are the standing position
+$316,044,835 spent against $310,893,296 that comes from somewhere. Reserves and debt are the standing position
 underneath it, which is a different question, so they sit above the table of
 contents rather than beside the pies. Both read their figures out of the
 sections' own transcriptions; see "A section whose tables are charted" below.
@@ -283,14 +283,23 @@ their own revenue on the other.
 
 **Free cash is not drawn as revenue.** The book's revenue table has one line
 that is not this year's income — "OTHER AVAILABLE REVENUE SOURCES", which page
-63 breaks into free cash ($5,150,000), the transfer from the enterprise funds
-($935,304) and a transfer from trust and agency ($125,000). Free cash is last
-year's surplus. Counting it would make the chart balance by hiding the thing
-worth seeing: the year does not pay for itself, and $5,150,000 of last year's
-money closes the gap. The Mayor's own third goal is to stop relying on it, and
-the reserves bar shows the balance it leaves at $0. So the line is replaced by
-the two transfers behind it, and the columns come to $316,044,835 and
-$310,894,835 — **$5,150,000 apart, which is the free cash exactly**.
+63 breaks into free cash ($5,150,000), an administrative overhead reimbursement
+from the enterprise funds ($935,304), and Hospital Trust money that subsidises
+Public Health ($125,000). Free cash is last year's surplus, and counting it
+would make the chart balance by hiding the thing worth seeing: the year does not
+pay for itself. The Mayor's own third goal is to stop relying on it, and the
+reserves bar shows the balance it leaves at $0.
+
+The enterprise reimbursement is left out too, for a different reason: the two
+departments are charted at what they are actually billed — $15,040,417 and
+$16,666,024, the orders' own figures — and that money is inside those, on its
+way to the general fund. A slice reading "Transfer From Enterprise" says less
+than the water bill it is part of, and charting both would count it twice.
+
+So the columns come to **$316,044,835** and **$310,893,296**, $5,151,539 apart:
+the free cash, and the $1,539 by which the orders' reimbursement differs from
+the book's May projection of it. `overview.spec.ts` holds both halves of that
+down.
 
 On the revenue side the two departments are net of what the same orders transfer
 into the general fund — $234,784 and $698,981 — because those are already inside

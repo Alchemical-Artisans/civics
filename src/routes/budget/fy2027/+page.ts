@@ -5,7 +5,7 @@ import { APPROPRIATIONS } from "./spending/tables"
 import { FUND_BALANCE, FREE_CASH, STABILIZATION } from "./reserves/tables"
 import { LONG_TERM_DEBT } from "./outstanding-debt/tables"
 import { CALENDAR } from "./budget-calendar"
-import { AGENDA, ENTERPRISE, ENTERPRISE_REVENUE, GENERAL_FUND } from "./council-orders"
+import { AGENDA, ENTERPRISE, ENTERPRISE_REVENUE } from "./council-orders"
 import { OTHER_AVAILABLE, REVENUE } from "./revenue/tables"
 import type { Part } from "$lib/BudgetStack.svelte"
 
@@ -63,38 +63,39 @@ const spending = [
 /**
  * Where that money comes from -- and only what actually comes from somewhere.
  *
- * The book's revenue table has one line that is not revenue: "OTHER AVAILABLE
- * REVENUE SOURCES", which page 63 breaks into free cash ($5,150,000), the
- * transfer from the enterprise funds ($935,304) and a transfer from trust and
- * agency ($125,000). Free cash is last year's surplus rather than this year's
- * income, and counting it here would hide what the chart is for: the year does
- * not pay for itself, and $5,150,000 of last year's money closes the gap. The
- * Mayor's own third goal is to stop doing this.
+ * The book's revenue table has one line that is not this year's income: "OTHER
+ * AVAILABLE REVENUE SOURCES", which page 63 breaks into free cash ($5,150,000),
+ * an administrative overhead reimbursement from the enterprise funds
+ * ($935,304), and money from the Hospital Trust that subsidises Public Health
+ * ($125,000).
  *
- * So that line is replaced by the two transfers behind it, and the enterprise
- * slices are net of what those same orders move into the general fund --
- * $234,784 and $698,981 -- which is the transfer the book has just counted.
- * Counting it twice is the one way these two columns stop meaning anything.
+ * Free cash is left out: it is last year's surplus, and counting it would make
+ * the chart balance by hiding what the chart is for -- the year does not pay
+ * for itself, and $5,150,000 of last year's money closes the gap. The Mayor's
+ * own third goal is to stop doing this.
+ *
+ * The enterprise reimbursement is left out too, for a different reason: the two
+ * departments are charted at what they are actually billed -- $15,040,417 and
+ * $16,666,024, the orders' own figures -- and that money is inside those, on
+ * its way to the general fund. A slice reading "Transfer From Enterprise" says
+ * less than the water bill it is a part of.
+ *
+ * The book projected the reimbursement at $935,304 in May and the orders set it
+ * at $933,765 in June, so taking the orders' figures for both departments moves
+ * the total by $1,539. That is the whole of the difference between the columns
+ * beyond the free cash.
  */
 const NOT_THIS_YEAR = "OTHER AVAILABLE REVENUE SOURCES"
 
-const TRANSFERRED: Record<string, string> = {
-  "Water Revenue": "Water Receipts",
-  "Wastewater Revenue": "Wastewater Receipts",
-}
+const billed = column(ENTERPRISE_REVENUE, "Amount")
 
-const billed = column(ENTERPRISE_REVENUE, "Amount").map((row) => ({
-  label: row.label,
-  amount: row.amount - amount(cell(GENERAL_FUND, TRANSFERRED[row.label], "Amount"))!,
-}))
-
-const transfers = column(OTHER_AVAILABLE, CHARTED, {
-  exclude: ["Grand Total", "Free Cash (Budget Only)"],
+const trust = column(OTHER_AVAILABLE, CHARTED, {
+  exclude: ["Grand Total", "Free Cash (Budget Only)", "Transfer From Enterprise"],
 })
 
 const revenue = [
   ...column(REVENUE, CHARTED, { exclude: [...NOT_A_CATEGORY, NOT_THIS_YEAR] }),
-  ...transfers,
+  ...trust,
   ...billed,
 ]
 
@@ -106,9 +107,12 @@ const revenue = [
  * shows the one the book states. Revenue is summed, because no document states
  * a total for this -- the book's own counts the free cash this leaves out.
  *
- * The difference between them is $5,150,000, which is that free cash exactly.
+ * The difference between them is $5,151,539: the $5,150,000 of free cash the
+ * revenue column leaves out, and the $1,539 by which the orders' enterprise
+ * reimbursement differs from the book's May projection of it.
  */
-const spendingTotal = amount(cell(APPROPRIATIONS, "Grand Total", CHARTED))! + sum(billed)
+const spendingTotal =
+  amount(cell(APPROPRIATIONS, "Grand Total", CHARTED))! + sum(column(ENTERPRISE, "Amount"))
 const revenueTotal = sum(revenue)
 
 /**

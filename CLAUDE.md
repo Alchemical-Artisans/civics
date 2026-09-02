@@ -115,14 +115,21 @@ or SvelteKit's `redirect()` — see
 break, in ways the e2e suite now pins. The header carries the link to
 each half, so no page needs its own sideways link.
 
-**The pies are the whole city's budget, not the book's.** Page 78's two tables
-are the general fund; the front page draws both entire, state assessments and
-overlay included -- the Council never votes those, because the Commonwealth
+**The two columns are the whole city's budget, not the book's.** Page 78's two
+tables are the general fund; the front page draws both entire, state assessments
+and overlay included -- the Council never votes those, because the Commonwealth
 bills the city and the assessors raise the overlay, but they are spent. What the
 book leaves out is water and wastewater, enterprise funds appropriated in their
-own Council orders: $14,805,633 and $15,967,043 on the spending side, their own
-revenue on the other, net of the $933,765 those orders transfer into the general
-fund and the book's revenue already counts. Both pies come to $316,044,835.
+own Council orders: $14,805,633 and $15,967,043 on the spending side, and on the
+other what those departments are billed, $15,040,417 and $16,666,024.
+
+Free cash is left out of the revenue column -- it is last year's surplus, not
+this year's income -- and so is the book's line for the enterprise
+reimbursement, since that money is inside the water and sewer bills already
+charted. So the columns stand $5,151,539 apart: the free cash, and the $1,539 by
+which the orders' reimbursement differs from the book's May projection of it.
+That gap is why they are columns on one scale rather than two pies -- spending
+$316,044,835 against revenue $310,893,296.
 `fy2027/council-orders.ts` transcribes the orders from the agenda of 2 June 2026
 -- a document the calendar half already carries -- and `spending` quotes them,
 which is where the explanation lives; the front page just draws the budget.
