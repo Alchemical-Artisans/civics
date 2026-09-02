@@ -55,17 +55,16 @@ export function barOf(data: PageNaming): PageBar {
     // once where the name is rather than nowhere.
     dates: book ? `July 1, ${book.year - 1} to June 30, ${book.year}` : null,
 
-    // The book first, and a section knows where it sits in it, so its link
-    // opens the reader at that page rather than at the front of a PDF running
-    // to hundreds. Then whatever else the page says it was built from.
+    // The book, on a page that is a part of it: the link opens at that
+    // section's own page rather than at the front of a PDF running to hundreds.
+    //
+    // Not on the book's own front page, which is the page the book *is*. There
+    // the city's file hangs off the budget calendar in the footer, on the step
+    // of the process that produced it, which says more about a document than a
+    // link in a header can. Then whatever else a page says it was built from.
     sources: [
-      ...(book?.budget
-        ? [
-            {
-              label: "Original Source",
-              href: section ? Router.pdfPage(book.budget, section.page) : book.budget,
-            },
-          ]
+      ...(book?.budget && section
+        ? [{ label: "Original Source", href: Router.pdfPage(book.budget, section.page) }]
         : []),
       ...(data.sources ?? []),
     ],

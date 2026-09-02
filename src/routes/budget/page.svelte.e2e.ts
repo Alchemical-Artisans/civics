@@ -590,6 +590,29 @@ test.describe("budget pages", () => {
     await expect(detail).toBeHidden()
   })
 
+  test("hangs each document off the step that produced it", async ({ page }) => {
+    await page.goto(`/budget/${books[0]}`)
+
+    // The book is the outcome of the final review, and the Council's
+    // appropriation orders were on an agenda inside the run of hearings. Both
+    // used to hang off the bar at the top, where "Original Source" said nothing
+    // about where in the year either came from; a box in the calendar does.
+    const review = page.locator(".budget-timeline li").filter({ hasText: "Final review" })
+    expect(await review.getByRole("link").getAttribute("href")).toMatch(/fy-2027-budget-book/)
+
+    const hearings = page.locator(".budget-timeline li").filter({ hasText: "Public hearings" })
+    expect(await hearings.getByRole("link").getAttribute("href")).toMatch(/full-agenda-6226\.pdf$/)
+
+    // Every other box is text: a step that produced nothing the city published
+    // has nothing to link.
+    await expect(page.locator(".budget-timeline li a")).toHaveCount(2)
+
+    // And the bar no longer carries the book, since the box does.
+    await expect(
+      page.getByRole("banner").getByRole("link", { name: /^Original Source/ }),
+    ).toHaveCount(0)
+  })
+
   test("a contents line with no page here opens the city's PDF at that page", async ({ page }) => {
     await page.goto(`/budget/${books[0]}`)
     // Scoped to the page: the bar's menu of years is a list of links too.
@@ -623,7 +646,9 @@ test.describe("budget pages", () => {
 
   test("every section the contents links to actually renders", async ({ page }) => {
     await page.goto(`/budget/${books[0]}`)
-    const local = await page.locator('article li a:not([href*="#page="])').all()
+    // Scoped to the contents lists: the calendar in the footer is a list of
+    // boxes inside the same article, and two of its boxes link a document.
+    const local = await page.locator('article > div ol li a:not([href*="#page="])').all()
     const hrefs = await Promise.all(local.map((link) => link.getAttribute("href")))
     expect(hrefs.length).toBe(
       sections.filter((name) => !unlinked.includes(name) && !linkedElsewhere.includes(name)).length,

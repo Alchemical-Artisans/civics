@@ -8,7 +8,12 @@ describe("barOf", () => {
     const bar = barOf({ book: BOOK })
     expect(bar.name).toBe("2027 Budget")
     expect(bar.dates).toBe("July 1, 2026 to June 30, 2027")
-    expect(bar.sources).toEqual([{ label: "Original Source", href: BOOK.budget }])
+  })
+
+  // The book's own front page does not link the book: the file hangs off the
+  // budget calendar there, on the step of the process that produced it.
+  it("leaves the book unlinked on the page that is the book", () => {
+    expect(barOf({ book: BOOK }).sources).toEqual([])
   })
 
   // A section's own `+page.ts` is loaded under the layout that looked the book
@@ -26,15 +31,18 @@ describe("barOf", () => {
   // FY2022 and FY2023 are printed as plain text on the city's page, with no
   // file behind them, and a book that is not published has no source to link.
   it("has no source where the city published no file", () => {
-    expect(barOf({ book: { year: 2023, budget: null } }).sources).toEqual([])
+    const bar = barOf({ book: { year: 2023, budget: null }, section: { title: "X", page: 1 } })
+    expect(bar.sources).toEqual([])
   })
 
   // A page can rest on a document that is not the book: the front page charts
   // the Council's own appropriation orders, which are on an agenda.
   it("carries what else a page says it was built from, after the book", () => {
     const order = { label: "City Council Order", href: "https://example.org/agenda.pdf" }
-    expect(barOf({ book: BOOK, sources: [order] }).sources).toEqual([
-      { label: "Original Source", href: BOOK.budget },
+    const bar = barOf({ book: BOOK, section: { title: "Spending", page: 15 }, sources: [order] })
+
+    expect(bar.sources).toEqual([
+      { label: "Original Source", href: `${BOOK.budget}#page=15` },
       order,
     ])
   })

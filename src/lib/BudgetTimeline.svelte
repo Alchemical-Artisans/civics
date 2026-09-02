@@ -55,6 +55,13 @@
     summary: string
     /** The step, exactly as the book prints it. */
     step: string
+    /**
+     * A document this step produced, linked from its box: the budget book came
+     * out of the final review, and the Council's appropriation orders were on
+     * an agenda inside the run of public hearings. `documents` on the component
+     * is where the addresses come from.
+     */
+    document?: "book" | "order"
   }
 </script>
 
@@ -70,7 +77,21 @@
      * browser knows.
      */
     asOf,
-  }: { steps: Step[]; asOf: string } = $props()
+    /**
+     * The city's own files, by the name a step calls for.
+     *
+     * The book was in the bar at the top of every page as "Original Source",
+     * which is a true label and an unhelpful one on the page that *is* the
+     * book. Here each file sits on the step of the process that produced it,
+     * which is worth knowing about a document and is something no link in a
+     * header can say.
+     */
+    documents = {},
+  }: {
+    steps: Step[]
+    asOf: string
+    documents?: Partial<Record<"book" | "order", string | null>>
+  } = $props()
 
   let inTheBrowser = $state<string | null>(null)
   onMount(() => {
@@ -253,6 +274,23 @@
               >
                 {step.summary}
               </span>
+
+              {#if step.document && documents[step.document]}
+                <!-- The file this step produced. Named for what it is rather
+                     than for what it contains: the box around it says which
+                     step, which is the more useful half. -->
+                <a
+                  class="mt-1 block text-[11px] text-slate-600 underline decoration-slate-400 hover:text-slate-900"
+                  href={documents[step.document]}
+                  target="_blank"
+                  rel="external noopener noreferrer"
+                >
+                  PDF<span class="sr-only">
+                    {step.document === "book" ? ", the budget book" : ", the City Council agenda"},
+                    opens the city's file in a new tab</span
+                  >
+                </a>
+              {/if}
 
               <!-- The book's own sentence, and where the budget has got to: both
                  are in the box for a reader who cannot hover it or see which

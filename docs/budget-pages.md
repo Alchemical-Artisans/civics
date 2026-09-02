@@ -78,11 +78,15 @@ the audit reports, do have text layers if they are ever written up.
 ## What names a budget page
 
 Nothing on a budget page heads it. The bar across the top of the window does:
-the page's name, the fiscal year the book covers, and an **Original Source**
-link to the city's own file — on a section, that file opened at the section's
-page. A book page was spending four lines on a heading, a date line and a link
-above the two charts anyone came for, and the bar was already there saying where
-the reader was.
+the page's name, the fiscal year the book covers, and — on a section — an
+**Original Source** link to the city's own file, opened at the section's page. A
+book page was spending four lines on a heading, a date line and a link above the
+two charts anyone came for, and the bar was already there saying where the
+reader was.
+
+**A book's own page does not carry that link.** The bar could only say that the
+book came from somewhere; the calendar under it can say where in the year, so
+the file hangs off the step that produced it instead — see the calendar below.
 
 [`src/lib/heading.ts`](../src/lib/heading.ts) is where all three come from.
 `page.data` is a merge of every load above the route, and which key holds what
@@ -464,6 +468,15 @@ underneath the row on mouseover or focus, unshortened. The summaries are the one
 thing on these pages that is not the book's: each is built from its own entry's
 nouns, and the sentence is in the box as well, hidden, so a screen reader gets
 the book's wording whether or not anything can be hovered.
+
+**A step that produced a document links it.** Two of them did: the book itself
+came out of the final review, and the Council's appropriation orders were on the
+agenda of 2 June, inside the run of public budget hearings. Each box carries a
+`PDF` link to the city's file, with an `sr-only` clause naming which document it
+is, since two boxes reading "PDF" say nothing apart. A step's `document` key is
+ours; everything else in `budget-calendar.ts` is the book's, and the files
+themselves come from the page's `+page.ts` — the book from `budget.json`, the
+agenda from the same `council-orders.ts` the spending page quotes.
 
 **One box is highlighted: the stage the process has reached.** That is the last
 entry that has begun — the entry itself while it is happening, and the one

@@ -83,6 +83,9 @@ export const CALENDAR: Step[] = [
     on: "2026-04-13",
     through: "2026-04-17",
     step: "Mayor, Chief of Staff, CFO and Deputy Auditor met with departments to review final recommendations.",
+    // What came out of this step is the book itself, so the box carries the
+    // city's file. `document` is ours; everything else here is the book's.
+    document: "book",
   },
   {
     date: "5/27-6/8",
@@ -90,6 +93,9 @@ export const CALENDAR: Step[] = [
     on: "2026-05-27",
     through: "2026-06-08",
     step: "Department public budget hearings -City Hall Council Chambers 6pm.",
+    // The Council's appropriation orders are on the agenda of 2 June, which
+    // falls inside this run of hearings.
+    document: "order",
   },
   {
     date: "6/16/26",

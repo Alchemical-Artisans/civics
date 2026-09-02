@@ -158,10 +158,12 @@ Notable pieces:
 - **`src/lib/SiteHeader.svelte`** is the bar on every page: the mark, the page's
   own name, the budget with its menu of fiscal years, and the calendar. It
   carries a page's sources too -- the book, and anything else a page says it was
-  built from, such as the Council's appropriation orders on the front page. On the budget half it
+  built from, such as the Council's appropriation orders on the spending page. On the budget half it
   carries what the page used to head itself with — the name (its only `<h1>`),
   the fiscal year the book covers, and an "Original Source" link to the city's
-  file, opened at a section's own page — all from `src/lib/heading.ts`, which
+  file, opened at a section's own page. Only on a section: a book's own front
+  page hangs the book off the calendar step that produced it instead, where the
+  bar could only say that the book came from somewhere. All from `src/lib/heading.ts`, which
   reads `page.data`; a budget book is called `2027 Budget`, never "FY2027
   Mayor's Budget". The bar runs the width of the window, because a bar narrower
   than the page under it reads as a mistake. Its budget entry is a link to this
@@ -245,7 +247,11 @@ Notable pieces:
   book's — and the book's own sentence comes up as a tooltip over the box on
   hover or focus, drawn outside the scrolling strip because `overflow-x` clips
   vertically too, and sits hidden in the box for a screen reader. Nothing else
-  is in the footer: no label, no today's date, only the boxes and the mark. The stage the process has
+  is in the footer: no label, no today's date, only the boxes and the mark. Two
+  boxes carry a `PDF` link: a step that produced a document the city published
+  hangs it there, so the budget book comes off "Final review" and the Council's
+  appropriation orders off "Public hearings", the run of hearings the agenda of
+  2 June sits inside. The stage the process has
   reached, meaning the last entry that has begun, is the one box in pale green,
   against the pale blue of the entries behind it and the white of those ahead. Boxes
   are evenly spaced because two entries are a day apart; only the mark is placed

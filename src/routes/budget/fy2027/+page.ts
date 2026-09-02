@@ -227,11 +227,12 @@ export const load: PageLoad = () => ({
   },
 
   /**
-   * The agenda those orders are on, which the bar links beside the book. The
-   * meeting is on this site too, on the calendar half, but the bar's other
-   * sources are the city's own files and this one keeps them company.
+   * The agenda those orders are on. It hangs off the budget calendar in the
+   * footer, on the run of public hearings its meeting of 2 June falls inside,
+   * rather than sitting in the bar: a document is easier to weigh when a reader
+   * can see which step of the process produced it.
    */
-  sources: [{ label: "City Council Order", href: AGENDA.file }],
+  order: AGENDA.file,
 
   /**
    * The chart above the contents: page 17's balances and page 21's list, as two
