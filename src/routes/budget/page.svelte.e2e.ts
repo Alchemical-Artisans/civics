@@ -162,19 +162,34 @@ test.describe("budget pages", () => {
     await expect(page.getByRole("heading", { name: "Departments" })).toHaveCount(0)
     await expect(page.getByRole("heading", { name: "Table of Contents" })).toHaveCount(0)
 
-    // One line per thing the city funds, by name rather than by the book's
-    // grouping: a reader who wants one of them knows what it is called.
+    // One line per thing the city funds, priced and ordered by what it costs:
+    // the schools are more than eight times the police and the senior center is
+    // $14,500, and the list says so without the reader opening anything.
     //
     // `toContainText`, because a line with no page here carries an `sr-only`
     // note saying it opens the city's PDF.
     const funded = lists.locator("li")
-    await expect(funded.first()).toContainText("Assessor's Office")
-    await expect(funded.last()).toContainText("Veterans Services")
+    await expect(funded).toHaveCount(33)
+    await expect(funded.first()).toContainText("Education")
+    await expect(funded.first()).toContainText("$147,158,454")
+    await expect(funded.last()).toContainText("Senior Center")
+    await expect(funded.last()).toContainText("$14,500")
 
-    const named = await funded.evaluateAll((lines) =>
-      lines.map((line) => line.textContent?.split(",")[0].trim() ?? ""),
+    // Every line carries a figure, and they run down the page in order.
+    const priced = await funded.evaluateAll((lines) =>
+      lines.map((line) => Number(line.textContent?.match(/\$([\d,]+)/)?.[1].replace(/,/g, ""))),
     )
-    expect(named).toEqual([...named].sort((a, b) => a.localeCompare(b, "en")))
+    expect(priced).toHaveLength(33)
+    expect(priced.every((money) => money > 0)).toBe(true)
+    expect(priced).toEqual([...priced].sort((a, b) => b - a))
+
+    // "Finance Division" is a divider page -- three office names and the
+    // division's staff, no budget of its own -- and the three offices under it
+    // are each here with their own figure.
+    await expect(funded.filter({ hasText: "Finance Division" })).toHaveCount(0)
+    for (const office of ["Auditor's Office", "Treasurer's & Collector's Office"]) {
+      await expect(funded.filter({ hasText: office })).toHaveCount(1)
+    }
 
     // Education is page 26, printed a hundred pages before the rest of these,
     // and filed here because this is where a reader looks for it.

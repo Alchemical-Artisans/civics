@@ -140,9 +140,10 @@ here where one is written, the city's own PDF where it is not, and each year's
 audit report beside it, which is the only place those are linked. `/budget`
 itself is not a page: it was one, and reaching a book through it cost a hop.
 `/budget/<year>` is a budget book's own table of contents -- two unheaded
-lists, the year's own account in the book's order and an alphabetical column of
+lists, the year's own account in the book's order and a priced column of
 everything the city funds, from the book's run of City Council to Library plus
-anything `ALSO_A_BUDGET` names -- and
+anything `ALSO_A_BUDGET` names, each line carrying what the book recommends
+spending on it and the list running largest first -- and
 `/budget/<year>/<section>` is one section of it transcribed. None of it is
 scraped: the city's page is 22 rows that change twice a year, so the list lives
 in `src/lib/data/budget.json`, scraped by `budget:update`. Every route is static and each contents line links to a

@@ -4,12 +4,13 @@
   import BudgetStack from "$lib/BudgetStack.svelte"
   import BudgetTimeline from "$lib/BudgetTimeline.svelte"
   import type { BookSection } from "$lib/budget"
+  import type { FundedSection } from "./+page"
 
   let { data } = $props()
 
   const book = $derived(data.book)
   const contents = $derived(data.contents as BookSection[])
-  const departments = $derived(data.departments as BookSection[])
+  const departments = $derived(data.departments as FundedSection[])
   const overview = $derived(data.overview)
   const calendar = $derived(data.calendar)
   const reserves = $derived(data.reserves)
@@ -20,9 +21,18 @@
   // reader lands on the section, which is the whole point of the page.
   const linkFor = (s: BookSection) =>
     s.written ? Router.budgetSection(book.id, s.slug) : Router.pdfPage(book.budget!, s.page)
+
+  // Whole dollars, as the book prints them: this is a figure to compare against
+  // the one under it, and a list of thirty-three of them rounded to millions
+  // would put the senior center and the stadium at $0.
+  const money = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    maximumFractionDigits: 0,
+  })
 </script>
 
-{#snippet list(sections: BookSection[])}
+{#snippet list(sections: (BookSection & { amount?: number })[])}
   <!-- Not a `prose` list, and no page numbers: the book prints them beside its
        own contents because paper is the only way through it, and here the line
        is the way through -- it opens the section, on this site or at that page
@@ -31,7 +41,9 @@
        strip and not two. -->
   <ol class="not-prose mt-2 list-none space-y-0 p-0">
     {#each sections as section (section.slug)}
-      <li class="break-inside-avoid border-b border-slate-100 py-1.5 text-sm">
+      <li
+        class="flex break-inside-avoid items-baseline justify-between gap-3 border-b border-slate-100 py-1.5 text-sm"
+      >
         <a
           class="text-slate-800 underline decoration-slate-300 hover:decoration-slate-800"
           href={linkFor(section)}
@@ -42,6 +54,13 @@
               , in the city's PDF, opens in a new tab</span
             >{/if}
         </a>
+        <!-- The figure is beside the name rather than in the link: it is what
+             the line is worth, not somewhere to go. `tabular-nums` so a column
+             of them lines up on the comma, and it does not shrink, so a long
+             department name wraps rather than pushing the money off the end. -->
+        {#if section.amount !== undefined}
+          <span class="shrink-0 text-slate-500 tabular-nums">{money.format(section.amount)}</span>
+        {/if}
       </li>
     {/each}
   </ol>

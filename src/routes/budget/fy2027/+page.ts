@@ -1,7 +1,7 @@
 import type { PageLoad } from "./$types"
 import { contents, type BookSection } from "$lib/budget"
 import { amount, cell, column, sum, type BudgetTableData } from "$lib/budget-table"
-import { APPROPRIATIONS } from "./spending/tables"
+import { APPROPRIATIONS, DEPARTMENTS } from "./spending/tables"
 import { FUND_BALANCE, FREE_CASH, STABILIZATION } from "./reserves/tables"
 import { LONG_TERM_DEBT } from "./outstanding-debt/tables"
 import { CALENDAR } from "./budget-calendar"
@@ -188,6 +188,61 @@ const FIRST_BUDGET = "City Council"
 const LAST_BUDGET = "Library"
 const ALSO_A_BUDGET = ["Education"]
 
+/**
+ * What each of those lines costs, from pages 76 and 77.
+ *
+ * The book's contents and the book's department table name the same thirty-two
+ * departments differently -- the contents has "Legal" and "Inspectional
+ * Services" where the table has "Legal Department" and "Health & Inspections"
+ * -- so the pairing is written out rather than matched on the strings. It is a
+ * pairing and not a guess: once the twelve rows that are not a department
+ * (Debt Services, Employee Benefits, State Assessments, the two school lines
+ * and the rest) are set aside, thirty-two rows are left against thirty-two
+ * lines, and every one of them has exactly one name it could be.
+ *
+ * Only the titles that differ are here; a title the table prints the same way
+ * finds its own row. `departments` throws when a line finds nothing, so a
+ * renamed department is a build failure rather than a blank.
+ */
+const BUDGET_LINE: Record<string, string> = {
+  "Auditor's Office": "City Auditor's Office",
+  "Treasurer's & Collector's Office": "Treasurer & Collector",
+  "Economic Development & Planning": "Economic Development",
+  Legal: "Legal Department",
+  "Highway Department": "Highway",
+  Parks: "Parks Department",
+  Refuse: "Refuse Collection",
+  "Snow & Ice Removal": "Snow & Ice",
+  "Inspectional Services": "Health & Inspections",
+  "Public Health": "Public Health Department",
+  "Recreation Department": "Recreation",
+}
+
+/**
+ * Education is the one line the table has no row for.
+ *
+ * The book files what the city spends on schools under two headings -- the
+ * assessment the regional vocational schools send it and the appropriation the
+ * school department gets -- and the page here carries both. Page 78's own
+ * "Education" category is these two added together, which is the check
+ * `overview.spec.ts` makes.
+ */
+const SCHOOLS = ["School Department", "Regional Schools"]
+
+const RECOMMENDED = "2027 Recommended"
+
+/** One contents line, with what the book recommends spending on it. */
+export type FundedSection = BookSection & { amount: number }
+
+const costOf = (title: string): number => {
+  const rows = title === "Education" ? SCHOOLS : [BUDGET_LINE[title] ?? title]
+  return rows.reduce((total, row) => {
+    const figure = amount(cell(DEPARTMENTS, row, RECOMMENDED))
+    if (figure === null) throw new Error(`No 2027 figure for ${row} on pages 76-77`)
+    return total + figure
+  }, 0)
+}
+
 const split = (lines: BookSection[]) => {
   const from = lines.findIndex((line) => line.title === FIRST_BUDGET)
   const to = lines.findIndex((line) => line.title === LAST_BUDGET)
@@ -198,13 +253,18 @@ const split = (lines: BookSection[]) => {
 
   return {
     contents: lines.filter((line, at) => !funded(line, at)),
-    // Alphabetical, unlike everything else here, which keeps the book's order.
-    // The book groups these by what they do -- the mayor's offices, then public
-    // safety, then public works -- and a reader who wants one knows its name
-    // and not its group, so the order that finds it is the one it is filed
-    // under. The left-hand list stays in the book's order, because that one is
-    // an argument and reads in sequence.
-    departments: lines.filter(funded).sort((a, b) => a.title.localeCompare(b.title, "en")),
+    // By what it costs, largest first -- not alphabetically, which is how this
+    // list read while it was only names. A name is what a reader searches for
+    // and a figure is what they compare, and the list is worth more as an
+    // answer to "what does this city spend its money on" than as an index: the
+    // schools are $147,158,454 of it and the senior center is $14,500, and in
+    // alphabetical order those two lines sit four apart and read alike. The
+    // left-hand list stays in the book's order, because that one is an argument
+    // and reads in sequence.
+    departments: lines
+      .filter(funded)
+      .map((line): FundedSection => ({ ...line, amount: costOf(line.title) }))
+      .sort((a, b) => b.amount - a.amount),
   }
 }
 
@@ -304,7 +364,12 @@ export const load: PageLoad = () => ({
       ["City Council", 81],
       ["Mayor's Office", 84],
       ["Constituent Services", 87],
-      ["Finance Division", 91],
+      // "Finance Division" (91) is not here. It is a divider, like the "General
+      // Fund Budgets" page that used to precede this whole run: its own three
+      // office names and the division's staff, and no budget -- the three
+      // offices are budgeted separately and each has its own line below. In a
+      // list of what things cost, a line with nothing to cost is a line that
+      // reads as a missing figure.
       ["Auditor's Office", 92],
       ["Treasurer's & Collector's Office", 96],
       ["Assessor's Office", 101],

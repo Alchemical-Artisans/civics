@@ -401,11 +401,41 @@ Every other line the book's contents carries is listed, whether or not it has a
 page here.
 
 **The contents is two lists, and neither carries a heading.** The left one is
-the book's account of the year, in the book's order. The right one is
-alphabetical, and its lines are the stretch of the book from City Council to
-Library, where each page is something the city funds and what it costs — sorted
-by name afterwards, because the book groups them by what they do and a reader
-who wants one knows its name rather than its group.
+the book's account of the year, in the book's order. The right one is the
+stretch of the book from City Council to Library, where each page is something
+the city funds — and it carries what each of those costs, largest first.
+
+It read alphabetically while it was only names, on the grounds that a reader who
+wants one department knows its name and not the book's grouping. With a figure
+beside each name the list answers a better question than "where is the library":
+the schools are $147,158,454 of it, the police $17,501,996, and the senior
+center $14,500, and in alphabetical order those three sit apart and read alike.
+Ordering by what the money does is the whole editorial idea of the site applied
+to a list.
+
+The figures are pages 76 and 77, the book's own department table, read out of
+`spending/tables.ts` — the same copy the spending page renders, so no figure
+here is typed twice. The book's contents and that table name the same
+departments differently ("Legal" against "Legal Department", "Inspectional
+Services" against "Health & Inspections"), so `BUDGET_LINE` in `fy2027/+page.ts`
+pairs them by hand. It is a pairing rather than a guess: set aside the twelve
+rows that are not a department — debt, benefits, assessments, the two school
+lines, and the two the city no longer funds — and thirty-two rows stand against
+thirty-two lines with one candidate each. `costOf` throws when a line finds no
+row, so renaming a department in one place and not the other fails the build
+rather than printing a blank.
+
+**Education is the one line with no row of its own.** The book budgets the
+schools in two pieces, "School Department" and "Regional Schools", and the page
+here carries both, so the line is priced at the two added together —
+$147,158,454, which is exactly what page 78's own "Education" category prints.
+`overview.spec.ts` holds those two against each other.
+
+**"Finance Division" is not in the list.** Page 91 is a divider: the names of
+the three offices under it and the division's staff, and no budget of its own.
+Its three offices are each in the list with their own figure, so the line had
+nothing to cost, and a line with no figure in a list of figures reads as one
+that went missing.
 
 That list has no title because no short one is true of it: "Departments" would
 be wrong about Education, Outdoor Lighting, Refuse and Snow & Ice Removal, which
