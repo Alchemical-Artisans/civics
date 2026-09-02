@@ -423,6 +423,22 @@ city's PDF at that page, so which page it is stays the link's business. The
 numbers are still in the data — they are what `Router.pdfPage` builds an unwritten
 section's link from — they are just not printed.
 
+**The book page is one screen, and only the list scrolls.** From `lg`, the grid
+takes `100vh` less 197px — the bar at the top (53), the padding the layout puts
+above the page (16), and the padding it puts below to clear the fixed footer
+(128) — and the department list is the only thing inside it with
+`overflow-y-auto`. The charts are the answer the page exists to give, and a
+reader working down thirty-four names is the reader who most wants them still in
+view; a chart that scrolls away is a chart consulted once. Below `lg` all of it
+is off and the page scrolls as a page.
+
+That scroll box is `relative`, which is load-bearing: the `sr-only` note on a
+contents line that opens the city's PDF is absolutely positioned, and without a
+positioned ancestor it resolves against the page rather than the box. A scroller
+does not clip what is not laid out inside it, so the page grew by the height of
+the list hanging out of the bottom of it — 83px of phantom scrolling that took a
+while to find.
+
 **The book page is not a reading column.** `+layout.svelte` keeps `max-w-3xl`
 for a section, which is prose, and gives the book page `max-w-none`: from `lg`
 the two pies sit in a narrow left column with the table of contents beside them,

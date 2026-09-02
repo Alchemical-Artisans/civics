@@ -63,9 +63,23 @@
   because a column narrower than a pie has nowhere to put one.
 -->
 <div
-  class="lg:grid lg:grid-cols-[16rem_minmax(0,1fr)] lg:gap-x-12 2xl:grid-cols-[20rem_minmax(0,1fr)]"
+  class="lg:grid lg:h-[calc(100vh-197px)] lg:grid-cols-[16rem_minmax(0,1fr)] lg:gap-x-12 2xl:grid-cols-[20rem_minmax(0,1fr)]"
 >
-  <div>
+  <!--
+    The charts stay on the screen and the list moves under them. They are the
+    answer the page exists to give, and a reader working down thirty-four
+    department names is exactly the reader who wants the two columns still in
+    view; a chart that scrolls away is a chart consulted once.
+
+    So the page is one screen: 197px of it is spoken for -- the bar at the top
+    (53), the padding the layout puts above the page (16) and the padding it
+    puts below to clear the fixed footer (128) -- and the grid takes the rest.
+    The footer then sits inside that bottom padding rather than over anything,
+    and the only thing that scrolls is the list itself. Full height also buys the chart every pixel it can get, which
+    $5,151,539 out of $316 million needs. Below `lg` this is all off -- the page
+    is a single column and scrolls as a page.
+  -->
+  <div class="lg:h-full">
     <!--
       The two sides of the budget as two columns on one scale, rather than two
       pies. A pie says what a side is made of; two pies cannot say whether the
@@ -100,7 +114,7 @@
     />
   </div>
 
-  <div>
+  <div class="lg:flex lg:h-full lg:flex-col lg:overflow-hidden">
     <!--
       What the city has put by and what it owes, above the contents rather than
       beside the pies: the pies are the year -- what comes in and what goes out
@@ -143,18 +157,27 @@
       year is on the left, what it funds on the right. Neither is headed, since
       no name short enough to head the second column is true of all of it.
     -->
-    {#if contents.length}
-      <div class="sm:grid sm:grid-cols-2 sm:items-start sm:gap-x-10">
-        {@render list(contents)}
-        {@render list(departments)}
-      </div>
-    {:else}
-      <!-- Columns rather than one strip down the page: a list of thirty-four is
-           two columns' worth, and there is no second list to be beside. -->
-      <div class="sm:columns-2 sm:gap-x-10 2xl:columns-3">
-        {@render list(departments)}
-      </div>
-    {/if}
+    <!-- The one thing on this page that scrolls. `min-h-0` because a flex child
+         will not shrink below its content without it, and a box that cannot
+         shrink cannot scroll; `relative` because the `sr-only` note on a line
+         that opens the city's PDF is absolutely positioned, and without a
+         positioned ancestor it is laid out against the page instead of this
+         box -- which a scroller does not clip, so the page grew by the height
+         of the list hanging out of the bottom of it. -->
+    <div class="lg:relative lg:min-h-0 lg:flex-1 lg:overflow-y-auto">
+      {#if contents.length}
+        <div class="sm:grid sm:grid-cols-2 sm:items-start sm:gap-x-10">
+          {@render list(contents)}
+          {@render list(departments)}
+        </div>
+      {:else}
+        <!-- Columns rather than one strip down the page: a list of thirty-four
+             is two columns' worth, and there is no second list to be beside. -->
+        <div class="sm:columns-2 sm:gap-x-10 2xl:columns-3">
+          {@render list(departments)}
+        </div>
+      {/if}
+    </div>
   </div>
 </div>
 

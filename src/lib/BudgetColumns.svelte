@@ -128,8 +128,11 @@
   }
 </script>
 
-<div class="budget-columns not-prose relative" bind:this={root}>
-  <div class="flex h-64 items-end gap-6 sm:h-72">
+<!-- `h-full` and a growing plot, so the chart fills whatever height it is given
+     -- the front page hands it the window, less the fixed footer, and makes it
+     stick. Where nothing sets a height, `min-h-64` keeps it drawable. -->
+<div class="budget-columns not-prose relative flex h-full flex-col" bind:this={root}>
+  <div class="flex min-h-64 flex-1 items-end gap-6">
     {#each columns as column (column.label)}
       <div class="budget-column flex h-full flex-1 flex-col justify-end">
         <!-- `flex-col-reverse`, so the largest part sits on the ground and the

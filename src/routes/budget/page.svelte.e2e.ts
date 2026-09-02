@@ -125,6 +125,32 @@ test.describe("budget pages", () => {
     await expect(owed.last()).toHaveAttribute("aria-label", "Debt, Public Works, $1,455,200, 0.8%")
   })
 
+  test("is one screen, with only the list scrolling", async ({ page }) => {
+    // The charts are the answer the page exists to give, and a reader working
+    // down thirty-four department names is the reader who wants them still in
+    // view. So the page does not scroll: the list does.
+    await page.setViewportSize({ width: 1280, height: 700 })
+    await page.goto(`/budget/${books[0]}`)
+
+    const moved = await page.evaluate(() => {
+      window.scrollTo(0, 5000)
+      const at = window.scrollY
+      window.scrollTo(0, 0)
+      return at
+    })
+    expect(moved).toBe(0)
+
+    const list = page.locator("article div.lg\\:overflow-y-auto")
+    expect(await list.evaluate((box) => box.scrollHeight - box.clientHeight)).toBeGreaterThan(50)
+
+    // Below `lg` it is a page again, and scrolls as one.
+    await page.setViewportSize({ width: 390, height: 800 })
+    await page.reload()
+    expect(
+      await page.evaluate(() => document.documentElement.scrollHeight - window.innerHeight),
+    ).toBeGreaterThan(200)
+  })
+
   test("lists what the city funds, and nothing that has a home elsewhere", async ({ page }) => {
     await page.goto(`/budget/${books[0]}`)
 

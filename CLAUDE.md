@@ -210,7 +210,7 @@ Notable pieces:
   define, and `--fix` wraps them. Every use is linked, not just the first, except
   where the match is part of a name ("Water Department").
 - **`src/lib/BudgetColumns.svelte`** is what a book opens with: spending and
-  revenue as two columns on one scale, each divided into its parts and headed
+  revenue as two full-height columns on one scale, each divided into its parts and headed
   with a link to the side of the book it is about -- `spending` and `revenue`,
   which gather that side's sections and so have no contents lines of their own.
   `reserves` is the third bucket, opened from the reserves bar. Columns rather
