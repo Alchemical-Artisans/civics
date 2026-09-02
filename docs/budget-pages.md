@@ -460,6 +460,10 @@ city's own prose is full of â€” levy limit, free cash, cherry sheets, overlay â€
 answered 200 pages away from where a reader meets them. Two things are made of
 it.
 
+It has no contents line: every term is a link to its own entry from wherever
+the city's prose uses the word, so a reader meets the glossary where the word
+stopped them rather than by going looking for it.
+
 **`/budget/<year>/glossary` is the glossary itself**, rendered from
 [`src/lib/data/glossary.json`](../src/lib/data/glossary.json). That file is the
 one thing in `data/` no scraper writes: the book has no text layer, so the

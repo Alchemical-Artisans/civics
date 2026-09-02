@@ -194,6 +194,11 @@ export const load: PageLoad = () => ({
    * prints before the department pages, with nothing on it but its own title,
    * and the list beside this one is what it announces.
    *
+   * "Glossary" (231) has a page here and no line either: every term the book
+   * defines is a link to its own entry on it, from wherever the city's prose
+   * uses the word, so a reader meets the glossary where the word stopped them
+   * rather than by going looking for it.
+   *
    * "Organizational Chart" (216) and "Position Summary" (217) are gone on their
    * merits rather than for want of a page. The chart is worth reading and says
    * nothing about the money, and the position summary is the department pages'
@@ -265,7 +270,6 @@ export const load: PageLoad = () => ({
       ["Recreation Department", 190],
       ["Stadium", 193],
       ["Library", 195],
-      ["Glossary", 231],
     ]),
   ),
 })

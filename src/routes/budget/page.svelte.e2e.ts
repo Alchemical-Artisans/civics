@@ -31,11 +31,12 @@ const unlinked = [
 ]
 
 /**
- * Sections the book page opens from its chart rather than from its contents:
- * each is a bar, and the bar's own name is the link. A contents line as well
- * would offer the same page twice on one screen.
+ * Sections the book page opens some other way than from its contents: the four
+ * a chart's own title links, and the glossary, which every defined term in the
+ * city's prose links. A contents line as well would offer the same page twice
+ * on one screen.
  */
-const charted = ["reserves", "outstanding-debt", "revenue", "appropriations"]
+const linkedElsewhere = ["reserves", "outstanding-debt", "revenue", "appropriations", "glossary"]
 
 test.describe("budget pages", () => {
   test("the book opens on the budget at a glance, before its contents", async ({ page }) => {
@@ -153,7 +154,6 @@ test.describe("budget pages", () => {
     // its back matter.
     const year = lists.first().locator("li")
     await expect(year.filter({ hasText: "Goals" })).toHaveCount(1)
-    await expect(year.filter({ hasText: "Glossary" })).toHaveCount(1)
 
     // The divider the book prints before the department pages, with nothing on
     // it but its own title: the list beside this one is what it announces.
@@ -326,14 +326,15 @@ test.describe("budget pages", () => {
   })
 
   test("carries the whole glossary as a page of its own", async ({ page }) => {
+    // Reached from a term in the prose, which is the only way in: a contents
+    // line as well would offer the same page twice on one screen.
     await page.goto(`/budget/${books[0]}`)
-    await page
-      .locator("article > div ol li")
-      .filter({ hasText: "Glossary" })
-      .getByRole("link")
-      .click()
+    await expect(page.locator("article > div ol li").filter({ hasText: "Glossary" })).toHaveCount(0)
 
-    await expect(page).toHaveURL(new RegExp(`/budget/${books[0]}/glossary$`))
+    await page.goto(`/budget/${books[0]}/reserves`)
+    await page.locator("a.glossary-term").first().click()
+
+    await expect(page).toHaveURL(new RegExp(`/budget/${books[0]}/glossary#`))
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("Glossary")
     await expect(page.getByRole("heading", { name: "Glossary of Terms" })).toBeVisible()
 
@@ -583,7 +584,7 @@ test.describe("budget pages", () => {
     const local = await page.locator('article li a:not([href*="#page="])').all()
     const hrefs = await Promise.all(local.map((link) => link.getAttribute("href")))
     expect(hrefs.length).toBe(
-      sections.filter((name) => !unlinked.includes(name) && !charted.includes(name)).length,
+      sections.filter((name) => !unlinked.includes(name) && !linkedElsewhere.includes(name)).length,
     )
     for (const href of hrefs) {
       const response = await page.goto(new URL(href!, page.url()).toString())
