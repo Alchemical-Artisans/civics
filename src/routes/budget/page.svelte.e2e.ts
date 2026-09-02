@@ -38,6 +38,16 @@ const unlinked = [
  */
 const linkedElsewhere = ["reserves", "outstanding-debt", "revenue", "spending", "glossary"]
 
+/**
+ * The calendar's link to the city's own file, which is on every page of a book.
+ *
+ * It used to be "Original Source" in the bar at the top. The bar could say only
+ * that the page came from somewhere; the box says which step of the year
+ * produced it, and it opens the book at whatever page the reader is on.
+ */
+const bookPdf = (page: import("@playwright/test").Page) =>
+  page.locator(".budget-timeline li").filter({ hasText: "Final review" }).getByRole("link")
+
 test.describe("budget pages", () => {
   test("the book opens on the budget at a glance, before its contents", async ({ page }) => {
     await page.goto(`/budget/${books[0]}`)
@@ -225,8 +235,8 @@ test.describe("budget pages", () => {
       page.getByRole("heading", { name: "$245 Estimated Tax Bill Increase" }),
     ).toBeVisible()
 
-    // The bar's source link opens the book where the run begins.
-    expect(await page.locator('header a[href*="#page="]').getAttribute("href")).toMatch(/#page=48$/)
+    // The calendar's own link to the book opens it where the run begins.
+    expect(await bookPdf(page).getAttribute("href")).toMatch(/#page=48$/)
 
     // Neither section has a line in the contents: the pie's heading is the way
     // to both.
@@ -270,9 +280,9 @@ test.describe("budget pages", () => {
       page.getByRole("heading", { name: "Long-Term Perspective Strategic Goals" }),
     ).toBeVisible()
 
-    // The bar's source link opens the book where the run begins, which is now
-    // the goals.
-    expect(await page.locator('header a[href*="#page="]').getAttribute("href")).toMatch(/#page=15$/)
+    // The calendar's link to the book opens it where the run begins, which is
+    // now the goals.
+    expect(await bookPdf(page).getAttribute("href")).toMatch(/#page=15$/)
 
     // Three lines of the appropriation itself, which nobody has transcribed:
     // the city's own file, opened at the page the book gives them.
@@ -349,6 +359,82 @@ test.describe("budget pages", () => {
     }
   })
 
+  test("draws each reserve against the policy it answers to", async ({ page }) => {
+    await page.goto(`/budget/${books[0]}/reserves`)
+
+    // One row per policy, named as the book's own dial table heads it, and each
+    // carrying the three figures the book prints for it.
+    const bands = page.locator(".budget-band")
+    await expect(bands).toHaveCount(3)
+    await expect(bands.nth(0)).toContainText("Undesignated Fund Balance")
+    await expect(bands.nth(0)).toContainText("Actual $13,985,452 (7.85%)")
+    await expect(bands.nth(0)).toContainText("Minimum $8,913,079")
+    await expect(bands.nth(0)).toContainText("Maximum $26,739,238")
+
+    // The middle row is this year: nothing held, and a floor of $3,565,232 it
+    // does not reach. The bar draws no width, and the band it falls short of
+    // does -- which is the whole of what the chart has to say.
+    await expect(bands.nth(1)).toContainText("Anticipated $0 (0%)")
+    const rail = bands.nth(1).locator("[role=img]")
+    const held = await rail.locator("div").last().boundingBox()
+    const allowed = (await rail.locator("div").first().boundingBox())!
+    expect(held?.width ?? 0).toBe(0)
+    expect(allowed.width).toBeGreaterThan(0)
+
+    // One scale across all three, which is what the shared denominator buys:
+    // the same width is the same money on every row.
+    const rails = await bands
+      .locator("[role=img]")
+      .evaluateAll((rows) => rows.map((row) => row.getBoundingClientRect().width))
+    expect(new Set(rails.map(Math.round)).size).toBe(1)
+
+    // The third policy sets no ceiling, so its band has no closing edge and no
+    // maximum to print.
+    await expect(bands.nth(2)).toContainText("Minimum Balance $5,347,848 (3%)")
+    await expect(bands.nth(2)).not.toContainText("Maximum")
+
+    // Everything the chart draws is in the row's accessible name too, so the
+    // three figures are readable without seeing the bar.
+    await expect(rail).toHaveAttribute(
+      "aria-label",
+      /Free Cash: Anticipated \$0 \(0%\), Minimum \$3,565,232, Maximum \$14,260,927/,
+    )
+  })
+
+  test("draws the fund balance the three years the book accounts for", async ({ page }) => {
+    await page.goto(`/budget/${books[0]}/reserves`)
+
+    // The bottom row of page 18's table, and only that row: the flows above it
+    // are a quarter of a billion dollars a year, and on a scale that fits those
+    // the balance they leave behind is a line one pixel high.
+    const columns = page.locator(".budget-columns .budget-column")
+    await expect(columns).toHaveCount(3)
+
+    const chart = page.locator(".budget-columns").first()
+    await expect(chart).toContainText("2023")
+    await expect(chart).toContainText("$10,209,394")
+    await expect(chart).toContainText("2025")
+    await expect(chart).toContainText("$13,985,453")
+
+    // Rising, and drawn from a zero baseline, so the heights are the figures.
+    const drawn = await columns.evaluateAll((each) =>
+      each.map((column) => column.querySelector("[role=img]")!.getBoundingClientRect().height),
+    )
+    expect(drawn).toEqual([...drawn].sort((a, b) => a - b))
+
+    // A column of one part is a figure, not a share of itself: nothing here
+    // says "100%".
+    await expect(chart).not.toContainText("100")
+    expect(await columns.first().locator("[role=img]").getAttribute("aria-label")).toBe(
+      "2023, Ending Fund Balance, $10,209,394",
+    )
+
+    // And the table it is drawn from is still on the page, whole.
+    const table = page.locator("article table").filter({ hasText: "Beginning Fund Balance" })
+    await expect(table).toContainText("$(3,738,924)")
+    await expect(table).toContainText("$262,614,748")
+  })
+
   test("links the book's own terms wherever its prose uses them", async ({ page }) => {
     await page.goto(`/budget/${books[0]}/reserves`)
 
@@ -392,9 +478,7 @@ test.describe("budget pages", () => {
 
     // The bar opens the book where the terms start, not at the divider the
     // contents names.
-    expect(await page.locator('header a[href*="#page="]').getAttribute("href")).toMatch(
-      /#page=232$/,
-    )
+    expect(await bookPdf(page).getAttribute("href")).toMatch(/#page=232$/)
   })
 
   test("puts the three school sections on one page", async ({ page }) => {
@@ -470,9 +554,17 @@ test.describe("budget pages", () => {
     await expect(article).toContainText("state assessments")
     await expect(article).toContainText("tax rate recapitulation sheet")
 
-    // The order is linked in the bar beside the book.
-    const source = page.getByRole("banner").getByRole("link", { name: /^City Council Order/ })
-    expect(await source.getAttribute("href")).toMatch(/full-agenda-6226\.pdf$/)
+    // The agenda those orders are on is on the calendar under this page, on the
+    // hearings it falls inside -- not in the bar, which carries no document
+    // link on any page now.
+    const agenda = page
+      .locator(".budget-timeline li")
+      .filter({ hasText: "Public hearings" })
+      .getByRole("link")
+    expect(await agenda.getAttribute("href")).toMatch(/full-agenda-6226\.pdf$/)
+    await expect(
+      page.getByRole("banner").getByRole("link", { name: /^City Council Order/ }),
+    ).toHaveCount(0)
   })
   test("draws both bars to one scale", async ({ page }) => {
     // The point of the chart: $22 million against $176 million, so the
@@ -626,6 +718,23 @@ test.describe("budget pages", () => {
     await expect(
       page.getByRole("banner").getByRole("link", { name: /^Original Source/ }),
     ).toHaveCount(0)
+
+    // The calendar is under every page of the book, not just its front page,
+    // which is what lets the bar carry nothing: a document is reachable from
+    // wherever the reader is, presented the one way. On a section the book
+    // opens at that section's own page.
+    for (const [at, opensAt] of [
+      ["reserves", 17],
+      ["glossary", 232],
+    ] as const) {
+      await page.goto(`/budget/${books[0]}/${at}`)
+      await expect(page.locator("article footer .budget-timeline li")).toHaveCount(12)
+      expect(await bookPdf(page).getAttribute("href")).toMatch(new RegExp(`#page=${opensAt}$`))
+    }
+
+    // Nowhere else. It is this book's own page 13, not the site's furniture.
+    await page.goto("/calendar")
+    await expect(page.locator(".budget-timeline")).toHaveCount(0)
   })
 
   test("a contents line with no page here opens the city's PDF at that page", async ({ page }) => {
@@ -640,8 +749,10 @@ test.describe("budget pages", () => {
     await page.goto(`/budget/${books[0]}/${sections[0]}`)
     await expect(page.getByRole("heading", { level: 1 })).not.toBeEmpty()
     await expect(page.getByRole("article")).not.toBeEmpty()
-    // The header link points into the book at this section's own page.
-    await expect(page.locator('header a[href*="#page="]')).toHaveCount(1)
+    // The way into the book is the calendar's, not the bar's: the bar carries
+    // no link to a document on any page now.
+    await expect(page.locator('header a[href*="#page="]')).toHaveCount(0)
+    await expect(bookPdf(page)).toHaveCount(1)
 
     // The way back up, now that no page carries one of its own: the bar's menu
     // of years, which reaches any book from any page.

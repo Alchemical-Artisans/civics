@@ -10,41 +10,31 @@ describe("barOf", () => {
     expect(bar.dates).toBe("July 1, 2026 to June 30, 2027")
   })
 
-  // The book's own front page does not link the book: the file hangs off the
-  // budget calendar there, on the step of the process that produced it.
-  it("leaves the book unlinked on the page that is the book", () => {
-    expect(barOf({ book: BOOK }).sources).toEqual([])
-  })
-
   // A section's own `+page.ts` is loaded under the layout that looked the book
   // up, so both are in `page.data` and the more specific one has to win.
-  it("prefers a section's own title, and opens the book at that section", () => {
+  it("prefers a section's own title to the book's name", () => {
     const bar = barOf({ book: BOOK, section: { title: "Fiscal Reserves", page: 17 } })
     expect(bar.name).toBe("Fiscal Reserves")
-    expect(bar.sources).toEqual([{ label: "Original Source", href: `${BOOK.budget}#page=17` }])
+    expect(bar.dates).toBe("July 1, 2026 to June 30, 2027")
   })
 
   it("says nothing about a page that heads itself", () => {
-    expect(barOf({})).toEqual({ name: null, dates: null, sources: [] })
+    expect(barOf({})).toEqual({ name: null, dates: null })
   })
 
-  // FY2022 and FY2023 are printed as plain text on the city's page, with no
-  // file behind them, and a book that is not published has no source to link.
-  it("has no source where the city published no file", () => {
-    const bar = barOf({ book: { year: 2023, budget: null }, section: { title: "X", page: 1 } })
-    expect(bar.sources).toEqual([])
-  })
+  // The bar carried an "Original Source" link, and anything else a page named
+  // in its own `sources`, until the budget calendar in the footer took both
+  // over: the book off the step that produced it, the Council's orders off the
+  // hearings their agenda falls inside. Nothing a page puts in `page.data` puts
+  // a link back in the bar.
+  it("carries no link to a document at all", () => {
+    const bar = barOf({
+      book: BOOK,
+      section: { title: "Spending", page: 15 },
+      sources: [{ label: "City Council Order", href: "https://example.org/agenda.pdf" }],
+    })
 
-  // A page can rest on a document that is not the book: the front page charts
-  // the Council's own appropriation orders, which are on an agenda.
-  it("carries what else a page says it was built from, after the book", () => {
-    const order = { label: "City Council Order", href: "https://example.org/agenda.pdf" }
-    const bar = barOf({ book: BOOK, section: { title: "Spending", page: 15 }, sources: [order] })
-
-    expect(bar.sources).toEqual([
-      { label: "Original Source", href: `${BOOK.budget}#page=15` },
-      order,
-    ])
+    expect(bar).toEqual({ name: "Spending", dates: "July 1, 2026 to June 30, 2027" })
   })
 })
 

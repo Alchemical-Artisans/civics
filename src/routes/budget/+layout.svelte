@@ -9,13 +9,14 @@
   // in columns beside each other, and squeezing them into a 48rem strip left
   // most of the screen as margin.
   //
-  // The book page also ends in a footer fixed to the bottom of the window --
+  // Every page of a book ends in a footer fixed to the bottom of the window --
   // the budget calendar -- which is out of the flow and so cannot push anything
   // out from under itself. The padding is what keeps the last line of the page
   // clear of it: 7rem against a footer that is 84px at its shortest and 101 at
   // its tallest, which is clearance rather than a margin. It was 8rem, and that
   // extra half-inch read as a gap between the chart's figures and the calendar.
-  const column = $derived(data.isSection ? "max-w-3xl" : "max-w-none pb-28")
+  // Both kinds of page carry it, now that both carry the calendar.
+  const column = $derived(data.isSection ? "max-w-3xl pb-28" : "max-w-none pb-28")
 </script>
 
 <svelte:head>

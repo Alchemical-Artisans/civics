@@ -77,10 +77,15 @@
             colour: COLOURS[at % COLOURS.length],
             // Of its own column, so the segments fill it whatever it is worth.
             depth: drawn ? (part.amount / drawn) * 100 : 0,
+            // Nothing, where the column is one part: "100.0%" is a share of
+            // itself, and a column drawn as a single figure -- a year of a
+            // trend, say -- has nothing to be a share of.
             share:
-              drawn && part.amount / drawn < 0.001
-                ? "<0.1%"
-                : percent.format(drawn ? part.amount / drawn : 0),
+              row.parts.length < 2
+                ? null
+                : drawn && part.amount / drawn < 0.001
+                  ? "<0.1%"
+                  : percent.format(drawn ? part.amount / drawn : 0),
           })),
       }
     }),
@@ -159,7 +164,9 @@
                   ? 1
                   : 0.4}"
                 role="img"
-                aria-label="{column.label}, {part.label}, {money.format(part.amount)}, {part.share}"
+                aria-label="{column.label}, {part.label}, {money.format(part.amount)}{part.share
+                  ? `, ${part.share}`
+                  : ''}"
                 tabindex="0"
                 onpointerenter={(event) => show(column.label, part.label, event.currentTarget)}
                 onpointerleave={() => (active = null)}
@@ -205,7 +212,8 @@
     >
       <span class="block font-medium text-slate-900">{shown.label}</span>
       <span class="block text-slate-600 tabular-nums">
-        {money.format(shown.amount)} &middot; {shown.share}
+        {money.format(shown.amount)}{#if shown.share}
+          &middot; {shown.share}{/if}
       </span>
     </div>
   {/if}

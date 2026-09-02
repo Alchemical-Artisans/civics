@@ -4,8 +4,7 @@ import { amount, cell, column, sum, type BudgetTableData } from "$lib/budget-tab
 import { APPROPRIATIONS, DEPARTMENTS } from "./spending/tables"
 import { FUND_BALANCE, FREE_CASH, STABILIZATION } from "./reserves/tables"
 import { LONG_TERM_DEBT } from "./outstanding-debt/tables"
-import { CALENDAR } from "./budget-calendar"
-import { AGENDA, ENTERPRISE, ENTERPRISE_REVENUE } from "./council-orders"
+import { ENTERPRISE, ENTERPRISE_REVENUE } from "./council-orders"
 import { OTHER_AVAILABLE, REVENUE } from "./revenue/tables"
 import type { Part } from "$lib/BudgetStack.svelte"
 
@@ -269,30 +268,12 @@ const split = (lines: BookSection[]) => {
 }
 
 export const load: PageLoad = () => ({
-  calendar: CALENDAR,
-
-  /**
-   * The day this page was built, so the timeline's today mark is in the HTML
-   * that is served rather than appearing when a script runs. The browser
-   * replaces it with the reader's own date on mount; this is what a reader
-   * without a script sees, and it is never more stale than the last deploy.
-   */
-  asOf: new Date().toISOString().slice(0, 10),
-
   overview: {
     spending,
     spendingTotal,
     revenue,
     revenueTotal,
   },
-
-  /**
-   * The agenda those orders are on. It hangs off the budget calendar in the
-   * footer, on the run of public hearings its meeting of 2 June falls inside,
-   * rather than sitting in the bar: a document is easier to weigh when a reader
-   * can see which step of the process produced it.
-   */
-  order: AGENDA.file,
 
   /**
    * The chart above the contents: page 17's balances and page 21's list, as two

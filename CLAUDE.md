@@ -158,13 +158,11 @@ Notable pieces:
 
 - **`src/lib/SiteHeader.svelte`** is the bar on every page: the mark, the page's
   own name, the budget with its menu of fiscal years, and the calendar. It
-  carries a page's sources too -- the book, and anything else a page says it was
-  built from, such as the Council's appropriation orders on the spending page. On the budget half it
-  carries what the page used to head itself with — the name (its only `<h1>`),
-  the fiscal year the book covers, and an "Original Source" link to the city's
-  file, opened at a section's own page. Only on a section: a book's own front
-  page hangs the book off the calendar step that produced it instead, where the
-  bar could only say that the book came from somewhere. All from `src/lib/heading.ts`, which
+  carries no link to a document at all: the budget calendar in the footer does
+  that, on every page of a book, hanging each file off the step of the year that
+  produced it. On the budget half it
+  carries what the page used to head itself with — the name (its only `<h1>`)
+  and the fiscal year the book covers, from `src/lib/heading.ts`, which
   reads `page.data`; a budget book is called `2027 Budget`, never "FY2027
   Mayor's Budget". The bar runs the width of the window, because a bar narrower
   than the page under it reads as a mistake. Its budget entry is a link to this
@@ -200,6 +198,22 @@ Notable pieces:
   keeps an `sr-only` line instead. Colour for every chart here comes from
   **`src/lib/chart-colours.ts`**, one validated sequence, restarted per pie and
   per bar.
+- **`src/lib/BudgetBands.svelte`** is the reserves page's own chart, and the
+  answer to what `BudgetStack` leaves out: each fund as a bullet bar -- a pale
+  rail the width of the largest ceiling, the band the policy allows drawn inside
+  it, and the balance as a thinner bar from zero. The three sit on one scale
+  because they are measured against one thing: every policy is a percentage of
+  general fund revenue less debt exclusion and Chapter 70, and each floor and
+  ceiling the book prints implies that same $178,261,600 back to within $20,
+  which `reserves/reserves.spec.ts` pins. Rows are named by their own dial
+  table's first column and print the book's cells verbatim, row labels included
+  -- "Actual", "Anticipated", "Actual Balance" are three different words for the
+  city's position and the book chose each one. Free cash draws no bar at all
+  this year, which is the page's story; stabilization's band has no closing edge,
+  because its policy sets no ceiling. The page's second chart is page 18's
+  bottom row as three columns, `BudgetColumns` with one part each -- which is
+  why that component prints no share when a column has only one, and why the box
+  around it sets a definite height.
 - **`src/lib/GlossaryTerm.svelte`** links a word in the city's prose to the
   book's definition of it: a plain link to that term's entry on
   `/budget/fy2027/glossary`, nothing more. It briefly carried the definition
@@ -239,11 +253,14 @@ Notable pieces:
   book's page-78 tables, not its own revenue pie on page 65, which is $3,458,864
   short of the total it prints.
 - **`src/lib/BudgetTimeline.svelte`** draws page 13, the budget calendar, as the
-  book page's footer, fixed to the bottom of the window: a row of twelve boxes
-  with a mark showing where today falls in the process. `+layout.svelte` pads
-  the book page by more than the footer is tall, since a fixed footer cannot
+  footer of _every_ page of a book, fixed to the bottom of the window: a row of
+  twelve boxes
+  with a mark showing where today falls in the process. `budget/+layout.svelte` pads
+  every book page by more than the footer is tall, since a fixed footer cannot
   push anything out from under itself. It is a drawing rather than a section of its own,
-  and its entries are `budget-calendar.ts` beside the book's `+page.ts`. A box
+  and its entries are `budget-calendar.ts`, loaded by `fy2027/+layout.ts` so the
+  footer sits under the sections as well as the front page — which is what lets
+  the bar at the top carry no source link on any page. A box
   holds a date and a summary — the only text on these pages that is not the
   book's — and the book's own sentence comes up as a tooltip over the box on
   hover or focus, drawn outside the scrolling strip because `overflow-x` clips
@@ -252,7 +269,9 @@ Notable pieces:
   boxes carry a `PDF` link: a step that produced a document the city published
   hangs it there, so the budget book comes off "Final review" and the Council's
   appropriation orders off "Public hearings", the run of hearings the agenda of
-  2 June sits inside. The stage the process has
+  2 June sits inside. The book's box opens it at whatever page the reader is on
+  — a section's own page, the front of the file on the book page — which is the
+  deep link the bar used to carry as "Original Source". The stage the process has
   reached, meaning the last entry that has begun, is the one box in pale green,
   against the pale blue of the entries behind it and the white of those ahead. Boxes
   are evenly spaced because two entries are a day apart; only the mark is placed

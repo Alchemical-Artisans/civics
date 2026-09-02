@@ -78,15 +78,18 @@ the audit reports, do have text layers if they are ever written up.
 ## What names a budget page
 
 Nothing on a budget page heads it. The bar across the top of the window does:
-the page's name, the fiscal year the book covers, and — on a section — an
-**Original Source** link to the city's own file, opened at the section's page. A
-book page was spending four lines on a heading, a date line and a link above the
-two charts anyone came for, and the bar was already there saying where the
-reader was.
+the page's name and the fiscal year the book covers. A book page was spending
+four lines on a heading, a date line and a link above the two charts anyone came
+for, and the bar was already there saying where the reader was.
 
-**A book's own page does not carry that link.** The bar could only say that the
-book came from somewhere; the calendar under it can say where in the year, so
-the file hangs off the step that produced it instead — see the calendar below.
+**The bar links no document, on any page.** It carried an "Original Source" to
+the city's file, and anything else a page named in its own `sources`; both are
+gone. A link in the bar could say only that the page came from somewhere. The
+budget calendar in the footer says which step of the year produced each
+document, it is under every page of a book, and the book's own box opens the
+file at whatever page the reader is on — so every document is reachable from
+anywhere in the book, presented the one way. `barOf` returns a name and a date
+line and nothing else; see the calendar below.
 
 [`src/lib/heading.ts`](../src/lib/heading.ts) is where all three come from.
 `page.data` is a merge of every load above the route, and which key holds what
@@ -354,13 +357,75 @@ Each order also appropriates an amount _inside_ the general fund funded from
 that department's receipts — $234,784 and $698,981 — and those are rows of order
 13.3, so the two bars count them once.
 
-**The agenda is linked in the bar beside the book.** `barOf` returns a list of
-sources rather than one, the book first and then whatever a page names in its
-own `sources`; the meeting is also on the calendar half of this site.
+**The agenda is on the budget calendar in the footer**, on the run of public
+hearings its meeting of 2 June falls inside, the same way the book hangs off the
+step that produced it. The meeting is also on the calendar half of this site.
 
 **`reserves` is the third bucket**, opened from the reserves bar, and holds
 "Fiscal Reserves" (17) with "Liability, Overlay & Reserves" (213), "Fund
 Accounting" (218) and "Financial Reserve Policies" (227) listed after it.
+
+### The two charts on `reserves`
+
+The front page draws the reserves as one bar, deliberately ignoring what the
+city is _allowed_ to hold: the bands are this section's subject, not the front
+page's. This is where they are drawn.
+
+| Chart               | What it draws                                                                     | From                               |
+| ------------------- | --------------------------------------------------------------------------------- | ---------------------------------- |
+| The three policies  | a bullet bar per fund on one scale: the band it may hold in, the balance it holds | the three dial tables, pages 17-20 |
+| Ending fund balance | three columns, one per year the book accounts for                                 | page 18's bottom row               |
+
+**One scale for the three policies, and it is not an assumption.**
+[`BudgetBands.svelte`](../src/lib/BudgetBands.svelte) draws a pale rail the full
+width of the largest ceiling, the policy's band inside it, and the balance as a
+thinner bar from zero — a bullet chart, which is what the book's dial is trying
+to be. Three dials cannot be compared with each other at all: a needle halfway
+round a small arc and a needle halfway round a large one look the same, and
+there is no reading money off either. These three can be, because every one of
+the policies is a percentage of the same figure — general fund revenue less debt
+exclusion and Chapter 70 — and each floor and ceiling the book prints implies
+that same $178,261,600 back to within $20. `reserves.spec.ts` checks all five
+against each other; if they ever stop agreeing, one scale is the wrong picture
+and the chart has to become three.
+
+**The three dial tables are not printed on the page any more.** The chart draws
+every cell of them and prints every one beside its bar, and a table saying again
+what the picture above it just said is a page asking to be read twice. They are
+still the transcription, still in `reserves/tables.ts`, and still what the front
+page reads its reserves bar out of.
+
+Nothing on the chart is written here. Each row is named as its own dial table
+heads it ("Undesignated Fund Balance", "Free Cash", "Stabilization Reserve"),
+and the three figures beside it are the book's cells printed as the book prints
+them, shares and all — including the row label, which is not the same word
+twice: "Actual" on the fund balance, "Anticipated" on free cash, which is a year
+not closed yet, and "Actual Balance" on stabilization.
+
+**The year's story is a bar that isn't there.** Free cash is anticipated at $0
+against a floor of $3,565,232, so the middle row draws no bar at all beneath a
+band it never reaches. The page says why in the city's own words — a winter of
+$4.6 million in snow removal — and the chart says nothing the prose does not; it
+just says it first, and next to the two funds that are inside their bands.
+
+**Stabilization's band has no closing edge**, because policy #4 sets a floor and
+no ceiling. The band runs to the end of the rail and the row prints no maximum:
+the only honest thing to draw at a limit that does not exist is nothing.
+
+**The second chart is one row of page 18's table.** That table is three years of
+the fund balance and what moved it — a beginning balance, the year's whole
+revenue and expenditure, the encumbrances carried forward, and the balance left
+at the end. Only the last row is drawn. On a scale that fits a quarter of a
+billion dollars of revenue, the $13,985,453 it leaves behind is a line one pixel
+high, so the flows stay in the table underneath and the chart shows the three
+closing balances rising. It is `BudgetColumns` — the same component the front
+page's two columns are — given one part per column, which is why that component
+prints no share where a column has only one: "100.0%" is a share of itself.
+
+**Give that component a definite height.** Its columns are a percentage of the
+plot's height, so a box with no height of its own draws nothing at all, and a
+box shorter than the chart's `min-h-64` plus its labels pushes the years out
+from under the columns. The front page hands it the window; here it is `h-80`.
 
 **"Fund Accounting" is listed twice, on `reserves` and on `outstanding-debt`.**
 It is the section that says these funds are separate things, which is what the
@@ -482,13 +547,18 @@ Below `lg` it stacks, charts first.
 ## The calendar at the foot of a book page
 
 Page 13 is the budget calendar, and it is drawn rather than transcribed into a
-section of its own: the book front page's footer, fixed to the bottom of the
-window, so the process stays in view while the contents scrolls past it. It is
+section of its own: the footer of every page of the book, fixed to the bottom of
+the window, so the process stays in view while the page scrolls past it. It is
 drawn by
 [`src/lib/BudgetTimeline.svelte`](../src/lib/BudgetTimeline.svelte) from
-[`fy2027/budget-calendar.ts`](../src/routes/budget/fy2027/budget-calendar.ts).
-The process the two charts above it are the outcome of ends up on the same
-screen as the outcome.
+[`fy2027/budget-calendar.ts`](../src/routes/budget/fy2027/budget-calendar.ts),
+loaded in [`fy2027/+layout.ts`](../src/routes/budget/fy2027/+layout.ts) so it is
+under the sections and not only the front page. The process the two charts above
+it are the outcome of ends up on the same screen as the outcome.
+
+It is the _book's_ footer and not the site's: page 13 belongs to FY2027, and a
+year written up later brings its own. Nothing outside `/budget/fy2027` draws
+it.
 
 **A box per step, holding a few words.** A step of a process has a beginning and
 an end, twelve boxes fill the width evenly, and a box is somewhere for words to
@@ -503,7 +573,10 @@ the book's wording whether or not anything can be hovered.
 came out of the final review, and the Council's appropriation orders were on the
 agenda of 2 June, inside the run of public budget hearings. Each box carries a
 `PDF` link to the city's file, with an `sr-only` clause naming which document it
-is, since two boxes reading "PDF" say nothing apart. A step's `document` key is
+is, since two boxes reading "PDF" say nothing apart. The book's box opens it at
+the page the reader is on — the section's own page from a section, the front of
+the file from the book page — which is the deep link the bar carried as
+"Original Source" until this took it over. A step's `document` key is
 ours; everything else in `budget-calendar.ts` is the book's, and the files
 themselves come from the page's `+page.ts` — the book from `budget.json`, the
 agenda from the same `council-orders.ts` the spending page quotes.
@@ -775,6 +848,7 @@ src/lib/budget.ts                          reads it; slugs and contents helpers
 src/lib/budget.spec.ts                     unit tests for them
 src/lib/BudgetColumns.svelte               spending and revenue, two columns
 src/lib/BudgetStack.svelte                 reserves and debt, two bars on one scale
+src/lib/BudgetBands.svelte                 a fund against the band its policy allows
 src/lib/BookElsewhere.svelte               a category page's "see also" list
 src/lib/data/glossary.json                 the book's glossary, transcribed
 src/lib/glossary.ts                        reads it; the definition lookup
@@ -787,6 +861,7 @@ src/lib/BudgetTable.svelte                 a transcribed table, rendered from da
 src/lib/budget-table.ts                    that data's shape, and `amount`/`column`
 src/routes/budget/<year>/<section>/tables.ts  a shared section's tables
 src/routes/budget/<year>/overview.spec.ts  the arithmetic page 78 claims about itself
+src/routes/budget/<year>/reserves/reserves.spec.ts  the one scale the policy bands share
 scripts/lib/budget.mjs                     the scrape: fetch, parse, diff
 scripts/lib/budget.spec.mjs                unit tests for the parser
 scripts/update-budget.mjs                  writes budget.json

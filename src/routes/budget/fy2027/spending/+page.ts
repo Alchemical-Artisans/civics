@@ -1,6 +1,5 @@
 import type { PageLoad } from "./$types"
 import { Router } from "$lib/router"
-import { AGENDA } from "../council-orders"
 
 /**
  * Everything the book says about where the money goes.
@@ -62,7 +61,6 @@ export const load: PageLoad = async ({ parent }) => {
 
     // The other document this page rests on: the orders quoted at the foot of
     // it are on the Council's agenda, not in the book.
-    sources: [{ label: "City Council Order", href: AGENDA.file }],
     elsewhere: [
       { title: "Fiscal Reserves", section: "reserves" },
       { title: "Debt Service", href: Router.pdfPage(book.budget!, 200) },

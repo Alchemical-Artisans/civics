@@ -143,20 +143,9 @@
       <p class="m-0 text-xs text-slate-500">{bar.dates}</p>
     {/if}
 
-    <!-- The city's own files, which are the record. The book is named for what
-         it is rather than for what it contains, because on a section it is the
-         same file opened at that section's page; anything else a page rests on
-         is named by the page. -->
-    {#each bar.sources as source (source.label)}
-      <a
-        class="text-xs text-slate-600 underline decoration-slate-300 hover:text-slate-900"
-        href={source.href}
-        target="_blank"
-        rel="external noopener noreferrer"
-      >
-        {source.label}<span class="sr-only">, PDF, opens in a new tab</span>
-      </a>
-    {/each}
+    <!-- No link to the city's own file here. The budget calendar in the footer
+         carries every document a book rests on, each hung off the step of the
+         year that produced it, which is more than a bar can say about one. -->
 
     <!-- `ml-auto` rather than `justify-between`, so the two stay together at
          the right and wrap as a pair on a narrow screen. -->

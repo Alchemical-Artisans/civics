@@ -4,11 +4,74 @@
   // `BudgetTable` prints the cells exactly as `tables.ts` holds them, which is
   // exactly as the book sets them.
   import BudgetTable from "$lib/BudgetTable.svelte"
+  import BudgetBands from "$lib/BudgetBands.svelte"
+  import BudgetColumns from "$lib/BudgetColumns.svelte"
   import BookElsewhere from "$lib/BookElsewhere.svelte"
-  import { FUND_BALANCE, FREE_CASH, STABILIZATION } from "./tables"
+  import { amount, cell, type BudgetTableData } from "$lib/budget-table"
+  import { FUND_BALANCE, FUND_BALANCE_HISTORY, FREE_CASH, STABILIZATION } from "./tables"
   import GlossaryTerm from "$lib/GlossaryTerm.svelte"
 
   let { data } = $props()
+
+  /**
+   * One figure off a dial: the book's own row label, its cell as printed, and
+   * the dollars in it, which is the only part the drawing uses.
+   *
+   * The three dial tables are not printed on this page any more. The chart
+   * draws every cell of them and prints every one beside its bar, and a table
+   * saying again what the picture above it just said is a page asking to be
+   * read twice. They are still the transcription, and still what the front page
+   * reads its reserves bar out of.
+   */
+  const point = (table: BudgetTableData, row: string) => ({
+    label: row,
+    cell: cell(table, row, "Amount"),
+    amount: amount(cell(table, row, "Amount"))!,
+  })
+
+  /**
+   * The three policies on one scale, each named as its own table heads it.
+   *
+   * The row the book calls the city's position is not called the same thing
+   * twice -- "Actual" on the fund balance, "Anticipated" on free cash, which is
+   * a year not closed yet, and "Actual Balance" on stabilization -- so each is
+   * named here rather than found by rule, and the chart prints whichever word
+   * the book used.
+   */
+  const bands = [
+    {
+      label: FUND_BALANCE.columns[0],
+      minimum: point(FUND_BALANCE, "Minimum"),
+      actual: point(FUND_BALANCE, "Actual"),
+      maximum: point(FUND_BALANCE, "Maximum"),
+    },
+    {
+      label: FREE_CASH.columns[0],
+      minimum: point(FREE_CASH, "Minimum"),
+      actual: point(FREE_CASH, "Anticipated"),
+      maximum: point(FREE_CASH, "Maximum"),
+    },
+    {
+      label: STABILIZATION.columns[0],
+      minimum: point(STABILIZATION, "Minimum Balance"),
+      actual: point(STABILIZATION, "Actual Balance"),
+    },
+  ]
+
+  /**
+   * The bottom row of page 18's table, drawn: what the fund balance came to at
+   * the end of each of the three years the book accounts for.
+   *
+   * Only that row. The four above it are the flows that moved it -- a year's
+   * whole revenue and expenditure, a quarter of a billion dollars each -- and
+   * on a scale that fits those, the balance they leave behind is a line one
+   * pixel high. The table under the chart is where those belong.
+   */
+  const ENDING = "Ending Fund Balance"
+  const balances = FUND_BALANCE_HISTORY.columns.slice(1).map((year) => ({
+    label: year,
+    parts: [{ label: ENDING, amount: amount(cell(FUND_BALANCE_HISTORY, ENDING, year))! }],
+  }))
 </script>
 
 <!-- Page 17. The page is "Reserves", which is the bucket; this is the section
@@ -22,6 +85,15 @@
     recommendations, bond rating agency standards, and aligning with GFOA best practices.
   </em>
 </p>
+
+<!--
+  The three policies before the three sections that set them out, the way the
+  book's front page opens on its two columns: the page is about whether each
+  fund is where it is supposed to be, and that is one picture rather than three
+  pages of reading. Each bar is repeated below in the book's own dial table, at
+  the policy it belongs to.
+-->
+<BudgetBands rows={bands} />
 
 <p>
   <strong>City Reserve Policy #1:</strong> The City shall maintain an undesignated <GlossaryTerm
@@ -37,8 +109,6 @@
   > revenue. This is up from June 2024, which was $12,569,995 or 7.36%.
 </p>
 
-<BudgetTable table={FUND_BALANCE} />
-
 <h2>Fund Balance</h2>
 
 <p>
@@ -51,48 +121,18 @@
   cash flow, and ensure financial stability.
 </p>
 
-<table>
-  <thead>
-    <tr>
-      <th scope="col"></th>
-      <th scope="col">2023</th>
-      <th scope="col">2024</th>
-      <th scope="col">2025</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th scope="row">Beginning Fund Balance</th>
-      <td>$12,429,870</td>
-      <td>$10,209,394</td>
-      <td>$12,569,995</td>
-    </tr>
-    <tr>
-      <th scope="row">Net Reserve for Encumbrances</th>
-      <td>$97,098</td>
-      <td>$(617,924)</td>
-      <td>$(3,738,924)</td>
-    </tr>
-    <tr>
-      <th scope="row">Plus Fiscal Year Revenue</th>
-      <td>$231,470,272</td>
-      <td>$244,738,056</td>
-      <td>$262,614,748</td>
-    </tr>
-    <tr>
-      <th scope="row">Less Fiscal Year Expenditures</th>
-      <td>$(233,787,846)</td>
-      <td>$(241,759,531)</td>
-      <td>$(257,460,366)</td>
-    </tr>
-    <tr>
-      <th scope="row">Ending Fund Balance</th>
-      <td>$10,209,394</td>
-      <td>$12,569,995</td>
-      <td>$13,985,453</td>
-    </tr>
-  </tbody>
-</table>
+<!-- What the fund balance has come to at the close of each of the three years
+     the table below accounts for. The columns are what the table's bottom row
+     says; everything that moved it is in the table. -->
+<!-- A definite height, and enough of it: the columns are a percentage of the
+     plot's height, so a box that does not say how tall it is draws nothing at
+     all, and one shorter than the chart's own `min-h-64` plus its labels pushes
+     the years out from under the columns. -->
+<div class="not-prose my-6 h-80">
+  <BudgetColumns rows={balances} />
+</div>
+
+<BudgetTable table={FUND_BALANCE_HISTORY} />
 
 <h2>Free Cash</h2>
 
@@ -118,8 +158,6 @@
   > 2025, which was $2,578,279, reflecting a decline of 1.51%.
 </p>
 
-<BudgetTable table={FREE_CASH} />
-
 <h2>Stabilization Reserve</h2>
 
 <p>
@@ -136,7 +174,5 @@
   including Chapter 70 and debt exclusions. This is up from fiscal 2025 which had a balance of $7,533,248
   or 4.41%.
 </p>
-
-<BudgetTable table={STABILIZATION} />
 
 <BookElsewhere items={data.elsewhere} book={data.book} />

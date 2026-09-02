@@ -2,7 +2,6 @@
   import { Router } from "$lib/router"
   import BudgetColumns from "$lib/BudgetColumns.svelte"
   import BudgetStack from "$lib/BudgetStack.svelte"
-  import BudgetTimeline from "$lib/BudgetTimeline.svelte"
   import type { BookSection } from "$lib/budget"
   import type { FundedSection } from "./+page"
 
@@ -12,7 +11,6 @@
   const contents = $derived(data.contents as BookSection[])
   const departments = $derived(data.departments as FundedSection[])
   const overview = $derived(data.overview)
-  const calendar = $derived(data.calendar)
   const reserves = $derived(data.reserves)
   const debt = $derived(data.debt)
 
@@ -201,20 +199,3 @@
     </div>
   </div>
 </div>
-
-<!--
-  The calendar is the page's footer, fixed to the bottom of the window: it is
-  the process everything above it is the outcome of, so it belongs under all of
-  it and stays there while the contents scrolls past. The layout pads the page
-  by more than this is tall, because a fixed footer cannot push anything out
-  from under itself.
--->
-<footer
-  class="fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 bg-white/95 px-4 py-2 backdrop-blur"
->
-  <BudgetTimeline
-    steps={calendar}
-    asOf={data.asOf}
-    documents={{ book: book.budget, order: data.order }}
-  />
-</footer>

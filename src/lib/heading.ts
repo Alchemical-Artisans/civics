@@ -1,8 +1,15 @@
 /**
- * What the bar at the top of a page says about that page: its name, the span of
- * time it covers, and where the original is.
+ * What the bar at the top of a page says about that page: its name and the span
+ * of time it covers.
  *
- * The bar carries all three, so a page does not spend a heading and two lines
+ * It said where the original was too, until the budget calendar in the footer
+ * took that over. A source link in the bar could say only that the page came
+ * from somewhere; a box on the calendar says which step of the year produced
+ * the document, and the calendar is under every page of a book, so every
+ * document the book rests on is reachable from anywhere in it, presented the
+ * one way.
+ *
+ * The bar carries both, so a page does not spend a heading and two lines
  * of chrome on saying what the reader just clicked -- on a budget book that was
  * four lines above the two charts anyone came for.
  *
@@ -15,20 +22,11 @@
  * Everything is null off the budget half. The calendar still heads its own
  * pages, so repeating any of it in the bar would say it twice.
  */
-import { Router } from "$lib/router"
-
 export interface PageNaming {
   /** A budget section: its title, and the book page it starts on. */
   section?: { title: string; page: number }
   /** The budget book a page sits in, from the layout that looked it up. */
   book?: { year: number; budget?: string | null }
-  /**
-   * Anything else a page was built from, named by the page itself. The budget
-   * book is not the only document a page can rest on: the front page charts
-   * the Council's own appropriation orders, which are on an agenda rather than
-   * in the book.
-   */
-  sources?: { label: string; href: string }[]
   /** Everything else a load put in `page.data`, which this does not read. */
   [key: string]: unknown
 }
@@ -38,11 +36,6 @@ export interface PageBar {
   name: string | null
   /** What the book covers, which is what its year means. */
   dates: string | null
-  /**
-   * Where what is on the page came from: the book first, opened at this
-   * section's page, then anything else the page names.
-   */
-  sources: { label: string; href: string }[]
 }
 
 export function barOf(data: PageNaming): PageBar {
@@ -54,20 +47,6 @@ export function barOf(data: PageNaming): PageBar {
     // A fiscal year is named for the year it ends in, which is worth saying
     // once where the name is rather than nowhere.
     dates: book ? `July 1, ${book.year - 1} to June 30, ${book.year}` : null,
-
-    // The book, on a page that is a part of it: the link opens at that
-    // section's own page rather than at the front of a PDF running to hundreds.
-    //
-    // Not on the book's own front page, which is the page the book *is*. There
-    // the city's file hangs off the budget calendar in the footer, on the step
-    // of the process that produced it, which says more about a document than a
-    // link in a header can. Then whatever else a page says it was built from.
-    sources: [
-      ...(book?.budget && section
-        ? [{ label: "Original Source", href: Router.pdfPage(book.budget, section.page) }]
-        : []),
-      ...(data.sources ?? []),
-    ],
   }
 }
 
