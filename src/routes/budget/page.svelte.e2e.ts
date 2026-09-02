@@ -152,7 +152,7 @@ test.describe("budget pages", () => {
     // its back matter.
     const year = lists.first().locator("li")
     await expect(year.filter({ hasText: "General Fund Budgets" })).toHaveCount(1)
-    await expect(year.filter({ hasText: "2027 Estimated Tax Bill Impact" })).toHaveCount(1)
+    await expect(year.filter({ hasText: "Budget Policies" })).toHaveCount(1)
     await expect(year.filter({ hasText: "Glossary" })).toHaveCount(1)
 
     // The three lines the Education page covers are gone from both lists.
@@ -174,8 +174,12 @@ test.describe("budget pages", () => {
     ).toBeVisible()
     await expect(page.getByRole("heading", { name: "Revenue Forecast" })).toBeVisible()
 
-    // Page 67, the ten years after it.
+    // Page 67, the ten years after it, and page 79, what it comes to for one
+    // household.
     await expect(page.getByRole("heading", { name: "10-Year Revenue Projection" })).toBeVisible()
+    await expect(
+      page.getByRole("heading", { name: "$245 Estimated Tax Bill Increase" }),
+    ).toBeVisible()
 
     // The bar's source link opens the book where the run begins.
     expect(await page.locator('header a[href*="#page="]').getAttribute("href")).toMatch(/#page=48$/)

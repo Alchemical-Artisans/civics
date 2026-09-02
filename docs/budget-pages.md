@@ -209,8 +209,9 @@ The revenue section is routed at `revenue` and titled **Revenue** rather than by
 the book's own name for it — a chart headed "Revenue" that opens
 "2027 Revenue Estimates" reads as two different things, and the year is in the
 bar above every page of the book anyway. It carries "2027 Revenue Summary"
-(64) and "10-Year Revenue Forecast" (67) as well — where the money comes from,
-rolled up, and carried out to 2036. The book prints the three across twenty
+(64), "10-Year Revenue Forecast" (67), page 78's revenue table and "2027
+Estimated Tax Bill Impact" (79) as well — where the money comes from, rolled up,
+carried out to 2036, and what it comes to for one household. The book prints the three across twenty
 pages with other things between them, and a reader who wants to know about
 revenue wants all three. Its page number is 48, the first of them, so the bar's
 source link opens where the run begins.
