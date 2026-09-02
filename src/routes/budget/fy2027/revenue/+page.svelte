@@ -3,7 +3,7 @@
   // page's revenue pie reads the same figures, and they must come from one
   // place. See docs/budget-pages.md.
   import BudgetTable from "$lib/BudgetTable.svelte"
-  import { REVENUE } from "./tables"
+  import { OTHER_AVAILABLE, REVENUE } from "./tables"
   import GlossaryTerm from "$lib/GlossaryTerm.svelte"
 </script>
 
@@ -1009,42 +1009,7 @@
   and <GlossaryTerm term="Expenditures">expenditures</GlossaryTerm> are lower than appropriations.
 </p>
 
-<table>
-  <thead>
-    <tr>
-      <th scope="col">Other Available Revenue</th>
-      <th scope="col">2023 Actual</th>
-      <th scope="col">2024 Actual</th>
-      <th scope="col">2024 % Change</th>
-      <th scope="col">2025 Actual</th>
-      <th scope="col">2025 % Change</th>
-      <th scope="col">2026 Projected</th>
-      <th scope="col">2027 Proposed</th>
-      <th scope="col">2027 % Change</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr
-      ><th scope="row">Free Cash (Budget Only)</th><td>$6,508,915</td><td>$6,193,120</td><td
-        >-4.9%</td
-      ><td>$5,300,000</td><td>-14.4%</td><td>$5,200,000</td><td>$5,150,000</td><td>-1.0%</td></tr
-    >
-    <tr
-      ><th scope="row">Transfer From Enterprise</th><td>$854,634</td><td>$872,801</td><td>2.1%</td
-      ><td>$890,257</td><td>2.0%</td><td>$908,062</td><td>$935,304</td><td>3.0%</td></tr
-    >
-    <tr
-      ><th scope="row">Transfer from Trust &amp; Agency</th><td>$354,281</td><td>&ndash;</td><td
-        >-100.0%</td
-      ><td>$100,000</td><td>0.0%</td><td>$125,000</td><td>$125,000</td><td>0.0%</td></tr
-    >
-    <tr
-      ><th scope="row">Grand Total</th><td>$7,717,830</td><td>$7,065,921</td><td>-8.4%</td><td
-        >$6,290,257</td
-      ><td>-11.0%</td><td>$6,233,062</td><td>$6,210,304</td><td>-0.4%</td></tr
-    >
-  </tbody>
-</table>
+<BudgetTable table={OTHER_AVAILABLE} />
 
 <!-- Page 64, "2027 Revenue Summary": the same year's revenue rolled up, after
      the estimates that build it. Its own printed headings, unchanged. -->

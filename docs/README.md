@@ -98,7 +98,7 @@ src/lib/
   SiteHeader.svelte        the bar on every page: mark, page name, budget menu, calendar
   heading.ts               what that bar says about a page, from `page.data`
   heading.spec.ts          unit tests for it
-  BudgetPie.svelte         the pie charts a budget book opens with
+  BudgetColumns.svelte     spending and revenue, two columns on one scale
   BudgetTimeline.svelte    the budget calendar, as boxes across the foot of one
   BudgetTable.svelte       a transcribed budget table, rendered from its data
   budget-table.ts          that table's shape, and reading figures back out

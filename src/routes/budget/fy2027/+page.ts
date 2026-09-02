@@ -6,7 +6,7 @@ import { FUND_BALANCE, FREE_CASH, STABILIZATION } from "./reserves/tables"
 import { LONG_TERM_DEBT } from "./outstanding-debt/tables"
 import { CALENDAR } from "./budget-calendar"
 import { AGENDA, ENTERPRISE, ENTERPRISE_REVENUE, GENERAL_FUND } from "./council-orders"
-import { REVENUE } from "./revenue/tables"
+import { OTHER_AVAILABLE, REVENUE } from "./revenue/tables"
 import type { Part } from "$lib/BudgetStack.svelte"
 
 /**
@@ -61,16 +61,23 @@ const spending = [
 ]
 
 /**
- * Where that money comes from: the book's own revenue table, and what the two
- * departments are billed.
+ * Where that money comes from -- and only what actually comes from somewhere.
  *
- * The enterprise slices are net of the transfers the same orders make into the
- * general fund -- $234,784 of water revenue and $698,981 of wastewater revenue
- * -- because those are already inside the book's "OTHER AVAILABLE REVENUE
- * SOURCES", which is the line the Council's own four small sources add up to.
- * Counting them here as well would count $933,765 twice, and the two sides
- * would not balance.
+ * The book's revenue table has one line that is not revenue: "OTHER AVAILABLE
+ * REVENUE SOURCES", which page 63 breaks into free cash ($5,150,000), the
+ * transfer from the enterprise funds ($935,304) and a transfer from trust and
+ * agency ($125,000). Free cash is last year's surplus rather than this year's
+ * income, and counting it here would hide what the chart is for: the year does
+ * not pay for itself, and $5,150,000 of last year's money closes the gap. The
+ * Mayor's own third goal is to stop doing this.
+ *
+ * So that line is replaced by the two transfers behind it, and the enterprise
+ * slices are net of what those same orders move into the general fund --
+ * $234,784 and $698,981 -- which is the transfer the book has just counted.
+ * Counting it twice is the one way these two columns stop meaning anything.
  */
+const NOT_THIS_YEAR = "OTHER AVAILABLE REVENUE SOURCES"
+
 const TRANSFERRED: Record<string, string> = {
   "Water Revenue": "Water Receipts",
   "Wastewater Revenue": "Wastewater Receipts",
@@ -81,18 +88,25 @@ const billed = column(ENTERPRISE_REVENUE, "Amount").map((row) => ({
   amount: row.amount - amount(cell(GENERAL_FUND, TRANSFERRED[row.label], "Amount"))!,
 }))
 
-const revenue = [...column(REVENUE, CHARTED, { exclude: NOT_A_CATEGORY }), ...billed]
+const transfers = column(OTHER_AVAILABLE, CHARTED, {
+  exclude: ["Grand Total", "Free Cash (Budget Only)"],
+})
+
+const revenue = [
+  ...column(REVENUE, CHARTED, { exclude: [...NOT_A_CATEGORY, NOT_THIS_YEAR] }),
+  ...transfers,
+  ...billed,
+]
 
 /**
- * What each pie comes to: $316,044,835, on both sides, because both are the
- * same budget seen from its two ends.
+ * What the two columns come to, and the gap between them.
  *
- * Spending is stated rather than summed. The book's own appropriations column
- * adds up to $285,272,160, a dollar over the total printed under it; the book
- * prints both, and the site shows the one it states, so the spending pie's
- * slices come to a dollar more than its heading. Revenue is summed, because
- * nothing states a total for the general fund and the enterprise funds
- * together. `overview.spec.ts` holds both of those down.
+ * Spending is stated rather than summed: the book's appropriations column adds
+ * up to $285,272,160, a dollar over the total printed under it, and the site
+ * shows the one the book states. Revenue is summed, because no document states
+ * a total for this -- the book's own counts the free cash this leaves out.
+ *
+ * The difference between them is $5,150,000, which is that free cash exactly.
  */
 const spendingTotal = amount(cell(APPROPRIATIONS, "Grand Total", CHARTED))! + sum(billed)
 const revenueTotal = sum(revenue)

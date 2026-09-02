@@ -121,3 +121,62 @@ export const REVENUE: BudgetTableData = {
     },
   ],
 }
+
+/**
+ * Page 63, "Other Available Revenue": the three things behind the page-78 line
+ * of that name, which is the one line of the book's revenue table that is not
+ * revenue.
+ *
+ * Data rather than markup because the front page's charts need it broken open:
+ * free cash is last year's surplus rather than this year's income, and a chart
+ * that counts it as revenue hides that the year does not pay for itself.
+ */
+export const OTHER_AVAILABLE: BudgetTableData = {
+  columns: [
+    "Other Available Revenue",
+    "2023 Actual",
+    "2024 Actual",
+    "2024 % Change",
+    "2025 Actual",
+    "2025 % Change",
+    "2026 Projected",
+    "2027 Proposed",
+    "2027 % Change",
+  ],
+  rows: [
+    {
+      label: "Free Cash (Budget Only)",
+      cells: [
+        "$6,508,915",
+        "$6,193,120",
+        "-4.9%",
+        "$5,300,000",
+        "-14.4%",
+        "$5,200,000",
+        "$5,150,000",
+        "-1.0%",
+      ],
+    },
+    {
+      label: "Transfer From Enterprise",
+      cells: ["$854,634", "$872,801", "2.1%", "$890,257", "2.0%", "$908,062", "$935,304", "3.0%"],
+    },
+    {
+      label: "Transfer from Trust & Agency",
+      cells: ["$354,281", "–", "-100.0%", "$100,000", "0.0%", "$125,000", "$125,000", "0.0%"],
+    },
+    {
+      label: "Grand Total",
+      cells: [
+        "$7,717,830",
+        "$7,065,921",
+        "-8.4%",
+        "$6,290,257",
+        "-11.0%",
+        "$6,233,062",
+        "$6,210,304",
+        "-0.4%",
+      ],
+    },
+  ],
+}

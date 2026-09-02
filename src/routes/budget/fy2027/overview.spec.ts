@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest"
 import { amount, cell, column, sum } from "$lib/budget-table"
 import { APPROPRIATIONS, DEPARTMENTS } from "./spending/tables"
-import { REVENUE } from "./revenue/tables"
+import { OTHER_AVAILABLE, REVENUE } from "./revenue/tables"
 import { FUND_BALANCE, FREE_CASH, STABILIZATION } from "./reserves/tables"
 import { LONG_TERM_DEBT } from "./outstanding-debt/tables"
 import {
@@ -101,11 +101,9 @@ describe("page 17, the reserves the front page charts", () => {
   })
 })
 
-describe("the two pies", () => {
+describe("the two columns", () => {
   const NOT_A_CATEGORY = ["Grand Total", "Budget Surplus (Deficit)"]
 
-  // What each chart draws: the book's own table on each side, and the two
-  // enterprise departments the book does not carry at all.
   const spending = [
     ...column(APPROPRIATIONS, CHARTED, { exclude: NOT_A_CATEGORY }),
     ...column(ENTERPRISE, "Amount"),
@@ -118,23 +116,46 @@ describe("the two pies", () => {
     amount: row.amount - [234784, 698981][at],
   }))
 
-  const revenue = [...column(REVENUE, CHARTED, { exclude: NOT_A_CATEGORY }), ...billed]
+  const revenue = [
+    ...column(REVENUE, CHARTED, {
+      exclude: [...NOT_A_CATEGORY, "OTHER AVAILABLE REVENUE SOURCES"],
+    }),
+    ...column(OTHER_AVAILABLE, CHARTED, {
+      exclude: ["Grand Total", "Free Cash (Budget Only)"],
+    }),
+    ...billed,
+  ]
 
-  it("balances, which is what a budget does", () => {
-    expect(sum(revenue)).toBe(316044835)
-    expect(amount(cell(APPROPRIATIONS, "Grand Total", CHARTED))! + sum(billed)).toBe(sum(revenue))
+  const stated = amount(cell(APPROPRIATIONS, "Grand Total", CHARTED))! + sum(billed)
+
+  // The gap between the columns is the whole point of drawing them: the year
+  // does not pay for itself, and last year's surplus closes it.
+  it("is short of what it spends by exactly the free cash", () => {
+    expect(stated).toBe(316044835)
+    expect(sum(revenue)).toBe(310894835)
+    expect(stated - sum(revenue)).toBe(
+      amount(cell(OTHER_AVAILABLE, "Free Cash (Budget Only)", CHARTED)),
+    )
+  })
+
+  // Page 63 is the only place the book breaks that line open, and the two
+  // transfers left in it are this year's money, unlike the free cash.
+  it("keeps the transfers behind the book's own available-funds line", () => {
+    expect(sum(column(OTHER_AVAILABLE, CHARTED, { exclude: ["Grand Total"] }))).toBe(
+      amount(cell(REVENUE, "OTHER AVAILABLE REVENUE SOURCES", CHARTED)),
+    )
+    expect(revenue.map((r) => r.label)).toContain("Transfer From Enterprise")
+    expect(revenue.map((r) => r.label)).not.toContain("Free Cash (Budget Only)")
   })
 
   // The book's appropriations column is a dollar over the total printed under
-  // it. The site shows the stated total, so the slices come to a dollar more
-  // than the heading; this is here so a correction has to face that.
+  // it. The site shows the stated total, so the slices come to a dollar more.
   it("draws a dollar more than the book states", () => {
     expect(sum(spending)).toBe(316044836)
   })
 
   it("counts the transfers between the funds once", () => {
     expect(sum(billed)).toBe(30772676)
-    expect(sum(billed) + 234784 + 698981).toBe(31706441)
   })
 
   // Charged rather than chosen, but spent: the Commonwealth bills the city and

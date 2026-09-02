@@ -104,15 +104,18 @@ says it through `bookName`.
 `/budget/<year>` opens on the budget at a glance: the year, and what the year
 sits on.
 
-| Chart             | What it draws                                             | From                                                                 |
-| ----------------- | --------------------------------------------------------- | -------------------------------------------------------------------- |
-| Spending          | everything the city spends, water and wastewater included | page 78 less what nobody votes, plus the orders of 2 June 2026       |
-| Revenue           | what pays for it, on the same basis                       | the orders of 2 June 2026, `council-orders.ts`                       |
-| Reserves and Debt | two bars on one scale, each divided into its parts        | page 17, `reserves/tables.ts`; page 21, `outstanding-debt/tables.ts` |
+| Chart             | What it draws                                         | From                                                                 |
+| ----------------- | ----------------------------------------------------- | -------------------------------------------------------------------- |
+| Spending, Revenue | two columns on one scale, each divided into its parts | page 78 and pages 63, plus the orders of 2 June 2026                 |
+| Reserves and Debt | two bars on one scale, each divided into its parts    | page 17, `reserves/tables.ts`; page 21, `outstanding-debt/tables.ts` |
 
-The two pies are the year — everything the city spends, and everything that pays
-for it — and sit in the narrow left column. Both are the budget the Council
-adopted, so both come to $305,523,401, which is what a budget balancing means. Reserves and debt are the standing position
+The two columns are the year — everything the city spends, and everything that
+pays for it — and sit in the narrow left column of the page.
+
+**They are columns rather than pies because the first question about a budget is
+whether the two sides are the same size**, and two circles cannot be compared by
+eye. Side by side against one scale, the gap between the tops is the answer:
+$316,044,835 spent against $310,894,835 that comes from somewhere. Reserves and debt are the standing position
 underneath it, which is a different question, so they sit above the table of
 contents rather than beside the pies. Both read their figures out of the
 sections' own transcriptions; see "A section whose tables are charted" below.
@@ -276,7 +279,18 @@ what a chart headed "Spending" is about.
 
 What the book leaves out is water and wastewater, and those come from the
 Council's orders: **$14,805,633** and **$15,967,043** on the spending side,
-their own revenue on the other. Both sides come to **$316,044,835**.
+their own revenue on the other.
+
+**Free cash is not drawn as revenue.** The book's revenue table has one line
+that is not this year's income — "OTHER AVAILABLE REVENUE SOURCES", which page
+63 breaks into free cash ($5,150,000), the transfer from the enterprise funds
+($935,304) and a transfer from trust and agency ($125,000). Free cash is last
+year's surplus. Counting it would make the chart balance by hiding the thing
+worth seeing: the year does not pay for itself, and $5,150,000 of last year's
+money closes the gap. The Mayor's own third goal is to stop relying on it, and
+the reserves bar shows the balance it leaves at $0. So the line is replaced by
+the two transfers behind it, and the columns come to $316,044,835 and
+$310,894,835 — **$5,150,000 apart, which is the free cash exactly**.
 
 On the revenue side the two departments are net of what the same orders transfer
 into the general fund — $234,784 and $698,981 — because those are already inside
@@ -683,7 +697,7 @@ chart shows and there is nothing to transcribe.
 src/lib/data/budget.json                   the committed listing, scraped
 src/lib/budget.ts                          reads it; slugs and contents helpers
 src/lib/budget.spec.ts                     unit tests for them
-src/lib/BudgetPie.svelte                   the pie charts on a book page
+src/lib/BudgetColumns.svelte               spending and revenue, two columns
 src/lib/BudgetStack.svelte                 reserves and debt, two bars on one scale
 src/lib/BookElsewhere.svelte               a category page's "see also" list
 src/lib/data/glossary.json                 the book's glossary, transcribed

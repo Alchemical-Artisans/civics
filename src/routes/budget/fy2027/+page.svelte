@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Router } from "$lib/router"
-  import BudgetPie from "$lib/BudgetPie.svelte"
+  import BudgetColumns from "$lib/BudgetColumns.svelte"
   import BudgetStack from "$lib/BudgetStack.svelte"
   import BudgetTimeline from "$lib/BudgetTimeline.svelte"
   import type { BookSection } from "$lib/budget"
@@ -14,12 +14,6 @@
   const calendar = $derived(data.calendar)
   const reserves = $derived(data.reserves)
   const debt = $derived(data.debt)
-
-  const money = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    maximumFractionDigits: 0,
-  })
 
   // A section written up here opens on this site; one that is not opens the
   // city's PDF at the page the book's own contents give for it. Either way the
@@ -73,48 +67,37 @@
 >
   <div>
     <!--
-      The total belongs on the heading line rather than under the chart, where
-      it would be a line of chrome saying what the heading can say. Where it
-      came from is not written out either -- each heading opens the side of the
-      book its chart is about, and the transcriptions are on those pages.
+      The two sides of the budget as two columns on one scale, rather than two
+      pies. A pie says what a side is made of; two pies cannot say whether the
+      sides are the same size, which is the first thing to know about a budget
+      and the thing this one turns on: the columns do not reach the same height,
+      and the gap is the $5,150,000 of last year's free cash that closes it.
+
+      Free cash is not drawn as revenue for that reason. It is in the book's
+      revenue table, inside "Other Available Revenue Sources", and it is last
+      year's surplus rather than this year's income; counting it would balance
+      the chart by hiding the thing worth seeing. The Mayor's third goal is to
+      stop relying on it, and the spending page says the rest in the city's own
+      words.
+
+      Each column's name is the way into the side of the book it is drawn from,
+      which is why neither has a line in the contents.
     -->
-    <h2>
-      <a
-        class="font-semibold text-slate-900 underline decoration-slate-400 decoration-2 underline-offset-4 hover:decoration-slate-900"
-        href={Router.budgetSection(book.id, "spending")}
-      >
-        Spending
-      </a>
-      <span class="font-normal text-slate-500 tabular-nums">
-        {money.format(overview.spendingTotal)}
-      </span>
-    </h2>
-
-    <BudgetPie rows={overview.spending} />
-
-    <!-- Each heading opens the side of the book its chart is about, which is
-         why neither has a line in the contents below. Page 78, which is what
-         both pies are drawn from, is split between those two pages the same
-         way: its appropriations table on one, its revenue table on the other,
-         each beside the chart that reads it. -->
-    <h2>
-      <!-- `font-semibold` because `prose` gives a link its own weight of 500,
-           which is lighter than the heading it sits in and made this one read
-           as less than the heading beside it. The underline is the heavy one:
-           a heading is the last thing a reader expects to be a link, so a
-           hairline under it is not enough to say that it is. -->
-      <a
-        class="font-semibold text-slate-900 underline decoration-slate-400 decoration-2 underline-offset-4 hover:decoration-slate-900"
-        href={Router.budgetSection(book.id, "revenue")}
-      >
-        Revenue
-      </a>
-      <span class="font-normal text-slate-500 tabular-nums">
-        {money.format(overview.revenueTotal)}
-      </span>
-    </h2>
-
-    <BudgetPie rows={overview.revenue} />
+    <BudgetColumns
+      rows={[
+        {
+          label: "Spending",
+          href: Router.budgetSection(book.id, "spending"),
+          parts: overview.spending,
+          total: overview.spendingTotal,
+        },
+        {
+          label: "Revenue",
+          href: Router.budgetSection(book.id, "revenue"),
+          parts: overview.revenue,
+        },
+      ]}
+    />
   </div>
 
   <div>
