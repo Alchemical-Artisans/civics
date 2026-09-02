@@ -2,6 +2,7 @@
   // A script here for the parts of the book this page belongs with and does not
   // carry; see this page's `+page.ts` and docs/budget-pages.md.
   import BookElsewhere from "$lib/BookElsewhere.svelte"
+  import { APPROPRIATED, ENTERPRISE, GENERAL_FUND, ORDERS } from "../council-orders"
   import BudgetTable from "$lib/BudgetTable.svelte"
   import { APPROPRIATIONS, DEPARTMENTS } from "./tables"
   import GlossaryTerm from "$lib/GlossaryTerm.svelte"
@@ -1819,5 +1820,48 @@
 <h3>Appropriations</h3>
 
 <BudgetTable table={APPROPRIATIONS} />
+
+<!-- Ours, not the book's: the book is the Mayor's proposal, and what follows is
+     what the City Council did with it, from its agenda of 2 June 2026. The
+     orders are quoted as the agenda words them, spacing and all. -->
+<h2>What the Council appropriated</h2>
+
+<p>
+  The front page's spending chart is these three orders and not the book's own total, which is the
+  proposal they answer.
+</p>
+
+{#each ORDERS as order (order.item)}
+  <p><strong>{order.item}</strong> {order.text}</p>
+
+  {#if order.parts}
+    <ul>
+      {#each order.parts as part (part)}
+        <li>{part}</li>
+      {/each}
+    </ul>
+  {/if}
+
+  {#if order.item === "13.1"}
+    <BudgetTable table={ENTERPRISE} />
+  {/if}
+
+  {#if order.item === "13.3"}
+    <BudgetTable table={GENERAL_FUND} />
+  {/if}
+{/each}
+
+<p>
+  <strong>{APPROPRIATED}</strong> is what the Council raised and appropriated for the <GlossaryTerm
+    term="General Fund">general fund</GlossaryTerm
+  >. The book prints $285,272,159. The difference is the state assessments and the <GlossaryTerm
+    term="Overlay">overlay</GlossaryTerm
+  >, which are charged to the city on the <GlossaryTerm term="Tax Rate Recapitulation Sheet"
+    >tax rate recapitulation sheet</GlossaryTerm
+  > rather than voted by it, and which the book counts as appropriations. The water and wastewater departments
+  are appropriated in orders of their own because they are <GlossaryTerm term="Enterprise Funds"
+    >enterprise funds</GlossaryTerm
+  >, paid for out of what households are billed, and they appear nowhere in the book at all.
+</p>
 
 <BookElsewhere items={data.elsewhere} book={data.book} />

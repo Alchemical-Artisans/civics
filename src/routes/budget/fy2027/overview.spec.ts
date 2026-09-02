@@ -4,7 +4,7 @@ import { APPROPRIATIONS, DEPARTMENTS } from "./spending/tables"
 import { REVENUE } from "./revenue/tables"
 import { FUND_BALANCE, FREE_CASH, STABILIZATION } from "./reserves/tables"
 import { LONG_TERM_DEBT } from "./outstanding-debt/tables"
-import { APPROPRIATED, ENTERPRISE, GENERAL_FUND } from "./council-orders"
+import { APPROPRIATED, ENTERPRISE, GENERAL_FUND, ORDERS } from "./council-orders"
 
 /**
  * What the book's own page 78 says about itself.
@@ -95,6 +95,45 @@ describe("page 17, the reserves the front page charts", () => {
   })
 })
 
+describe("the spending chart", () => {
+  // What the front page draws: the book's functions less the two lines nobody
+  // votes, plus the two enterprise departments. No document states this total,
+  // because no document adds the general fund and the enterprise funds up.
+  const NOT_A_CATEGORY = ["Grand Total", "Budget Surplus (Deficit)"]
+  const drawn = [
+    ...column(APPROPRIATIONS, CHARTED, {
+      exclude: [...NOT_A_CATEGORY, "State Assessments", "Overlay"],
+    }),
+    ...column(ENTERPRISE, "Amount"),
+  ]
+
+  it("is the budget the Council adopted, not the book's proposal", () => {
+    expect(sum(drawn)).toBe(305523401)
+    expect(sum(drawn)).toBe(amount(APPROPRIATED)! + 14805633 + 15967043)
+  })
+
+  // The eleven functions left after the two are dropped come to the Council's
+  // order exactly -- and the dollar the book's column is over its own printed
+  // total goes with them, which is worth knowing if either figure is corrected.
+  it("leaves out only what the Council does not vote", () => {
+    const functions = column(APPROPRIATIONS, CHARTED, {
+      exclude: [...NOT_A_CATEGORY, "State Assessments", "Overlay"],
+    })
+    expect(sum(functions)).toBe(amount(APPROPRIATED))
+
+    const charged =
+      amount(cell(APPROPRIATIONS, "State Assessments", CHARTED))! +
+      amount(cell(APPROPRIATIONS, "Overlay", CHARTED))!
+    expect(sum(functions) + charged).toBe(TOTAL + 1)
+  })
+
+  it("carries the water and wastewater departments as slices of their own", () => {
+    expect(drawn.map((r) => r.label)).toContain("Water Department")
+    expect(drawn.map((r) => r.label)).toContain("Wastewater Department")
+    expect(drawn.map((r) => r.label)).not.toContain("State Assessments")
+  })
+})
+
 describe("the Council's orders of 2 June 2026", () => {
   // Order 13.3 states a total and then lists what funds it. The chart draws
   // the five sources and adds them up itself, so they have to come to the
@@ -115,6 +154,14 @@ describe("the Council's orders of 2 June 2026", () => {
       amount(cell(APPROPRIATIONS, "Overlay", CHARTED))!
 
     expect(TOTAL - amount(APPROPRIATED)!).toBe(charged - 1)
+  })
+
+  // The orders are quoted on the spending page, so their wording is part of the
+  // record too -- including the spaces the agenda sets inside its numbers.
+  it("quotes the orders as the agenda words them", () => {
+    expect(ORDERS.map((o) => o.item)).toEqual(["13.1", "13.2", "13.3", "13.4"])
+    expect(ORDERS[1].text).toContain("$15, 967,043")
+    expect(ORDERS[0].parts).toContain("$ 0 comes from available Retaining Earnings")
   })
 
   // The two enterprise departments, which the book does not carry at all.

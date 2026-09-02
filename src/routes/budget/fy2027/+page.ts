@@ -1,12 +1,12 @@
 import type { PageLoad } from "./$types"
 import { contents, type BookSection } from "$lib/budget"
-import { amount, cell, column, type BudgetTableData } from "$lib/budget-table"
+import { amount, cell, column, sum, type BudgetTableData } from "$lib/budget-table"
 import { APPROPRIATIONS } from "./spending/tables"
 import { REVENUE } from "./revenue/tables"
 import { FUND_BALANCE, FREE_CASH, STABILIZATION } from "./reserves/tables"
 import { LONG_TERM_DEBT } from "./outstanding-debt/tables"
 import { CALENDAR } from "./budget-calendar"
-import { AGENDA, ENTERPRISE, GENERAL_FUND } from "./council-orders"
+import { AGENDA, ENTERPRISE } from "./council-orders"
 import type { Part } from "$lib/BudgetStack.svelte"
 
 /**
@@ -38,17 +38,51 @@ const CHARTED = "2027 Proposed"
  */
 const NOT_A_CATEGORY = ["Grand Total", "Budget Surplus (Deficit)"]
 
-const appropriations = column(APPROPRIATIONS, CHARTED, { exclude: NOT_A_CATEGORY })
+/**
+ * Two lines of the book's table that the city does not appropriate: the state
+ * assessments the Commonwealth charges it, and the assessors' overlay for
+ * abatements. Both are raised on the tax rate recapitulation sheet rather than
+ * voted -- the book's own glossary says so of the overlay -- and the Council's
+ * order of 2 June 2026 leaves both out, which is the whole of the $10,521,435
+ * between the book's $285,272,159 and the $274,750,725 it voted.
+ */
+const NOT_APPROPRIATED = ["State Assessments", "Overlay"]
+
+/**
+ * What the city spends, which is not what the book proposes.
+ *
+ * The book's page-78 table is the Mayor's general fund proposal. This is the
+ * budget that was adopted: those functions less the two lines nobody votes,
+ * plus the water and wastewater departments, which are enterprise funds
+ * appropriated in orders of their own and printed nowhere in the book. The
+ * eleven remaining functions come to $274,750,725, which is the Council's
+ * order to the dollar.
+ *
+ * The pieces of it a reader needs to be told -- what is left out and why, and
+ * that the two departments are paid for out of what households are billed --
+ * are on the spending page, in the city's own words. A pie is not the place.
+ */
+const spending = [
+  ...column(APPROPRIATIONS, CHARTED, { exclude: [...NOT_A_CATEGORY, ...NOT_APPROPRIATED] }),
+  ...column(ENTERPRISE, "Amount"),
+]
+
 const revenue = column(REVENUE, CHARTED, { exclude: NOT_A_CATEGORY })
 
 /**
- * The grand total the book states.
+ * What each pie comes to, which is no longer one figure.
  *
- * Not the sum of the bars above it: the appropriations column adds up to
- * $285,272,160, a dollar over the total printed under it. The book prints
- * both, and the site shows the one it states.
+ * Spending is $305,523,401: the sum of what three orders appropriate, which no
+ * document states because no document adds the general fund and the enterprise
+ * funds together. `overview.spec.ts` checks it against each of them.
+ *
+ * Revenue is still the book's $285,272,159 -- page 78's estimate for the
+ * general fund alone, on the Mayor's basis rather than the Council's, with no
+ * water or wastewater in it. The two sides of this page are not yet the same
+ * budget, and the spending page is where the difference is set out.
  */
-const total = amount(cell(APPROPRIATIONS, "Grand Total", CHARTED))!
+const spendingTotal = sum(spending)
+const revenueTotal = amount(cell(REVENUE, "Grand Total", CHARTED))!
 
 /**
  * The reserve dials of "Fiscal Reserves" (page 17) and the debt of
@@ -84,20 +118,6 @@ const reserves: Part[] = [
 ]
 
 const debt = column(LONG_TERM_DEBT, "Amount")
-
-/**
- * What the Council voted, which is not what the book proposes.
- *
- * Two bars on one scale, from the orders on its agenda of 2 June 2026: the
- * general fund by where the order says the money comes from, and the water and
- * wastewater departments, which are enterprise funds and appear nowhere in the
- * book at all. See `council-orders.ts` for what the two totals mean and how
- * they differ from the book's.
- */
-const voted = [
-  { label: "General Fund", parts: column(GENERAL_FUND, "Amount") },
-  { label: "Water & Wastewater", parts: column(ENTERPRISE, "Amount") },
-]
 
 /**
  * The contents in two lists: the book's own account of the year, and the budget
@@ -159,12 +179,11 @@ export const load: PageLoad = () => ({
   asOf: new Date().toISOString().slice(0, 10),
 
   overview: {
-    appropriations,
+    spending,
+    spendingTotal,
     revenue,
-    total,
+    revenueTotal,
   },
-
-  voted,
 
   /**
    * The agenda those orders are on, which the bar links beside the book. The

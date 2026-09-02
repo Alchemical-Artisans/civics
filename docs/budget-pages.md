@@ -104,14 +104,17 @@ says it through `bookName`.
 `/budget/<year>` opens on the budget at a glance: the year, and what the year
 sits on.
 
-| Chart                       | What it draws                                                           | From                                                                 |
-| --------------------------- | ----------------------------------------------------------------------- | -------------------------------------------------------------------- |
-| Appropriations, Revenue     | two pies, one circle divided two ways                                   | page 78, `spending/tables.ts` + `revenue/tables.ts`                  |
-| Appropriated by the Council | two bars on one scale: the general fund, and the enterprise departments | the Council's orders of 2 June 2026, `council-orders.ts`             |
-| Reserves and Debt           | two bars on one scale, each divided into its parts                      | page 17, `reserves/tables.ts`; page 21, `outstanding-debt/tables.ts` |
+| Chart             | What it draws                                                 | From                                                                 |
+| ----------------- | ------------------------------------------------------------- | -------------------------------------------------------------------- |
+| Spending          | the budget the Council adopted, water and wastewater included | page 78 less what nobody votes, plus the orders of 2 June 2026       |
+| Revenue           | the book's estimate for the general fund                      | page 78, `revenue/tables.ts`                                         |
+| Reserves and Debt | two bars on one scale, each divided into its parts            | page 17, `reserves/tables.ts`; page 21, `outstanding-debt/tables.ts` |
 
-The two pies are the year — everything expected in, everything planned out — and
-sit in the narrow left column. Reserves and debt are the standing position
+The two pies are the year — everything the city spends, and everything it
+expects to take in — and sit in the narrow left column. **They no longer come to
+the same figure**, which is not a fault in either: the spending pie is what was
+adopted, and the revenue pie is still the book's page-78 estimate for the
+general fund on the Mayor's basis. Squaring the two is unfinished work. Reserves and debt are the standing position
 underneath it, which is a different question, so they sit above the table of
 contents rather than beside the pies. Both read their figures out of the
 sections' own transcriptions; see "A section whose tables are charted" below.
@@ -264,7 +267,21 @@ beside the chart that reads it. The book prints the two sides facing each other
 to show that they balance; the front page makes that point instead, with two
 pies carrying the same total.
 
-**The book is not the whole city, and one chart says so.** Water and wastewater
+**The spending pie is the budget the city adopted, not the one the book
+proposes.** The book's page-78 table is the Mayor's general fund request; the
+chart is that table less the two lines nobody votes — State Assessments
+($10,271,435) and Overlay ($250,000), both raised on the tax rate recapitulation
+sheet rather than appropriated — plus the water and wastewater departments,
+which the book does not carry at all. The eleven functions that remain come to
+$274,750,725, the Council's order to the dollar, and with the two departments
+the pie is **$305,523,401**, a figure no document states because no document
+adds the general fund and the enterprise funds together.
+
+None of that is on the front page. A pie is a shape for one question, and the
+explanation belongs where a reader who wants it goes: the orders are quoted on
+`spending`, in the agenda's own words, with what they leave out and why.
+
+**The book is not the whole city, and the orders are how we know.** Water and wastewater
 are enterprise funds — self-supporting, paid for out of what households are
 billed rather than out of the tax levy — so they are appropriated in orders of
 their own and appear nowhere in the book's $285,272,159. The Council's agenda of
@@ -279,13 +296,12 @@ transcribes them:
   from taxation and other receipts, free cash, water and wastewater receipts,
   and a transfer
 
-Two things fall out of that, and both are on the chart. The enterprise
-departments are **$30,772,676**, a tenth again of the general fund, that the
-front page was silent about. And **what the Council votes is not what the book
-prints**: $274,750,725 against $285,272,159, the difference being the state
-assessments ($10,271,435) and the overlay ($250,000), which are charged to the
-city rather than voted by it. `overview.spec.ts` pins both, including the dollar
-of rounding the book is already known to carry.
+Two things fall out of that. The enterprise departments are **$30,772,676**, a
+tenth again of the general fund, which the book is silent about; and what the
+Council votes is **$274,750,725** against the book's $285,272,159.
+`overview.spec.ts` pins both, including the dollar of rounding the book carries
+— which, as it happens, is inside the two lines that are dropped, so the eleven
+that remain come to the order exactly.
 
 Each order also appropriates an amount _inside_ the general fund funded from
 that department's receipts — $234,784 and $698,981 — and those are rows of order

@@ -14,7 +14,6 @@
   const calendar = $derived(data.calendar)
   const reserves = $derived(data.reserves)
   const debt = $derived(data.debt)
-  const voted = $derived(data.voted)
 
   const money = new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -57,10 +56,12 @@
 <!--
   The charts on the left, the book on the right.
 
-  The two halves of one number, which is what a budget is: everything the city
-  expects to take in, and everything it plans to spend. Both tables are on page
-  78 and both come to the same total, so the two pies are one circle divided two
-  ways and can be read against each other.
+  The two sides of a budget: everything the city expects to take in, and
+  everything it spends. They no longer come to the same figure, and that is not
+  a mistake in either of them -- the spending pie is the budget the Council
+  adopted, water and wastewater included, and the revenue pie is still the
+  book's page-78 estimate for the general fund alone. The spending page says
+  what the difference is made of, in the city's own words.
 
   The contents is what most readers came for -- it is the way into every section
   of the book -- so on a wide screen it sits beside the charts rather than below
@@ -72,11 +73,10 @@
 >
   <div>
     <!--
-      The total belongs on the heading line: it is the same figure for both
-      charts, and a line of its own under each said so twice. Where it came from
-      is not written out either -- each heading opens the side of the book its
-      chart is about, and page 78's table is at the foot of that page, which is
-      one click away rather than restated under every heading.
+      The total belongs on the heading line rather than under the chart, where
+      it would be a line of chrome saying what the heading can say. Where it
+      came from is not written out either -- each heading opens the side of the
+      book its chart is about, and the transcriptions are on those pages.
     -->
     <h2>
       <a
@@ -85,10 +85,12 @@
       >
         Spending
       </a>
-      <span class="font-normal text-slate-500 tabular-nums">{money.format(overview.total)}</span>
+      <span class="font-normal text-slate-500 tabular-nums">
+        {money.format(overview.spendingTotal)}
+      </span>
     </h2>
 
-    <BudgetPie rows={overview.appropriations} />
+    <BudgetPie rows={overview.spending} />
 
     <!-- Each heading opens the side of the book its chart is about, which is
          why neither has a line in the contents below. Page 78, which is what
@@ -107,7 +109,9 @@
       >
         Revenue
       </a>
-      <span class="font-normal text-slate-500 tabular-nums">{money.format(overview.total)}</span>
+      <span class="font-normal text-slate-500 tabular-nums">
+        {money.format(overview.revenueTotal)}
+      </span>
     </h2>
 
     <BudgetPie rows={overview.revenue} />
@@ -124,22 +128,6 @@
       with these two figures is hold them against each other. Full width, so the
       shorter bar is still long enough to be divided into what it is made of.
     -->
-    <!--
-      What the Council voted, which is not what the book proposes: the water and
-      wastewater departments are enterprise funds, paid for out of what
-      households are billed, and appear nowhere in the book's $285,272,159. On
-      one scale with the general fund they are the tenth of the city's spending
-      this page used to be silent about.
-    -->
-    <div class="mb-8">
-      <h2>
-        Appropriated by the Council
-        <span class="font-normal text-slate-500">June 2, 2026</span>
-      </h2>
-
-      <BudgetStack rows={voted} />
-    </div>
-
     <div class="mb-8">
       <h2>Reserves and Debt</h2>
 

@@ -61,3 +61,48 @@ export const GENERAL_FUND: BudgetTableData = {
 
 /** The total order 13.3 states, which its five sources add up to. */
 export const APPROPRIATED = "$ 274,750,725"
+
+/**
+ * The orders as the agenda words them, for the spending page to print.
+ *
+ * Verbatim, spacing and all: the agenda sets "$15, 967,043", "$ 0" and
+ * "raised and appropriated designated as appropriation on the attached", and
+ * those are the city's own words about its own money.
+ */
+export interface Order {
+  /** The item number on the agenda. */
+  item: string
+  /** The order, as moved. */
+  text: string
+  /** What it lists under itself, where it lists anything. */
+  parts?: string[]
+}
+
+export const ORDERS: Order[] = [
+  {
+    item: "13.1",
+    text: "Order- That as part of the fiscal year 2027 annual budget the sum of $14,805,633 be appropriated to operate the Water Department for the items marked as appropriated as listed:",
+    parts: [
+      "That $15, 040,417 come from the Water Revenue",
+      "$ 0 comes from available Retaining Earnings",
+      "That $ 234,784 be appropriated in the General Fund and funded from Water Receipts",
+    ],
+  },
+  {
+    item: "13.2",
+    text: "Order- That as part of the fiscal year 2027 annual budget the sum of $15, 967,043 be appropriated to operate the Wastewater Department for items marked as appropriated as listed:",
+    parts: [
+      "That $16,666,024 come from Wastewater Revenue",
+      "That $ 0 comes from available Retaining Earnings",
+      "That $698,981 be appropriated in the General Fund and funded from Wastewater receipts",
+    ],
+  },
+  {
+    item: "13.3",
+    text: "Order- That the sum of $ 274,750,725 be and hereby raised and appropriated designated as appropriation on the attached and further that said appropriation be funded in the following manner:",
+  },
+  {
+    item: "13.4",
+    text: "Order- That $2,770,000 will be transferred from fiscal 2025- certified free cash to partially fund the snow and ice deficit and to provide for continuing appropriations",
+  },
+]

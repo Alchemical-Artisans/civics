@@ -42,9 +42,11 @@ test.describe("budget pages", () => {
   test("the book opens on the budget at a glance, before its contents", async ({ page }) => {
     await page.goto(`/budget/${books[0]}`)
 
-    // Both halves of the same total, each ranked largest first, and each
-    // heading carrying that total rather than a line of its own under it.
-    await expect(page.getByRole("heading", { name: /^Spending \$285,272,159$/ })).toBeVisible()
+    // The two sides of the budget, each ranked largest first and each heading
+    // carrying its own total. They are not the same figure any more: spending
+    // is what the Council adopted with the enterprise funds in it, and revenue
+    // is still the book's estimate for the general fund alone.
+    await expect(page.getByRole("heading", { name: /^Spending \$305,523,401$/ })).toBeVisible()
     // The revenue heading opens the section every figure in that pie comes
     // from, and is the only way to it: it has no line in the contents.
     await expect(page.getByRole("heading", { name: /^Revenue \$285,272,159$/ })).toBeVisible()
@@ -60,10 +62,10 @@ test.describe("budget pages", () => {
     await expect(charts).toHaveCount(2)
 
     // Every wedge says what it is and what it costs as its accessible name,
-    // whether or not anyone can hover something a third of a degree wide.
+    // whether or not anyone can hover something a degree wide.
     const wedges = charts.first().getByRole("img")
     expect(await wedges.count()).toBeGreaterThan(5)
-    await expect(wedges.first()).toHaveAttribute("aria-label", "Education, $147,158,454, 51.6%")
+    await expect(wedges.first()).toHaveAttribute("aria-label", "Education, $147,158,454, 48.2%")
     for (const wedge of await wedges.all()) {
       expect(await wedge.getAttribute("aria-label")).toMatch(/\$[\d,]+/)
     }
@@ -76,9 +78,7 @@ test.describe("budget pages", () => {
     // pies beside it are the year, this is what the year sits on.
     await expect(page.getByRole("heading", { name: "Reserves and Debt" })).toBeVisible()
 
-    // Two charts of this kind on the page now -- the Council's orders first,
-    // then the standing position -- so this one is the second.
-    const chart = page.locator(".budget-stack").last()
+    const chart = page.locator(".budget-stack")
     const bars = chart.locator(".budget-series")
     await expect(bars).toHaveCount(2)
     await expect(bars.first()).toContainText("$21,986,546")
@@ -371,47 +371,53 @@ test.describe("budget pages", () => {
     }
   })
 
-  test("charts what the Council voted, next to what the book proposes", async ({ page }) => {
+  test("charts the budget the Council adopted, not the book's proposal", async ({ page }) => {
     await page.goto(`/budget/${books[0]}`)
 
-    // The orders on the agenda of 2 June 2026: the general fund by where the
-    // money comes from, and the two enterprise departments, which are paid for
-    // out of what households are billed and are in no part of the book.
-    const voted = page.locator(".budget-stack").first()
-    const bars = voted.locator(".budget-series")
-    await expect(bars).toHaveCount(2)
-    await expect(bars.first()).toContainText("General Fund")
-    await expect(bars.first()).toContainText("$274,750,725")
-    await expect(bars.last()).toContainText("Water & Wastewater")
-    await expect(bars.last()).toContainText("$30,772,676")
+    // The book's $285,272,159 is the Mayor's proposal for the general fund.
+    // What the city spends is the eleven functions the Council voted, plus the
+    // two enterprise departments the book does not carry at all.
+    await expect(page.getByRole("heading", { name: /^Spending \$305,523,401$/ })).toBeVisible()
 
-    // What the Council votes is not the book's total: the difference is the
-    // state assessments and the overlay, which are charged to the city.
-    await expect(page.getByRole("heading", { name: /^Spending \$285,272,159$/ })).toBeVisible()
+    const wedges = page.locator(".budget-chart").first().getByRole("img")
+    const labels = await wedges.evaluateAll((w) => w.map((el) => el.getAttribute("aria-label")))
+    expect(labels.some((l) => l?.startsWith("Wastewater Department, $15,967,043"))).toBe(true)
+    expect(labels.some((l) => l?.startsWith("Water Department, $14,805,633"))).toBe(true)
 
-    await expect(
-      bars.first().getByRole("img", { name: /^General Fund, Taxation and Other Receipts/ }),
-    ).toHaveAttribute(
-      "aria-label",
-      "General Fund, Taxation and Other Receipts, $268,541,960, 97.7%",
-    )
-    await expect(bars.last().getByRole("img").first()).toHaveAttribute(
-      "aria-label",
-      "Water & Wastewater, Wastewater Department, $15,967,043, 51.9%",
-    )
+    // Nobody votes these two, so they are not in the budget the chart draws.
+    expect(labels.some((l) => l?.startsWith("State Assessments"))).toBe(false)
+    expect(labels.some((l) => l?.startsWith("Overlay"))).toBe(false)
 
-    // And the order itself is linked in the bar, beside the budget book.
-    const source = page.getByRole("banner").getByRole("link", { name: /^City Council Order/ })
-    expect(await source.getAttribute("href")).toMatch(/full-agenda-6226\.pdf$/)
-    await expect(source).toHaveAttribute("target", "_blank")
+    // And the high-level view says none of that: the spending page does, in
+    // the city's own words.
+    await expect(page.getByRole("heading", { name: /^Appropriated by the Council/ })).toHaveCount(0)
   })
 
+  test("says on the spending page what the chart leaves out", async ({ page }) => {
+    await page.goto(`/budget/${books[0]}/spending`)
+
+    // The orders themselves, quoted as the agenda words them.
+    await expect(page.getByRole("heading", { name: "What the Council appropriated" })).toBeVisible()
+    const article = page.getByRole("article")
+    await expect(article).toContainText("be appropriated to operate the Water Department")
+    await expect(article).toContainText("$15, 967,043")
+    await expect(article).toContainText("$ 274,750,725")
+    await expect(article).toContainText("Taxation and Other Receipts")
+
+    // And why the two totals differ.
+    await expect(article).toContainText("state assessments")
+    await expect(article).toContainText("tax rate recapitulation sheet")
+
+    // The order is linked in the bar beside the book.
+    const source = page.getByRole("banner").getByRole("link", { name: /^City Council Order/ })
+    expect(await source.getAttribute("href")).toMatch(/full-agenda-6226\.pdf$/)
+  })
   test("draws both bars to one scale", async ({ page }) => {
     // The point of the chart: $22 million against $176 million, so the
     // reserves are the eighth of the debt that they are rather than a bar the
     // same length drawn beside it.
     await page.goto(`/budget/${books[0]}`)
-    const bars = page.locator(".budget-stack").last().locator(".budget-series")
+    const bars = page.locator(".budget-stack .budget-series")
 
     const drawn = async (bar: ReturnType<typeof bars.nth>) => {
       const boxes = await Promise.all(
@@ -428,7 +434,7 @@ test.describe("budget pages", () => {
 
   test("names and prices the segment under the pointer", async ({ page }) => {
     await page.goto(`/budget/${books[0]}`)
-    const chart = page.locator(".budget-stack").last()
+    const chart = page.locator(".budget-stack")
     await expect(chart.locator(".budget-tooltip")).toHaveCount(0)
 
     const held = chart.locator(".budget-series").first().getByRole("img")
@@ -479,17 +485,17 @@ test.describe("budget pages", () => {
     const tooltip = chart.locator(".budget-tooltip")
     await expect(tooltip).toContainText("Education")
     await expect(tooltip).toContainText("$147,158,454")
-    await expect(tooltip).toContainText("51.6%")
+    await expect(tooltip).toContainText("48.2%")
   })
 
   test("reaches the wedge no mouse can hit with the keyboard", async ({ page }) => {
-    // Overlay is 1/589th of Education, about a third of a degree. Focus is the
-    // only way to it, which is why every wedge takes focus.
+    // New debt service is 1/303rd of Education, about a degree of the circle.
+    // Focus is the only way to it, which is why every wedge takes focus.
     await page.goto(`/budget/${books[0]}`)
     const chart = page.locator(".budget-chart").first()
     await chart.getByRole("img").last().focus()
-    await expect(chart.locator(".budget-tooltip")).toContainText("Overlay")
-    await expect(chart.locator(".budget-tooltip")).toContainText("$250,000")
+    await expect(chart.locator(".budget-tooltip")).toContainText("Debt Service - New")
+    await expect(chart.locator(".budget-tooltip")).toContainText("$485,795")
   })
 
   test("draws the budget calendar as the page's footer", async ({ page }) => {
