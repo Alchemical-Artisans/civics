@@ -48,7 +48,11 @@
 {/snippet}
 
 <!--
-  The charts on the left, the book on the right.
+  The charts on the left, the book on the right. The left column is
+  `max-content`: it was 16rem when it held two pies, and the columns that
+  replaced them are as wide as the figures under them and no wider, so a fixed
+  width left a strip of nothing between the chart and the list. The column is
+  now whatever the chart measures.
 
   The two sides of a budget: everything the city expects to take in, and
   everything it spends. They no longer come to the same figure, and that is not
@@ -62,9 +66,7 @@
   them, where it would start under the fold. Stacked below `lg`, charts first,
   because a column narrower than a pie has nowhere to put one.
 -->
-<div
-  class="lg:grid lg:h-[calc(100vh-197px)] lg:grid-cols-[16rem_minmax(0,1fr)] lg:gap-x-12 2xl:grid-cols-[20rem_minmax(0,1fr)]"
->
+<div class="lg:grid lg:h-[calc(100vh-197px)] lg:grid-cols-[max-content_minmax(0,1fr)] lg:gap-x-12">
   <!--
     The charts stay on the screen and the list moves under them. They are the
     answer the page exists to give, and a reader working down thirty-four
