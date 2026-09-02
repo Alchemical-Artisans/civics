@@ -3,9 +3,8 @@
   // page as well; see docs/budget-pages.md. Nothing on the page is generated --
   // `BudgetTable` prints the cells exactly as `tables.ts` holds them, which is
   // exactly as the book sets them.
-  import BudgetTable from "$lib/BudgetTable.svelte"
   import BudgetBands from "$lib/BudgetBands.svelte"
-  import BudgetColumns from "$lib/BudgetColumns.svelte"
+  import BudgetLines from "$lib/BudgetLines.svelte"
   import BookElsewhere from "$lib/BookElsewhere.svelte"
   import { amount, cell, type BudgetTableData } from "$lib/budget-table"
   import { FUND_BALANCE, FUND_BALANCE_HISTORY, FREE_CASH, STABILIZATION } from "./tables"
@@ -59,32 +58,68 @@
   ]
 
   /**
-   * The bottom row of page 18's table, drawn: what the fund balance came to at
-   * the end of each of the three years the book accounts for.
+   * Page 18's table, turned from three columns into four years.
    *
-   * Only that row. The four above it are the flows that moved it -- a year's
-   * whole revenue and expenditure, a quarter of a billion dollars each -- and
-   * on a scale that fits those, the balance they leave behind is a line one
-   * pixel high. The table under the chart is where those belong.
+   * The book accounts for 2023, 2024 and 2025, and opens each of them with the
+   * balance carried in. That first figure is a year the table's own columns do
+   * not name -- the balance the city closed 2022 with -- so the charts run from
+   * 2022, and every row gives `null` for a year the book prints nothing for.
    */
-  const ENDING = "Ending Fund Balance"
-  const balances = FUND_BALANCE_HISTORY.columns.slice(1).map((year) => ({
-    label: year,
-    parts: [{ label: ENDING, amount: amount(cell(FUND_BALANCE_HISTORY, ENDING, year))! }],
-  }))
+  const BOOK_YEARS = FUND_BALANCE_HISTORY.columns.slice(1)
+  const years = [String(Number(BOOK_YEARS[0]) - 1), ...BOOK_YEARS]
+
+  /** A row of the table, read across the years the chart draws. */
+  const row = (label: string, from = 1) =>
+    years.map((year, at) =>
+      at < from ? null : Math.abs(amount(cell(FUND_BALANCE_HISTORY, label, year))!),
+    )
+
+  /**
+   * What came in and what went out, at the size of the money.
+   *
+   * The book prints these inside a sum -- "Plus Fiscal Year Revenue", "Less
+   * Fiscal Year Expenditures" -- and writes the expenditure in parentheses,
+   * which is the sum's minus sign rather than a negative amount of spending.
+   * The line is drawn at what was spent; the label is the book's, sum and all,
+   * because renaming a row to suit a chart is inventing text.
+   */
+  const flows = [
+    { label: "Plus Fiscal Year Revenue", values: row("Plus Fiscal Year Revenue") },
+    { label: "Less Fiscal Year Expenditures", values: row("Less Fiscal Year Expenditures") },
+  ]
+
+  /**
+   * What they left behind: one line, not two.
+   *
+   * "Beginning Fund Balance" and "Ending Fund Balance" are the same figure read
+   * twice -- each year opens where the last one closed -- so they are one line
+   * running from the close of 2022 to the close of 2025, under the name the
+   * book's own heading over this table gives it. The encumbrances are the third
+   * thing that moved it, and they are the same size, so they share the chart.
+   */
+  const CLOSING = "Ending Fund Balance"
+  const ENCUMBRANCES = "Net Reserve for Encumbrances"
+  const balance = [
+    {
+      label: "Fund Balance",
+      values: years.map((year, at) =>
+        at === 0
+          ? amount(cell(FUND_BALANCE_HISTORY, "Beginning Fund Balance", BOOK_YEARS[0]))
+          : amount(cell(FUND_BALANCE_HISTORY, CLOSING, year)),
+      ),
+    },
+    {
+      label: ENCUMBRANCES,
+      values: years.map((year, at) =>
+        at === 0 ? null : amount(cell(FUND_BALANCE_HISTORY, ENCUMBRANCES, year)),
+      ),
+    },
+  ]
 </script>
 
 <!-- Page 17. The page is "Reserves", which is the bucket; this is the section
      of the book in it. -->
 <h2>Fiscal Reserves</h2>
-
-<p>
-  <em>
-    The city will monitor reserves to ensure they are adequate and sustainable for future fiscal
-    years, while meeting or exceeding the city's financial policy benchmarks, Department of Revenue
-    recommendations, bond rating agency standards, and aligning with GFOA best practices.
-  </em>
-</p>
 
 <!--
   The three policies before the three sections that set them out, the way the
@@ -121,18 +156,32 @@
   cash flow, and ensure financial stability.
 </p>
 
-<!-- What the fund balance has come to at the close of each of the three years
-     the table below accounts for. The columns are what the table's bottom row
-     says; everything that moved it is in the table. -->
-<!-- A definite height, and enough of it: the columns are a percentage of the
-     plot's height, so a box that does not say how tall it is draws nothing at
-     all, and one shorter than the chart's own `min-h-64` plus its labels pushes
-     the years out from under the columns. -->
-<div class="not-prose my-6 h-80">
-  <BudgetColumns rows={balances} />
-</div>
+<!--
+  Page 18's whole table, as two charts sharing a row of years.
 
-<BudgetTable table={FUND_BALANCE_HISTORY} />
+  Two and not one because the table holds figures of two sizes: a year's revenue
+  and expenditure are a quarter of a billion dollars each, and the balance they
+  leave behind is fourteen million. On one scale the balance is a flat line on
+  the floor; on two axes the drawing could be made to say anything. So the flows
+  are one chart and what they leave is the other, drawn against the same four
+  years so a reader can look straight down from one to the next.
+
+  The flows first, because they are the cause. The book prints them as a sum --
+  "Plus", "Less" -- and the signs are that sum's, not the money's: what the city
+  spent in 2023 is $233,787,846, and the line is drawn at what was spent. The
+  row labels are the book's own, sum and all.
+-->
+<BudgetLines {years} rows={flows} />
+
+<!--
+  And what they left. The beginning and ending balances are one line rather than
+  two, because they are one figure read twice: every year opens where the last
+  one closed, which `reserves.spec.ts` checks against the book's own cells. The
+  line therefore starts a year before the flows do -- the balance the city
+  carried into 2023 is the balance it closed 2022 with -- which is why the years
+  belong to the charts rather than to the rows.
+-->
+<BudgetLines {years} rows={balance} />
 
 <h2>Free Cash</h2>
 

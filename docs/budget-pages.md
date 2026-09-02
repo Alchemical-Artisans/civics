@@ -371,10 +371,11 @@ The front page draws the reserves as one bar, deliberately ignoring what the
 city is _allowed_ to hold: the bands are this section's subject, not the front
 page's. This is where they are drawn.
 
-| Chart               | What it draws                                                                     | From                               |
-| ------------------- | --------------------------------------------------------------------------------- | ---------------------------------- |
-| The three policies  | a bullet bar per fund on one scale: the band it may hold in, the balance it holds | the three dial tables, pages 17-20 |
-| Ending fund balance | three columns, one per year the book accounts for                                 | page 18's bottom row               |
+| Chart              | What it draws                                                                     | From                               |
+| ------------------ | --------------------------------------------------------------------------------- | ---------------------------------- |
+| The three policies | a bullet bar per fund on one scale: the band it may hold in, the balance it holds | the three dial tables, pages 17-20 |
+| What came and went | two lines: a year's revenue against its expenditure                               | page 18                            |
+| What they left     | two lines: the fund balance, and the encumbrances against it                      | page 18                            |
 
 **One scale for the three policies, and it is not an assumption.**
 [`BudgetBands.svelte`](../src/lib/BudgetBands.svelte) draws a pale rail the full
@@ -389,11 +390,12 @@ that same $178,261,600 back to within $20. `reserves.spec.ts` checks all five
 against each other; if they ever stop agreeing, one scale is the wrong picture
 and the chart has to become three.
 
-**The three dial tables are not printed on the page any more.** The chart draws
+**No table on this page is printed any more.** The chart draws
 every cell of them and prints every one beside its bar, and a table saying again
-what the picture above it just said is a page asking to be read twice. They are
-still the transcription, still in `reserves/tables.ts`, and still what the front
-page reads its reserves bar out of.
+what the picture above it just said is a page asking to be read twice. The four
+tables are still the transcription, still in `reserves/tables.ts`, still what
+both charts and the front page's reserves bar are drawn from, and every figure
+in them is the accessible name of the mark that draws it.
 
 Nothing on the chart is written here. Each row is named as its own dial table
 heads it ("Undesignated Fund Balance", "Free Cash", "Stabilization Reserve"),
@@ -412,20 +414,45 @@ just says it first, and next to the two funds that are inside their bands.
 no ceiling. The band runs to the end of the rail and the row prints no maximum:
 the only honest thing to draw at a limit that does not exist is nothing.
 
-**The second chart is one row of page 18's table.** That table is three years of
+**The rest of the page is page 18's table, drawn.** That table is three years of
 the fund balance and what moved it — a beginning balance, the year's whole
 revenue and expenditure, the encumbrances carried forward, and the balance left
-at the end. Only the last row is drawn. On a scale that fits a quarter of a
-billion dollars of revenue, the $13,985,453 it leaves behind is a line one pixel
-high, so the flows stay in the table underneath and the chart shows the three
-closing balances rising. It is `BudgetColumns` — the same component the front
-page's two columns are — given one part per column, which is why that component
-prints no share where a column has only one: "100.0%" is a share of itself.
+at the end — and it is now two line charts and no table, by
+[`BudgetLines.svelte`](../src/lib/BudgetLines.svelte).
 
-**Give that component a definite height.** Its columns are a percentage of the
-plot's height, so a box with no height of its own draws nothing at all, and a
-box shorter than the chart's `min-h-64` plus its labels pushes the years out
-from under the columns. The front page hands it the window; here it is `h-80`.
+**Two charts, because the table holds figures of two sizes.** A year's revenue
+is a quarter of a billion dollars; the balance it leaves is fourteen million. On
+one scale the balance is a flat line on the floor, and a second y-axis would let
+the drawing say whatever suited — two scales can be slid past each other until
+the lines cross wherever you like. So the flows are one chart and what they left
+is the other, and the years belong to the charts rather than to the rows: both
+are given the same four columns, so a reader can look straight down from one to
+the next. `BudgetLines` takes `years` and a value per year per series, `null`
+where the book prints none, and breaks a line across a gap rather than drawing
+through it.
+
+**The beginning and ending balances are one line.** They are one figure read
+twice — every year opens where the last one closed, which `reserves.spec.ts`
+checks against the book's own cells — so the balance runs as a single line from
+the close of 2022 to the close of 2025, under "Fund Balance", which is the
+book's own heading over the table. That is why it starts a year before the
+flows: the balance the city carried into 2023 is the balance it closed 2022
+with, and the book names that year nowhere else.
+
+**The expenditure line is drawn at what was spent.** The book prints these rows
+inside a sum — "Plus Fiscal Year Revenue", "Less Fiscal Year Expenditures" — and
+sets the expenditure in parentheses, which is the sum's minus sign rather than a
+negative amount of spending. The labels stay the book's, sum and all, because
+renaming a row to suit a chart is inventing text. What the picture then shows is
+the year the two lines cross: 2023, when the city spent $233,787,846 against
+$231,470,272 of revenue, which is the dip in the balance below it.
+
+**Neither chart starts at zero, and both say so.** A line chart is read for its
+shape, and revenue moving from $231 million to $263 million against an axis that
+begins at nothing never leaves the top of the plot. The figures at the two ends
+of the axis are drawn whatever else is. Zero itself is drawn only on a chart
+that contains it — the encumbrances change sign, which no shape on its own
+says.
 
 **"Fund Accounting" is listed twice, on `reserves` and on `outstanding-debt`.**
 It is the section that says these funds are separate things, which is what the
@@ -849,6 +876,7 @@ src/lib/budget.spec.ts                     unit tests for them
 src/lib/BudgetColumns.svelte               spending and revenue, two columns
 src/lib/BudgetStack.svelte                 reserves and debt, two bars on one scale
 src/lib/BudgetBands.svelte                 a fund against the band its policy allows
+src/lib/BudgetLines.svelte                 a table's rows followed across its years
 src/lib/BookElsewhere.svelte               a category page's "see also" list
 src/lib/data/glossary.json                 the book's glossary, transcribed
 src/lib/glossary.ts                        reads it; the definition lookup

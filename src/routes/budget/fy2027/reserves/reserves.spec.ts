@@ -96,6 +96,17 @@ describe("three years of the fund balance", () => {
     }
   })
 
+  // The expenditure row is printed in parentheses, which is the sum's minus
+  // sign and not a negative amount of spending. The chart draws the line at
+  // what was spent, under the book's own label for the row, so this is the
+  // reading that has to stay true of the cell.
+  it("prints the expenditures as the sum's subtraction", () => {
+    for (const year of YEARS) {
+      expect(cell(FUND_BALANCE_HISTORY, "Less Fiscal Year Expenditures", year)).toMatch(/^\$\(/)
+      expect(money(FUND_BALANCE_HISTORY, "Less Fiscal Year Expenditures", year)).toBeLessThan(0)
+    }
+  })
+
   // The book gives the same balance on the same date twice and differs from
   // itself by a dollar: $13,985,453 in this table, $13,985,452 on the dial and
   // in the prose beside it. Both are printed as printed; this is here so a

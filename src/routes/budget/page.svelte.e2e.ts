@@ -401,38 +401,90 @@ test.describe("budget pages", () => {
     )
   })
 
-  test("draws the fund balance the three years the book accounts for", async ({ page }) => {
+  test("draws page 18's table as two charts sharing a row of years", async ({ page }) => {
     await page.goto(`/budget/${books[0]}/reserves`)
 
-    // The bottom row of page 18's table, and only that row: the flows above it
-    // are a quarter of a billion dollars a year, and on a scale that fits those
-    // the balance they leave behind is a line one pixel high.
-    const columns = page.locator(".budget-columns .budget-column")
-    await expect(columns).toHaveCount(3)
+    const charts = page.locator(".budget-lines")
+    await expect(charts).toHaveCount(2)
 
-    const chart = page.locator(".budget-columns").first()
-    await expect(chart).toContainText("2023")
-    await expect(chart).toContainText("$10,209,394")
-    await expect(chart).toContainText("2025")
-    await expect(chart).toContainText("$13,985,453")
+    // Two and not one: a year's revenue is a quarter of a billion dollars and
+    // the balance it leaves is fourteen million, so one scale draws the balance
+    // flat on the floor and two axes on one chart let it say anything.
+    const flows = charts.nth(0)
+    const balance = charts.nth(1)
 
-    // Rising, and drawn from a zero baseline, so the heights are the figures.
-    const drawn = await columns.evaluateAll((each) =>
-      each.map((column) => column.querySelector("[role=img]")!.getBoundingClientRect().height),
-    )
-    expect(drawn).toEqual([...drawn].sort((a, b) => a - b))
+    // The book's own row labels, sum and all -- and the money at the size it
+    // was spent, since the parentheses on the expenditure line are the sum's
+    // minus sign rather than a negative amount of spending.
+    const named = (chart: ReturnType<typeof charts.nth>) =>
+      chart.locator("circle").evaluateAll((marks) => marks.map((m) => m.getAttribute("aria-label")))
 
-    // A column of one part is a figure, not a share of itself: nothing here
-    // says "100%".
-    await expect(chart).not.toContainText("100")
-    expect(await columns.first().locator("[role=img]").getAttribute("aria-label")).toBe(
-      "2023, Ending Fund Balance, $10,209,394",
-    )
+    expect(await named(flows)).toEqual([
+      "Plus Fiscal Year Revenue, 2023, $231,470,272",
+      "Plus Fiscal Year Revenue, 2024, $244,738,056",
+      "Plus Fiscal Year Revenue, 2025, $262,614,748",
+      "Less Fiscal Year Expenditures, 2023, $233,787,846",
+      "Less Fiscal Year Expenditures, 2024, $241,759,531",
+      "Less Fiscal Year Expenditures, 2025, $257,460,366",
+    ])
 
-    // And the table it is drawn from is still on the page, whole.
-    const table = page.locator("article table").filter({ hasText: "Beginning Fund Balance" })
-    await expect(table).toContainText("$(3,738,924)")
-    await expect(table).toContainText("$262,614,748")
+    // The beginning and ending balances are one line, because they are one
+    // figure read twice, and it therefore starts a year before the flows do:
+    // what the city carried into 2023 is what it closed 2022 with.
+    expect(await named(balance)).toEqual([
+      "Fund Balance, 2022, $12,429,870",
+      "Fund Balance, 2023, $10,209,394",
+      "Fund Balance, 2024, $12,569,995",
+      "Fund Balance, 2025, $13,985,453",
+      "Net Reserve for Encumbrances, 2023, $97,098",
+      "Net Reserve for Encumbrances, 2024, -$617,924",
+      "Net Reserve for Encumbrances, 2025, -$3,738,924",
+    ])
+
+    // The same four years under both, in the same places, so a reader can look
+    // straight down from one chart to the other.
+    const axis = (chart: ReturnType<typeof charts.nth>) =>
+      chart
+        .locator("svg text")
+        .evaluateAll((labels) =>
+          labels
+            .filter((label) => /^\d{4}$/.test(label.textContent ?? ""))
+            .map((label) => `${label.textContent}@${Math.round(Number(label.getAttribute("x")))}`),
+        )
+
+    expect(await axis(flows)).toEqual(await axis(balance))
+    expect(await axis(flows)).toHaveLength(4)
+
+    // Every line is named where it is drawn, since a line is told from its
+    // neighbour by colour and nothing else.
+    await expect(flows.getByRole("listitem")).toHaveCount(2)
+    await expect(balance.getByRole("listitem")).toHaveCount(2)
+
+    // Zero is drawn on the chart that crosses it and on the one that does not:
+    // the encumbrances change sign, which no shape on its own says.
+    await expect(balance.locator("svg")).toContainText("$0")
+    await expect(flows.locator("svg")).not.toContainText("$0")
+
+    // And the table is gone: the charts carry every cell of it, and a table
+    // saying again what the picture above it just said is a page read twice.
+    await expect(page.getByRole("article").getByRole("table")).toHaveCount(0)
+    await expect(page.getByRole("article")).not.toContainText("Beginning Fund Balance")
+  })
+
+  test("names and prices the point under the pointer", async ({ page }) => {
+    await page.goto(`/budget/${books[0]}/reserves`)
+    const mark = page.locator(".budget-lines").nth(1).locator("circle").first()
+    await mark.hover()
+
+    const tooltip = page.locator(".budget-lines .budget-tooltip")
+    await expect(tooltip).toContainText("Fund Balance")
+    await expect(tooltip).toContainText("2022")
+    await expect(tooltip).toContainText("$12,429,870")
+
+    // Gone when the pointer is, and the mark carries the same as its name, so
+    // nothing here is only visible to a mouse.
+    await page.mouse.move(0, 0)
+    await expect(tooltip).toBeHidden()
   })
 
   test("links the book's own terms wherever its prose uses them", async ({ page }) => {

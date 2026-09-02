@@ -210,10 +210,21 @@ Notable pieces:
   -- "Actual", "Anticipated", "Actual Balance" are three different words for the
   city's position and the book chose each one. Free cash draws no bar at all
   this year, which is the page's story; stabilization's band has no closing edge,
-  because its policy sets no ceiling. The page's second chart is page 18's
-  bottom row as three columns, `BudgetColumns` with one part each -- which is
-  why that component prints no share when a column has only one, and why the box
-  around it sets a definite height.
+  because its policy sets no ceiling.
+- **`src/lib/BudgetLines.svelte`** follows a table's rows across the years it
+  gives them for, and is the rest of the reserves page: page 18 is now two line
+  charts and no table. Two, because that table holds a quarter of a billion
+  dollars of revenue and a fund balance of fourteen million -- one scale draws
+  the balance flat on the floor, and a second y-axis lets a drawing say
+  whatever suits, so it is two charts sharing a row of years instead. The years
+  belong to the chart, not the series: each series gives one value per year and
+  `null` where the book prints none, which is what lets the balance start a year
+  earlier and still line up. The beginning and ending balances are one line,
+  because they are one figure read twice; the expenditure line is drawn at what
+  was spent, since the book's parentheses are its sum's minus sign, and the row
+  labels stay the book's, "Plus" and "Less" included. Neither chart starts at
+  zero -- a line is read for its shape -- and both print the figures at the ends
+  of the axis; zero is drawn only where a line crosses it.
 - **`src/lib/GlossaryTerm.svelte`** links a word in the city's prose to the
   book's definition of it: a plain link to that term's entry on
   `/budget/fy2027/glossary`, nothing more. It briefly carried the definition
