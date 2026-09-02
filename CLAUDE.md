@@ -12,7 +12,15 @@ the reader's browser never talks to the city's servers.
 
 It also republishes the city's budget and audit reports, where the current
 budget book is readable a section at a time rather than as one PDF running to
-hundreds of pages. There is no page listing the fiscal years: the list is the
+hundreds of pages.
+
+**The point is not a faithful copy of the book in web form.** It is to
+rearrange what the city publishes so a reader can see what the government is
+doing, so the structure here is deliberately not the book's: sections are
+grouped into pages the book has no equivalent of, named things the book never
+calls them, and reached from charts rather than from a contents. The words on a
+page are still the city's, exactly as printed -- the text is quotation, the
+arrangement is editorial. There is no page listing the fiscal years: the list is the
 menu behind **Budget** in the bar at the top of every page.
 
 `docs/` is the authoritative reference and is unusually complete. Start at
