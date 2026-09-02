@@ -190,9 +190,11 @@ Notable pieces:
   nothing is only visible to a mouse. **`src/lib/budget-table.ts`** is how it
   gets its figures: a
   transcribed table is data (cells as the strings the book prints), `BudgetTable`
-  renders it, and `column()` reads a year out of it for the chart. One copy, so
+  renders it, and `column()` reads a year out of it for the chart. Page 78 is
+  split between `appropriations/tables.ts` and `revenue/tables.ts`, each beside
+  the page that renders it and the chart that reads it. One copy, so
   the chart cannot contradict the table it links to. Same arrangement for the
-  reserve dials (`fiscal-reserves/tables.ts`) and the debt list
+  reserve dials (`reserves/tables.ts`) and the debt list
   (`outstanding-debt/tables.ts`); both are `unheaded`, meaning the book prints
   nothing over their columns and neither does the page, so their column names
   are handles for `column()` rather than transcription. The figures come from the

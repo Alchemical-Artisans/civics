@@ -73,9 +73,9 @@
     <!--
       The total belongs on the heading line: it is the same figure for both
       charts, and a line of its own under each said so twice. Where it came from
-      is not written out either -- the contents beside these charts links
-      2027 Budget in Brief, which is page 78 transcribed, and that is one line
-      away rather than restated under every heading.
+      is not written out either -- each heading opens the side of the book its
+      chart is about, and page 78's table is at the foot of that page, which is
+      one click away rather than restated under every heading.
     -->
     <h2>
       <a
@@ -90,9 +90,10 @@
     <BudgetPie rows={overview.appropriations} />
 
     <!-- Each heading opens the side of the book its chart is about, which is
-         why neither has a line in the contents below. The pies themselves are
-         page 78, which is 2027 Budget in Brief and does have one: it is the
-         table both are drawn from, rather than either side's own account. -->
+         why neither has a line in the contents below. Page 78, which is what
+         both pies are drawn from, is split between those two pages the same
+         way: its appropriations table on one, its revenue table on the other,
+         each beside the chart that reads it. -->
     <h2>
       <!-- `font-semibold` because `prose` gives a link its own weight of 500,
            which is lighter than the heading it sits in and made this one read

@@ -1,7 +1,8 @@
 import type { PageLoad } from "./$types"
 import { contents, type BookSection } from "$lib/budget"
 import { amount, cell, column, type BudgetTableData } from "$lib/budget-table"
-import { APPROPRIATIONS, REVENUE } from "./2027-budget-in-brief/tables"
+import { APPROPRIATIONS } from "./appropriations/tables"
+import { REVENUE } from "./revenue/tables"
 import { FUND_BALANCE, FREE_CASH, STABILIZATION } from "./reserves/tables"
 import { LONG_TERM_DEBT } from "./outstanding-debt/tables"
 import { CALENDAR } from "./budget-calendar"
@@ -167,10 +168,11 @@ export const load: PageLoad = () => ({
    * line that sends the reader into the city's PDF instead.
    *
    * "Fiscal Reserves" (17), "Outstanding Debt" (21), "2027 Revenue Estimates"
-   * Thirteen more are reached from a chart rather than from here: the two bars
+   * Fourteen more are reached from a chart rather than from here: the two bars
    * carry their own names as links, the revenue pie's heading carries the three
    * revenue sections (48, 64, 67), and the appropriations pie's heading carries
-   * the four spending ones (28, 69, 72, 73) together with three lines of the
+   * the four spending ones (28, 69, 72, 73) and the two spending tables of
+   * "2027 Budget in Brief" (76), together with three lines of the
    * appropriation itself -- Debt Service (200), State Assessments (209) and
    * Employee Benefits (211) -- which have no page here and are links into the
    * city's file from that page. The reserves bar's link carries "Fiscal
@@ -193,7 +195,6 @@ export const load: PageLoad = () => ({
       // schools, filed with the budget pages rather than here in the book's
       // order, since that is where a reader looks for a thing the city runs.
       ["Education", 26],
-      ["2027 Budget in Brief", 76],
       ["2027 Estimated Tax Bill Impact", 79],
       ["General Fund Budgets", 80],
       ["City Council", 81],

@@ -1,3 +1,11 @@
+<script lang="ts">
+  // A script here because the table at the foot of this page is data: the front
+  // page's revenue pie reads the same figures, and they must come from one
+  // place. See docs/budget-pages.md.
+  import BudgetTable from "$lib/BudgetTable.svelte"
+  import { REVENUE } from "./tables"
+</script>
+
 <!-- The page's own printed heading. The page is called "Revenue", which is
      what the chart that opens it is headed. -->
 <h2>2027 Revenue Projection</h2>
@@ -1301,3 +1309,10 @@
   <li>Projects local receipts based on recent trends</li>
   <li>Reduce the amount of free cash used to 20%</li>
 </ul>
+
+<!-- Page 78, "2027 Budget in Brief": revenue by source, which is where the pie
+     on the book's front page comes from. What it balances against is the pair
+     of tables on the appropriations page. -->
+<h2>2027 Budget in Brief</h2>
+
+<BudgetTable table={REVENUE} />

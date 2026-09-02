@@ -104,10 +104,10 @@ says it through `bookName`.
 `/budget/<year>` opens on the budget at a glance: the year, and what the year
 sits on.
 
-| Chart                   | What it draws                                      | From                                                                        |
-| ----------------------- | -------------------------------------------------- | --------------------------------------------------------------------------- |
-| Appropriations, Revenue | two pies, one circle divided two ways              | page 78, `2027-budget-in-brief/tables.ts`                                   |
-| Reserves and Debt       | two bars on one scale, each divided into its parts | page 17, `fiscal-reserves/tables.ts`; page 21, `outstanding-debt/tables.ts` |
+| Chart                   | What it draws                                      | From                                                                 |
+| ----------------------- | -------------------------------------------------- | -------------------------------------------------------------------- |
+| Appropriations, Revenue | two pies, one circle divided two ways              | page 78, `appropriations/tables.ts` + `revenue/tables.ts`            |
+| Reserves and Debt       | two bars on one scale, each divided into its parts | page 17, `reserves/tables.ts`; page 21, `outstanding-debt/tables.ts` |
 
 The two pies are the year — everything expected in, everything planned out — and
 sit in the narrow left column. Reserves and debt are the standing position
@@ -121,7 +121,8 @@ is schools" without the reader doing arithmetic. Hover a wedge, or tab to it,
 and it names itself and prints its dollars and its share. Printing all fourteen
 figures beside the drawing instead — which the page did briefly — spent the
 width the book's own table of contents wants, and restated a table the contents
-already links: the figures are page 78, transcribed at 2027 Budget in Brief.
+this chart's own heading opens: the figures are page 78, transcribed at the foot
+of the appropriations and revenue pages.
 
 **The heading carries the total, and nothing says where it came from.** It is
 the same figure over both charts, so a line under each said it twice, and the
@@ -236,9 +237,12 @@ Three lines of the appropriation itself are on that page too — Debt Service
 city's file, because none is transcribed. They are a different kind of thing
 from the four sections above them: those are accounts _of_ the year's spending,
 and these are parts _of_ it, each a line in the page-78 table the pie is drawn
-from. The pies themselves are page 78, which is 2027 Budget in Brief and keeps
-its contents line — it is the table both charts are drawn from rather than
-either side's own account.
+from. Page 78, which both pies are drawn from, is split the same way: "2027
+Budget in Brief" is three tables and no prose, so its two spending tables are at
+the foot of this page and its revenue table at the foot of `revenue`, each
+beside the chart that reads it. The book prints the two sides facing each other
+to show that they balance; the front page makes that point instead, with two
+pies carrying the same total.
 
 **`reserves` is the third bucket**, opened from the reserves bar, and holds
 "Fiscal Reserves" (17) with "Liability, Overlay & Reserves" (213) and
@@ -265,8 +269,8 @@ A chart title that is a link says so with a 2px underline rather than the
 hairline the contents lines carry, and the pie's heading needs `font-semibold`
 put back on the anchor — `prose` gives a link a weight of its own, 500, which is
 lighter than the heading it sits in. Appropriations has no such link: page
-78's table is what it is drawn from, and that is 2027 Budget in Brief, which
-the contents lists. **A section the page
+78's table is what it is drawn from, and that table is at the foot of the page
+its heading opens. **A section the page
 already links some other way does not get a contents line either** — the e2e
 suite keeps a `charted` list of them, beside the `unlinked` one, so the check
 that every contents link resolves still knows what to expect.
@@ -451,10 +455,10 @@ below.
 ## A section whose tables are charted
 
 A transcription is ordinarily plain markup. The exception is a section whose
-figures something else on the site also shows — `2027-budget-in-brief`, whose
-page-78 tables are the two pies; `fiscal-reserves`, whose three dials are the
-reserve bars; and `outstanding-debt`, whose page-21 list is the debt pie. Those
-tables live in a `tables.ts` beside the page:
+figures something else on the site also shows — `appropriations` and `revenue`,
+whose halves of page 78 are the two pies; `reserves`, whose three dials are the
+reserve bar; and `outstanding-debt`, whose page-21 list is the debt bar. Those
+tables live in a `tables.ts` beside the page that renders them:
 
 ```ts
 export const APPROPRIATIONS: BudgetTableData = {

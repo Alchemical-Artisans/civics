@@ -7,15 +7,16 @@
   takes, and a pie says "half of it is schools" without the reader doing any
   arithmetic. Printing all fourteen figures beside it, which is what this page
   used to do, spent the width the book's own table of contents wants and
-  restated a table the contents already links: these are page 78, transcribed at
-  2027 Budget in Brief. So the figures moved into the wedges: hover one, or tab
-  to it, and it says what it is and what it costs.
+  restated a table this chart's own heading opens: these are page 78,
+  transcribed at the foot of the appropriations and revenue pages. So the
+  figures moved into the wedges: hover one, or tab to it, and it says what it is
+  and what it costs.
 
   This is the one page on the site with a script behind it, and the reason is
   that hover is the whole feature. A wedge still carries its label, its dollars
   and its share as its accessible name, so a screen reader gets all fourteen by
-  walking them, and the transcription in the contents beside the chart carries
-  every figure as text either way. Every wedge is focusable, which is also what makes the
+  walking them, and the transcription its heading opens carries every figure as
+  text either way. Every wedge is focusable, which is also what makes the
   smallest of them reachable at all -- Overlay is 1/589th of Education, about a
   third of a degree, and no mouse will ever land on it.
 

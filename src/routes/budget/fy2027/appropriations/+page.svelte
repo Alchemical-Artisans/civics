@@ -2,6 +2,8 @@
   // A script here for the parts of the book this page belongs with and does not
   // carry; see this page's `+page.ts` and docs/budget-pages.md.
   import BookElsewhere from "$lib/BookElsewhere.svelte"
+  import BudgetTable from "$lib/BudgetTable.svelte"
+  import { APPROPRIATIONS, DEPARTMENTS } from "./tables"
 
   let { data } = $props()
 </script>
@@ -1716,5 +1718,18 @@
   16 school districts. No municipal units left the GIC in fiscal 2026 and 11 new municipal units
   have joined for 2027.
 </p>
+
+<!-- Pages 76 to 78, "2027 Budget in Brief": every department on one line, and
+     the same budget rolled up by function. The book splits the first across two
+     pages purely for room -- same columns, same header, alphabetical throughout
+     -- so the two halves are one table here. The revenue that balances against
+     these is on the revenue page, where its own chart is. -->
+<h2>2027 Budget in Brief</h2>
+
+<BudgetTable table={DEPARTMENTS} />
+
+<h3>Appropriations</h3>
+
+<BudgetTable table={APPROPRIATIONS} />
 
 <BookElsewhere items={data.elsewhere} book={data.book} />

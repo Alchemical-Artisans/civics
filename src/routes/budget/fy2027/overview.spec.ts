@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest"
 import { amount, cell, column, sum } from "$lib/budget-table"
-import { APPROPRIATIONS, DEPARTMENTS, REVENUE } from "./2027-budget-in-brief/tables"
+import { APPROPRIATIONS, DEPARTMENTS } from "./appropriations/tables"
+import { REVENUE } from "./revenue/tables"
 import { FUND_BALANCE, FREE_CASH, STABILIZATION } from "./reserves/tables"
 import { LONG_TERM_DEBT } from "./outstanding-debt/tables"
 
