@@ -427,13 +427,12 @@ test.describe("budget pages", () => {
       "Less Fiscal Year Expenditures, 2025, $257,460,366",
     ])
 
-    // Bars, not a line: these are four closes of business rather than a trend,
+    // Bars, not a line: these are three closes of business rather than a trend,
     // and the balance is charted under the name the dial and the prose give it
-    // -- undesignated, which is the part a Council can appropriate. It starts a
-    // year before the flows do, because what the city carried into 2023 is what
-    // it closed 2022 with.
+    // -- undesignated, which is the part a Council can appropriate. The book's
+    // closing row only: its opening row is the same figure a year earlier, so
+    // charting both would be one row drawn twice.
     expect(await named(balance.locator("rect"))).toEqual([
-      "Undesignated Fund Balance, 2022, $12,429,870",
       "Undesignated Fund Balance, 2023, $10,209,394",
       "Net Reserve for Encumbrances, 2023, $97,098",
       "Undesignated Fund Balance, 2024, $12,569,995",
@@ -490,9 +489,11 @@ test.describe("budget pages", () => {
     const sliver = sides.find((bar) => bar.label.includes("$97,098"))!
     expect(sliver.depth).toBeGreaterThanOrEqual(2)
 
-    // The same four years under both, in the same places, so a reader can look
-    // straight down from one chart to the other. Both take the geometry from
-    // `chart-frame.ts`, which is what makes that true rather than lucky.
+    // The same three years under both, in the same places, so a reader can look
+    // straight down from one chart to the other -- and they are the book's own
+    // columns, so neither chart carries a year with a hole in it. Both take the
+    // geometry from `chart-frame.ts`, which is what makes that true rather than
+    // lucky.
     const axis = (chart: ReturnType<typeof flows.locator>) =>
       chart
         .locator("svg text")
@@ -503,7 +504,11 @@ test.describe("budget pages", () => {
         )
 
     expect(await axis(flows)).toEqual(await axis(balance))
-    expect(await axis(flows)).toHaveLength(4)
+    expect((await axis(flows)).map((label) => label.split("@")[0])).toEqual([
+      "2023",
+      "2024",
+      "2025",
+    ])
 
     // Every row is named where it is drawn, since one mark is told from the one
     // beside it by colour and nothing else.
@@ -528,8 +533,8 @@ test.describe("budget pages", () => {
 
     const tooltip = page.locator(".budget-bars .budget-tooltip")
     await expect(tooltip).toContainText("Undesignated Fund Balance")
-    await expect(tooltip).toContainText("2022")
-    await expect(tooltip).toContainText("$12,429,870")
+    await expect(tooltip).toContainText("2023")
+    await expect(tooltip).toContainText("$10,209,394")
 
     // Gone when the pointer is, and the mark carries the same as its name, so
     // nothing here is only visible to a mouse.

@@ -59,21 +59,24 @@
   ]
 
   /**
-   * Page 18's table, turned from three columns into four years.
+   * The years page 18 accounts for, which are its own columns.
    *
-   * The book accounts for 2023, 2024 and 2025, and opens each of them with the
-   * balance carried in. That first figure is a year the table's own columns do
-   * not name -- the balance the city closed 2022 with -- so the charts run from
-   * 2022, and every row gives `null` for a year the book prints nothing for.
+   * Both charts take them, so a year is in one place on the page and a reader
+   * can look straight down from the flows to what they left.
+   *
+   * The book gives one figure outside these: the balance carried into 2023,
+   * which is the balance the city closed 2022 with. It was charted for a while
+   * and is not now -- a column holding one of the two rows this chart draws
+   * reads as a year with something missing from it, and the year it added is
+   * one the book itself does not account for. What it showed is still on the
+   * page in the city's own words: the balance fell in 2023, which is the year
+   * the flows above cross.
    */
-  const BOOK_YEARS = FUND_BALANCE_HISTORY.columns.slice(1)
-  const years = [String(Number(BOOK_YEARS[0]) - 1), ...BOOK_YEARS]
+  const years = FUND_BALANCE_HISTORY.columns.slice(1)
 
-  /** A row of the table, read across the years the chart draws. */
-  const row = (label: string, from = 1) =>
-    years.map((year, at) =>
-      at < from ? null : Math.abs(amount(cell(FUND_BALANCE_HISTORY, label, year))!),
-    )
+  /** A row of the table, read across those years. */
+  const row = (label: string) =>
+    years.map((year) => Math.abs(amount(cell(FUND_BALANCE_HISTORY, label, year))!))
 
   /**
    * What came in and what went out, at the size of the money.
@@ -92,9 +95,11 @@
   /**
    * What they left behind, as columns standing on a zero line.
    *
-   * "Beginning Fund Balance" and "Ending Fund Balance" are the same figure read
-   * twice -- each year opens where the last one closed -- so they are one row
-   * running from the close of 2022 to the close of 2025.
+   * The book's "Ending Fund Balance" row, which is where each year left it.
+   * "Beginning Fund Balance" is the same figure read a second time -- every
+   * year opens where the last one closed, which `reserves.spec.ts` checks
+   * against the book's own cells -- so charting both would be one row drawn
+   * twice, a year apart.
    *
    * It is charted as "Undesignated Fund Balance", which is the book's own name
    * for this figure everywhere but in this table: the dial on page 17 heads its
@@ -122,17 +127,11 @@
   const balance = [
     {
       label: "Undesignated Fund Balance",
-      values: years.map((year, at) =>
-        at === 0
-          ? amount(cell(FUND_BALANCE_HISTORY, "Beginning Fund Balance", BOOK_YEARS[0]))
-          : amount(cell(FUND_BALANCE_HISTORY, CLOSING, year)),
-      ),
+      values: years.map((year) => amount(cell(FUND_BALANCE_HISTORY, CLOSING, year))),
     },
     {
       label: ENCUMBRANCES,
-      values: years.map((year, at) =>
-        at === 0 ? null : amount(cell(FUND_BALANCE_HISTORY, ENCUMBRANCES, year)),
-      ),
+      values: years.map((year) => amount(cell(FUND_BALANCE_HISTORY, ENCUMBRANCES, year))),
     },
   ]
 </script>
@@ -202,11 +201,9 @@
   The undesignated balance stands above the zero line and the year's
   encumbrances hang below it, so a column's span is the distance between what
   the city could spend and what it had already promised. The beginning and
-  ending balances are one row, because they are one figure read twice -- every
-  year opens where the last one closed, which `reserves.spec.ts` checks against
-  the book's own cells -- so it starts a year before the flows do: the balance
-  the city carried into 2023 is the balance it closed 2022 with. That is why the
-  years belong to the charts rather than to the rows.
+  balance is the book's closing row alone: the opening one is the same figure a
+  year earlier, which `reserves.spec.ts` checks against the book's own cells, so
+  charting both would be one row drawn twice.
 -->
 <BudgetBars {years} rows={balance} />
 

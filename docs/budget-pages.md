@@ -482,12 +482,17 @@ is spent at the far end: every bar is hung off the zero line, so the edge a
 reader measures from is exact whatever the clamp does to the other one. $0 draws
 nothing at all, having no honest height.
 
-**The beginning and ending balances are one row.** They are one figure read
-twice — every year opens where the last one closed, which `reserves.spec.ts`
-checks against the book's own cells — so the balance runs as a single row from
-the close of 2022 to the close of 2025. That is why it starts a year before the
-flows: the balance the city carried into 2023 is the balance it closed 2022
-with, and the book names that year nowhere else.
+**Only the closing balance is charted.** "Beginning Fund Balance" is the same
+figure read a second time — every year opens where the last one closed, which
+`reserves.spec.ts` checks against the book's own cells — so charting both would
+be one row drawn twice, a year apart.
+
+The book does give one figure outside its own three columns — the balance
+carried into 2023, which is the close of 2022 — and it was charted for a while.
+It is not now. A column holding one of the two rows the chart draws reads as a
+year with something missing from it, and the year it added is one the book
+itself does not account for. What it showed is still on the page in the city's
+own words: the balance fell in 2023, which is the year the flows above cross.
 
 **The expenditure line is drawn at what was spent.** The book prints these rows
 inside a sum — "Plus Fiscal Year Revenue", "Less Fiscal Year Expenditures" — and
