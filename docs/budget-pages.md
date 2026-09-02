@@ -195,11 +195,15 @@ than being handed a total beside them, so there is no second copy of a figure to
 fall out of step; `overview.spec.ts` is where those sums are checked against what
 the book states.
 
-**Four contents lines are left out.** "Mayor's Budget Message" (page 2) and
+**Some contents lines are left out.** "Mayor's Budget Message" (page 2) and
 "Budget Calendar" (page 13) have no page here — the message was dropped, the
 calendar is the footer — and a line for a part of the book the site does not
 carry is a line that sends the reader into the city's PDF instead. **Dropping a
 page means dropping its contents line with it.**
+
+"General Fund Budgets" (80) is left out for the opposite reason: it is the
+divider the book prints before the department pages, carrying nothing but its
+own title, and the right-hand list is what it announces.
 
 "Fiscal Reserves" (17), "Outstanding Debt" (21) and "2027 Revenue Estimates"
 (48) do have pages, and a chart is where each of them opens from: the two bars

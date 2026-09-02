@@ -165,7 +165,10 @@ export const load: PageLoad = () => ({
    * "Mayor's Budget Message" (page 2) and "Budget Calendar" (page 13) have no
    * page here at all -- the message was dropped, and the calendar is the footer
    * -- and a contents line for a part of the book the site does not carry is a
-   * line that sends the reader into the city's PDF instead.
+   * line that sends the reader into the city's PDF instead. "General Fund
+   * Budgets" (80) is gone for the opposite reason: it is the divider the book
+   * prints before the department pages, with nothing on it but its own title,
+   * and the list beside this one is what it announces.
    *
    * "Fiscal Reserves" (17), "Outstanding Debt" (21), "2027 Revenue Estimates"
    * Fifteen more are reached from a chart rather than from here: the two bars
@@ -196,7 +199,6 @@ export const load: PageLoad = () => ({
       // schools, filed with the budget pages rather than here in the book's
       // order, since that is where a reader looks for a thing the city runs.
       ["Education", 26],
-      ["General Fund Budgets", 80],
       ["City Council", 81],
       ["Mayor's Office", 84],
       ["Constituent Services", 87],

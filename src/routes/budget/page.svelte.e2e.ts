@@ -151,9 +151,14 @@ test.describe("budget pages", () => {
     // on the left: a line of the appropriation, the book's front matter, and
     // its back matter.
     const year = lists.first().locator("li")
-    await expect(year.filter({ hasText: "General Fund Budgets" })).toHaveCount(1)
     await expect(year.filter({ hasText: "Budget Policies" })).toHaveCount(1)
     await expect(year.filter({ hasText: "Glossary" })).toHaveCount(1)
+
+    // The divider the book prints before the department pages, with nothing on
+    // it but its own title: the list beside this one is what it announces.
+    await expect(
+      page.locator("article > div ol li").filter({ hasText: "General Fund Budgets" }),
+    ).toHaveCount(0)
 
     // The three lines the Education page covers are gone from both lists.
     const every = page.locator("article > div ol li")
