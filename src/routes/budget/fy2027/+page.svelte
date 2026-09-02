@@ -14,6 +14,7 @@
   const calendar = $derived(data.calendar)
   const reserves = $derived(data.reserves)
   const debt = $derived(data.debt)
+  const voted = $derived(data.voted)
 
   const money = new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -123,6 +124,22 @@
       with these two figures is hold them against each other. Full width, so the
       shorter bar is still long enough to be divided into what it is made of.
     -->
+    <!--
+      What the Council voted, which is not what the book proposes: the water and
+      wastewater departments are enterprise funds, paid for out of what
+      households are billed, and appear nowhere in the book's $285,272,159. On
+      one scale with the general fund they are the tenth of the city's spending
+      this page used to be silent about.
+    -->
+    <div class="mb-8">
+      <h2>
+        Appropriated by the Council
+        <span class="font-normal text-slate-500">June 2, 2026</span>
+      </h2>
+
+      <BudgetStack rows={voted} />
+    </div>
+
     <div class="mb-8">
       <h2>Reserves and Debt</h2>
 

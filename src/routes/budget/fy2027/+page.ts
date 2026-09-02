@@ -6,6 +6,7 @@ import { REVENUE } from "./revenue/tables"
 import { FUND_BALANCE, FREE_CASH, STABILIZATION } from "./reserves/tables"
 import { LONG_TERM_DEBT } from "./outstanding-debt/tables"
 import { CALENDAR } from "./budget-calendar"
+import { AGENDA, ENTERPRISE, GENERAL_FUND } from "./council-orders"
 import type { Part } from "$lib/BudgetStack.svelte"
 
 /**
@@ -85,6 +86,20 @@ const reserves: Part[] = [
 const debt = column(LONG_TERM_DEBT, "Amount")
 
 /**
+ * What the Council voted, which is not what the book proposes.
+ *
+ * Two bars on one scale, from the orders on its agenda of 2 June 2026: the
+ * general fund by where the order says the money comes from, and the water and
+ * wastewater departments, which are enterprise funds and appear nowhere in the
+ * book at all. See `council-orders.ts` for what the two totals mean and how
+ * they differ from the book's.
+ */
+const voted = [
+  { label: "General Fund", parts: column(GENERAL_FUND, "Amount") },
+  { label: "Water & Wastewater", parts: column(ENTERPRISE, "Amount") },
+]
+
+/**
  * The contents in two lists: the book's own account of the year, and the budget
  * pages that follow it, one per thing the city funds.
  *
@@ -148,6 +163,15 @@ export const load: PageLoad = () => ({
     revenue,
     total,
   },
+
+  voted,
+
+  /**
+   * The agenda those orders are on, which the bar links beside the book. The
+   * meeting is on this site too, on the calendar half, but the bar's other
+   * sources are the city's own files and this one keeps them company.
+   */
+  sources: [{ label: "City Council Order", href: AGENDA.file }],
 
   /**
    * The chart above the contents: page 17's balances and page 21's list, as two

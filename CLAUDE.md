@@ -114,6 +114,14 @@ or SvelteKit's `redirect()` — see
 break, in ways the e2e suite now pins. The header carries the link to
 each half, so no page needs its own sideways link.
 
+**The book is not the whole city.** Water and wastewater are enterprise funds,
+appropriated in their own City Council orders and absent from the book's
+$285,272,159; the Council also votes $274,750,725 rather than that total, the
+difference being state assessments and the overlay, which are charged rather
+than voted. `fy2027/council-orders.ts` transcribes the orders from the agenda of
+2 June 2026 -- a document the calendar half already carries -- and the front
+page charts them.
+
 **The budget is the same idea one level deeper, and shares nothing with the
 calendar.** The bar's menu lists every fiscal year the city publishes — a book
 here where one is written, the city's own PDF where it is not, and each year's
@@ -136,7 +144,9 @@ its sections were read off rendered pages by hand. See
 Notable pieces:
 
 - **`src/lib/SiteHeader.svelte`** is the bar on every page: the mark, the page's
-  own name, the budget with its menu of fiscal years, and the calendar. On the budget half it
+  own name, the budget with its menu of fiscal years, and the calendar. It
+  carries a page's sources too -- the book, and anything else a page says it was
+  built from, such as the Council's appropriation orders on the front page. On the budget half it
   carries what the page used to head itself with — the name (its only `<h1>`),
   the fiscal year the book covers, and an "Original Source" link to the city's
   file, opened at a section's own page — all from `src/lib/heading.ts`, which

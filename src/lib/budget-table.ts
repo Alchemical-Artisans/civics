@@ -55,15 +55,22 @@ export interface BudgetTableData {
  * It is the cell's *dollar figure* and not every digit in the cell: the reserve
  * dials print the share beside the money in one cell, "$13,985,452 (7.85%)",
  * and reading the digits off the whole string made that thirteen billion and,
- * because of the parentheses around the share, negative.
+ * because of the parentheses around the share, negative. A space inside the
+ * figure is part of it, because the city's documents print them that way.
  */
 export function amount(cell: string): number | null {
   // `\(?` after the dollar sign for the book's "$(617,924)"; the parentheses
   // that mean a negative are always inside the figure, never around a share.
-  const figure = cell.match(/\$\s*(\()?\s*([\d,]+)/)
+  //
+  // A space inside the digits is allowed because the documents put them there:
+  // the Council's own order prints "$15, 967,043" and "$ 5,150,000". A run of
+  // digits is only continued across a space when digits follow it, so a cell
+  // holding a figure and then something else -- "$13,985,452 (7.85%)" -- still
+  // ends at the figure.
+  const figure = cell.match(/\$\s*(\()?\s*(\d[\d,]*(?:\s\d[\d,]*)*)/)
   if (!figure) return null
 
-  const value = Number(figure[2].replace(/,/g, ""))
+  const value = Number(figure[2].replace(/[,\s]/g, ""))
   if (!Number.isFinite(value)) return null
 
   // `-0` otherwise, for the book's "$(0)" -- which is a real cell, the 2027

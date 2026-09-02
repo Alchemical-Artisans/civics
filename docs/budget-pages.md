@@ -104,10 +104,11 @@ says it through `bookName`.
 `/budget/<year>` opens on the budget at a glance: the year, and what the year
 sits on.
 
-| Chart                   | What it draws                                      | From                                                                 |
-| ----------------------- | -------------------------------------------------- | -------------------------------------------------------------------- |
-| Appropriations, Revenue | two pies, one circle divided two ways              | page 78, `appropriations/tables.ts` + `revenue/tables.ts`            |
-| Reserves and Debt       | two bars on one scale, each divided into its parts | page 17, `reserves/tables.ts`; page 21, `outstanding-debt/tables.ts` |
+| Chart                       | What it draws                                                           | From                                                                 |
+| --------------------------- | ----------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| Appropriations, Revenue     | two pies, one circle divided two ways                                   | page 78, `appropriations/tables.ts` + `revenue/tables.ts`            |
+| Appropriated by the Council | two bars on one scale: the general fund, and the enterprise departments | the Council's orders of 2 June 2026, `council-orders.ts`             |
+| Reserves and Debt           | two bars on one scale, each divided into its parts                      | page 17, `reserves/tables.ts`; page 21, `outstanding-debt/tables.ts` |
 
 The two pies are the year — everything expected in, everything planned out — and
 sit in the narrow left column. Reserves and debt are the standing position
@@ -256,6 +257,37 @@ the foot of this page and its revenue table at the foot of `revenue`, each
 beside the chart that reads it. The book prints the two sides facing each other
 to show that they balance; the front page makes that point instead, with two
 pies carrying the same total.
+
+**The book is not the whole city, and one chart says so.** Water and wastewater
+are enterprise funds — self-supporting, paid for out of what households are
+billed rather than out of the tax levy — so they are appropriated in orders of
+their own and appear nowhere in the book's $285,272,159. The Council's agenda of
+2 June 2026 carries all three orders, and
+[`council-orders.ts`](../src/routes/budget/fy2027/council-orders.ts)
+transcribes them:
+
+- **13.1** $14,805,633 to operate the Water Department
+- **13.2** $15, 967,043 to operate the Wastewater Department (the space is the
+  agenda's own)
+- **13.3** $274,750,725 raised and appropriated for the general fund, funded
+  from taxation and other receipts, free cash, water and wastewater receipts,
+  and a transfer
+
+Two things fall out of that, and both are on the chart. The enterprise
+departments are **$30,772,676**, a tenth again of the general fund, that the
+front page was silent about. And **what the Council votes is not what the book
+prints**: $274,750,725 against $285,272,159, the difference being the state
+assessments ($10,271,435) and the overlay ($250,000), which are charged to the
+city rather than voted by it. `overview.spec.ts` pins both, including the dollar
+of rounding the book is already known to carry.
+
+Each order also appropriates an amount _inside_ the general fund funded from
+that department's receipts — $234,784 and $698,981 — and those are rows of order
+13.3, so the two bars count them once.
+
+**The agenda is linked in the bar beside the book.** `barOf` returns a list of
+sources rather than one, the book first and then whatever a page names in its
+own `sources`; the meeting is also on the calendar half of this site.
 
 **`reserves` is the third bucket**, opened from the reserves bar, and holds
 "Fiscal Reserves" (17) with "Liability, Overlay & Reserves" (213) and

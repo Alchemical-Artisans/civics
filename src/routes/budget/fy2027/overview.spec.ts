@@ -4,6 +4,7 @@ import { APPROPRIATIONS, DEPARTMENTS } from "./appropriations/tables"
 import { REVENUE } from "./revenue/tables"
 import { FUND_BALANCE, FREE_CASH, STABILIZATION } from "./reserves/tables"
 import { LONG_TERM_DEBT } from "./outstanding-debt/tables"
+import { APPROPRIATED, ENTERPRISE, GENERAL_FUND } from "./council-orders"
 
 /**
  * What the book's own page 78 says about itself.
@@ -91,5 +92,43 @@ describe("page 17, the reserves the front page charts", () => {
   it("prints a share beside the balance", () => {
     expect(cell(FUND_BALANCE, "Actual", "Amount")).toContain("(7.85%)")
     expect(amount(cell(FUND_BALANCE, "Actual", "Amount"))).toBe(13985452)
+  })
+})
+
+describe("the Council's orders of 2 June 2026", () => {
+  // Order 13.3 states a total and then lists what funds it. The chart draws
+  // the five sources and adds them up itself, so they have to come to the
+  // figure the order states.
+  it("funds the general fund appropriation from five sources", () => {
+    const sources = column(GENERAL_FUND, "Amount")
+    expect(sources).toHaveLength(5)
+    expect(sum(sources)).toBe(amount(APPROPRIATED))
+  })
+
+  // The gap between what the Council votes and what the book prints: state
+  // assessments and the overlay, which are charged to the city rather than
+  // appropriated by it. A dollar of it is the same dollar the appropriations
+  // column is already known to be over its own total by.
+  it("votes less than the book proposes, by the assessments and the overlay", () => {
+    const charged =
+      amount(cell(APPROPRIATIONS, "State Assessments", CHARTED))! +
+      amount(cell(APPROPRIATIONS, "Overlay", CHARTED))!
+
+    expect(TOTAL - amount(APPROPRIATED)!).toBe(charged - 1)
+  })
+
+  // The two enterprise departments, which the book does not carry at all.
+  it("appropriates the water and wastewater departments separately", () => {
+    const funds = column(ENTERPRISE, "Amount")
+    expect(funds.map((f) => f.label)).toEqual(["Water Department", "Wastewater Department"])
+    expect(sum(funds)).toBe(30772676)
+  })
+
+  // Each enterprise order also appropriates an amount inside the general fund,
+  // funded from that department's receipts. Those are rows of order 13.3, so
+  // the two bars on the chart do not count them twice.
+  it("counts the receipts transfers once, in the general fund", () => {
+    expect(amount(cell(GENERAL_FUND, "Water Receipts", "Amount"))).toBe(234784)
+    expect(amount(cell(GENERAL_FUND, "Wastewater Receipts", "Amount"))).toBe(698981)
   })
 })

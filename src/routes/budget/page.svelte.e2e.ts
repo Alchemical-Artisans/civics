@@ -77,8 +77,9 @@ test.describe("budget pages", () => {
     // pies beside it are the year, this is what the year sits on.
     await expect(page.getByRole("heading", { name: "Reserves and Debt" })).toBeVisible()
 
-    // One chart, two bars, each divided into what it is made of.
-    const chart = page.locator(".budget-stack")
+    // Two charts of this kind on the page now -- the Council's orders first,
+    // then the standing position -- so this one is the second.
+    const chart = page.locator(".budget-stack").last()
     const bars = chart.locator(".budget-series")
     await expect(bars).toHaveCount(2)
     await expect(bars.first()).toContainText("$21,986,546")
@@ -310,12 +311,49 @@ test.describe("budget pages", () => {
     }
   })
 
+  test("charts what the Council voted, next to what the book proposes", async ({ page }) => {
+    await page.goto(`/budget/${books[0]}`)
+
+    // The orders on the agenda of 2 June 2026: the general fund by where the
+    // money comes from, and the two enterprise departments, which are paid for
+    // out of what households are billed and are in no part of the book.
+    const voted = page.locator(".budget-stack").first()
+    const bars = voted.locator(".budget-series")
+    await expect(bars).toHaveCount(2)
+    await expect(bars.first()).toContainText("General Fund")
+    await expect(bars.first()).toContainText("$274,750,725")
+    await expect(bars.last()).toContainText("Water & Wastewater")
+    await expect(bars.last()).toContainText("$30,772,676")
+
+    // What the Council votes is not the book's total: the difference is the
+    // state assessments and the overlay, which are charged to the city.
+    await expect(
+      page.getByRole("heading", { name: /^Appropriations \$285,272,159$/ }),
+    ).toBeVisible()
+
+    await expect(
+      bars.first().getByRole("img", { name: /^General Fund, Taxation and Other Receipts/ }),
+    ).toHaveAttribute(
+      "aria-label",
+      "General Fund, Taxation and Other Receipts, $268,541,960, 97.7%",
+    )
+    await expect(bars.last().getByRole("img").first()).toHaveAttribute(
+      "aria-label",
+      "Water & Wastewater, Wastewater Department, $15,967,043, 51.9%",
+    )
+
+    // And the order itself is linked in the bar, beside the budget book.
+    const source = page.getByRole("banner").getByRole("link", { name: /^City Council Order/ })
+    expect(await source.getAttribute("href")).toMatch(/full-agenda-6226\.pdf$/)
+    await expect(source).toHaveAttribute("target", "_blank")
+  })
+
   test("draws both bars to one scale", async ({ page }) => {
     // The point of the chart: $22 million against $176 million, so the
     // reserves are the eighth of the debt that they are rather than a bar the
     // same length drawn beside it.
     await page.goto(`/budget/${books[0]}`)
-    const bars = page.locator(".budget-stack .budget-series")
+    const bars = page.locator(".budget-stack").last().locator(".budget-series")
 
     const drawn = async (bar: ReturnType<typeof bars.nth>) => {
       const boxes = await Promise.all(
@@ -332,7 +370,7 @@ test.describe("budget pages", () => {
 
   test("names and prices the segment under the pointer", async ({ page }) => {
     await page.goto(`/budget/${books[0]}`)
-    const chart = page.locator(".budget-stack")
+    const chart = page.locator(".budget-stack").last()
     await expect(chart.locator(".budget-tooltip")).toHaveCount(0)
 
     const held = chart.locator(".budget-series").first().getByRole("img")

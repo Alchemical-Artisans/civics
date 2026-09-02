@@ -143,19 +143,20 @@
       <p class="m-0 text-xs text-slate-500">{bar.dates}</p>
     {/if}
 
-    {#if bar.source}
-      <!-- The city's own file, which is the record. Named for what it is
-           rather than for what it contains, because on a section it is the same
-           file opened at that section's page. -->
+    <!-- The city's own files, which are the record. The book is named for what
+         it is rather than for what it contains, because on a section it is the
+         same file opened at that section's page; anything else a page rests on
+         is named by the page. -->
+    {#each bar.sources as source (source.label)}
       <a
         class="text-xs text-slate-600 underline decoration-slate-300 hover:text-slate-900"
-        href={bar.source}
+        href={source.href}
         target="_blank"
         rel="external noopener noreferrer"
       >
-        Original Source<span class="sr-only">, PDF, opens in a new tab</span>
+        {source.label}<span class="sr-only">, PDF, opens in a new tab</span>
       </a>
-    {/if}
+    {/each}
 
     <!-- `ml-auto` rather than `justify-between`, so the two stay together at
          the right and wrap as a pair on a narrow screen. -->

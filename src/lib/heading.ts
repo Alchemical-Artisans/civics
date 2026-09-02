@@ -22,6 +22,13 @@ export interface PageNaming {
   section?: { title: string; page: number }
   /** The budget book a page sits in, from the layout that looked it up. */
   book?: { year: number; budget?: string | null }
+  /**
+   * Anything else a page was built from, named by the page itself. The budget
+   * book is not the only document a page can rest on: the front page charts
+   * the Council's own appropriation orders, which are on an agenda rather than
+   * in the book.
+   */
+  sources?: { label: string; href: string }[]
   /** Everything else a load put in `page.data`, which this does not read. */
   [key: string]: unknown
 }
@@ -31,8 +38,11 @@ export interface PageBar {
   name: string | null
   /** What the book covers, which is what its year means. */
   dates: string | null
-  /** The city's own file: the book, opened at this section's page. */
-  source: string | null
+  /**
+   * Where what is on the page came from: the book first, opened at this
+   * section's page, then anything else the page names.
+   */
+  sources: { label: string; href: string }[]
 }
 
 export function barOf(data: PageNaming): PageBar {
@@ -45,13 +55,20 @@ export function barOf(data: PageNaming): PageBar {
     // once where the name is rather than nowhere.
     dates: book ? `July 1, ${book.year - 1} to June 30, ${book.year}` : null,
 
-    // A section knows where it sits in the book, so its link opens the reader
-    // at that page rather than at the front of a PDF running to hundreds.
-    source: !book?.budget
-      ? null
-      : section
-        ? Router.pdfPage(book.budget, section.page)
-        : book.budget,
+    // The book first, and a section knows where it sits in it, so its link
+    // opens the reader at that page rather than at the front of a PDF running
+    // to hundreds. Then whatever else the page says it was built from.
+    sources: [
+      ...(book?.budget
+        ? [
+            {
+              label: "Original Source",
+              href: section ? Router.pdfPage(book.budget, section.page) : book.budget,
+            },
+          ]
+        : []),
+      ...(data.sources ?? []),
+    ],
   }
 }
 

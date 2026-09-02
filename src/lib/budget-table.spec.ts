@@ -32,6 +32,14 @@ describe("amount", () => {
     expect(amount("$5,347,848 (3%)")).toBe(5347848)
   })
 
+  // The Council's appropriation orders print numbers with a space in them:
+  // "$15, 967,043" for the wastewater department, "$ 5,150,000" for free cash.
+  it("reads a figure the source printed with a space in it", () => {
+    expect(amount("$15, 967,043")).toBe(15967043)
+    expect(amount("$ 5,150,000")).toBe(5150000)
+    expect(amount("$ 274,750,725")).toBe(274750725)
+  })
+
   it("is null for a cell holding no money", () => {
     expect(amount("")).toBeNull()
     // The book's own mark for a year with no entry.
