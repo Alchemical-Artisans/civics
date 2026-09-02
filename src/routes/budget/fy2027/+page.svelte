@@ -66,16 +66,16 @@
   them, where it would start under the fold. Stacked below `lg`, charts first,
   because a column narrower than a pie has nowhere to put one.
 -->
-<div class="lg:grid lg:h-[calc(100vh-197px)] lg:grid-cols-[max-content_minmax(0,1fr)] lg:gap-x-12">
+<div class="lg:grid lg:h-[calc(100vh-181px)] lg:grid-cols-[max-content_minmax(0,1fr)] lg:gap-x-12">
   <!--
     The charts stay on the screen and the list moves under them. They are the
     answer the page exists to give, and a reader working down thirty-four
     department names is exactly the reader who wants the two columns still in
     view; a chart that scrolls away is a chart consulted once.
 
-    So the page is one screen: 197px of it is spoken for -- the bar at the top
+    So the page is one screen: 181px of it is spoken for -- the bar at the top
     (53), the padding the layout puts above the page (16) and the padding it
-    puts below to clear the fixed footer (128) -- and the grid takes the rest.
+    puts below to clear the fixed footer (112) -- and the grid takes the rest.
     The footer then sits inside that bottom padding rather than over anything,
     and the only thing that scrolls is the list itself. Full height also buys the chart every pixel it can get, which
     $5,151,539 out of $316 million needs. Below `lg` this is all off -- the page
