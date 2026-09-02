@@ -17,7 +17,9 @@
     taxpayers.
   </li>
   <li>
-    Maintain an excess <GlossaryTerm term="Levy">levy</GlossaryTerm> of 1.6% of the total available levy
+    Maintain an excess <GlossaryTerm term="Levy">levy</GlossaryTerm> of 1.6% of the total available <GlossaryTerm
+      term="Levy">levy</GlossaryTerm
+    >
     to serve as a budgetary reserve, as well as set aside savings for future capital projects.
   </li>
   <li>

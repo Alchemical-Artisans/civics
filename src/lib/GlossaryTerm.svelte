@@ -1,88 +1,207 @@
 <!--
-  A word the budget book defines, with the book's definition a pointer away.
+  A word the budget book defines, with the book's definition attached to it.
 
   These pages are the city's own prose, and the city's prose is full of terms of
   art -- levy limit, free cash, cherry sheets, overlay -- that a reader either
-  knows or is stopped by. The book answers all of them, 245 pages away, in a
-  glossary nobody reaches. So the answer comes to the word instead: hover it,
-  tab to it, or tap it, and the definition opens over the page.
+  knows or is stopped by. The book answers all of them, 200 pages away, in a
+  glossary nobody reaches. So the answer comes to the word.
 
-  The word on the page is whatever the page wrote -- "free cash" mid-sentence,
+  **It is a link, not a button.** A button that only shows text is a control
+  with no action: it does nothing without a script, nothing in a reader mode,
+  nothing for a crawler, and it fills the tab order with stops that go nowhere.
+  A link to the term's own entry in the glossary is the ordinary technique
+  (WCAG G55), works with no script at all, is announced as a link, and gives a
+  touch reader somewhere to go rather than a tooltip to dismiss.
+
+  **The definition is on the link before anyone asks for it.** It sits in the
+  markup as `aria-describedby`, so a screen reader reads the word and then its
+  definition, with no hovering, focusing or timing involved. It is
+  `aria-hidden` so that reading the page straight through does not recite the
+  definition of "levy" thirty-one times; a description referenced by id is still
+  computed from hidden text.
+
+  **The tooltip is CSS.** Hover or focus the word and the same node that holds
+  the description becomes a box under it -- no script, so it works on a page
+  that has not hydrated, and the pointer can move onto the definition without
+  losing it, which is what WCAG 1.4.13 asks of anything shown on hover. The one
+  script is Escape, which that rule also asks for and CSS cannot do.
+
+  The word on the page is whatever the city wrote -- "free cash" mid-sentence,
   "levies" for "Levy" -- and `term` is what the glossary heads it, which is what
   the definition is looked up by. Nothing here rewrites the city's text.
-
-  It is a `<button>` because it does something when pressed, which is what a
-  touch screen needs: there is no hovering a word with a thumb. `aria-describedby`
-  is what a screen reader follows, so the definition is read as a description of
-  the word rather than as a stray paragraph.
 -->
 <script lang="ts">
+  import { page } from "$app/state"
+  import { Router } from "$lib/router"
   import { define, termSlug } from "$lib/glossary"
   import type { Snippet } from "svelte"
 
   let { term, children }: { term: string; children?: Snippet } = $props()
 
   const entry = $derived(define(term))
-  const id = $derived(`glossary-${termSlug(term)}`)
+  const slug = $derived(termSlug(term))
 
-  // Hover and focus open it; a press pins it, so a reader can move the pointer
-  // away from a definition they are still reading. Escape and a click elsewhere
-  // put it away, the way the bar's menu does.
-  let pointer = $state(false)
-  let focused = $state(false)
-  let pinned = $state(false)
-  const shown = $derived(pointer || focused || pinned)
+  // Unique per use, not per term: a page names the same word many times, and
+  // `aria-describedby` points at an id. `$props.id()` is the same string on the
+  // server and in the browser, which a counter of our own would not be.
+  const id = $props.id()
 
-  let root: HTMLElement | undefined = $state()
+  // The book this page sits in, from the layout above it, which is also what
+  // the bar reads. A term only appears inside a book.
+  const book = $derived(page.data.book as { id: string })
+
+  // Escape puts the tooltip away without moving the pointer or the focus, which
+  // is the one part of "content on hover or focus" that CSS cannot do. It comes
+  // back when the pointer or the focus leaves and returns.
+  let dismissed = $state(false)
 
   $effect(() => {
-    const past = (event: PointerEvent) => {
-      if (pinned && !root?.contains(event.target as Node)) pinned = false
-    }
-    // Escape dismisses it outright, focus included: a reader who has read the
-    // definition and pressed Escape has answered their question, and a tooltip
-    // that stayed up because the word still holds focus would be ignoring them.
-    // Tabbing away and back opens it again.
     const escape = (event: KeyboardEvent) => {
-      if (event.key !== "Escape") return
-      pinned = false
-      focused = false
+      if (event.key === "Escape") dismissed = true
     }
 
-    document.addEventListener("pointerdown", past)
     document.addEventListener("keydown", escape)
-    return () => {
-      document.removeEventListener("pointerdown", past)
-      document.removeEventListener("keydown", escape)
-    }
+    return () => document.removeEventListener("keydown", escape)
   })
 </script>
 
-<span class="glossary-term relative inline-block" bind:this={root}>
-  <button
-    class="cursor-help border-b border-dotted border-slate-400 bg-transparent p-0 text-inherit hover:border-slate-900"
-    type="button"
-    aria-describedby={shown ? id : undefined}
-    aria-expanded={shown}
-    onpointerenter={(event) => (pointer = event.pointerType === "mouse")}
-    onpointerleave={() => (pointer = false)}
-    onfocus={() => (focused = true)}
-    onblur={() => (focused = false)}
-    onclick={() => (pinned = !pinned)}
-  >
+<!-- `role="none"`: the wrapper positions the definition and notices when the
+     reader has moved on, and nothing more -- the link and the description carry
+     the meaning. -->
+<span
+  class="glossary-term"
+  role="none"
+  data-dismissed={dismissed ? "" : undefined}
+  onpointerleave={() => (dismissed = false)}
+  onfocusout={() => (dismissed = false)}
+>
+  <a class="glossary-word" href={Router.glossaryTerm(book.id, slug)} aria-describedby={id}>
     {#if children}{@render children()}{:else}{term}{/if}
-  </button>
+  </a>
 
-  {#if shown}
-    <!-- Over the page rather than in it: a definition that pushed the paragraph
-         apart would move the word the reader is pointing at. -->
-    <span
-      class="glossary-definition absolute top-full left-0 z-20 mt-1 block w-80 max-w-[80vw] rounded-md border border-slate-200 bg-white px-3 py-2 text-sm leading-snug font-normal text-slate-700 shadow-lg"
-      {id}
-      role="tooltip"
-    >
-      <span class="block font-medium text-slate-900">{entry.printed ?? entry.term}</span>
-      {entry.definition}
-    </span>
-  {/if}
+  <span class="glossary-definition" {id} aria-hidden="true">
+    <span class="glossary-name">{entry.printed ?? entry.term}</span>
+    {entry.definition}
+  </span>
 </span>
+
+<style>
+  .glossary-term {
+    position: relative;
+    display: inline-block;
+  }
+
+  /* Not the prose link: a definition is not somewhere the reader is being sent,
+     it is a word with something under it. */
+  .glossary-word {
+    color: inherit;
+    text-decoration: none;
+    border-bottom: 1px dotted var(--color-slate-400);
+  }
+
+  .glossary-word:hover,
+  .glossary-word:focus-visible {
+    border-bottom-color: var(--color-slate-900);
+  }
+
+  /*
+    The definition is always here, and always hidden the way a screen reader
+    still finds it: clipped rather than `display: none`, which would take it out
+    of the tree that `aria-describedby` reads.
+  */
+  .glossary-definition {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .glossary-name {
+    display: block;
+    font-weight: 500;
+    color: var(--color-slate-900);
+  }
+
+  /*
+    Hovering or focusing the word turns that same node into the tooltip. It is
+    inside the hovered element, so the pointer can move onto it without closing
+    it -- content shown on hover has to be hoverable.
+
+    `hover: hover` because a tap counts as a hover on a touch screen and would
+    leave the definition open over the page; there the link goes to the glossary
+    instead, which is a better answer anyway.
+  */
+  @media (hover: hover) {
+    .glossary-term:hover > .glossary-definition {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      z-index: 20;
+      display: block;
+      width: 20rem;
+      max-width: 80vw;
+      height: auto;
+      padding: 0.5rem 0.75rem;
+      margin: 0.25rem 0 0;
+      overflow: visible;
+      font-size: 0.875rem;
+      font-weight: 400;
+      line-height: 1.4;
+      color: var(--color-slate-700);
+      clip-path: none;
+      white-space: normal;
+      background: white;
+      border: 1px solid var(--color-slate-200);
+      border-radius: 0.375rem;
+      box-shadow:
+        0 10px 15px -3px rgb(0 0 0 / 0.1),
+        0 4px 6px -4px rgb(0 0 0 / 0.1);
+    }
+  }
+
+  .glossary-term:focus-within > .glossary-definition {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 20;
+    display: block;
+    width: 20rem;
+    max-width: 80vw;
+    height: auto;
+    padding: 0.5rem 0.75rem;
+    margin: 0.25rem 0 0;
+    overflow: visible;
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.4;
+    color: var(--color-slate-700);
+    clip-path: none;
+    white-space: normal;
+    background: white;
+    border: 1px solid var(--color-slate-200);
+    border-radius: 0.375rem;
+    box-shadow:
+      0 10px 15px -3px rgb(0 0 0 / 0.1),
+      0 4px 6px -4px rgb(0 0 0 / 0.1);
+  }
+
+  /* Escape, which wins over both of the above. */
+  .glossary-term[data-dismissed] > .glossary-definition {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    background: none;
+    border: 0;
+    box-shadow: none;
+  }
+</style>

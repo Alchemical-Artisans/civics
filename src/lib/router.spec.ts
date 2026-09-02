@@ -41,6 +41,10 @@ describe("Router", () => {
     expect(Router.budgetSection("fy2027", "fiscal-reserves")).toBe("/budget/fy2027/fiscal-reserves")
   })
 
+  it("builds a link to a term in the glossary", () => {
+    expect(Router.glossaryTerm("fy2027", "free-cash")).toBe("/budget/fy2027/glossary#free-cash")
+  })
+
   it("opens an outside PDF at a page", () => {
     expect(Router.pdfPage("https://cdn.example/budget.pdf", 17)).toBe(
       "https://cdn.example/budget.pdf#page=17",

@@ -468,28 +468,57 @@ glossary was read off rendered pages like every other section. It lives in
 component, and the script.
 
 **[`GlossaryTerm`](../src/lib/GlossaryTerm.svelte) brings the definition to the
-word.** A page wraps the first use of a term and the book's own definition opens
-over the page on hover, on focus, or on a press — the press being the only way in
-on a phone, and also what pins it so the pointer can leave a definition still
-being read. Escape dismisses it. The word on the page is whatever the city wrote
-("free cash" mid-sentence, "levies" for "Levy"); `term` is what the glossary
-heads it, and nothing rewrites the city's text.
+word, and it is a link rather than a control.** A button that only shows text
+does nothing without a script, nothing in a reader mode, nothing for a crawler,
+and fills the tab order with stops that go nowhere. A link to the term's own
+entry in the glossary is the ordinary technique (WCAG G55): it works with no
+script, is announced as a link, and gives a touch reader somewhere to go rather
+than a tooltip to dismiss.
+
+Three things hang off that:
+
+- **The definition is on the link before anyone asks for it**, as
+  `aria-describedby`, so a screen reader reads the word and then what it means
+  with no hovering or focusing involved. The node it points at is `aria-hidden`,
+  or reading the page straight through would recite the definition of "levy"
+  thirty-one times; a description referenced by id is still computed from hidden
+  text. Its id comes from `$props.id()`, which is unique per use and the same
+  string on the server and in the browser.
+- **The tooltip is CSS.** Hover or focus the word and that same node stops being
+  clipped and becomes a box under it — so it works on a page that has not
+  hydrated, and the pointer can move onto the definition without losing it,
+  which is what WCAG 1.4.13 asks of content shown on hover. It is clipped rather
+  than `display: none` because a hidden node has to stay in the tree the
+  description is read from.
+- **The one script is Escape**, which 1.4.13 also asks for and CSS cannot do.
+
+The word on the page is whatever the city wrote — "free cash" mid-sentence,
+"levies" for "Levy" — and `term` is what the glossary heads it. Nothing rewrites
+the city's text.
 
 **[`scripts/check-glossary.mjs`](../scripts/check-glossary.mjs) is what keeps
 that true.** `npm run glossary:check` — which `npm run lint` calls — scans every
-transcription for the terms the book defines and fails on one that is used
-without being defined. `--fix` wraps them and adds the import.
+transcription for the terms the book defines and fails on a use that carries no
+definition. `--fix` wraps them and adds the import; it wrapped 98 uses across
+six pages when it was first run.
 
-Three rules make it liveable, and all three are in the script:
+Two rules, both in the script:
 
-- **The first use in a page, not every use.** "Levy" appears 31 times on the
-  revenue page; 31 dotted underlines is a page nobody can read.
-- **Prose only.** Scripts, comments, tables and headings are blanked before
-  matching — a cell is a figure, not a sentence.
-- **Words the book also uses as ordinary English are exempt** — Fund,
-  Department, Grant, Revenues, Expenditures, Audit, Deficit, Valuation. Nobody
-  reading "the Water Department" wants "a principal, functional and
-  administrative entity created by the manager". They stay in the glossary.
+- **Every use, not the first.** A reader who arrives halfway down a page, from a
+  link or a search, has not passed the paragraph where the word came up first.
+  This is affordable precisely because the wrapper is a link: 71 links in a long
+  document is ordinary, where 71 buttons that do nothing is not.
+- **A match that is part of a name is not a use.** The book defines "Department"
+  and also writes "Water Department", "School Department", "Department of
+  Revenue", none of which is the glossary's "principal, functional and
+  administrative entity created by the manager". A capitalised word on either
+  side, or "of" and a capitalised word after, is what tells them apart. This
+  replaced a list of words to ignore, which was blunter than it needed to be:
+  half the words on it — Revenues, Expenditures, Deficit, Valuation — turned out
+  never to appear beside a capital at all.
+
+Prose only, in both cases: scripts, comments, tables and headings are blanked
+before matching, since a cell is a figure rather than a sentence.
 
 ## Writing a section
 

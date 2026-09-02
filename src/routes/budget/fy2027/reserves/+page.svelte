@@ -24,14 +24,17 @@
 </p>
 
 <p>
-  <strong>City Reserve Policy #1:</strong> The City shall maintain an undesignated fund balance
-  between 5% and 15% of <GlossaryTerm term="General Fund">general fund</GlossaryTerm> revenues, less debt
-  exclusion and Ch. 70.
+  <strong>City Reserve Policy #1:</strong> The City shall maintain an undesignated <GlossaryTerm
+    term="Fund">fund</GlossaryTerm
+  > balance between 5% and 15% of <GlossaryTerm term="General Fund">general fund</GlossaryTerm>
+  <GlossaryTerm term="Revenues">revenues</GlossaryTerm>, less debt exclusion and Ch. 70.
 </p>
 
 <p>
-  <strong>Results:</strong> The city's undesignated fund balance as of June 30, 2025, was $13,985,452
-  or 7.85% of general fund revenue. This is up from June 2024, which was $12,569,995 or 7.36%.
+  <strong>Results:</strong> The city's undesignated <GlossaryTerm term="Fund">fund</GlossaryTerm> balance
+  as of June 30, 2025, was $13,985,452 or 7.85% of <GlossaryTerm term="General Fund"
+    >general fund</GlossaryTerm
+  > revenue. This is up from June 2024, which was $12,569,995 or 7.36%.
 </p>
 
 <BudgetTable table={FUND_BALANCE} />
@@ -39,10 +42,13 @@
 <h2>Fund Balance</h2>
 
 <p>
-  Fund balance is the net position of a governmental fund (assets minus liabilities), representing
-  the accumulated difference between revenues and expenditures over time. It measures available
-  financial resources, acting as a "net worth" or savings account for governments to pay bills,
-  maintain cash flow, and ensure financial stability.
+  <GlossaryTerm term="Fund">Fund</GlossaryTerm> balance is the net position of a governmental <GlossaryTerm
+    term="Fund">fund</GlossaryTerm
+  > (assets minus liabilities), representing the accumulated difference between <GlossaryTerm
+    term="Revenues">revenues</GlossaryTerm
+  > and <GlossaryTerm term="Expenditures">expenditures</GlossaryTerm> over time. It measures available
+  financial resources, acting as a "net worth" or savings account for governments to pay bills, maintain
+  cash flow, and ensure financial stability.
 </p>
 
 <table>
@@ -93,18 +99,23 @@
 <p>
   <strong>City Reserve Policy #3:</strong> The amount to be held in <GlossaryTerm term="Free Cash"
     >free cash</GlossaryTerm
-  > shall not be less than 2% or more than 8% of general fund revenues, less debt exclusion and Ch. 70.
+  > shall not be less than 2% or more than 8% of <GlossaryTerm term="General Fund"
+    >general fund</GlossaryTerm
+  >
+  <GlossaryTerm term="Revenues">revenues</GlossaryTerm>, less debt exclusion and Ch. 70.
 </p>
 
 <p>
-  <strong>Results:</strong> The city is projected to have a free cash balance of $0 at the end of <GlossaryTerm
-    term="Fiscal Year">fiscal year</GlossaryTerm
-  > 2026, largely due to exceptionally high snow removal costs that exceeded $4.6 million during the past
-  winter. This winter was the coldest and snowiest the area has experienced since 2014-2015. In light
-  of these unprecedented expenses, the Mayor and the city's Emergency Management Director have requested
-  financial assistance from the Commonwealth. This year's free cash balance marks a significant decrease
-  from the city's balance at the end of fiscal year 2025, which was $2,578,279, reflecting a decline of
-  1.51%.
+  <strong>Results:</strong> The city is projected to have a <GlossaryTerm term="Free Cash"
+    >free cash</GlossaryTerm
+  > balance of $0 at the end of <GlossaryTerm term="Fiscal Year">fiscal year</GlossaryTerm> 2026, largely
+  due to exceptionally high snow removal costs that exceeded $4.6 million during the past winter. This
+  winter was the coldest and snowiest the area has experienced since 2014-2015. In light of these unprecedented
+  expenses, the Mayor and the city's Emergency Management Director have requested financial assistance
+  from the Commonwealth. This year's <GlossaryTerm term="Free Cash">free cash</GlossaryTerm> balance marks
+  a significant decrease from the city's balance at the end of <GlossaryTerm term="Fiscal Year"
+    >fiscal year</GlossaryTerm
+  > 2025, which was $2,578,279, reflecting a decline of 1.51%.
 </p>
 
 <BudgetTable table={FREE_CASH} />
@@ -114,14 +125,16 @@
 <p>
   <strong>City Reserve Policy #4:</strong> The city shall maintain a Stabilization <GlossaryTerm
     term="Reserve Fund">Reserve Fund</GlossaryTerm
-  > of at least 3% of general fund revenue, less debt exclusion and Chapter 70.
+  > of at least 3% of <GlossaryTerm term="General Fund">general fund</GlossaryTerm> revenue, less debt
+  exclusion and Chapter 70.
 </p>
 
 <p>
   <strong>Results:</strong> The city's <GlossaryTerm term="Stabilization Fund"
     >stabilization fund</GlossaryTerm
-  > is $8,001,094 or 4.49% of general fund revenue, not including Chapter 70 and debt exclusions. This
-  is up from fiscal 2025 which had a balance of $7,533,248 or 4.41%.
+  > is $8,001,094 or 4.49% of <GlossaryTerm term="General Fund">general fund</GlossaryTerm> revenue, not
+  including Chapter 70 and debt exclusions. This is up from fiscal 2025 which had a balance of $7,533,248
+  or 4.41%.
 </p>
 
 <BudgetTable table={STABILIZATION} />

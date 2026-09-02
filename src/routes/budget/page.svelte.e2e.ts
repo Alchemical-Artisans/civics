@@ -304,32 +304,58 @@ test.describe("budget pages", () => {
     }
   })
 
-  test("defines the book's own terms where it first uses them", async ({ page }) => {
+  test("defines the book's own terms wherever its prose uses them", async ({ page }) => {
     await page.goto(`/budget/${books[0]}/reserves`)
 
-    // The city's prose is full of terms of art. The first use of each on a page
-    // carries the book's own definition, from its glossary.
-    const term = page.locator(".glossary-term button").first()
-    await expect(term).toHaveText("general fund")
-    await expect(page.locator(".glossary-definition")).toHaveCount(0)
+    // A link to the term's own entry in the glossary, not a control: it works
+    // with no script, is announced as a link, and gives a touch reader
+    // somewhere to go rather than a tooltip to dismiss.
+    const term = page.locator(".glossary-term a").first()
+    await expect(term).toHaveText("fund")
+    expect(await term.getAttribute("href")).toMatch(/\/glossary#fund$/)
+
+    // The definition is on the link before anyone asks for it, so a screen
+    // reader reads the word and then what it means, with no interaction.
+    const id = await term.getAttribute("aria-describedby")
+    const definition = page.locator(`#${id}`)
+    await expect(definition).toContainText("An accounting entity with a self- balancing set")
+
+    // Clipped rather than removed -- `display: none` would take it out of the
+    // tree the description is read from -- so its size is what says whether a
+    // reader can see it.
+    const width = async () => Math.round((await definition.boundingBox())!.width)
+    expect(await width()).toBeLessThan(5)
+
+    // Hovering turns that same node into the tooltip.
+    await term.hover()
+    expect(await width()).toBeGreaterThan(200)
+
+    // Escape puts it away without moving the pointer, which is what WCAG asks
+    // of anything shown on hover.
+    await page.keyboard.press("Escape")
+    expect(await width()).toBeLessThan(5)
+
+    // Every use carries it, not only the first: a reader who arrives halfway
+    // down the page has not passed the paragraph where the word came up first.
+    expect(await page.locator(".glossary-term").count()).toBeGreaterThan(10)
+    const funds = page.locator('.glossary-term a[href$="#fund"]')
+    expect(await funds.count()).toBeGreaterThan(1)
+  })
+
+  test("shows a definition with no script running", async ({ browser }) => {
+    // The tooltip is CSS, so a page that has not hydrated still answers the
+    // word. Only Escape needs the script.
+    const still = await browser.newContext({ javaScriptEnabled: false })
+    const quiet = await still.newPage()
+    await quiet.goto(`/budget/${books[0]}/reserves`)
+
+    const term = quiet.locator(".glossary-term a").first()
+    const definition = quiet.locator(".glossary-definition").first()
+    expect(Math.round((await definition.boundingBox())!.width)).toBeLessThan(5)
 
     await term.hover()
-    const definition = page.locator(".glossary-definition")
-    await expect(definition).toContainText("General Fund")
-    await expect(definition).toContainText("The fund used to account for most financial resources")
-
-    // Described by it, so a screen reader reads the definition as belonging to
-    // the word rather than as a stray paragraph.
-    const id = await definition.getAttribute("id")
-    await expect(term).toHaveAttribute("aria-describedby", id!)
-
-    // A press pins it, so the pointer can leave a definition still being read;
-    // Escape puts it away. That press is also the only way in on a phone.
-    await term.click()
-    await page.mouse.move(0, 0)
-    await expect(definition).toBeVisible()
-    await page.keyboard.press("Escape")
-    await expect(page.locator(".glossary-definition")).toHaveCount(0)
+    expect(Math.round((await definition.boundingBox())!.width)).toBeGreaterThan(200)
+    await still.close()
   })
 
   test("carries the whole glossary as a page of its own", async ({ page }) => {

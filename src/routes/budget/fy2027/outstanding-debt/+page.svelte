@@ -15,13 +15,14 @@
 <p><em>The city will evaluate debt limits per state statute and the city's debt policies.</em></p>
 
 <p>
-  <strong>City Debt Policy #1:</strong> In accordance with MGL c.58 s.10c, debt shall not exceed 5% of
-  the city's equalized valuation.
+  <strong>City Debt Policy #1:</strong> In accordance with MGL c.58 s.10c, debt shall not exceed 5%
+  of the city's equalized <GlossaryTerm term="Valuation">valuation</GlossaryTerm>.
 </p>
 
 <p>
-  <strong>Results:</strong> The city's total outstanding debt at the conclusion of 2027 will be 1.5% of
-  the city's equalized valuation. This translates into $175,745,444 in outstanding bonds.
+  <strong>Results:</strong> The city's total outstanding debt at the conclusion of 2027 will be 1.5%
+  of the city's equalized <GlossaryTerm term="Valuation">valuation</GlossaryTerm>. This translates
+  into $175,745,444 in outstanding bonds.
 </p>
 
 <BudgetTable table={LONG_TERM_DEBT} />
@@ -32,15 +33,18 @@
   <strong>City Debt Policy #2a:</strong> Annual <GlossaryTerm term="General Fund"
     >general fund</GlossaryTerm
   >
-  <GlossaryTerm term="Debt Service">debt service</GlossaryTerm> payments shall not exceed 4% of net general
-  fund operating revenue.
+  <GlossaryTerm term="Debt Service">debt service</GlossaryTerm> payments shall not exceed 4% of net <GlossaryTerm
+    term="General Fund">general fund</GlossaryTerm
+  > operating revenue.
 </p>
 
 <p>
-  <strong>Results:</strong> Debt service has remained well below the city's 4% benchmark, with 2027 debt
-  payments expected to continue at 3.1% of general fund revenue. Going forward, the city's current debt
-  payments will decline by 2&ndash;3% annually until 2044, when the first Consentino School construction
-  bond retires.
+  <strong>Results:</strong>
+  <GlossaryTerm term="Debt Service">Debt service</GlossaryTerm> has remained well below the city's 4%
+  benchmark, with 2027 debt payments expected to continue at 3.1% of <GlossaryTerm
+    term="General Fund">general fund</GlossaryTerm
+  > revenue. Going forward, the city's current debt payments will decline by 2&ndash;3% annually until
+  2044, when the first Consentino School construction bond retires.
 </p>
 
 <p>

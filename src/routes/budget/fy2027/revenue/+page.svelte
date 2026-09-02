@@ -26,11 +26,11 @@
   </li>
   <li>
     It generates <GlossaryTerm term="Free Cash">free cash</GlossaryTerm>, which the city has
-    historically used as a source of reserves, to fund capital, to fund snow and ice removal
-    expenses, to fund unforeseen emergency uses such as natural disasters (floods, storms, large
-    snow events), and to partially subsidize the <GlossaryTerm term="Operating Budget"
-      >operating budget</GlossaryTerm
-    >.
+    historically used as a source of reserves, to <GlossaryTerm term="Fund">fund</GlossaryTerm> capital,
+    to <GlossaryTerm term="Fund">fund</GlossaryTerm> snow and ice removal expenses, to <GlossaryTerm
+      term="Fund">fund</GlossaryTerm
+    > unforeseen emergency uses such as natural disasters (floods, storms, large snow events), and to
+    partially subsidize the <GlossaryTerm term="Operating Budget">operating budget</GlossaryTerm>.
   </li>
   <li>
     It helps build a sustainable budget that has more resilience during periods of economic
@@ -293,52 +293,59 @@
 <h2>What is the Tax Levy &amp; Prop 2&frac12;</h2>
 
 <p>
-  The property tax levy is the revenue a community can raise through real and personal property
-  taxes. In Massachusetts, municipal revenues support local spending for schools, public safety, and
-  other public services, which are raised through the property tax levy, state aid, local receipts,
-  and other sources. The property tax levy is the largest source of revenue for most cities and
-  towns.
+  The property tax <GlossaryTerm term="Levy">levy</GlossaryTerm> is the revenue a community can raise
+  through real and personal property taxes. In Massachusetts, municipal <GlossaryTerm
+    term="Revenues">revenues</GlossaryTerm
+  > support local spending for schools, public safety, and other public services, which are raised through
+  the property tax <GlossaryTerm term="Levy">levy</GlossaryTerm>, state aid, local receipts, and
+  other sources. The property tax <GlossaryTerm term="Levy">levy</GlossaryTerm> is the largest source
+  of revenue for most cities and towns.
 </p>
 
 <p>
-  Proposition 2 &frac12; places constraints on the amount of levy a city or town can raise and on
-  how much the levy can be increased from year to year. A community cannot levy more than 2.5
-  percent of the total full and fair cash value of all taxable real and personal property in the
-  community. This is known as the <GlossaryTerm term="Levy Ceiling">levy ceiling</GlossaryTerm>. A
-  community's levy is also constrained in that it can only increase by a certain amount from year to
-  year. This is known as the <GlossaryTerm term="Levy Limit">levy limit</GlossaryTerm>. The levy
-  limit will always be below, or at most, equal to the levy ceiling. The levy limit may not exceed
-  the levy ceiling.
+  Proposition 2 &frac12; places constraints on the amount of <GlossaryTerm term="Levy"
+    >levy</GlossaryTerm
+  > a city or town can raise and on how much the <GlossaryTerm term="Levy">levy</GlossaryTerm> can be
+  increased from year to year. A community cannot <GlossaryTerm term="Levy">levy</GlossaryTerm> more than
+  2.5 percent of the total full and fair cash value of all taxable real and personal property in the community.
+  This is known as the <GlossaryTerm term="Levy Ceiling">levy ceiling</GlossaryTerm>. A community's <GlossaryTerm
+    term="Levy">levy</GlossaryTerm
+  > is also constrained in that it can only increase by a certain amount from year to year. This is known
+  as the <GlossaryTerm term="Levy Limit">levy limit</GlossaryTerm>. The levy limit will always be
+  below, or at most, equal to the <GlossaryTerm term="Levy Ceiling">levy ceiling</GlossaryTerm>. The
+  levy limit may not exceed the <GlossaryTerm term="Levy Ceiling">levy ceiling</GlossaryTerm>.
 </p>
 
 <h3>Increases in the levy limit may result from the following:</h3>
 
 <ul>
   <li>
-    Each year, a community's levy limit automatically increases by 2.5 percent over the previous
-    year's levy limit. This does not require any action from local officials; the Department of
-    Revenue calculates this increase automatically.
+    Each year, a community's <GlossaryTerm term="Levy Limit">levy limit</GlossaryTerm> automatically increases
+    by 2.5 percent over the previous year's <GlossaryTerm term="Levy Limit">levy limit</GlossaryTerm
+    >. This does not require any action from local officials; the Department of Revenue calculates
+    this increase automatically.
   </li>
   <li>
-    A community can increase its levy limit each year to reflect <GlossaryTerm term="New Growth"
-      >new growth</GlossaryTerm
-    > in the tax base. Assessors must submit information on growth in the tax base for approval by the
-    Department of Revenue as part of the <GlossaryTerm term="Tax Rate">tax rate</GlossaryTerm
-    >-setting process.
+    A community can increase its <GlossaryTerm term="Levy Limit">levy limit</GlossaryTerm> each year to
+    reflect <GlossaryTerm term="New Growth">new growth</GlossaryTerm> in the tax base. Assessors must
+    submit information on growth in the tax base for approval by the Department of Revenue as part of
+    the <GlossaryTerm term="Tax Rate">tax rate</GlossaryTerm>-setting process.
   </li>
   <li>
-    A community can increase its levy limit by successfully voting an <GlossaryTerm term="Override"
-      >override</GlossaryTerm
-    >. The amount of the override becomes part of the levy limit base.
+    A community can increase its <GlossaryTerm term="Levy Limit">levy limit</GlossaryTerm> by successfully
+    voting an <GlossaryTerm term="Override">override</GlossaryTerm>. The amount of the <GlossaryTerm
+      term="Override">override</GlossaryTerm
+    > becomes part of the <GlossaryTerm term="Levy Limit">levy limit</GlossaryTerm> base.
   </li>
 </ul>
 
 <p>
   <em>
     Debt exclusions and capital outlay exclusions enable a community to permanently or temporarily
-    increase its levy limit or levy ceiling. A 2/3 vote of the city council is needed to place an
-    exclusion question on the ballot for community vote. A majority vote is then needed for the
-    exclusion to pass.
+    increase its <GlossaryTerm term="Levy Limit">levy limit</GlossaryTerm> or <GlossaryTerm
+      term="Levy Ceiling">levy ceiling</GlossaryTerm
+    >. A 2/3 vote of the city council is needed to place an exclusion question on the ballot for
+    community vote. A majority vote is then needed for the exclusion to pass.
   </em>
 </p>
 
@@ -356,29 +363,37 @@
   Proposition 2&frac12; was intended to limit local spending, but real spending growth of 0.6
   percent per year suggests the constraints may be too restrictive. This austere growth in spending
   has made it extremely difficult for cities and towns to attract staff, repair roads, and generally
-  fund the essential services their residents demand.
+  <GlossaryTerm term="Fund">fund</GlossaryTerm> the essential services their residents demand.
 </p>
 
 <h2>Prop 2 &frac12; Calculation</h2>
 
 <ul>
   <li>
-    The calculation for the Prop. 2&frac12; Levy Limit begins by taking the previous <GlossaryTerm
-      term="Fiscal Year">fiscal year</GlossaryTerm
-    >'s levy limit and applying a 2.5% increase. This amount serves as the Levy Base for the current
-    fiscal year.
+    The calculation for the Prop. 2&frac12; <GlossaryTerm term="Levy Limit">Levy Limit</GlossaryTerm
+    > begins by taking the previous <GlossaryTerm term="Fiscal Year">fiscal year</GlossaryTerm>'s <GlossaryTerm
+      term="Levy Limit">levy limit</GlossaryTerm
+    > and applying a 2.5% increase. This amount serves as the Levy Base for the current
+    <GlossaryTerm term="Fiscal Year">fiscal year</GlossaryTerm>.
   </li>
   <li>
-    Next, "New Growth" is incorporated into the levy base. "New Growth" refers to the increase in
+    Next, "<GlossaryTerm term="New Growth">New Growth</GlossaryTerm>" is incorporated into the <GlossaryTerm
+      term="Levy">levy</GlossaryTerm
+    > base. "<GlossaryTerm term="New Growth">New Growth</GlossaryTerm>" refers to the increase in
     property tax revenue due to new construction, subdivisions, renovations, or previously exempt
-    properties returning to the tax rolls. This allows municipalities to raise their levy limit
-    beyond the standard 2.5%. It represents the additional tax capacity resulting from physical
-    growth, separate from market-value increases from revaluations.
+    properties returning to the tax rolls. This allows municipalities to raise their <GlossaryTerm
+      term="Levy Limit">levy limit</GlossaryTerm
+    >
+    beyond the standard 2.5%. It represents the additional tax capacity resulting from physical growth,
+    separate from market-value increases from revaluations.
   </li>
   <li>
-    Lastly, Debt Exclusions are added, and the total of the levy base, New Growth, and Debt
-    Exclusion(s) establishes the Total Available Levy Limit that a city or town can tax up to in any
-    given fiscal year.
+    Lastly, Debt Exclusions are added, and the total of the <GlossaryTerm term="Levy"
+      >levy</GlossaryTerm
+    > base, <GlossaryTerm term="New Growth">New Growth</GlossaryTerm>, and Debt Exclusion(s)
+    establishes the Total Available Levy Limit that a city or town can tax up to in any given <GlossaryTerm
+      term="Fiscal Year">fiscal year</GlossaryTerm
+    >.
   </li>
 </ul>
 
@@ -459,7 +474,8 @@
   Local revenue receipts are funds generated at the local level, aside from property taxes. Some of
   the most common types of local receipts include excise taxes, regulatory fees (such as fines,
   licenses, and permits), user fees (for services such as water, sewer, and garbage), departmental
-  revenues, and investment income. Typically, local receipts are deposited into the community's
+  <GlossaryTerm term="Revenues">revenues</GlossaryTerm>, and investment income. Typically, local
+  receipts are deposited into the community's
   <GlossaryTerm term="General Fund">general fund</GlossaryTerm> unless they are designated for specific
   departmental uses in accordance with state regulations.
 </p>
@@ -469,8 +485,8 @@
   licenses, and firearms permits), while others can be negotiated (such as investment income and
   payments in lieu of taxes). Additionally, some revenue sources are established through the
   adoption of local ordinances or bylaws. With user fees, a community can set charges that either
-  partially or fully fund a particular service, and periodically reassess them to ensure an adequate
-  revenue stream to support those services.
+  partially or fully <GlossaryTerm term="Fund">fund</GlossaryTerm> a particular service, and periodically
+  reassess them to ensure an adequate revenue stream to support those services.
 </p>
 
 <h2>Local Excise Taxes</h2>
@@ -561,7 +577,8 @@
   A Payment in Lieu of Taxes (PILOT) is a contribution made by tax-exempt organizations or
   government entities to local governments to compensate for the loss of property tax revenue. These
   payments are generally voluntary or based on negotiated agreements, designed to help
-  municipalities fund essential public services, including fire safety and infrastructure.
+  municipalities <GlossaryTerm term="Fund">fund</GlossaryTerm> essential public services, including fire
+  safety and infrastructure.
 </p>
 
 <h3>Waste Disposal Fee as a PILOT Agreement</h3>
@@ -719,15 +736,16 @@
 <h2>Department Revenue</h2>
 
 <p>
-  Department revenue consists of funds received by local departments&mdash;such as police, public
-  works, and town clerk&mdash;that do not come from property taxes, local aid, or specific state
-  grants.
+  <GlossaryTerm term="Department">Department</GlossaryTerm> revenue consists of funds received by local
+  departments&mdash;such as police, public works, and town clerk&mdash;that do not come from property
+  taxes, local aid, or specific state grants.
 </p>
 
 <p>
   This year, the estimate for cable fees has been lowered for the segment of the franchise fee
   allocated to capital. This reduction will be deposited to the newly established Cable Public
-  Access revolving fund, which was adopted by the City Council in 2026.
+  Access revolving <GlossaryTerm term="Fund">fund</GlossaryTerm>, which was adopted by the City
+  Council in 2026.
 </p>
 
 <p>
@@ -965,23 +983,30 @@
 <h2>Other Available Revenue</h2>
 
 <p>
-  This revenue group comprises free cash used to support the operating budget, indirect receipts
-  from <GlossaryTerm term="Enterprise Funds">Enterprise funds</GlossaryTerm> for administrative overhead
-  reimbursement, and funding from the Hospital Trust fund, which subsidizes the Public Health department.
+  This revenue group comprises <GlossaryTerm term="Free Cash">free cash</GlossaryTerm> used to support
+  the <GlossaryTerm term="Operating Budget">operating budget</GlossaryTerm>, indirect receipts from <GlossaryTerm
+    term="Enterprise Funds">Enterprise funds</GlossaryTerm
+  > for administrative overhead reimbursement, and funding from the Hospital Trust fund, which subsidizes
+  the Public Health department.
 </p>
 
 <p>
-  Since 2025, the city has made a concerted effort to reduce the annual allocation from free cash,
-  aligning with the current administration's goal. By decreasing reliance on free cash (one-time
-  funds) for recurring expenses, this strategy aims to foster a structurally sustainable operating
-  budget.
+  Since 2025, the city has made a concerted effort to reduce the annual allocation from <GlossaryTerm
+    term="Free Cash">free cash</GlossaryTerm
+  >, aligning with the current administration's goal. By decreasing reliance on <GlossaryTerm
+    term="Free Cash">free cash</GlossaryTerm
+  > (one-time funds) for recurring expenses, this strategy aims to foster a structurally sustainable <GlossaryTerm
+    term="Operating Budget">operating budget</GlossaryTerm
+  >.
 </p>
 
 <p>
-  In Massachusetts, Free Cash is a certified, unrestricted revenue source that represents unspent
-  funds from the previous fiscal year's operations. It is calculated by the Department of Revenue's
-  (DOR) Division of Local Services and is generated when actual revenues exceed budget estimates,
-  and expenditures are lower than appropriations.
+  In Massachusetts, <GlossaryTerm term="Free Cash">Free Cash</GlossaryTerm> is a certified, unrestricted
+  revenue source that represents unspent funds from the previous <GlossaryTerm term="Fiscal Year"
+    >fiscal year</GlossaryTerm
+  >'s operations. It is calculated by the Department of Revenue's (DOR) Division of Local Services
+  and is generated when actual <GlossaryTerm term="Revenues">revenues</GlossaryTerm> exceed budget estimates,
+  and <GlossaryTerm term="Expenditures">expenditures</GlossaryTerm> are lower than appropriations.
 </p>
 
 <table>
@@ -1316,10 +1341,10 @@
 <h3>The 10-Year Revenue Estimate includes the following</h3>
 
 <ul>
-  <li>Increases the annual tax levy by 3.3%</li>
+  <li>Increases the annual tax <GlossaryTerm term="Levy">levy</GlossaryTerm> by 3.3%</li>
   <li>Allocates 100% of Ch. 70 to the School</li>
   <li>Projects local receipts based on recent trends</li>
-  <li>Reduce the amount of free cash used to 20%</li>
+  <li>Reduce the amount of <GlossaryTerm term="Free Cash">free cash</GlossaryTerm> used to 20%</li>
 </ul>
 
 <!-- Page 78, "2027 Budget in Brief": revenue by source, which is where the pie

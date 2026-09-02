@@ -1,21 +1,22 @@
 #!/usr/bin/env node
 /**
- * Every term the budget book defines should be defined for the reader where the
- * book's prose first uses it. This finds the ones that are not, and with
- * `--fix` wraps them.
+ * Every term the budget book defines should be defined for the reader wherever
+ * the book's prose uses it. This finds the ones that are not, and with `--fix`
+ * wraps them in `GlossaryTerm`.
  *
- * The rule is the first occurrence in a page, not every occurrence: "levy"
- * appears thirty-one times on the revenue page, and thirty-one dotted
- * underlines in one page of prose is a page nobody can read. The first one
- * answers the question; the rest are the same word.
+ * Every use, not the first: a reader who arrives at a page halfway down, from a
+ * link or a search, has not passed the paragraph where the word happened to be
+ * introduced. The wrapper is a link rather than a control, so the cost of that
+ * is a dotted underline and an entry in the page's list of links, which is what
+ * a reference to a definition should be.
  *
  * What counts as prose is everything a reader reads except the parts where a
- * wrapper cannot go or does not belong: `<script>` blocks, comments, tables
- * (a cell is a figure, not a sentence), and headings (the book's own words as
- * a title, where a tooltip would be chrome on a chrome).
+ * wrapper cannot go or does not belong: `<script>` blocks, comments, tables (a
+ * cell is a figure, not a sentence), and headings (the book's own words as a
+ * title, where a definition would be chrome on a chrome).
  *
  * Run by `npm run glossary:check`, which `npm run lint` calls, so a page that
- * introduces a term without defining it fails the same way a formatting slip
+ * uses a defined term without defining it fails the same way a formatting slip
  * does.
  */
 import { readFileSync, writeFileSync } from "node:fs"
@@ -26,29 +27,29 @@ import { dirname, join, relative } from "node:path"
 const root = join(dirname(fileURLToPath(import.meta.url)), "..")
 const { terms } = JSON.parse(readFileSync(join(root, "src/lib/data/glossary.json"), "utf8"))
 
-/**
- * Terms the book defines but also uses as ordinary English, which are not worth
- * a dotted line under: nobody reading "the Water Department" wants "a principal,
- * functional and administrative entity created by the manager", and "fund"
- * inside "the fund used to account for" is the same word as everywhere else.
- * They stay in the glossary; they are not required in the prose.
- */
-const GENERIC = new Set([
-  "Audit",
-  "Deficit",
-  "Department",
-  "Expenditures",
-  "Fund",
-  "Grant",
-  "Revenues",
-  "Valuation",
-])
-
 /** Longest first, so "Levy Limit" is matched before "Levy". */
-const names = terms
-  .map((t) => t.term)
-  .filter((term) => !GENERIC.has(term))
-  .sort((a, b) => b.length - a.length)
+const names = terms.map((t) => t.term).sort((a, b) => b.length - a.length)
+
+/**
+ * Whether a match is part of a name rather than a use of the term.
+ *
+ * The book defines "Department" and also writes "Water Department", "School
+ * Department", "Department of Revenue" -- none of which is the glossary's
+ * "principal, functional and administrative entity created by the manager". The
+ * same goes for "Fund" in "Stabilization Fund" and "Grant" in a grant
+ * programme's name. A capitalised word on either side, or "of" and a
+ * capitalised word after, is what tells them apart.
+ */
+const partOfAName = (prose, at, text) => {
+  const before = prose.slice(Math.max(0, at - 40), at)
+  const after = prose.slice(at + text.length, at + text.length + 40)
+
+  return (
+    /(^|\s)[A-Z][\w'’-]*\s*$/.test(before) ||
+    /^\s*[A-Z][\w'’-]*/.test(after) ||
+    /^\s*of\s+[A-Z]/.test(after)
+  )
+}
 
 /** The pages the rule applies to: the book's transcriptions. */
 const pages = globSync("src/routes/budget/*/**/+page.svelte", { cwd: root })
@@ -73,12 +74,13 @@ const blanked = (source) =>
 
 const escaped = (term) => term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
 
-/** Where a term is first used in a page's prose, or null. */
-const firstUse = (prose, term) => {
-  const pattern = new RegExp(`\\b${escaped(term).replace(/\s+/g, "\\s+")}\\b`, "i")
-  const at = prose.search(pattern)
-  if (at < 0) return null
-  return { at, text: prose.slice(at).match(pattern)[0] }
+/** Every use of a term in a page's prose that is not part of a name. */
+const usesOf = (prose, term) => {
+  const pattern = new RegExp(`\\b${escaped(term).replace(/\s+/g, "\\s+")}\\b`, "gi")
+
+  return [...prose.matchAll(pattern)]
+    .map((m) => ({ at: m.index, text: m[0] }))
+    .filter((use) => !partOfAName(prose, use.at, use.text))
 }
 
 let missing = 0
@@ -89,29 +91,26 @@ for (const page of pages) {
   const file = join(root, page)
   let source = readFileSync(file, "utf8")
 
-  // One term at a time, re-blanking after each fix so offsets stay true.
+  // One term at a time, and one use at a time within it: blanking is redone
+  // after every wrap so that the offsets of the next one are still true, and so
+  // that a use inside a wrapper already added is not wrapped again.
   for (const term of names) {
-    // Already answered on this page. A page needs one wrapper per term, not one
-    // per use, so a later mention of the same word is not a second failure.
-    // `\\s+` between the tag and the attribute: prettier breaks a long tag over
-    // two lines, and a wrapper this did not recognise would be added twice.
-    if (new RegExp(`<GlossaryTerm\\s+term="${escaped(term)}"`).test(source)) continue
+    for (;;) {
+      const use = usesOf(blanked(source), term)[0]
+      if (!use) break
 
-    const prose = blanked(source)
-    const use = firstUse(prose, term)
-    if (!use) continue
+      if (!fix) {
+        missing += 1
+        console.log(`${relative(root, file)}: "${use.text}" is not defined (${term})`)
+        break
+      }
 
-    if (!fix) {
-      missing += 1
-      console.log(`${relative(root, file)}: "${use.text}" is not wrapped (${term})`)
-      continue
+      source =
+        source.slice(0, use.at) +
+        `<GlossaryTerm term="${term}">${use.text}</GlossaryTerm>` +
+        source.slice(use.at + use.text.length)
+      fixed += 1
     }
-
-    source =
-      source.slice(0, use.at) +
-      `<GlossaryTerm term="${term}">${use.text}</GlossaryTerm>` +
-      source.slice(use.at + use.text.length)
-    fixed += 1
   }
 
   // The import goes after the ones a page already has, or opens a script block
@@ -135,10 +134,10 @@ for (const page of pages) {
 }
 
 if (fix) {
-  console.log(`wrapped ${fixed} first uses`)
+  console.log(`wrapped ${fixed} uses`)
 } else if (missing) {
-  console.log(`\n${missing} first use(s) of a defined term are not wrapped; run with --fix`)
+  console.log(`\n${missing} use(s) of a defined term are not defined; run with --fix`)
   process.exit(1)
 } else {
-  console.log(`every defined term the pages use is defined where it is first used`)
+  console.log(`every use of a defined term carries its definition`)
 }

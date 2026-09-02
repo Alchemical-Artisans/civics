@@ -17,10 +17,11 @@
 <h2>Capital Planning</h2>
 
 <p>
-  The city keeps a continuous inventory of all capital requirements to effectively connect grant
-  opportunities with its needs and to plan for long-term budgeting and strategic objectives. These
-  requests are reviewed annually during the budgeting cycle, allowing for the allocation of funds
-  for:
+  The city keeps a continuous inventory of all capital requirements to effectively connect <GlossaryTerm
+    term="Grant">grant</GlossaryTerm
+  >
+  opportunities with its needs and to plan for long-term budgeting and strategic objectives. These requests
+  are reviewed annually during the budgeting cycle, allowing for the allocation of funds for:
 </p>
 
 <ul>
@@ -29,15 +30,20 @@
 </ul>
 
 <p>
-  Department heads are required to submit a written capital request that details the project and
-  includes a cost estimate. The Mayor's budget team assesses these requests in collaboration with
-  each department, fostering discussion and enhancing project understanding.
+  <GlossaryTerm term="Department">Department</GlossaryTerm> heads are required to submit a written capital
+  request that details the project and includes a cost estimate. The Mayor's budget team assesses these
+  requests in collaboration with each <GlossaryTerm term="Department">department</GlossaryTerm>,
+  fostering discussion and enhancing project understanding.
 </p>
 
 <p>In making final funding recommendations to the Mayor, the budget team considers:</p>
 
 <ul>
-  <li>The urgency of the project as determined by the department head and the Mayor</li>
+  <li>
+    The urgency of the project as determined by the <GlossaryTerm term="Department"
+      >department</GlossaryTerm
+    > head and the Mayor
+  </li>
   <li>Any implications for public safety</li>
   <li>Any legal obligations associated with project completion</li>
   <li>The financial impact on the city</li>
@@ -154,16 +160,18 @@
 <p>
   The city's current five-year capital requests exceed $173 million, primarily focusing on building
   maintenance and construction projects, including JG Whittier Middle School and a new fire station.
-  To help alleviate the financial burden of the JG Whittier project, the city is applying for grant
-  funding from the MSBA (Massachusetts School Building Authority), similar to the support previously
-  obtained for Hunking and Consentino.
+  To help alleviate the financial burden of the JG Whittier project, the city is applying for <GlossaryTerm
+    term="Grant">grant</GlossaryTerm
+  >
+  funding from the MSBA (Massachusetts School Building Authority), similar to the support previously obtained
+  for Hunking and Consentino.
 </p>
 
 <p>
   Significant infrastructure requirements also encompass the removal and reconstruction of the
   Little River Dam, with total costs anticipated to surpass $9.5 million. The city has already
-  secured a $5 million grant and is actively pursuing additional funding to cover a portion of the
-  remaining expenses.
+  secured a $5 million <GlossaryTerm term="Grant">grant</GlossaryTerm> and is actively pursuing additional
+  funding to cover a portion of the remaining expenses.
 </p>
 
 <p>
@@ -1017,16 +1025,15 @@
 
 <h4>SCBA - Fire</h4>
 <p>
-  The fire department respectfully submits this capital budget request in the amount of
-  $1,290,863.00 for the replacement of our current SCBA units. The existing equipment is reaching
-  the end of its service life, and the costs associated with maintenance and repairs continues to
-  rise. Replacing the fleet at this time will ensure that firefighters have reliable, modern
-  respiratory protection that meets current safety standards. This request is also driven by the
-  departments ongoing growth and planned new apparatus in the coming year. New SCBA units now will
-  support operational expansion, maintain uniformity of equipment across all front line vehicles,
-  and reduce long term expenses by avoiding piecemeal or emergency replacements. Upgrading now is
-  both cost effective and strategically advantageous for both operational readiness and the health
-  and safety of our firefighters.
+  The fire <GlossaryTerm term="Department">department</GlossaryTerm> respectfully submits this capital
+  budget request in the amount of $1,290,863.00 for the replacement of our current SCBA units. The existing
+  equipment is reaching the end of its service life, and the costs associated with maintenance and repairs
+  continues to rise. Replacing the fleet at this time will ensure that firefighters have reliable, modern
+  respiratory protection that meets current safety standards. This request is also driven by the departments
+  ongoing growth and planned new apparatus in the coming year. New SCBA units now will support operational
+  expansion, maintain uniformity of equipment across all front line vehicles, and reduce long term expenses
+  by avoiding piecemeal or emergency replacements. Upgrading now is both cost effective and strategically
+  advantageous for both operational readiness and the health and safety of our firefighters.
 </p>
 <p><strong>Essential</strong> &mdash; $1,290,863</p>
 
@@ -1066,7 +1073,7 @@
 <h4>Kenoza Ave Improvements - Highway</h4>
 <p>
   Complete Streets improvements on Kenoza Avenue, including pedestrian and bicycle facilities, to
-  strengthen neighborhood accessibility; $500K grant supported.
+  strengthen neighborhood accessibility; $500K <GlossaryTerm term="Grant">grant</GlossaryTerm> supported.
 </p>
 <p><strong>Moderate</strong> &mdash; $200,000</p>
 
@@ -1078,8 +1085,9 @@
   project will reduce long-term dam failure risk and downstream impacts, improve flood resilience
   and river hydraulics, restore aquatic habitat and fish passage, and advance City goals for climate
   adaptation, infrastructure resilience, environmental restoration, and economic development. The
-  estimated project cost is $9.5 million. City currently has $5 million in grant money leaving a
-  funding gap of $4.5 million at this time.
+  estimated project cost is $9.5 million. City currently has $5 million in <GlossaryTerm
+    term="Grant">grant</GlossaryTerm
+  > money leaving a funding gap of $4.5 million at this time.
 </p>
 <p><strong>Moderate</strong> &mdash; $4,500,000</p>
 
@@ -1105,7 +1113,9 @@
 
 <h4>Sidewalks - Annual Repair &amp; Replace - Highway</h4>
 <p>
-  This <GlossaryTerm term="Annual Budget">annual budget</GlossaryTerm> allocation will enable the department
+  This <GlossaryTerm term="Annual Budget">annual budget</GlossaryTerm> allocation will enable the <GlossaryTerm
+    term="Department">department</GlossaryTerm
+  >
   to remediate all non-compliant curb ramps and poor condition sidewalks over the next 30 years per engineering
   consultant.
 </p>
@@ -1173,7 +1183,7 @@
   historical and cultural viewing natural sites. By linking these trails, the project will enhance
   outdoor recreation, celebrate the area's natural beauty, and honor its agricultural heritage.
   Having been selected as an alternate project in 2025, the City anticipates funding in the current
-  grant round.
+  <GlossaryTerm term="Grant">grant</GlossaryTerm> round.
 </p>
 <p><strong>High</strong> &mdash; $33,820</p>
 
@@ -1223,12 +1233,13 @@
 
 <p>
   <em>
-    Due to budget limitations stemming from decreasing revenues and rising inflation, along with
-    uncertainties at both government and global levels, the Mayor's budget team has put forward
-    initial funding recommendations. However, the Mayor and CFO have suggested postponing final
-    funding decisions, potentially until later in fiscal 2027. This delay would enable a
-    reassessment of the economic climate and the exploration of viable, sustainable funding
-    alternatives. It would also allow for the certification of the city's fiscal 2026 <GlossaryTerm
+    Due to budget limitations stemming from decreasing <GlossaryTerm term="Revenues"
+      >revenues</GlossaryTerm
+    > and rising inflation, along with uncertainties at both government and global levels, the Mayor's
+    budget team has put forward initial funding recommendations. However, the Mayor and CFO have suggested
+    postponing final funding decisions, potentially until later in fiscal 2027. This delay would enable
+    a reassessment of the economic climate and the exploration of viable, sustainable funding alternatives.
+    It would also allow for the certification of the city's fiscal 2026 <GlossaryTerm
       term="Free Cash">free cash</GlossaryTerm
     > and determine any excess available for capital projects.
   </em>
@@ -1275,11 +1286,13 @@
 
 <ul>
   <li>
-    Estimates actual and future costs for debt service according to the capital improvement plan.
+    Estimates actual and future costs for <GlossaryTerm term="Debt Service"
+      >debt service</GlossaryTerm
+    > according to the capital improvement plan.
   </li>
   <li>
-    Includes a placeholder for debt service starting in 2033 for JG Whittier Middle School and a
-    Fire Station.
+    Includes a placeholder for <GlossaryTerm term="Debt Service">debt service</GlossaryTerm> starting
+    in 2033 for JG Whittier Middle School and a Fire Station.
   </li>
   <li>Reflects a 4.98% increase in employee benefits.</li>
   <li>
@@ -1515,14 +1528,18 @@
 <h2>Summary Department Budget Requests</h2>
 
 <p>
-  Due to budgetary constraints, not all requested items could be included in the 2027 operating
-  budget. Some requests, such as Fire Department supplies and street voting lists, will be phased in
-  over several years. Higher-priority needs, like the Police body camera implementation, were
-  addressed first. The Police Department secured a $250,000 state grant to offset implementation
-  costs for this initiative. The operating budget supplements the grant by covering related staffing
-  and video storage expenses. Additionally, the Mayor restructured the Public Works Department to
-  improve operations and provide strategic oversight. Finally, the proposed budget includes step and
-  COLA increases for non-union staff to ensure pay equity with collectively bargained employees.
+  Due to budgetary constraints, not all requested items could be included in the 2027 <GlossaryTerm
+    term="Operating Budget">operating budget</GlossaryTerm
+  >. Some requests, such as Fire Department supplies and street voting lists, will be phased in over
+  several years. Higher-priority needs, like the Police body camera implementation, were addressed
+  first. The Police Department secured a $250,000 state <GlossaryTerm term="Grant"
+    >grant</GlossaryTerm
+  > to offset implementation costs for this initiative. The operating budget supplements the <GlossaryTerm
+    term="Grant">grant</GlossaryTerm
+  > by covering related staffing and video storage expenses. Additionally, the Mayor restructured the
+  Public Works Department to improve operations and provide strategic oversight. Finally, the proposed
+  budget includes step and COLA increases for non-union staff to ensure pay equity with collectively bargained
+  employees.
 </p>
 
 <table>
@@ -1594,7 +1611,8 @@
 
 <p>
   The challenge was to meet these budget goals amidst rising inflation and declining state and
-  federal revenues, all while minimizing the impact on local property taxes.
+  federal <GlossaryTerm term="Revenues">revenues</GlossaryTerm>, all while minimizing the impact on
+  local property taxes.
 </p>
 
 <p>Some significant budgetary hurdles for 2027 included:</p>
@@ -1643,14 +1661,16 @@
 <p>
   Despite these adjustments, the city remained significantly far from achieving a <GlossaryTerm
     term="Balanced Budget">balanced budget</GlossaryTerm
-  >. We undertook a comprehensive reassessment of revenues using actual figures up to March and
-  meticulously analyzed departmental budgets line by line to identify potential savings. Ultimately,
-  we recommend the following budget adjustments:
+  >. We undertook a comprehensive reassessment of <GlossaryTerm term="Revenues"
+    >revenues</GlossaryTerm
+  > using actual figures up to March and meticulously analyzed departmental budgets line by line to identify
+  potential savings. Ultimately, we recommend the following budget adjustments:
 </p>
 
 <ul>
   <li>
-    Fund vacant positions at <strong>50%</strong>, reducing the budget by <strong>$275,000</strong>
+    <GlossaryTerm term="Fund">Fund</GlossaryTerm> vacant positions at <strong>50%</strong>, reducing
+    the budget by <strong>$275,000</strong>
     (approximately <strong>5.5 FTEs</strong>)
   </li>
   <li>
@@ -1670,8 +1690,9 @@
     Lower group insurance for anticipated vacancies and attrition by <strong>$509,859</strong>
   </li>
   <li>
-    Reduce salary and budget reserve by <strong>$890,000</strong> (previously used to fund collective
-    bargaining settlements and snow removal deficits)
+    Reduce salary and budget reserve by <strong>$890,000</strong> (previously used to <GlossaryTerm
+      term="Fund">fund</GlossaryTerm
+    > collective bargaining settlements and snow removal deficits)
   </li>
   <li>
     Reduce debt service by <strong>$90,479</strong> due to bond issue with lower than estimated interest
@@ -1686,21 +1707,29 @@
 <h3>Final Recommendations</h3>
 
 <p>
-  The final recommendation to balance the 2027 operating budget involves utilizing a portion of the
-  city's tax <strong>levy reserve</strong>. This option was carefully considered to prevent creating
-  a structurally unbalanced budget or leaving unresolved issues for 2028. The city's projected
-  excess levy for 2027, which represents the amount of funds that can be appropriated without a
-  referendum, totals <strong>$2.6 million</strong>. Using the entire excess levy would undoubtedly
-  lead to a deficit for 2028, likely resulting in layoffs.
+  The final recommendation to balance the 2027 <GlossaryTerm term="Operating Budget"
+    >operating budget</GlossaryTerm
+  > involves utilizing a portion of the city's tax
+  <strong><GlossaryTerm term="Levy">levy</GlossaryTerm> reserve</strong>. This option was carefully
+  considered to prevent creating a structurally unbalanced budget or leaving unresolved issues for
+  2028. The city's projected excess <GlossaryTerm term="Levy">levy</GlossaryTerm> for 2027, which represents
+  the amount of funds that can be appropriated without a referendum, totals
+  <strong>$2.6 million</strong>. Using the entire excess <GlossaryTerm term="Levy"
+    >levy</GlossaryTerm
+  > would undoubtedly lead to a <GlossaryTerm term="Deficit">deficit</GlossaryTerm> for 2028, likely resulting
+  in layoffs.
 </p>
 
 <p>
   The <strong>Mayor's budget proposal includes a year-over-year budget increase of 2.9%</strong> and
-  using an additional <strong>$1.1 million</strong> from the city's levy reserve, leaving an excess
-  tax levy of <strong>$1.5 million</strong>. Utilizing this additional levy will increase the
-  estimated tax bill by <strong>4.1%</strong>, or <strong>$244.97</strong> for the average
-  single-family home, based on the 2026 valuations and tax shift percentages. The tax bill increase
-  for the average single-family home in 2026 was <strong>4.6%</strong>.
+  using an additional <strong>$1.1 million</strong> from the city's <GlossaryTerm term="Levy"
+    >levy</GlossaryTerm
+  > reserve, leaving an excess tax <GlossaryTerm term="Levy">levy</GlossaryTerm> of
+  <strong>$1.5 million</strong>. Utilizing this additional <GlossaryTerm term="Levy"
+    >levy</GlossaryTerm
+  > will increase the estimated tax bill by <strong>4.1%</strong>, or <strong>$244.97</strong> for
+  the average single-family home, based on the 2026 valuations and tax shift percentages. The tax
+  bill increase for the average single-family home in 2026 was <strong>4.6%</strong>.
 </p>
 
 <h3>Major Budget Driver - Group Health Insurance</h3>

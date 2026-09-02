@@ -87,6 +87,15 @@ export class Router {
     return path(`/budget/${id}/${section}`)
   }
 
+  /**
+   * One term in a book's glossary, which is where a defined word in the city's
+   * prose leads. The fragment is the term slugged, and the page puts that id on
+   * every entry.
+   */
+  static glossaryTerm(id: string, slug: string): string {
+    return path(`/budget/${id}/glossary#${slug}`)
+  }
+
   /** Scaffolding from `sv create`, kept because the e2e suite drives it. */
   static demo(): string {
     return path("/demo")
