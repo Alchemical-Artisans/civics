@@ -256,11 +256,6 @@
          wrapper is `relative` and the reading keeps its own measure. -->
     <div class="lg:relative lg:min-h-0 lg:flex-1 lg:overflow-y-auto">
       <div class="max-w-3xl">
-        <p>
-          <em>The city will evaluate debt limits per state statute and the city's debt policies.</em
-          >
-        </p>
-
         <!--
           Three policies, three collapsed sections, closed until asked for --
           the same treatment `reserves` gives its four, and the same reasons:
@@ -400,17 +395,6 @@
             </p>
           </div>
         </details>
-
-        <h2>Debt Comparison to State Average</h2>
-
-        <p>
-          <em>
-            Haverhill's debt per capita has historically remained below the state average. It
-            increased in 2026 with the addition of the Consentino debt. As of now, the state's 2026
-            average has not been reported in the DLS databank; therefore, the chart below uses an
-            estimate.
-          </em>
-        </p>
 
         <BookReferences items={data.references} book={data.book} />
       </div>
