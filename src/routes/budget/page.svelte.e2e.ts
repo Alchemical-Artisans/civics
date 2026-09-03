@@ -431,6 +431,97 @@ test.describe("budget pages", () => {
     await expect(page.getByRole("article")).not.toContainText("$173,903,952")
   })
 
+  test("tabs the eight capital-request tables in place, on script alone", async ({ page }) => {
+    await page.goto(spendingUrl("capital-planning"))
+
+    // Scoped to the tabbed table group itself: "Vehicles" and most of the
+    // other seven category names are repeated below as `<h3>`s over the
+    // 2027 write-ups, which answer to none of this tab set.
+    const tables = page.locator(".tables")
+
+    // Eight tabs, Buildings open on arrival -- and only Buildings: the other
+    // seven tables are not merely scrolled away, they are out of the
+    // accessibility tree entirely until their own tab is opened. This is a
+    // script switch, not a route -- eight tables of one dataset are facets
+    // of one topic rather than eight of their own, unlike the routes above.
+    await expect(tables.getByRole("tab")).toHaveCount(8)
+    await expect(
+      tables.getByRole("tab", { name: "Buildings & Building Improvements" }),
+    ).toHaveAttribute("aria-selected", "true")
+    await expect(tables.getByRole("heading", { name: "Vehicles", exact: true })).toHaveCount(0)
+    await expect(tables.getByRole("row", { name: /^Trash Truck - Highway/ })).toHaveCount(0)
+
+    // Left/Right move between tabs and select the one moved to, Home/End
+    // jump to the ends -- the same keyboard pattern the five routes above
+    // used before they were routes. Tested from Buildings' own starting
+    // focus, since the component moves relative to the *selected* tab, not
+    // merely the focused one, and clicking ahead first would leave the two
+    // apart.
+    await tables.getByRole("tab", { name: "Buildings & Building Improvements" }).focus()
+    await page.keyboard.press("ArrowRight")
+    await expect(tables.getByRole("tab", { name: "Computer Equipment" })).toHaveAttribute(
+      "aria-selected",
+      "true",
+    )
+    await expect(tables.getByRole("tab", { name: "Computer Equipment" })).toBeFocused()
+    await page.keyboard.press("End")
+    await expect(tables.getByRole("tab", { name: "Vehicles" })).toHaveAttribute(
+      "aria-selected",
+      "true",
+    )
+    await page.keyboard.press("Home")
+    await expect(
+      tables.getByRole("tab", { name: "Buildings & Building Improvements" }),
+    ).toHaveAttribute("aria-selected", "true")
+
+    // Opening a tab by pointer is what puts its table on the page, and
+    // closes Buildings the same way.
+    await tables.getByRole("tab", { name: "Vehicles" }).click()
+    await expect(tables.getByRole("tab", { name: "Vehicles" })).toHaveAttribute(
+      "aria-selected",
+      "true",
+    )
+    await expect(
+      tables.getByRole("tab", { name: "Buildings & Building Improvements" }),
+    ).toHaveAttribute("aria-selected", "false")
+    await expect(tables.getByRole("heading", { name: "Vehicles", exact: true })).toBeVisible()
+    await expect(tables.getByRole("row", { name: /^Trash Truck - Highway/ })).toBeVisible()
+    await expect(
+      tables.getByRole("heading", { name: "Buildings & Building Improvements" }),
+    ).toHaveCount(0)
+
+    // The book's own per-year grand total sits at the foot of the last
+    // table, where the book prints it -- not scoped to "Vehicles", but
+    // reachable from it since that is where the page run it came off ends.
+    await expect(tables.getByRole("row", { name: /^Grand Total/ })).toContainText("$17,219,620")
+  })
+
+  test("keeps all eight capital-request tables on the page without script", async ({ browser }) => {
+    const context = await browser.newContext({ javaScriptEnabled: false })
+    const noscript = await context.newPage()
+    await noscript.goto(spendingUrl("capital-planning"))
+
+    // Hidden markup rather than markup that is not there: a reader who never
+    // hydrates gets every table, stacked, and no tab bar to click that would
+    // not do anything anyway.
+    await expect(noscript.getByRole("tab")).toHaveCount(0)
+    const tables = noscript.locator(".tables")
+    for (const heading of [
+      "Buildings & Building Improvements",
+      "Computer Equipment",
+      "Computer Software",
+      "Equipment",
+      "Infrastructure",
+      "Land & Land Improvements",
+      "Planning & Design",
+      "Vehicles",
+    ]) {
+      await expect(tables.getByRole("heading", { name: heading, exact: true })).toBeVisible()
+    }
+
+    await context.close()
+  })
+
   test("splits spending into one route per topic, linked by a plain nav", async ({ page }) => {
     await page.goto(spendingUrl("goals"))
 

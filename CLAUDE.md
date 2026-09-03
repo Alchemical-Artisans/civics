@@ -410,7 +410,15 @@ Notable pieces:
   was the same fact twice. `spending.spec.ts` pins `SPENDING_TOTAL`, checks
   the capital table against
   its own row and column totals, and pins the two excluded projects' figures
-  against the book's own 2028 totals.
+  against the book's own 2028 totals. Pages 30 to 35's own line-item tables,
+  one per category below the chart, are tabbed in place -- the
+  `live`/hidden-markup mechanism `spending`'s own topics used before they
+  became routes, one level deeper: eight tables of one shape are facets of a
+  single dataset rather than eight topics worth a route and a bookmark each.
+  The book's own "Grand Total" row sits at the foot of the last table (a
+  page-layout accident, not Vehicles' own total) and stays there rather than
+  being pulled into a ninth table, since the chart above already reads the
+  same figures off `CAPITAL_REQUESTS` directly.
 - **`src/lib/BudgetTimeline.svelte`** draws page 13, the budget calendar, as the
   footer of _every_ page of a book, fixed to the bottom of the window: a row of
   twelve boxes

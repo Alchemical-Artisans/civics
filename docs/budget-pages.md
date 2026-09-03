@@ -786,6 +786,28 @@ and pins the two excluded projects' figures against the book's own 2028
 totals, so a book update that moves either project's cost is a failing test
 rather than a chart that quietly disagrees with them.
 
+**Pages 30 to 35's own line-item tables, one per category below the chart,
+are tabbed in place -- the mechanism the five topics above used before they
+became routes, brought back a level deeper.** Eight tables of the same shape
+(`<th scope="col">` years, a row per project, a category total) are facets of
+one dataset rather than eight distinct topics, so giving each its own route
+the way Goals or Council Orders got would be a page with nothing on it but
+one table -- not a destination worth bookmarking, unlike those five. The
+`live`/hidden-markup handoff is identical to the one `spending`'s own topics
+carried and `SiteHeader`'s menu still does: `tablesLive`, `false` until the
+component mounts, is what a CSS rule hiding seven of eight panels is keyed
+on, so a reader who never hydrates gets all eight tables stacked, exactly as
+this page rendered before tabs existed at either level. Left/Right/Home/End
+move the same way the route-level tabs' keyboard handling did, since a
+script switch still wants that pattern even where a route doesn't need one
+at all. The book's own "Grand Total" row -- the five years' totals summed
+_across_ every category, not a total _of_ "Vehicles" -- sits at the foot of
+the last table because that is where the book's own page run happens to end,
+not because it belongs to Vehicles specifically; it is left there rather
+than pulled into a ninth, untabbed table; a reader who wants it already has
+it from the chart above, which reads the same figures off `CAPITAL_REQUESTS`
+directly.
+
 ### history-forecasts
 
 **Every year but this one.** `/budget/fy2027/history` is titled

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onMount } from "svelte"
   import BudgetColumns from "$lib/BudgetColumns.svelte"
   import GlossaryTerm from "$lib/GlossaryTerm.svelte"
   import { CAPITAL_REQUESTS } from "../../tables"
@@ -69,6 +70,43 @@
   const excludedSummary = [
     { label: "Excluded from 2028", parts: EXCLUDED_PROJECTS, total: excludedTotal },
   ]
+
+  /**
+   * Pages 30 to 35's own tables, one per category -- eight short tables of
+   * the same shape, facets of one dataset rather than eight distinct topics,
+   * so a route each the way the five topics above got would be a page with
+   * nothing on it but one table. Tabbed in place instead, the same
+   * `live`/hidden-markup mechanism `spending`'s own topics used before they
+   * became routes -- right again here, since nothing here needs linking to
+   * on its own the way "Council Orders" did.
+   */
+  const TABLES = [
+    { slug: "buildings", label: "Buildings & Building Improvements" },
+    { slug: "computer-equipment", label: "Computer Equipment" },
+    { slug: "computer-software", label: "Computer Software" },
+    { slug: "equipment", label: "Equipment" },
+    { slug: "infrastructure", label: "Infrastructure" },
+    { slug: "land", label: "Land & Land Improvements" },
+    { slug: "planning", label: "Planning & Design" },
+    { slug: "vehicles", label: "Vehicles" },
+  ]
+
+  let activeTable = $state(TABLES[0].slug)
+
+  let tablesLive = $state(false)
+  onMount(() => (tablesLive = true))
+
+  const moveTable = (event: KeyboardEvent) => {
+    const at = TABLES.findIndex((table) => table.slug === activeTable)
+    if (event.key === "ArrowRight") activeTable = TABLES[(at + 1) % TABLES.length].slug
+    else if (event.key === "ArrowLeft")
+      activeTable = TABLES[(at - 1 + TABLES.length) % TABLES.length].slug
+    else if (event.key === "Home") activeTable = TABLES[0].slug
+    else if (event.key === "End") activeTable = TABLES[TABLES.length - 1].slug
+    else return
+    event.preventDefault()
+    document.getElementById(`table-tab-${activeTable}`)?.focus()
+  }
 </script>
 
 <!-- Page 28. The city's capital requests are on the spending side of the
@@ -130,642 +168,748 @@ pages wherever it runs out of room -- so the page titles ("Building
 Improvements", "Building Improvements Continued & Computer Equipment", and so
 on) name whatever happens to start or finish on that page rather than a
 section. The category headings the table itself carries are used here
-instead, which keeps each category whole.
+instead, which keeps each category whole, and now tabbed -- eight tables run
+long as a straight scroll, and a reader after one category no longer has to
+pass the other seven to reach it.
 -->
+<div class="tables" class:live={tablesLive}>
+  <div
+    role="tablist"
+    aria-label="Capital request tables"
+    class="table-tab-bar not-prose mb-4 flex flex-wrap gap-x-4 gap-y-1 border-b border-slate-200"
+  >
+    {#each TABLES as table (table.slug)}
+      <button
+        type="button"
+        role="tab"
+        id="table-tab-{table.slug}"
+        aria-controls="table-panel-{table.slug}"
+        aria-selected={activeTable === table.slug}
+        tabindex={activeTable === table.slug ? 0 : -1}
+        class="-mb-px border-b-2 px-1 py-2 text-sm font-medium {activeTable === table.slug
+          ? 'border-slate-900 text-slate-900'
+          : 'border-transparent text-slate-500 hover:text-slate-700'}"
+        onclick={() => (activeTable = table.slug)}
+        onkeydown={moveTable}
+      >
+        {table.label}
+      </button>
+    {/each}
+  </div>
 
-<h2>Buildings &amp; Building Improvements</h2>
+  <div
+    id="table-panel-buildings"
+    role="tabpanel"
+    aria-labelledby="table-tab-buildings"
+    class="table-tab-panel"
+    class:active={activeTable === "buildings"}
+  >
+    <h2>Buildings &amp; Building Improvements</h2>
 
-<table>
-  <thead>
-    <tr>
-      <th scope="col"></th>
-      <th scope="col">2027</th>
-      <th scope="col">2028</th>
-      <th scope="col">2029</th>
-      <th scope="col">2030</th>
-      <th scope="col">2031</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr
-      ><th scope="row">Animal Shelter - Police</th><td></td><td>$1,725,000</td><td></td><td></td><td
-      ></td></tr
-    >
-    <tr
-      ><th scope="row">Boilers at High School Schematic Design</th><td></td><td>$100,000</td><td
-      ></td><td></td><td></td></tr
-    >
-    <tr
-      ><th scope="row">Bradford Elementary HVAC</th><td></td><td>$1,000,000</td><td></td><td
-      ></td><td></td></tr
-    >
-    <tr
-      ><th scope="row">Bradford Elementary Roof</th><td></td><td></td><td>$300,000</td><td></td><td
-      ></td></tr
-    >
-    <tr
-      ><th scope="row">City Hall Auditorium Air Conditioning</th><td></td><td></td><td></td><td
-        >$750,000</td
-      ><td></td></tr
-    >
-    <tr
-      ><th scope="row">City Hall Auditorium Balcony Railings</th><td></td><td></td><td>$275,000</td
-      ><td></td><td></td></tr
-    >
-    <tr
-      ><th scope="row">City Hall Elevator Rehabilitation</th><td>$130,000</td><td></td><td></td><td
-      ></td><td></td></tr
-    >
-    <tr
-      ><th scope="row">City Hall Heating Circulation &amp; Controls</th><td></td><td>$770,000</td
-      ><td></td><td></td><td></td></tr
-    >
-    <tr
-      ><th scope="row">City Hall Repairs &amp; Maintenance</th><td></td><td>$75,000</td><td></td><td
-        >$80,000</td
-      ><td></td></tr
-    >
-    <tr
-      ><th scope="row">City Hall Window Replacement</th><td></td><td></td><td></td><td></td><td
-        >$2,900,000</td
-      ></tr
-    >
-    <tr
-      ><th scope="row">Elevator Repair - High School</th><td>$200,000</td><td></td><td></td><td
-      ></td><td></td></tr
-    >
-    <tr
-      ><th scope="row">Elevator Repair: Pentucket Lake, Silver Hill, Golden Hill</th><td
-        >$525,000</td
-      ><td></td><td></td><td></td><td></td></tr
-    >
-    <tr
-      ><th scope="row">Fire Alarm - High School</th><td>$800,000</td><td></td><td></td><td></td><td
-      ></td></tr
-    >
-    <tr
-      ><th scope="row">Fire Station</th><td></td><td>$30,000,000</td><td></td><td></td><td></td></tr
-    >
-    <tr
-      ><th scope="row">Generators &amp; Transfer Panels - School</th><td>$80,000</td><td>$80,000</td
-      ><td>$80,000</td><td>$80,000</td><td>$80,000</td></tr
-    >
-    <tr
-      ><th scope="row">Golden Hill Roof - School</th><td>$750,000</td><td></td><td></td><td></td><td
-      ></td></tr
-    >
-    <tr
-      ><th scope="row">Heating System Highway Garage</th><td>$130,000</td><td></td><td></td><td
-      ></td><td></td></tr
-    >
-    <tr
-      ><th scope="row">Highway Administration Roof Replacement</th><td>$50,000</td><td></td><td
-      ></td><td></td><td></td></tr
-    >
-    <tr
-      ><th scope="row">Highway Garage Roof Repairs</th><td>$15,000</td><td></td><td></td><td
-      ></td><td></td></tr
-    >
-    <tr
-      ><th scope="row">Highway Yard Rehabilitation</th><td></td><td>$300,000</td><td></td><td
-        >$20,000</td
-      ><td></td></tr
-    >
-    <tr
-      ><th scope="row">HVAC replacement for Indoor Skating Rink</th><td></td><td></td><td
-        >$300,000</td
-      ><td></td><td></td></tr
-    >
-    <tr
-      ><th scope="row">JGW / Tilton School Core Project</th><td></td><td>$90,000,000</td><td
-      ></td><td></td><td></td></tr
-    >
-    <tr
-      ><th scope="row">Oil Tank Removals - School</th><td></td><td>$100,000</td><td>$100,000</td><td
-      ></td><td></td></tr
-    >
-    <tr
-      ><th scope="row">Park Barn Asbestos Removal and Floor and Stair Replacement - Highway</th><td
-        >$50,000</td
-      ><td></td><td></td><td></td><td></td></tr
-    >
-    <tr
-      ><th scope="row">Park Barn Rehabilitation - Highway</th><td>$15,000</td><td>$40,000</td><td
-        >$15,000</td
-      ><td>$15,000</td><td>$15,000</td></tr
-    >
-    <tr
-      ><th scope="row">Parking Lot Repairs - School</th><td></td><td>$100,000</td><td>$100,000</td
-      ><td>$100,000</td><td></td></tr
-    >
-    <tr
-      ><th scope="row">Pentucket Lake Roof - School</th><td></td><td>$300,000</td><td></td><td
-      ></td><td></td></tr
-    >
-    <tr
-      ><th scope="row">Police Locker Rooms</th><td></td><td></td><td></td><td></td><td
-        >$1,000,000</td
-      ></tr
-    >
-    <tr
-      ><th scope="row">Police Water Heater</th><td></td><td>$12,000</td><td></td><td></td><td
-      ></td></tr
-    >
-    <tr
-      ><th scope="row">Powder House Renovations - Community Development</th><td></td><td
-        >$100,000</td
-      ><td></td><td></td><td></td></tr
-    >
-    <tr
-      ><th scope="row">School Ceiling Refurbishments</th><td></td><td>$100,000</td><td>$100,000</td
-      ><td></td><td></td></tr
-    >
-    <tr
-      ><th scope="row">Silver Hill Roof - School</th><td>$815,656</td><td></td><td></td><td></td><td
-      ></td></tr
-    >
-    <tr
-      ><th scope="row">Stadium Restrooms</th><td></td><td>$200,000</td><td></td><td></td><td
-      ></td></tr
-    >
-    <tr
-      ><th scope="row">Winnekenni Castle Repairs &amp; Restorations - CONSTRUCTION</th><td></td><td
-      ></td><td></td><td>$5,000,000</td><td></td></tr
-    >
-    <tr
-      ><th scope="row">Buildings &amp; Building Improvements Total</th><td>$3,560,656</td><td
-        >$125,002,000</td
-      ><td>$1,270,000</td><td>$6,045,000</td><td>$3,995,000</td></tr
-    >
-  </tbody>
-</table>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col"></th>
+          <th scope="col">2027</th>
+          <th scope="col">2028</th>
+          <th scope="col">2029</th>
+          <th scope="col">2030</th>
+          <th scope="col">2031</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          ><th scope="row">Animal Shelter - Police</th><td></td><td>$1,725,000</td><td></td><td
+          ></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">Boilers at High School Schematic Design</th><td></td><td>$100,000</td><td
+          ></td><td></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">Bradford Elementary HVAC</th><td></td><td>$1,000,000</td><td></td><td
+          ></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">Bradford Elementary Roof</th><td></td><td></td><td>$300,000</td><td
+          ></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">City Hall Auditorium Air Conditioning</th><td></td><td></td><td></td><td
+            >$750,000</td
+          ><td></td></tr
+        >
+        <tr
+          ><th scope="row">City Hall Auditorium Balcony Railings</th><td></td><td></td><td
+            >$275,000</td
+          ><td></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">City Hall Elevator Rehabilitation</th><td>$130,000</td><td></td><td
+          ></td><td></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">City Hall Heating Circulation &amp; Controls</th><td></td><td
+            >$770,000</td
+          ><td></td><td></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">City Hall Repairs &amp; Maintenance</th><td></td><td>$75,000</td><td
+          ></td><td>$80,000</td><td></td></tr
+        >
+        <tr
+          ><th scope="row">City Hall Window Replacement</th><td></td><td></td><td></td><td></td><td
+            >$2,900,000</td
+          ></tr
+        >
+        <tr
+          ><th scope="row">Elevator Repair - High School</th><td>$200,000</td><td></td><td></td><td
+          ></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">Elevator Repair: Pentucket Lake, Silver Hill, Golden Hill</th><td
+            >$525,000</td
+          ><td></td><td></td><td></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">Fire Alarm - High School</th><td>$800,000</td><td></td><td></td><td
+          ></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">Fire Station</th><td></td><td>$30,000,000</td><td></td><td></td><td
+          ></td></tr
+        >
+        <tr
+          ><th scope="row">Generators &amp; Transfer Panels - School</th><td>$80,000</td><td
+            >$80,000</td
+          ><td>$80,000</td><td>$80,000</td><td>$80,000</td></tr
+        >
+        <tr
+          ><th scope="row">Golden Hill Roof - School</th><td>$750,000</td><td></td><td></td><td
+          ></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">Heating System Highway Garage</th><td>$130,000</td><td></td><td></td><td
+          ></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">Highway Administration Roof Replacement</th><td>$50,000</td><td></td><td
+          ></td><td></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">Highway Garage Roof Repairs</th><td>$15,000</td><td></td><td></td><td
+          ></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">Highway Yard Rehabilitation</th><td></td><td>$300,000</td><td></td><td
+            >$20,000</td
+          ><td></td></tr
+        >
+        <tr
+          ><th scope="row">HVAC replacement for Indoor Skating Rink</th><td></td><td></td><td
+            >$300,000</td
+          ><td></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">JGW / Tilton School Core Project</th><td></td><td>$90,000,000</td><td
+          ></td><td></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">Oil Tank Removals - School</th><td></td><td>$100,000</td><td>$100,000</td
+          ><td></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">Park Barn Asbestos Removal and Floor and Stair Replacement - Highway</th
+          ><td>$50,000</td><td></td><td></td><td></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">Park Barn Rehabilitation - Highway</th><td>$15,000</td><td>$40,000</td
+          ><td>$15,000</td><td>$15,000</td><td>$15,000</td></tr
+        >
+        <tr
+          ><th scope="row">Parking Lot Repairs - School</th><td></td><td>$100,000</td><td
+            >$100,000</td
+          ><td>$100,000</td><td></td></tr
+        >
+        <tr
+          ><th scope="row">Pentucket Lake Roof - School</th><td></td><td>$300,000</td><td></td><td
+          ></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">Police Locker Rooms</th><td></td><td></td><td></td><td></td><td
+            >$1,000,000</td
+          ></tr
+        >
+        <tr
+          ><th scope="row">Police Water Heater</th><td></td><td>$12,000</td><td></td><td></td><td
+          ></td></tr
+        >
+        <tr
+          ><th scope="row">Powder House Renovations - Community Development</th><td></td><td
+            >$100,000</td
+          ><td></td><td></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">School Ceiling Refurbishments</th><td></td><td>$100,000</td><td
+            >$100,000</td
+          ><td></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">Silver Hill Roof - School</th><td>$815,656</td><td></td><td></td><td
+          ></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">Stadium Restrooms</th><td></td><td>$200,000</td><td></td><td></td><td
+          ></td></tr
+        >
+        <tr
+          ><th scope="row">Winnekenni Castle Repairs &amp; Restorations - CONSTRUCTION</th><td
+          ></td><td></td><td></td><td>$5,000,000</td><td></td></tr
+        >
+        <tr
+          ><th scope="row">Buildings &amp; Building Improvements Total</th><td>$3,560,656</td><td
+            >$125,002,000</td
+          ><td>$1,270,000</td><td>$6,045,000</td><td>$3,995,000</td></tr
+        >
+      </tbody>
+    </table>
+  </div>
 
-<h2>Computer Equipment</h2>
+  <div
+    id="table-panel-computer-equipment"
+    role="tabpanel"
+    aria-labelledby="table-tab-computer-equipment"
+    class="table-tab-panel"
+    class:active={activeTable === "computer-equipment"}
+  >
+    <h2>Computer Equipment</h2>
 
-<table>
-  <thead>
-    <tr>
-      <th scope="col"></th>
-      <th scope="col">2027</th>
-      <th scope="col">2028</th>
-      <th scope="col">2029</th>
-      <th scope="col">2030</th>
-      <th scope="col">2031</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr
-      ><th scope="row">Backup System Redundancy - IT</th><td></td><td></td><td>$25,972</td><td
-      ></td><td></td></tr
-    >
-    <tr
-      ><th scope="row">Core Network Overhaul - IT</th><td></td><td>$103,870</td><td></td><td
-      ></td><td></td></tr
-    >
-    <tr
-      ><th scope="row">DPW Internet Resilience - IT</th><td></td><td>$30,000</td><td></td><td
-      ></td><td></td></tr
-    >
-    <tr
-      ><th scope="row">Fire Station Internet Resilience- IT</th><td>$45,000</td><td></td><td
-      ></td><td></td><td></td></tr
-    >
-    <tr
-      ><th scope="row">Firewall Upgrade - IT</th><td></td><td></td><td>$57,940</td><td></td><td
-      ></td></tr
-    >
-    <tr
-      ><th scope="row">Legacy Wiring Clean Up - IT</th><td>$25,000</td><td></td><td></td><td
-      ></td><td></td></tr
-    >
-    <tr
-      ><th scope="row">Remote Location Fiber Upgrade - IT</th><td></td><td></td><td></td><td
-      ></td><td>$160,972</td></tr
-    >
-    <tr
-      ><th scope="row">Server Hardware Refresh - IT</th><td></td><td></td><td>$56,972</td><td
-      ></td><td></td></tr
-    >
-    <tr
-      ><th scope="row">Server Room Upgrade - IT</th><td></td><td></td><td>$43,240</td><td></td><td
-      ></td></tr
-    >
-    <tr
-      ><th scope="row">Computer Equipment Total</th><td>$70,000</td><td>$133,870</td><td
-        >$184,124</td
-      ><td></td><td>$160,972</td></tr
-    >
-  </tbody>
-</table>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col"></th>
+          <th scope="col">2027</th>
+          <th scope="col">2028</th>
+          <th scope="col">2029</th>
+          <th scope="col">2030</th>
+          <th scope="col">2031</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          ><th scope="row">Backup System Redundancy - IT</th><td></td><td></td><td>$25,972</td><td
+          ></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">Core Network Overhaul - IT</th><td></td><td>$103,870</td><td></td><td
+          ></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">DPW Internet Resilience - IT</th><td></td><td>$30,000</td><td></td><td
+          ></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">Fire Station Internet Resilience- IT</th><td>$45,000</td><td></td><td
+          ></td><td></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">Firewall Upgrade - IT</th><td></td><td></td><td>$57,940</td><td></td><td
+          ></td></tr
+        >
+        <tr
+          ><th scope="row">Legacy Wiring Clean Up - IT</th><td>$25,000</td><td></td><td></td><td
+          ></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">Remote Location Fiber Upgrade - IT</th><td></td><td></td><td></td><td
+          ></td><td>$160,972</td></tr
+        >
+        <tr
+          ><th scope="row">Server Hardware Refresh - IT</th><td></td><td></td><td>$56,972</td><td
+          ></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">Server Room Upgrade - IT</th><td></td><td></td><td>$43,240</td><td
+          ></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">Computer Equipment Total</th><td>$70,000</td><td>$133,870</td><td
+            >$184,124</td
+          ><td></td><td>$160,972</td></tr
+        >
+      </tbody>
+    </table>
+  </div>
 
-<h2>Computer Software</h2>
+  <div
+    id="table-panel-computer-software"
+    role="tabpanel"
+    aria-labelledby="table-tab-computer-software"
+    class="table-tab-panel"
+    class:active={activeTable === "computer-software"}
+  >
+    <h2>Computer Software</h2>
 
-<!--
+    <!--
 This total is $545,146 in 2027 against the $495,146 the summary on page 29
 gives, because the summary lists the CMMS system's $50,000 as a category of
 its own called "Software" and this table folds it in here. Both are printed
 as they stand.
 -->
-<table>
-  <thead>
-    <tr>
-      <th scope="col"></th>
-      <th scope="col">2027</th>
-      <th scope="col">2028</th>
-      <th scope="col">2029</th>
-      <th scope="col">2030</th>
-      <th scope="col">2031</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr
-      ><th scope="row">Archival Inventory and Digitization - City Clerk</th><td>$160,000</td><td
-      ></td><td></td><td></td><td></td></tr
-    >
-    <tr
-      ><th scope="row">CMMS Computerized Maintenance Management System - Highway</th><td>$50,000</td
-      ><td></td><td></td><td></td><td></td></tr
-    >
-    <tr
-      ><th scope="row">Dispatch &amp; Records Software Update - Police</th><td></td><td></td><td
-        >$308,994</td
-      ><td></td><td></td></tr
-    >
-    <tr
-      ><th scope="row">Tax Collection Software - Treasurer</th><td>$335,146</td><td></td><td
-      ></td><td></td><td></td></tr
-    >
-    <tr
-      ><th scope="row">Computer Software Total</th><td>$545,146</td><td></td><td>$308,994</td><td
-      ></td><td></td></tr
-    >
-  </tbody>
-</table>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col"></th>
+          <th scope="col">2027</th>
+          <th scope="col">2028</th>
+          <th scope="col">2029</th>
+          <th scope="col">2030</th>
+          <th scope="col">2031</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          ><th scope="row">Archival Inventory and Digitization - City Clerk</th><td>$160,000</td><td
+          ></td><td></td><td></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">CMMS Computerized Maintenance Management System - Highway</th><td
+            >$50,000</td
+          ><td></td><td></td><td></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">Dispatch &amp; Records Software Update - Police</th><td></td><td></td><td
+            >$308,994</td
+          ><td></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">Tax Collection Software - Treasurer</th><td>$335,146</td><td></td><td
+          ></td><td></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">Computer Software Total</th><td>$545,146</td><td></td><td>$308,994</td
+          ><td></td><td></td></tr
+        >
+      </tbody>
+    </table>
+  </div>
 
-<h2>Equipment</h2>
+  <div
+    id="table-panel-equipment"
+    role="tabpanel"
+    aria-labelledby="table-tab-equipment"
+    class="table-tab-panel"
+    class:active={activeTable === "equipment"}
+  >
+    <h2>Equipment</h2>
 
-<table>
-  <thead>
-    <tr>
-      <th scope="col"></th>
-      <th scope="col">2027</th>
-      <th scope="col">2028</th>
-      <th scope="col">2029</th>
-      <th scope="col">2030</th>
-      <th scope="col">2031</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr
-      ><th scope="row">Airboat - Police</th><td></td><td>$113,403</td><td></td><td></td><td
-      ></td></tr
-    >
-    <tr
-      ><th scope="row">Backhoe - Highway</th><td></td><td></td><td>$170,000</td><td></td><td
-      ></td></tr
-    >
-    <tr
-      ><th scope="row">Batwing Attachment - Highway</th><td>$50,000</td><td></td><td></td><td
-      ></td><td></td></tr
-    >
-    <tr
-      ><th scope="row">Crane CDL Grapple Truck - Highway</th><td></td><td></td><td></td><td></td><td
-        >$365,000</td
-      ></tr
-    >
-    <tr
-      ><th scope="row">Front End Loader - Highway</th><td></td><td></td><td>$375,000</td><td
-      ></td><td></td></tr
-    >
-    <tr
-      ><th scope="row">Gasboy Vehicle Fuel System - Highway</th><td>$60,000</td><td></td><td
-      ></td><td></td><td></td></tr
-    >
-    <tr
-      ><th scope="row">Harbormaster Boat</th><td></td><td>$252,310</td><td></td><td></td><td
-      ></td></tr
-    >
-    <tr
-      ><th scope="row">iPad &amp; Phones - Inspectional Services</th><td></td><td>$30,000</td><td
-      ></td><td></td><td></td></tr
-    >
-    <tr
-      ><th scope="row">Mini Excavator - Highway</th><td></td><td>$130,000</td><td></td><td></td><td
-      ></td></tr
-    >
-    <tr
-      ><th scope="row">Parking Kiosks - Highway</th><td></td><td></td><td>$500,000</td><td></td><td
-      ></td></tr
-    >
-    <tr
-      ><th scope="row">Radios - Fire</th><td>$2,384,135</td><td></td><td></td><td></td><td></td></tr
-    >
-    <tr
-      ><th scope="row">Rubber Tired Excavator - Highway</th><td></td><td></td><td></td><td
-        >$220,000</td
-      ><td></td></tr
-    >
-    <tr><th scope="row">SCBA - Fire</th><td>$1,290,863</td><td></td><td></td><td></td><td></td></tr>
-    <tr
-      ><th scope="row">Skid Steer - Highway</th><td>$120,000</td><td></td><td></td><td></td><td
-      ></td></tr
-    >
-    <tr
-      ><th scope="row">Street Sweeper - Highway</th><td></td><td></td><td>$300,000</td><td></td><td
-      ></td></tr
-    >
-    <tr
-      ><th scope="row">Trackless Tractor - Highway</th><td></td><td>$225,000</td><td>$225,000</td
-      ><td>$225,000</td><td></td></tr
-    >
-    <tr
-      ><th scope="row">Tractor - Highway</th><td></td><td></td><td>$60,000</td><td></td><td
-      ></td></tr
-    >
-    <tr
-      ><th scope="row">Zero Turn Mower - Highway</th><td></td><td>$30,000</td><td></td><td></td><td
-      ></td></tr
-    >
-    <tr
-      ><th scope="row">Equipment Total</th><td>$3,904,998</td><td>$780,713</td><td>$1,630,000</td
-      ><td>$445,000</td><td>$365,000</td></tr
-    >
-  </tbody>
-</table>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col"></th>
+          <th scope="col">2027</th>
+          <th scope="col">2028</th>
+          <th scope="col">2029</th>
+          <th scope="col">2030</th>
+          <th scope="col">2031</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          ><th scope="row">Airboat - Police</th><td></td><td>$113,403</td><td></td><td></td><td
+          ></td></tr
+        >
+        <tr
+          ><th scope="row">Backhoe - Highway</th><td></td><td></td><td>$170,000</td><td></td><td
+          ></td></tr
+        >
+        <tr
+          ><th scope="row">Batwing Attachment - Highway</th><td>$50,000</td><td></td><td></td><td
+          ></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">Crane CDL Grapple Truck - Highway</th><td></td><td></td><td></td><td
+          ></td><td>$365,000</td></tr
+        >
+        <tr
+          ><th scope="row">Front End Loader - Highway</th><td></td><td></td><td>$375,000</td><td
+          ></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">Gasboy Vehicle Fuel System - Highway</th><td>$60,000</td><td></td><td
+          ></td><td></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">Harbormaster Boat</th><td></td><td>$252,310</td><td></td><td></td><td
+          ></td></tr
+        >
+        <tr
+          ><th scope="row">iPad &amp; Phones - Inspectional Services</th><td></td><td>$30,000</td
+          ><td></td><td></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">Mini Excavator - Highway</th><td></td><td>$130,000</td><td></td><td
+          ></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">Parking Kiosks - Highway</th><td></td><td></td><td>$500,000</td><td
+          ></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">Radios - Fire</th><td>$2,384,135</td><td></td><td></td><td></td><td
+          ></td></tr
+        >
+        <tr
+          ><th scope="row">Rubber Tired Excavator - Highway</th><td></td><td></td><td></td><td
+            >$220,000</td
+          ><td></td></tr
+        >
+        <tr
+          ><th scope="row">SCBA - Fire</th><td>$1,290,863</td><td></td><td></td><td></td><td
+          ></td></tr
+        >
+        <tr
+          ><th scope="row">Skid Steer - Highway</th><td>$120,000</td><td></td><td></td><td></td><td
+          ></td></tr
+        >
+        <tr
+          ><th scope="row">Street Sweeper - Highway</th><td></td><td></td><td>$300,000</td><td
+          ></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">Trackless Tractor - Highway</th><td></td><td>$225,000</td><td
+            >$225,000</td
+          ><td>$225,000</td><td></td></tr
+        >
+        <tr
+          ><th scope="row">Tractor - Highway</th><td></td><td></td><td>$60,000</td><td></td><td
+          ></td></tr
+        >
+        <tr
+          ><th scope="row">Zero Turn Mower - Highway</th><td></td><td>$30,000</td><td></td><td
+          ></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">Equipment Total</th><td>$3,904,998</td><td>$780,713</td><td
+            >$1,630,000</td
+          ><td>$445,000</td><td>$365,000</td></tr
+        >
+      </tbody>
+    </table>
+  </div>
 
-<h2>Infrastructure</h2>
+  <div
+    id="table-panel-infrastructure"
+    role="tabpanel"
+    aria-labelledby="table-tab-infrastructure"
+    class="table-tab-panel"
+    class:active={activeTable === "infrastructure"}
+  >
+    <h2>Infrastructure</h2>
 
-<table>
-  <thead>
-    <tr>
-      <th scope="col"></th>
-      <th scope="col">2027</th>
-      <th scope="col">2028</th>
-      <th scope="col">2029</th>
-      <th scope="col">2030</th>
-      <th scope="col">2031</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr
-      ><th scope="row">Brandy Brow East Meadow River Culvert - Highway</th><td>$65,000</td><td
-      ></td><td></td><td></td><td></td></tr
-    >
-    <tr
-      ><th scope="row">Bridge CIP Update - Highway</th><td>$50,000</td><td></td><td></td><td
-      ></td><td></td></tr
-    >
-    <tr
-      ><th scope="row">Forest Street Bridge Replacement - Engineering</th><td></td><td>$287,500</td
-      ><td></td><td></td><td></td></tr
-    >
-    <tr
-      ><th scope="row">Intersection Improvements- Kingsbury/Chadwick/Willow - Highway</th><td
-      ></td><td>$600,000</td><td></td><td></td><td></td></tr
-    >
-    <tr
-      ><th scope="row">Kenoza Ave Improvements - Highway</th><td>$200,000</td><td></td><td></td><td
-      ></td><td></td></tr
-    >
-    <tr
-      ><th scope="row">Kingsbury Ave/Chadwick/Willow Intersection Improvements - Engineering</th><td
-      ></td><td>$600,000</td><td></td><td></td><td></td></tr
-    >
-    <tr
-      ><th scope="row">Little River Dam Removal - Highway</th><td>$4,500,000</td><td></td><td
-      ></td><td></td><td></td></tr
-    >
-    <tr
-      ><th scope="row">Miscellaneous Traffic Safety - Highway</th><td>$50,000</td><td></td><td
-        >$50,000</td
-      ><td></td><td>$50,000</td></tr
-    >
-    <tr
-      ><th scope="row">Parking Lot Paving at Citizens Center</th><td>$60,000</td><td></td><td
-      ></td><td></td><td></td></tr
-    >
-    <tr
-      ><th scope="row">Parking Lot Repairs - Stadium</th><td>$100,000</td><td></td><td></td><td
-      ></td><td></td></tr
-    >
-    <tr
-      ><th scope="row">Parking Lots - Elliott Place - Highway</th><td></td><td></td><td></td><td
-        >$15,450</td
-      ><td></td></tr
-    >
-    <tr
-      ><th scope="row">Parking Lots - Essex St - Highway</th><td></td><td></td><td></td><td
-        >$29,500</td
-      ><td></td></tr
-    >
-    <tr
-      ><th scope="row">Parking Lots - Locke Street - Highway</th><td></td><td></td><td></td><td
-      ></td><td>$78,315</td></tr
-    >
-    <tr
-      ><th scope="row">Parking Lots - Phoenix Row - Highway</th><td></td><td>$61,000</td><td
-      ></td><td></td><td></td></tr
-    >
-    <tr
-      ><th scope="row">Parking Lots - River Front Promenade - Highway</th><td></td><td></td><td
-      ></td><td>$26,282</td><td></td></tr
-    >
-    <tr
-      ><th scope="row">Parking Lots - Washington Square - Highway</th><td></td><td></td><td
-        >$63,042</td
-      ><td></td><td></td></tr
-    >
-    <tr
-      ><th scope="row">Sidewalks - Annual Repair &amp; Replace - Highway</th><td>$1,100,000</td><td
-        >$1,100,000</td
-      ><td>$1,100,000</td><td>$1,100,000</td><td>$1,100,000</td></tr
-    >
-    <tr
-      ><th scope="row">Stormwater Assessment at DPW Facility and adjacent property on Downing</th
-      ><td>$17,500</td><td></td><td></td><td></td><td></td></tr
-    >
-    <tr
-      ><th scope="row">Street Lights - Highway</th><td>$55,000</td><td></td><td></td><td></td><td
-      ></td></tr
-    >
-    <tr
-      ><th scope="row">Supplemental Paving - Highway</th><td>$700,000</td><td>$700,000</td><td
-        >$700,000</td
-      ><td>$700,000</td><td>$700,000</td></tr
-    >
-    <tr
-      ><th scope="row">W. Lowell Ave Bridge Replacement - Design - Engineering</th><td></td><td
-        >$63,000</td
-      ><td></td><td></td><td></td></tr
-    >
-    <tr
-      ><th scope="row">Washington Square - Improvements and Construction - Highway</th><td
-        >$1,800,000</td
-      ><td></td><td></td><td></td><td></td></tr
-    >
-    <tr
-      ><th scope="row">Infrastructure Total</th><td>$8,697,500</td><td>$3,411,500</td><td
-        >$1,913,042</td
-      ><td>$1,871,232</td><td>$1,928,315</td></tr
-    >
-  </tbody>
-</table>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col"></th>
+          <th scope="col">2027</th>
+          <th scope="col">2028</th>
+          <th scope="col">2029</th>
+          <th scope="col">2030</th>
+          <th scope="col">2031</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          ><th scope="row">Brandy Brow East Meadow River Culvert - Highway</th><td>$65,000</td><td
+          ></td><td></td><td></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">Bridge CIP Update - Highway</th><td>$50,000</td><td></td><td></td><td
+          ></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">Forest Street Bridge Replacement - Engineering</th><td></td><td
+            >$287,500</td
+          ><td></td><td></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">Intersection Improvements- Kingsbury/Chadwick/Willow - Highway</th><td
+          ></td><td>$600,000</td><td></td><td></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">Kenoza Ave Improvements - Highway</th><td>$200,000</td><td></td><td
+          ></td><td></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">Kingsbury Ave/Chadwick/Willow Intersection Improvements - Engineering</th
+          ><td></td><td>$600,000</td><td></td><td></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">Little River Dam Removal - Highway</th><td>$4,500,000</td><td></td><td
+          ></td><td></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">Miscellaneous Traffic Safety - Highway</th><td>$50,000</td><td></td><td
+            >$50,000</td
+          ><td></td><td>$50,000</td></tr
+        >
+        <tr
+          ><th scope="row">Parking Lot Paving at Citizens Center</th><td>$60,000</td><td></td><td
+          ></td><td></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">Parking Lot Repairs - Stadium</th><td>$100,000</td><td></td><td></td><td
+          ></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">Parking Lots - Elliott Place - Highway</th><td></td><td></td><td></td><td
+            >$15,450</td
+          ><td></td></tr
+        >
+        <tr
+          ><th scope="row">Parking Lots - Essex St - Highway</th><td></td><td></td><td></td><td
+            >$29,500</td
+          ><td></td></tr
+        >
+        <tr
+          ><th scope="row">Parking Lots - Locke Street - Highway</th><td></td><td></td><td></td><td
+          ></td><td>$78,315</td></tr
+        >
+        <tr
+          ><th scope="row">Parking Lots - Phoenix Row - Highway</th><td></td><td>$61,000</td><td
+          ></td><td></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">Parking Lots - River Front Promenade - Highway</th><td></td><td></td><td
+          ></td><td>$26,282</td><td></td></tr
+        >
+        <tr
+          ><th scope="row">Parking Lots - Washington Square - Highway</th><td></td><td></td><td
+            >$63,042</td
+          ><td></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">Sidewalks - Annual Repair &amp; Replace - Highway</th><td>$1,100,000</td
+          ><td>$1,100,000</td><td>$1,100,000</td><td>$1,100,000</td><td>$1,100,000</td></tr
+        >
+        <tr
+          ><th scope="row"
+            >Stormwater Assessment at DPW Facility and adjacent property on Downing</th
+          ><td>$17,500</td><td></td><td></td><td></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">Street Lights - Highway</th><td>$55,000</td><td></td><td></td><td
+          ></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">Supplemental Paving - Highway</th><td>$700,000</td><td>$700,000</td><td
+            >$700,000</td
+          ><td>$700,000</td><td>$700,000</td></tr
+        >
+        <tr
+          ><th scope="row">W. Lowell Ave Bridge Replacement - Design - Engineering</th><td></td><td
+            >$63,000</td
+          ><td></td><td></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">Washington Square - Improvements and Construction - Highway</th><td
+            >$1,800,000</td
+          ><td></td><td></td><td></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">Infrastructure Total</th><td>$8,697,500</td><td>$3,411,500</td><td
+            >$1,913,042</td
+          ><td>$1,871,232</td><td>$1,928,315</td></tr
+        >
+      </tbody>
+    </table>
+  </div>
 
-<h2>Land &amp; Land Improvements</h2>
+  <div
+    id="table-panel-land"
+    role="tabpanel"
+    aria-labelledby="table-tab-land"
+    class="table-tab-panel"
+    class:active={activeTable === "land"}
+  >
+    <h2>Land &amp; Land Improvements</h2>
 
-<table>
-  <thead>
-    <tr>
-      <th scope="col"></th>
-      <th scope="col">2027</th>
-      <th scope="col">2028</th>
-      <th scope="col">2029</th>
-      <th scope="col">2030</th>
-      <th scope="col">2031</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr
-      ><th scope="row">Cooling Corridors Street Tree Planting - Highway</th><td>$7,500</td><td
-      ></td><td></td><td></td><td></td></tr
-    >
-    <tr
-      ><th scope="row">Puglielli Field Improvements - Highway</th><td></td><td>$50,000</td><td
-        >$200,000</td
-      ><td>$50,000</td><td>$200,000</td></tr
-    >
-    <tr
-      ><th scope="row">Railroad Square Garage Brownfields Closure - Community Development</th><td
-      ></td><td>$55,000</td><td></td><td></td><td></td></tr
-    >
-    <tr
-      ><th scope="row">Shade Trees for Parks - Highway</th><td>$25,000</td><td>$25,000</td><td
-      ></td><td>$25,000</td><td>$25,000</td></tr
-    >
-    <tr
-      ><th scope="row">Whittier Birthplace Trail Hub - Highway</th><td>$33,820</td><td></td><td
-      ></td><td></td><td></td></tr
-    >
-    <tr
-      ><th scope="row">Land &amp; Land Improvements Total</th><td>$66,320</td><td>$130,000</td><td
-        >$200,000</td
-      ><td>$75,000</td><td>$225,000</td></tr
-    >
-  </tbody>
-</table>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col"></th>
+          <th scope="col">2027</th>
+          <th scope="col">2028</th>
+          <th scope="col">2029</th>
+          <th scope="col">2030</th>
+          <th scope="col">2031</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          ><th scope="row">Cooling Corridors Street Tree Planting - Highway</th><td>$7,500</td><td
+          ></td><td></td><td></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">Puglielli Field Improvements - Highway</th><td></td><td>$50,000</td><td
+            >$200,000</td
+          ><td>$50,000</td><td>$200,000</td></tr
+        >
+        <tr
+          ><th scope="row">Railroad Square Garage Brownfields Closure - Community Development</th
+          ><td></td><td>$55,000</td><td></td><td></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">Shade Trees for Parks - Highway</th><td>$25,000</td><td>$25,000</td><td
+          ></td><td>$25,000</td><td>$25,000</td></tr
+        >
+        <tr
+          ><th scope="row">Whittier Birthplace Trail Hub - Highway</th><td>$33,820</td><td></td><td
+          ></td><td></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">Land &amp; Land Improvements Total</th><td>$66,320</td><td>$130,000</td
+          ><td>$200,000</td><td>$75,000</td><td>$225,000</td></tr
+        >
+      </tbody>
+    </table>
+  </div>
 
-<h2>Planning &amp; Design</h2>
+  <div
+    id="table-panel-planning"
+    role="tabpanel"
+    aria-labelledby="table-tab-planning"
+    class="table-tab-panel"
+    class:active={activeTable === "planning"}
+  >
+    <h2>Planning &amp; Design</h2>
 
-<table>
-  <thead>
-    <tr>
-      <th scope="col"></th>
-      <th scope="col">2027</th>
-      <th scope="col">2028</th>
-      <th scope="col">2029</th>
-      <th scope="col">2030</th>
-      <th scope="col">2031</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr
-      ><th scope="row">City Hall Auditorium Air Conditioning - PLANNING &amp; DESIGN</th><td
-      ></td><td></td><td>$75,000</td><td></td><td></td></tr
-    >
-    <tr
-      ><th scope="row">Winnekenni Castle Repairs &amp; Restorations - PLANNING &amp; DESIGN</th><td
-      ></td><td></td><td>$500,000</td><td></td><td></td></tr
-    >
-    <tr
-      ><th scope="row">Planning &amp; Design Total</th><td></td><td></td><td>$575,000</td><td
-      ></td><td></td></tr
-    >
-  </tbody>
-</table>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col"></th>
+          <th scope="col">2027</th>
+          <th scope="col">2028</th>
+          <th scope="col">2029</th>
+          <th scope="col">2030</th>
+          <th scope="col">2031</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          ><th scope="row">City Hall Auditorium Air Conditioning - PLANNING &amp; DESIGN</th><td
+          ></td><td></td><td>$75,000</td><td></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">Winnekenni Castle Repairs &amp; Restorations - PLANNING &amp; DESIGN</th
+          ><td></td><td></td><td>$500,000</td><td></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">Planning &amp; Design Total</th><td></td><td></td><td>$575,000</td><td
+          ></td><td></td></tr
+        >
+      </tbody>
+    </table>
+  </div>
 
-<h2>Vehicles</h2>
+  <div
+    id="table-panel-vehicles"
+    role="tabpanel"
+    aria-labelledby="table-tab-vehicles"
+    class="table-tab-panel"
+    class:active={activeTable === "vehicles"}
+  >
+    <h2>Vehicles</h2>
 
-<table>
-  <thead>
-    <tr>
-      <th scope="col"></th>
-      <th scope="col">2027</th>
-      <th scope="col">2028</th>
-      <th scope="col">2029</th>
-      <th scope="col">2030</th>
-      <th scope="col">2031</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr
-      ><th scope="row">(1) 6 Wheel Dump Trucks with Sanders and Plows - Highway</th><td></td><td
-        >$250,000</td
-      ><td>$250,000</td><td>$250,000</td><td>$250,000</td></tr
-    >
-    <tr
-      ><th scope="row">10-Wheeler Plow Truck - Highway</th><td></td><td>$250,000</td><td></td><td
-      ></td><td></td></tr
-    >
-    <tr
-      ><th scope="row">1-Ton Truck - Highway</th><td>$105,000</td><td>$105,000</td><td>$105,000</td
-      ><td>$105,000</td><td>$105,000</td></tr
-    >
-    <tr
-      ><th scope="row">2500 Pick-up Truck with Plow - Highway</th><td>$90,000</td><td>$90,000</td
-      ><td></td><td></td><td></td></tr
-    >
-    <tr
-      ><th scope="row">Chevrolet Tahoe C-2 - Fire</th><td></td><td>$80,000</td><td></td><td></td><td
-      ></td></tr
-    >
-    <tr
-      ><th scope="row">Chevrolet Traverse C-4 - Fire</th><td></td><td>$35,000</td><td></td><td
-      ></td><td></td></tr
-    >
-    <tr
-      ><th scope="row">Ford Escape - Inspectional Services</th><td></td><td>$45,000</td><td></td><td
-      ></td><td></td></tr
-    >
-    <tr
-      ><th scope="row">Ford F550 Bucket FA-2 - Fire</th><td></td><td></td><td></td><td>$120,000</td
-      ><td></td></tr
-    >
-    <tr
-      ><th scope="row">Incident Command Vehicle - Police</th><td></td><td>$250,000</td><td></td><td
-      ></td><td></td></tr
-    >
-    <tr
-      ><th scope="row">Maintenance Vehicle - Recreation</th><td></td><td>$55,000</td><td></td><td
-      ></td><td></td></tr
-    >
-    <tr
-      ><th scope="row">Pick-Up Truck - Police</th><td></td><td>$57,000</td><td></td><td></td><td
-      ></td></tr
-    >
-    <tr
-      ><th scope="row">Pierce Ladder Truck - Fire</th><td></td><td></td><td>$2,000,000</td><td
-      ></td><td></td></tr
-    >
-    <tr
-      ><th scope="row">Pierce Pumper - Fire</th><td></td><td>$1,000,000</td><td></td><td></td><td
-      ></td></tr
-    >
-    <tr><th scope="row">Tanker - Fire</th><td></td><td>$632,570</td><td></td><td></td><td></td></tr>
-    <tr
-      ><th scope="row">Trash Truck - Highway</th><td>$180,000</td><td></td><td></td><td></td><td
-      ></td></tr
-    >
-    <tr
-      ><th scope="row">Vehicles Total</th><td>$375,000</td><td>$2,849,570</td><td>$2,355,000</td><td
-        >$475,000</td
-      ><td>$355,000</td></tr
-    >
-    <tr
-      ><th scope="row">Grand Total</th><td>$17,219,620</td><td>$132,307,653</td><td>$8,436,160</td
-      ><td>$8,911,232</td><td>$7,029,287</td></tr
-    >
-  </tbody>
-</table>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col"></th>
+          <th scope="col">2027</th>
+          <th scope="col">2028</th>
+          <th scope="col">2029</th>
+          <th scope="col">2030</th>
+          <th scope="col">2031</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          ><th scope="row">(1) 6 Wheel Dump Trucks with Sanders and Plows - Highway</th><td></td><td
+            >$250,000</td
+          ><td>$250,000</td><td>$250,000</td><td>$250,000</td></tr
+        >
+        <tr
+          ><th scope="row">10-Wheeler Plow Truck - Highway</th><td></td><td>$250,000</td><td
+          ></td><td></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">1-Ton Truck - Highway</th><td>$105,000</td><td>$105,000</td><td
+            >$105,000</td
+          ><td>$105,000</td><td>$105,000</td></tr
+        >
+        <tr
+          ><th scope="row">2500 Pick-up Truck with Plow - Highway</th><td>$90,000</td><td
+            >$90,000</td
+          ><td></td><td></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">Chevrolet Tahoe C-2 - Fire</th><td></td><td>$80,000</td><td></td><td
+          ></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">Chevrolet Traverse C-4 - Fire</th><td></td><td>$35,000</td><td></td><td
+          ></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">Ford Escape - Inspectional Services</th><td></td><td>$45,000</td><td
+          ></td><td></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">Ford F550 Bucket FA-2 - Fire</th><td></td><td></td><td></td><td
+            >$120,000</td
+          ><td></td></tr
+        >
+        <tr
+          ><th scope="row">Incident Command Vehicle - Police</th><td></td><td>$250,000</td><td
+          ></td><td></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">Maintenance Vehicle - Recreation</th><td></td><td>$55,000</td><td
+          ></td><td></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">Pick-Up Truck - Police</th><td></td><td>$57,000</td><td></td><td></td><td
+          ></td></tr
+        >
+        <tr
+          ><th scope="row">Pierce Ladder Truck - Fire</th><td></td><td></td><td>$2,000,000</td><td
+          ></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">Pierce Pumper - Fire</th><td></td><td>$1,000,000</td><td></td><td
+          ></td><td></td></tr
+        >
+        <tr
+          ><th scope="row">Tanker - Fire</th><td></td><td>$632,570</td><td></td><td></td><td
+          ></td></tr
+        >
+        <tr
+          ><th scope="row">Trash Truck - Highway</th><td>$180,000</td><td></td><td></td><td></td><td
+          ></td></tr
+        >
+        <tr
+          ><th scope="row">Vehicles Total</th><td>$375,000</td><td>$2,849,570</td><td>$2,355,000</td
+          ><td>$475,000</td><td>$355,000</td></tr
+        >
+        <tr
+          ><th scope="row">Grand Total</th><td>$17,219,620</td><td>$132,307,653</td><td
+            >$8,436,160</td
+          ><td>$8,911,232</td><td>$7,029,287</td></tr
+        >
+      </tbody>
+    </table>
+  </div>
+</div>
 
 <h2>2027 Capital Requests</h2>
 
@@ -1220,3 +1364,30 @@ Essential, High, Moderate or Low. Pages 36 to 45.
     encompass retiree health insurance, dental coverage, and life insurance earned by employees.
   </em>
 </p>
+
+<style>
+  /*
+    Hidden markup rather than markup that is not there, the same mechanism
+    `spending`'s own topics used before they became routes: `tablesLive`,
+    `false` until this component mounts, is what a CSS rule for hiding seven
+    of eight panels is keyed on -- before that, every table sits in the flow
+    and the tab bar itself stays `display: none`, so a reader who does not
+    hydrate gets all eight tables stacked, exactly as this page rendered
+    before tabs.
+  */
+  .table-tab-bar {
+    display: none;
+  }
+
+  .tables.live .table-tab-bar {
+    display: flex;
+  }
+
+  .tables.live .table-tab-panel {
+    display: none;
+  }
+
+  .tables.live .table-tab-panel.active {
+    display: block;
+  }
+</style>
