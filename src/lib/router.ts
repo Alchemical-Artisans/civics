@@ -91,11 +91,23 @@ export class Router {
    * One topic of the spending section -- Goals, Capital Planning and the
    * rest, each its own route under `spending/` now rather than a tab a
    * script switched, so one can be linked or bookmarked on its own. `slug` is
-   * the topic's directory name; `spending` itself has no contents of its own,
-   * only a forward onto the first.
+   * the topic's directory name; there is no bare `/spending` page at all,
+   * since nothing but this method's own callers ever pointed at it.
    */
   static spendingTab(id: string, slug: string): string {
     return path(`/budget/${id}/spending/${slug}`)
+  }
+
+  /**
+   * One capital project's own request -- its case, urgency and dollar
+   * figure from pages 36 to 45, on a page of its own beneath Capital
+   * Planning rather than run together with the seven category tables above
+   * it. `slug` is the item's directory name, derived from the table row's
+   * own label rather than the write-up's -- the two occasionally spell a
+   * project differently, and the table row is what a reader actually clicks.
+   */
+  static capitalRequestItem(id: string, slug: string): string {
+    return path(`/budget/${id}/spending/capital-planning/${slug}`)
   }
 
   /**

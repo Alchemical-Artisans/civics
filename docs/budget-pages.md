@@ -808,6 +808,41 @@ than pulled into a ninth, untabbed table; a reader who wants it already has
 it from the chart above, which reads the same figures off `CAPITAL_REQUESTS`
 directly.
 
+**Pages 36 to 45 -- the same requests again, but only the roughly forty the
+city actually asked for in 2027, each with the department's own case and the
+urgency it was given -- used to run as one long "2027 Capital Requests"
+section under the eight tables. Each write-up is its own route now, linked
+straight from the table row it belongs to.** `spending/capital-planning/<item>/+page.svelte`,
+one directory per project, sitting inside the `(tabs)` layout like every
+other spending route -- no route group of its own, since these are leaves,
+not five more topics needing a nav entry -- so they keep the shared spending
+bar, the five-topic nav (with "Capital Planning" still marked current, since
+`current()` matches any segment of `route.id`, not only the last one) and
+`References`. A row with no 2027 write-up -- most of them; the eight tables
+between them carry roughly eighty projects and only forty were asked for
+this year -- stays plain text, since there is nothing to link it to. `<item>`
+is `sectionSlug` run on the table row's own label, not the write-up's: the
+book spells a handful of these two ways on its two different pages --
+"Highway Administration Roof Replacement" in the summary table (30-35),
+"Admin. Roof Replacement - Highway" on its own page (36-45); "Highway Garage
+Roof Repairs" against "Garage Roof Repairs - Highway"; "Skid Steer -
+Highway" against "Skid Steer - Highway2", already noted as the book's own
+stray digit; "...adjacent property on Downing" against the same phrase with
+"Ave" on the end -- and the table row is what a reader actually clicks, so
+that is the spelling the URL is built from. Both spellings are kept exactly
+as the book prints them, each on the page it belongs to; nothing here
+reconciles the two. An item page's own content is the write-up's `<h4>`,
+promoted to `<h2>` since it is this page's own top heading now, and its
+paragraphs -- verbatim, unedited, moved rather than duplicated, so the
+"2027 Capital Requests" heading, its three collected `<h3>` category
+headings, and the run of `<h4>`s beneath them are gone from `capital-planning`
+entirely. Extracting forty write-ups by hand risked exactly the kind of
+transcription slip this project treats as a defect, so the move was
+scripted: every line-range boundary read off the source file, every
+extracted block diffed byte-for-byte back against the pre-move commit, and
+every table-row match required to succeed exactly once before it was allowed
+to touch the file. `Router.capitalRequestItem(id, slug)` builds the link.
+
 ### history-forecasts
 
 **Every year but this one.** `/budget/fy2027/history` is titled

@@ -522,6 +522,71 @@ test.describe("budget pages", () => {
     await context.close()
   })
 
+  test("links a table row to its own capital-request page where the book gives one", async ({
+    page,
+  }) => {
+    await page.goto(spendingUrl("capital-planning"))
+    const tables = page.locator(".tables")
+
+    // A row the city actually asked for in 2027 is a link into its own
+    // page, pages 36 to 45's case for it -- one that never made the 2027
+    // ask, like "Fire Station", is not: there is nothing there to link to.
+    const link = tables.getByRole("link", { name: "City Hall Elevator Rehabilitation" })
+    await expect(link).toHaveAttribute(
+      "href",
+      /\/spending\/capital-planning\/city-hall-elevator-rehabilitation$/,
+    )
+    await expect(tables.getByRole("rowheader", { name: "Fire Station", exact: true })).toBeVisible()
+    await expect(tables.getByRole("link", { name: "Fire Station", exact: true })).toHaveCount(0)
+
+    // The link opens the write-up itself: the case, the urgency, the figure
+    // -- the same content that used to run in one long "2027 Capital
+    // Requests" section, now on its own page per project.
+    await link.click()
+    await expect(page).toHaveURL(
+      new RegExp(`${spendingUrl("capital-planning")}/city-hall-elevator-rehabilitation$`),
+    )
+    await expect(
+      page.getByRole("heading", { name: "City Hall Elevator Rehabilitation" }),
+    ).toBeVisible()
+    const article = page.getByRole("article")
+    await expect(article).toContainText("rehab and update the 50 year-old City Hall Elevator")
+    await expect(article).toContainText("High — $130,000")
+
+    // Still under Capital Planning as far as the nav is concerned, one
+    // level deeper than the five topics it sits below.
+    await expect(page.getByRole("link", { name: "Capital Planning" })).toHaveAttribute(
+      "aria-current",
+      "page",
+    )
+
+    // The book spells this project two different ways on its two different
+    // pages -- "Highway Administration Roof Replacement" in the summary
+    // table, "Admin. Roof Replacement - Highway" in its own write-up -- and
+    // both stay exactly as the book prints them, on the page each belongs
+    // to; the route is built from the table's own label, the one a reader
+    // actually clicks.
+    await page.goto(spendingUrl("capital-planning"))
+    await tables.getByRole("link", { name: "Highway Administration Roof Replacement" }).click()
+    await expect(page).toHaveURL(
+      new RegExp(`${spendingUrl("capital-planning")}/highway-administration-roof-replacement$`),
+    )
+    await expect(
+      page.getByRole("heading", { name: "Admin. Roof Replacement - Highway" }),
+    ).toBeVisible()
+  })
+
+  test("stands each capital-request page on its own without script", async ({ browser }) => {
+    const context = await browser.newContext({ javaScriptEnabled: false })
+    const noscript = await context.newPage()
+    await noscript.goto(`${spendingUrl("capital-planning")}/city-hall-elevator-rehabilitation`)
+    await expect(
+      noscript.getByRole("heading", { name: "City Hall Elevator Rehabilitation" }),
+    ).toBeVisible()
+    await expect(noscript.getByRole("article")).toContainText("High — $130,000")
+    await context.close()
+  })
+
   test("splits spending into one route per topic, linked by a plain nav", async ({ page }) => {
     await page.goto(spendingUrl("goals"))
 

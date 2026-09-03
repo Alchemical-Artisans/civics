@@ -34,12 +34,17 @@
    * markup and the hydrated markup would silently disagree. `SiteHeader`'s
    * own menu is matched the same way, for the same reason.
    *
-   * The last segment rather than a suffix match on the whole id: `route.id`
-   * carries this directory's `(tabs)` group exactly as it sits on disk --
-   * `/budget/fy2027/spending/(tabs)/goals` -- since a route group is invisible
-   * in the URL but not in the id it is matched on.
+   * A segment match on `route.id` -- `/budget/fy2027/spending/(tabs)/goals`,
+   * since a route group is invisible in the URL but not in the id it is
+   * matched on -- rather than a suffix match on the whole thing, and a
+   * segment rather than a plain substring so "capital-planning" cannot match
+   * some future topic whose slug merely contains it. Capital Planning's own
+   * item pages sit a level deeper still, `.../capital-planning/<item>`, and
+   * want the same tab marked current as the table their own link came from,
+   * which is what running the check against every segment rather than only
+   * the last one is for.
    */
-  const current = (slug: string) => (page.route.id ?? "").split("/").pop() === slug
+  const current = (slug: string) => (page.route.id ?? "").split("/").includes(slug)
 
   /**
    * The same bar the front page draws, one column of it: what the city

@@ -367,11 +367,14 @@ Notable pieces:
   one link to it, the front page's own chart heading, now goes straight to
   `spending/goals`, `Router.spendingTab(id, slug)`, and nothing else pointed
   at the old bare URL. The nav between the five is a plain `<nav>` of links,
-  `aria-current="page"` marking the open one -- matched on `page.route.id`'s
-  own last segment, never on the URL against a `Router`-built href, and never
-  a suffix match on the whole id either, since a route group's name sits in
-  `route.id` (`/budget/fy2027/spending/(tabs)/goals`) without ever reaching
-  the URL. No script manages any of this: an ordinary navigation is what
+  `aria-current="page"` marking the open one -- matched on whether
+  `page.route.id` carries the slug as one of its own segments, never on the
+  URL against a `Router`-built href, and never a plain substring either,
+  since a route group's name sits in `route.id`
+  (`/budget/fy2027/spending/(tabs)/goals`) without ever reaching the URL. A
+  segment match rather than only the last one is what lets Capital
+  Planning's own item pages, a level deeper still, keep it marked current
+  too. No script manages any of this: an ordinary navigation is what
   used to need a `live` flag and a hidden-markup fallback for a reader who
   had not hydrated, and Left/Right/Home/End is gone with it -- a plain link
   needs no keydown handler of its own, only Tab and Enter, which every
@@ -418,7 +421,26 @@ Notable pieces:
   The book's own "Grand Total" row sits at the foot of the last table (a
   page-layout accident, not Vehicles' own total) and stays there rather than
   being pulled into a ninth table, since the chart above already reads the
-  same figures off `CAPITAL_REQUESTS` directly.
+  same figures off `CAPITAL_REQUESTS` directly. Pages 36 to 45 -- the same
+  requests again, but only the ones the city actually asked for in 2027, each
+  with the department's own case for it and the urgency it was given -- used
+  to run as one long "2027 Capital Requests" section under the eight tables;
+  each write-up is its own route now, `capital-planning/<item>`, and the row
+  it belongs to in the table above links straight to it, which the section
+  never let a reader do. Not every row links: only the ~40 with a 2027 ask
+  have a write-up at all, and a row with none stays plain text. `<slug>` is
+  built from the table row's own label, `sectionSlug`'s rule, rather than the
+  write-up's -- the two occasionally spell a project differently ("Highway
+  Administration Roof Replacement" in the table, "Admin. Roof Replacement -
+  Highway" on its own page), and the table row is what a reader actually
+  clicks. Both spellings stay exactly as the book prints them, on the page
+  each belongs to; nothing here reconciles them. An item page carries none of
+  its own chrome -- no heading override, no back link -- it is the write-up's
+  `<h2>` (promoted from the book's own `<h4>`, since it is this page's own
+  top heading now) and its two paragraphs, verbatim, sitting inside the same
+  `(tabs)` layout every other spending route uses, which is what keeps
+  "Capital Planning" marked current in the nav three levels up.
+  `Router.capitalRequestItem(id, slug)` builds the link.
 - **`src/lib/BudgetTimeline.svelte`** draws page 13, the budget calendar, as the
   footer of _every_ page of a book, fixed to the bottom of the window: a row of
   twelve boxes
