@@ -440,7 +440,13 @@ Notable pieces:
   top heading now) and its two paragraphs, verbatim, sitting inside the same
   `(tabs)` layout every other spending route uses, which is what keeps
   "Capital Planning" marked current in the nav three levels up.
-  `Router.capitalRequestItem(id, slug)` builds the link.
+  `Router.capitalRequestItem(id, slug)` builds the link. "2027 Capital
+  Funding Recommendation" and "Plan for Funding Major Capital Projects" sit
+  above the eight tables now rather than below them -- the reading a reader
+  wants before the detail, not after it -- and "What is OPEB?" is gone
+  entirely: the paragraph beside it already names OPEB without needing the
+  term defined, and the definition itself carried nothing the rest of the
+  page depends on.
 - **`src/lib/BudgetTimeline.svelte`** draws page 13, the budget calendar, as the
   footer of _every_ page of a book, fixed to the bottom of the window: a row of
   twelve boxes

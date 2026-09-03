@@ -843,6 +843,18 @@ extracted block diffed byte-for-byte back against the pre-move commit, and
 every table-row match required to succeed exactly once before it was allowed
 to touch the file. `Router.capitalRequestItem(id, slug)` builds the link.
 
+**"2027 Capital Funding Recommendation" and "Plan for Funding Major Capital
+Projects" sit above the eight tables now, not below them.** Both are the
+book's own closing word on the whole capital section -- what the Mayor and
+CFO recommend and why, and how the two big projects actually get paid for --
+and a reader wants that context before the fifty-odd rows of detail, not
+after scrolling past them. "What is OPEB?" -- a `<h3>` under "Plan for
+Funding", one sentence defining the acronym -- is gone entirely rather than
+moved: "Plan for Funding" itself already uses the term in a sentence that
+names it in full ("Other Post-Employment Benefits (OPEB)"), so the
+definition beside it was answering a question the page had already
+answered, and nothing else on this page or `debt` depends on it.
+
 ### history-forecasts
 
 **Every year but this one.** `/budget/fy2027/history` is titled

@@ -165,6 +165,46 @@ two projects are still in that table, at their own rows.
   traffic signal upgrades.
 </p>
 
+<h2>2027 Capital Funding Recommendation</h2>
+
+<p>
+  <em>
+    Due to budget limitations stemming from decreasing <GlossaryTerm term="Revenues"
+      >revenues</GlossaryTerm
+    > and rising inflation, along with uncertainties at both government and global levels, the Mayor's
+    budget team has put forward initial funding recommendations. However, the Mayor and CFO have suggested
+    postponing final funding decisions, potentially until later in fiscal 2027. This delay would enable
+    a reassessment of the economic climate and the exploration of viable, sustainable funding alternatives.
+    It would also allow for the certification of the city's fiscal 2026 <GlossaryTerm
+      term="Free Cash">free cash</GlossaryTerm
+    > and determine any excess available for capital projects.
+  </em>
+</p>
+
+<h2>Plan for Funding Major Capital Projects</h2>
+
+<p>
+  <em>
+    The funding strategy for significant capital projects, such as JG Whittier Middle School and a
+    Fire Station, involves reallocating part of the retiring pension assessment, which will be
+    accessible in 2033. This reallocation will help cover the <GlossaryTerm term="Debt Service"
+      >debt service</GlossaryTerm
+    > payment obligations necessary to finance these initiatives.
+  </em>
+</p>
+
+<p>
+  <em>
+    The city is on track to fully fulfill its pension liability by 2032, which is eight years ahead
+    of the statutory deadline set for 2040. Once the pension liability is met, the plan is to
+    allocate a substantial portion of these funds to tackle the city's considerable Other
+    Post-Employment Benefits (OPEB) liability, currently estimated at over $300 million.
+    Nevertheless, the city may also consider utilizing some of these funds for the previously
+    mentioned capital projects. If funding for these projects is needed before 2033, a debt
+    exclusion might be required.
+  </em>
+</p>
+
 <!--
 Pages 30 to 35 are one table of every request by category, broken across
 pages wherever it runs out of room -- so the page titles ("Building
@@ -1061,56 +1101,6 @@ as they stand.
     </table>
   </div>
 </div>
-
-<h2>2027 Capital Funding Recommendation</h2>
-
-<p>
-  <em>
-    Due to budget limitations stemming from decreasing <GlossaryTerm term="Revenues"
-      >revenues</GlossaryTerm
-    > and rising inflation, along with uncertainties at both government and global levels, the Mayor's
-    budget team has put forward initial funding recommendations. However, the Mayor and CFO have suggested
-    postponing final funding decisions, potentially until later in fiscal 2027. This delay would enable
-    a reassessment of the economic climate and the exploration of viable, sustainable funding alternatives.
-    It would also allow for the certification of the city's fiscal 2026 <GlossaryTerm
-      term="Free Cash">free cash</GlossaryTerm
-    > and determine any excess available for capital projects.
-  </em>
-</p>
-
-<h2>Plan for Funding Major Capital Projects</h2>
-
-<p>
-  <em>
-    The funding strategy for significant capital projects, such as JG Whittier Middle School and a
-    Fire Station, involves reallocating part of the retiring pension assessment, which will be
-    accessible in 2033. This reallocation will help cover the <GlossaryTerm term="Debt Service"
-      >debt service</GlossaryTerm
-    > payment obligations necessary to finance these initiatives.
-  </em>
-</p>
-
-<p>
-  <em>
-    The city is on track to fully fulfill its pension liability by 2032, which is eight years ahead
-    of the statutory deadline set for 2040. Once the pension liability is met, the plan is to
-    allocate a substantial portion of these funds to tackle the city's considerable Other
-    Post-Employment Benefits (OPEB) liability, currently estimated at over $300 million.
-    Nevertheless, the city may also consider utilizing some of these funds for the previously
-    mentioned capital projects. If funding for these projects is needed before 2033, a debt
-    exclusion might be required.
-  </em>
-</p>
-
-<h3>What is OPEB?</h3>
-
-<p>
-  <em>
-    OPEB liability represents the future financial commitments that employers, mainly government
-    entities, have to provide non-pension post-employment benefits. These benefits primarily
-    encompass retiree health insurance, dental coverage, and life insurance earned by employees.
-  </em>
-</p>
 
 <style>
   /*
