@@ -238,7 +238,10 @@ Notable pieces:
   spent, since the book's parentheses are its sum's minus sign, and the row
   labels stay the book's, "Plus" and "Less" included. It does not start at zero
   -- a line is read for its shape -- and prints the figures at the ends of the
-  axis.
+  axis. `scale`, `height`, `strokeWidth` and `fontSize` are optional props a
+  page can override; every existing chart leaves them at the component's own
+  defaults, and `spending`'s capital-requests chart is the one that does not
+  -- see that page's own entry for why.
 - **`src/lib/BudgetBars.svelte`** draws the other half of that table, on
   `reserves`, where it belongs -- the flows are the city's, the balance they
   left is the reserves page's subject. Each year is a row run off a vertical
@@ -365,7 +368,13 @@ Notable pieces:
   heads it -- the legend carries the nine names, the way neither of `debt`'s
   two line charts is headed -- and the paragraphs that followed the table in
   the book are untouched, just no longer sitting under a table that repeats
-  them. `spending.spec.ts` pins `SPENDING_TOTAL` and checks the capital table
+  them. It reads `scale="log"`, since the 2028 building total is a hundred
+  times most other cells and a linear axis draws every smaller category flat
+  along the foot, and it passes `height`, `strokeWidth` and `fontSize`
+  smaller than `BudgetLines`' own defaults, since this chart sits above a
+  full page of reading rather than filling a column alone -- `debt`'s two
+  charts pass none of the three and keep the frame's own numbers.
+  `spending.spec.ts` pins `SPENDING_TOTAL` and checks the capital table
   against its own row and column totals.
 - **`src/lib/BudgetTimeline.svelte`** draws page 13, the budget calendar, as the
   footer of _every_ page of a book, fixed to the bottom of the window: a row of

@@ -55,8 +55,20 @@
   </div>
 
   <div class="lg:flex lg:h-full lg:flex-col lg:overflow-hidden">
-    <!-- Page 29, five years of capital requests by category. -->
-    <BudgetLines years={capitalYears} rows={capitalRequests} />
+    <!-- Page 29, five years of capital requests by category. Logarithmic --
+         the 2028 building total is a hundred times most other years, and a
+         linear axis draws every smaller category as a flat line along the
+         foot -- and shorter than the frame's own height, with thinner lines
+         and smaller labels to match, since this chart sits above a full page
+         of reading rather than alone. -->
+    <BudgetLines
+      years={capitalYears}
+      rows={capitalRequests}
+      scale="log"
+      height={140}
+      strokeWidth={1.25}
+      fontSize={9}
+    />
 
     <div class="lg:relative lg:min-h-0 lg:flex-1 lg:overflow-y-auto">
       <div class="max-w-3xl">

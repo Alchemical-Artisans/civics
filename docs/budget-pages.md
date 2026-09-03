@@ -695,6 +695,20 @@ that followed the table in the book still say in words what the lines now
 say in a shape -- they are untouched, just no longer sitting under a table
 that repeats them.
 
+**It is logarithmic, not linear, because one category dwarfs the rest.** The
+2028 building total is a hundred times most of the other cells in the table,
+and a linear axis draws every smaller category as a flat line hugging the
+foot -- which is the same shape a reader gets from not charting them at all.
+`BudgetLines` takes `scale="log"` for that: the axis bounds and the point
+positions both move to log space, and the zero line it otherwise draws is
+skipped, since a log axis has no zero to cross and every figure charted here
+is a positive dollar amount. It is also shorter than the frame's own height
+and its lines and labels are both smaller than the default -- `height`,
+`strokeWidth` and `fontSize` are the three props that scale a `BudgetLines`
+chart down when it sits above a page of reading rather than filling a column
+alone, and `debt`'s two charts pass none of them, so they keep the frame's
+own numbers.
+
 `spending.spec.ts` pins `SPENDING_TOTAL` and the composition it is built
 from, and checks `CAPITAL_REQUESTS` against its own row and column totals the
 way `debt.spec.ts` checks the debt tables against the sentences that quote
