@@ -415,23 +415,21 @@ test.describe("budget pages", () => {
   test("draws each reserve against the policy it answers to", async ({ page }) => {
     await page.goto(`/budget/${books[0]}/reserves`)
 
-    // One column per policy, named as the book's own dial table heads it, and
-    // each carrying the three figures the book prints for it, under the rail
-    // it draws them as.
+    // One column per policy, named as the book's own dial table heads it. The
+    // three figures the book prints for it are not on the page until a reader
+    // asks for them, which is what the rest of this test does.
     const chart = page.locator(".budget-bands")
     const rails = page.locator(".budget-band")
-    const labels = chart.locator("p")
+    const names = chart.locator("p")
 
     await expect(rails).toHaveCount(3)
-    await expect(labels.nth(0)).toContainText("Undesignated Fund Balance")
-    await expect(labels.nth(0)).toContainText("Actual $13,985,452 (7.85%)")
-    await expect(labels.nth(0)).toContainText("Minimum $8,913,079")
-    await expect(labels.nth(0)).toContainText("Maximum $26,739,238")
+    await expect(names.nth(0)).toHaveText("Undesignated Fund Balance")
+    await expect(names.nth(1)).toHaveText("Free Cash")
+    await expect(names.nth(2)).toHaveText("Stabilization Reserve")
 
     // The middle column is this year: nothing held, and a floor of $3,565,232
     // it does not reach. The bar draws no height, and the band it falls short
     // of does -- which is the whole of what the chart has to say.
-    await expect(labels.nth(1)).toContainText("Anticipated $0 (0%)")
     const held = await rails.nth(1).locator("div").last().boundingBox()
     const allowed = (await rails.nth(1).locator("div").first().boundingBox())!
     expect(held?.height ?? 0).toBe(0)
@@ -451,17 +449,35 @@ test.describe("budget pages", () => {
     )
     expect(new Set(feet).size).toBe(1)
 
-    // The third policy sets no ceiling, so its band has no closing edge and no
-    // maximum to print.
-    await expect(labels.nth(2)).toContainText("Minimum Balance $5,347,848 (3%)")
-    await expect(labels.nth(2)).not.toContainText("Maximum")
-
-    // Everything the chart draws is in the column's accessible name too, so the
-    // three figures are readable without seeing the bar.
+    // Everything the chart draws is in the column's accessible name, so a
+    // reader who never hovers anything still gets the three figures.
     await expect(rails.nth(1)).toHaveAttribute(
       "aria-label",
       /Free Cash: Anticipated \$0 \(0%\), Minimum \$3,565,232, Maximum \$14,260,927/,
     )
+  })
+
+  test("names and prices the column under the pointer", async ({ page }) => {
+    await page.goto(`/budget/${books[0]}/reserves`)
+    const chart = page.locator(".budget-bands")
+    await expect(chart.locator(".budget-tooltip")).toHaveCount(0)
+
+    await chart.locator(".budget-band").first().hover()
+    const tooltip = chart.locator(".budget-tooltip")
+    await expect(tooltip).toContainText("Undesignated Fund Balance")
+    await expect(tooltip).toContainText("Actual $13,985,452 (7.85%)")
+    await expect(tooltip).toContainText("Minimum $8,913,079")
+    await expect(tooltip).toContainText("Maximum $26,739,238")
+
+    await page.mouse.move(0, 0)
+    await expect(tooltip).toBeHidden()
+
+    // Reachable without a mouse, like every mark on these pages. The third
+    // policy sets no ceiling, so its tooltip prints no maximum.
+    await chart.locator(".budget-band").last().focus()
+    await expect(tooltip).toContainText("Stabilization Reserve")
+    await expect(tooltip).toContainText("Minimum Balance $5,347,848 (3%)")
+    await expect(tooltip).not.toContainText("Maximum")
   })
 
   test("lays the reserves page out as one screen", async ({ page }) => {
@@ -841,7 +857,10 @@ test.describe("budget pages", () => {
     // The front page reads these out of the sections' own transcriptions, so
     // the two cannot disagree. This is that claim, end to end.
     await page.goto(`/budget/${books[0]}/reserves`)
-    await expect(page.getByRole("article")).toContainText("$13,985,452 (7.85%)")
+    await expect(page.locator(".budget-band").first()).toHaveAttribute(
+      "aria-label",
+      /\$13,985,452 \(7\.85%\)/,
+    )
 
     await page.goto(`/budget/${books[0]}/outstanding-debt`)
     const table = page.getByRole("table").first()

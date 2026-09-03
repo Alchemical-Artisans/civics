@@ -432,12 +432,16 @@ that same $178,261,600 back to within $20. `reserves.spec.ts` checks all five
 against each other; if they ever stop agreeing, one scale is the wrong picture
 and the chart has to become three.
 
-**No table on this page is printed any more.** The chart draws
-every cell of them and prints every one beside its bar, and a table saying again
-what the picture above it just said is a page asking to be read twice. The four
-tables are still the transcription, still in `reserves/tables.ts`, still what
-both charts and the front page's reserves bar are drawn from, and every figure
-in them is the accessible name of the mark that draws it.
+**No table on this page is printed any more.** The chart draws every cell of
+them, and prints one beside its bar only once a reader asks — hovering or
+focusing a column names it and gives up its actual, minimum and maximum the way
+a pie wedge gives up its figures, which is what let the three columns narrow
+once they sat beside the page's own reading instead of the full window. The
+figures are still there for a reader who never hovers anything: each column's
+accessible name carries all three. The four tables are still the transcription,
+still in `reserves/tables.ts`, still what both charts and the front page's
+reserves bar are drawn from, and every figure on the page is the accessible
+name of the mark that draws it.
 
 Nothing on the chart is written here. Each column is named as its own dial
 table heads it ("Undesignated Fund Balance", "Free Cash", "Stabilization Reserve"),

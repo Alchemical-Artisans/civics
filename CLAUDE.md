@@ -214,11 +214,15 @@ Notable pieces:
   general fund revenue less debt exclusion and Chapter 70, and each floor and
   ceiling the book prints implies that same $178,261,600 back to within $20,
   which `reserves/reserves.spec.ts` pins. Rows are named by their own dial
-  table's first column and print the book's cells verbatim, row labels included
-  -- "Actual", "Anticipated", "Actual Balance" are three different words for the
-  city's position and the book chose each one. Free cash draws no bar at all
-  this year, which is the page's story; stabilization's band has no closing edge,
-  because its policy sets no ceiling.
+  table's first column, printed under the column; the book's cells for it --
+  "Actual", "Anticipated", "Actual Balance" are three different words for the
+  city's position and the book chose each one -- moved into a tooltip on hover
+  or focus, the way a pie wedge names itself, once the columns sat beside the
+  page's reading rather than under the window's full width and the cells cost
+  more of it than three narrow columns had to give up; the column's accessible
+  name still carries all three for a reader who never hovers anything. Free
+  cash draws no bar at all this year, which is the page's story; stabilization's
+  band has no closing edge, because its policy sets no ceiling.
 - **`src/lib/BudgetLines.svelte`** follows a table's rows across the years it
   gives them for, and draws `history`: what the city took in and what it spent,
   from the top of page 18. That page is `/budget/fy2027/history`, titled
