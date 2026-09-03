@@ -100,39 +100,6 @@ two projects are still in that table, at their own rows.
 </div>
 
 <p>
-  The city keeps a continuous inventory of all capital requirements to effectively connect <GlossaryTerm
-    term="Grant">grant</GlossaryTerm
-  >
-  opportunities with its needs and to plan for long-term budgeting and strategic objectives. These requests
-  are reviewed annually during the budgeting cycle, allowing for the allocation of funds for:
-</p>
-
-<ul>
-  <li>Borrowing costs for projects exceeding $250,000</li>
-  <li>Direct purchases using available funds for projects under $250,000</li>
-</ul>
-
-<p>
-  <GlossaryTerm term="Department">Department</GlossaryTerm> heads are required to submit a written capital
-  request that details the project and includes a cost estimate. The Mayor's budget team assesses these
-  requests in collaboration with each <GlossaryTerm term="Department">department</GlossaryTerm>,
-  fostering discussion and enhancing project understanding.
-</p>
-
-<p>In making final funding recommendations to the Mayor, the budget team considers:</p>
-
-<ul>
-  <li>
-    The urgency of the project as determined by the <GlossaryTerm term="Department"
-      >department</GlossaryTerm
-    > head and the Mayor
-  </li>
-  <li>Any implications for public safety</li>
-  <li>Any legal obligations associated with project completion</li>
-  <li>The financial impact on the city</li>
-</ul>
-
-<p>
   The city's current five-year capital requests exceed $173 million, primarily focusing on building
   maintenance and construction projects, including JG Whittier Middle School and a new fire station.
   To help alleviate the financial burden of the JG Whittier project, the city is applying for <GlossaryTerm
