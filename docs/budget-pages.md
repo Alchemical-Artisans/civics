@@ -683,31 +683,35 @@ somewhere else, and a bar linking to the page it is already on is the same
 page offered twice.
 
 **The top of the reading column charts page 29, "5-Year Capital Requests by
-Category", as a line per category rather than a heading and a fifty-odd-cell
-grid.** The table is held as `CAPITAL_REQUESTS` in `spending/tables.ts` and
-read into [`BudgetLines.svelte`](../src/lib/BudgetLines.svelte) with its own
-"Grand Total" excluded twice over -- as a row, which would draw a line that
-is every other category added together, and as a column, since it is a
-five-year sum rather than a sixth year and `BudgetLines` reads only years.
-Nothing heads the chart: its legend carries the nine category names, the way
-neither of `debt`'s two line charts is headed either, and the paragraphs
-that followed the table in the book still say in words what the lines now
-say in a shape -- they are untouched, just no longer sitting under a table
-that repeats them.
+Category", as one stacked bar per year rather than a heading and a
+fifty-odd-cell grid.** The table is held as `CAPITAL_REQUESTS` in
+`spending/tables.ts` and read into
+[`BudgetColumns.svelte`](../src/lib/BudgetColumns.svelte) a second time --
+five "columns" now, one per year, each divided into that year's categories
+the same way the front page's "Spending" and "Revenue" columns divide into
+theirs. "Grand Total" is excluded as a category, since `order` would
+otherwise draw a tenth band that is every other category added together, and
+read as each bar's own stated total rather than summed, the same reason
+`SPENDING_TOTAL` is stated rather than summed. The paragraphs that followed
+the table in the book still say in words what the bars now say in a shape --
+they are untouched, just no longer sitting under a table that repeats them.
 
-**It is logarithmic, not linear, because one category dwarfs the rest.** The
-2028 building total is a hundred times most of the other cells in the table,
-and a linear axis draws every smaller category as a flat line hugging the
-foot -- which is the same shape a reader gets from not charting them at all.
-`BudgetLines` takes `scale="log"` for that: the axis bounds and the point
-positions both move to log space, and the zero line it otherwise draws is
-skipped, since a log axis has no zero to cross and every figure charted here
-is a positive dollar amount. It is also shorter than the frame's own height
-and its lines and labels are both smaller than the default -- `height`,
-`strokeWidth` and `fontSize` are the three props that scale a `BudgetLines`
-chart down when it sits above a page of reading rather than filling a column
-alone, and `debt`'s two charts pass none of them, so they keep the frame's
-own numbers.
+**A category keeps one colour and one band across every bar, which is not
+what `BudgetColumns` drew before this page needed it to.** Its original job
+was Spending beside Revenue, two columns of entirely different categories, so
+each one sorting and colouring its own parts independently cost nothing --
+there was no shared category for a shared colour to help with. Five columns
+of the _same_ nine categories, one per year, are exactly that case: a reader
+tracking "Buildings & Building Improvements" across 2027-2031 wants it in the
+same colour and the same band of every bar, not picked out of five
+separately-sorted stacks. `order` is the new prop that does this -- a fixed
+label sequence, largest five-year total first, that every column stacks and
+colours by instead of its own rank. A part whose label `order` does not know
+throws rather than silently going undrawn, and `minHeight` is the other new
+prop, overriding the `min-h-64` this component used to fix at 16rem
+unconditionally -- right for the front page's two full-height columns, too
+tall for a chart that sits above a page of reading rather than filling the
+column alone.
 
 `spending.spec.ts` pins `SPENDING_TOTAL` and the composition it is built
 from, and checks `CAPITAL_REQUESTS` against its own row and column totals the

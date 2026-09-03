@@ -331,7 +331,7 @@ test.describe("budget pages", () => {
     // The same bar the front page draws for "Spending", one column of it --
     // and with no link back to a page it is already on, unlike the front
     // page's own.
-    const bar = page.locator(".budget-columns")
+    const bar = page.locator(".budget-columns").first()
     await expect(bar.locator(".budget-column")).toHaveCount(1)
     await expect(bar).toContainText("Spending")
     await expect(bar).toContainText("$316,044,835")
@@ -341,21 +341,40 @@ test.describe("budget pages", () => {
     await segment.focus()
     await expect(bar).toContainText("Education")
 
-    // Page 29's table, as a line per category rather than a heading and a
-    // grid of its own: nine categories, "Grand Total" excluded both as a row,
-    // which would draw a line that is every other category added together,
-    // and as a column, which is a five-year sum rather than a sixth year.
+    // Page 29's table, as one stacked bar per year rather than a heading and
+    // a grid of its own: five bars, nine categories between them, "Grand
+    // Total" excluded as a category (it would draw a band that is every
+    // other category added together) and read as each bar's own total
+    // instead.
     await expect(
       page.getByRole("heading", { name: "5-Year Capital Requests by Category" }),
     ).toHaveCount(0)
-    const lines = page.locator(".budget-lines")
-    await expect(lines).toHaveCount(1)
-    await expect(lines).toContainText("Buildings & Building Improvements")
-    await expect(lines).not.toContainText("Grand Total")
-    await expect(lines.locator("circle")).toHaveCount(33)
-    await expect(
-      lines.locator("circle[aria-label='Buildings & Building Improvements, 2028, $125,002,000']"),
-    ).toHaveCount(1)
+    const capital = page.locator(".budget-columns").nth(1)
+    await expect(capital.locator(".budget-column")).toHaveCount(5)
+    await expect(capital).toContainText("2027")
+    await expect(capital).toContainText("$17,219,620")
+    await expect(capital).toContainText("2028")
+    await expect(capital).toContainText("$132,307,653")
+    await expect(capital).not.toContainText("Grand Total")
+    await expect(capital.getByRole("img")).toHaveCount(33)
+
+    const building = capital.getByRole("img", {
+      name: "2028, Buildings & Building Improvements, $125,002,000, 94.5%",
+    })
+    await building.focus()
+    await expect(capital).toContainText("Buildings & Building Improvements")
+
+    // A category keeps the same colour in every bar it appears in, so it can
+    // be read down its own band across years -- not each bar's own largest
+    // segment first, which is what every other BudgetColumns chart draws.
+    const colour = (label: string, year: string) =>
+      capital.getByRole("img", { name: new RegExp(`^${year}, ${label},`) }).evaluate((el) => {
+        const style = el.getAttribute("style") ?? ""
+        return style.match(/background:\s*([^;]+)/)?.[1]
+      })
+    expect(await colour("Buildings & Building Improvements", "2027")).toBe(
+      await colour("Buildings & Building Improvements", "2028"),
+    )
 
     // The old table's own total is gone with it -- read from the chart's
     // tooltips now, not off a grid of fifty-odd cells.

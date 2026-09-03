@@ -12,6 +12,15 @@
   segment names and prices itself on hover or focus the way a wedge did. A
   segment's share is of its own column, since that is the whole it is a part of,
   and colour restarts on each column for the same reason.
+
+  That restarting is right for two columns that are different things --
+  Spending and Revenue share no categories, so there is nothing for a shared
+  colour to mean. Several columns of the *same* categories, one per year, want
+  the opposite: a category read down five bars is read by its colour, and a
+  colour that changes bar to bar breaks that. `order` is for that case -- a
+  fixed sequence of labels, stacked and coloured by position in it rather than
+  by each column's own rank, so "Buildings" is the same colour and the same
+  band of every bar whether or not it happens to be the largest that year.
 -->
 <script module lang="ts">
   export interface Part {
@@ -40,7 +49,32 @@
 <script lang="ts">
   import { COLOURS } from "$lib/chart-colours"
 
-  let { rows }: { rows: Column[] } = $props()
+  let {
+    rows,
+    order,
+    minHeight = 256,
+  }: {
+    rows: Column[]
+    /**
+     * A fixed label order to stack and colour every column by, instead of
+     * each column sorting and colouring its own parts independently. A
+     * column missing one of these labels just skips that band -- a category
+     * a given year has nothing in. A part whose label is not in `order` is
+     * the other way around, a category `order` does not know about, and
+     * throws rather than drawing nothing: silently dropping a real figure is
+     * worse than a build failure that says which label to add.
+     */
+    order?: string[]
+    /**
+     * The plot's own floor, in pixels, for a page that hands this component
+     * less room than that to grow into -- 16rem by default, which is what
+     * `min-h-64` used to fix this at unconditionally, for the front page's
+     * two full-height columns. A chart sitting above a page of reading wants
+     * shorter than that; without an override here it would take the 16rem
+     * anyway and run into whatever sits below it.
+     */
+    minHeight?: number
+  } = $props()
 
   const money = new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -65,23 +99,43 @@
       const total = totals[i]
       const drawn = row.parts.reduce((sum, part) => sum + part.amount, 0)
 
+      // With no fixed `order`, each column sorts and colours its own parts
+      // independently -- the two-column case this component started as.
+      // With one, every part has to be in it: a label `order` does not know
+      // stays undrawn silently otherwise, which is worse than a build error
+      // naming it.
+      const sequence = order
+        ? order
+            .map((label) => row.parts.find((part) => part.label === label))
+            .filter((part): part is Part => part !== undefined)
+        : [...row.parts].sort((a, b) => b.amount - a.amount)
+      if (order) {
+        for (const part of row.parts) {
+          if (!order.includes(part.label)) {
+            throw new Error(`"${part.label}" is not in the order BudgetColumns was given`)
+          }
+        }
+      }
+
       return {
         ...row,
         total,
         // Of the scale, which is what makes the two columns comparable.
         height: scale ? (total / scale) * 100 : 0,
-        parts: [...row.parts]
-          .sort((a, b) => b.amount - a.amount)
-          .map((part, at) => ({
-            ...part,
-            colour: COLOURS[at % COLOURS.length],
-            // Of its own column, so the segments fill it whatever it is worth.
-            depth: drawn ? (part.amount / drawn) * 100 : 0,
-            share:
-              drawn && part.amount / drawn < 0.001
-                ? "<0.1%"
-                : percent.format(drawn ? part.amount / drawn : 0),
-          })),
+        parts: sequence.map((part) => ({
+          ...part,
+          // Of `order`'s own position when there is one, so a category keeps
+          // its colour whether or not it is the largest in this column; of
+          // this column's own rank otherwise.
+          colour:
+            COLOURS[(order ? order.indexOf(part.label) : sequence.indexOf(part)) % COLOURS.length],
+          // Of its own column, so the segments fill it whatever it is worth.
+          depth: drawn ? (part.amount / drawn) * 100 : 0,
+          share:
+            drawn && part.amount / drawn < 0.001
+              ? "<0.1%"
+              : percent.format(drawn ? part.amount / drawn : 0),
+        })),
       }
     }),
   )
@@ -130,13 +184,13 @@
 
 <!-- `h-full` and a growing plot, so the chart fills whatever height it is given
      -- the front page hands it the window, less the fixed footer, and makes it
-     stick. Where nothing sets a height, `min-h-64` keeps it drawable. -->
+     stick. Where nothing sets a height, `minHeight` keeps it drawable. -->
 <div class="budget-columns not-prose relative flex h-full flex-col" bind:this={root}>
   <!-- The columns are as wide as the words under them and no wider. A column
        carries one number; the width past that is width spent saying nothing,
        and two narrow columns side by side are easier to compare than two broad
        ones. -->
-  <div class="flex min-h-64 flex-1 items-end gap-6">
+  <div class="flex flex-1 items-end gap-6" style="min-height: {minHeight}px">
     {#each columns as column (column.label)}
       <div class="budget-column flex h-full w-24 flex-col justify-end">
         <!-- `flex-col-reverse`, so the largest part sits on the ground and the

@@ -7,7 +7,6 @@
   import { APPROPRIATED, ENTERPRISE, GENERAL_FUND, ORDERS } from "../council-orders"
   import BudgetTable from "$lib/BudgetTable.svelte"
   import BudgetColumns from "$lib/BudgetColumns.svelte"
-  import BudgetLines from "$lib/BudgetLines.svelte"
   import { APPROPRIATIONS, DEPARTMENTS, CAPITAL_REQUESTS, SPENDING, SPENDING_TOTAL } from "./tables"
   import { amount, cell } from "$lib/budget-table"
   import GlossaryTerm from "$lib/GlossaryTerm.svelte"
@@ -23,19 +22,31 @@
   const spending = [{ label: "Spending", parts: SPENDING, total: SPENDING_TOTAL }]
 
   /**
-   * Page 29's table, as a line per category rather than a grid of fifty-odd
-   * cells -- the same trade `debt`'s payments and per-capita charts make. The
-   * book's own "Grand Total" is excluded both as a row (it would draw a bar
-   * that is every other category added together) and as a column (it is a
-   * five-year sum, not a sixth year, and `BudgetLines` reads only years).
+   * Page 29's table, as one stacked bar per year rather than a grid of
+   * fifty-odd cells. `order` is every category's five-year total, largest
+   * first, so a category keeps one colour and one band running across all
+   * five bars -- read down the same band in each rather than picked out of
+   * five independently-sorted ones. "Grand Total" is excluded as a category
+   * (`order` would draw a tenth band that is every other category added
+   * together) and read directly as each bar's own stated total instead of
+   * summed, the same reason `SPENDING_TOTAL` is stated rather than summed.
    */
   const capitalYears = CAPITAL_REQUESTS.columns.slice(1, -1)
-  const capitalRequests = CAPITAL_REQUESTS.rows
-    .filter((row) => row.label !== "Grand Total")
-    .map((row) => ({
-      label: row.label,
-      values: capitalYears.map((year) => amount(cell(CAPITAL_REQUESTS, row.label, year))),
-    }))
+  const capitalCategories = CAPITAL_REQUESTS.rows
+    .map((row) => row.label)
+    .filter((label) => label !== "Grand Total")
+  const capitalOrder = [...capitalCategories].sort(
+    (a, b) =>
+      amount(cell(CAPITAL_REQUESTS, b, "Grand Total"))! -
+      amount(cell(CAPITAL_REQUESTS, a, "Grand Total"))!,
+  )
+  const capitalRequests = capitalYears.map((year) => ({
+    label: year,
+    total: amount(cell(CAPITAL_REQUESTS, "Grand Total", year))!,
+    parts: capitalCategories
+      .map((label) => ({ label, amount: amount(cell(CAPITAL_REQUESTS, label, year)) }))
+      .filter((part): part is { label: string; amount: number } => part.amount !== null),
+  }))
 </script>
 
 <!--
@@ -55,20 +66,15 @@
   </div>
 
   <div class="lg:flex lg:h-full lg:flex-col lg:overflow-hidden">
-    <!-- Page 29, five years of capital requests by category. Logarithmic --
-         the 2028 building total is a hundred times most other years, and a
-         linear axis draws every smaller category as a flat line along the
-         foot -- and shorter than the frame's own height, with thinner lines
-         and smaller labels to match, since this chart sits above a full page
-         of reading rather than alone. -->
-    <BudgetLines
-      years={capitalYears}
-      rows={capitalRequests}
-      scale="log"
-      height={140}
-      strokeWidth={1.25}
-      fontSize={9}
-    />
+    <!-- Page 29, five years of capital requests by category, as one stacked
+         bar per year -- each category keeps one colour and one band across
+         all five, so it is read down its own band rather than picked out of
+         five independently-sorted bars; see the script for `order`. Fixed to
+         a height short of the frame's own, since this chart sits above a
+         full page of reading rather than filling the column alone. -->
+    <div class="mb-6 h-40">
+      <BudgetColumns rows={capitalRequests} order={capitalOrder} minHeight={96} />
+    </div>
 
     <div class="lg:relative lg:min-h-0 lg:flex-1 lg:overflow-y-auto">
       <div class="max-w-3xl">

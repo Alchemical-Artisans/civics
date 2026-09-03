@@ -238,10 +238,7 @@ Notable pieces:
   spent, since the book's parentheses are its sum's minus sign, and the row
   labels stay the book's, "Plus" and "Less" included. It does not start at zero
   -- a line is read for its shape -- and prints the figures at the ends of the
-  axis. `scale`, `height`, `strokeWidth` and `fontSize` are optional props a
-  page can override; every existing chart leaves them at the component's own
-  defaults, and `spending`'s capital-requests chart is the one that does not
-  -- see that page's own entry for why.
+  axis.
 - **`src/lib/BudgetBars.svelte`** draws the other half of that table, on
   `reserves`, where it belongs -- the flows are the city's, the balance they
   left is the reserves page's subject. Each year is a row run off a vertical
@@ -291,9 +288,12 @@ Notable pieces:
   `reserves` is the third bucket, opened from the reserves bar. Columns rather
   than pies because two circles cannot be compared by eye, and whether the two
   sides are the same size is the first thing to know about a budget.
-  `spending` reuses the same component for its own left-column bar, handed a
-  single row rather than two -- the component draws whatever `rows` it gets,
-  so a page wanting one column is not a special case of it. A category
+  `spending` reuses the same component twice over: its own left-column bar
+  is one row rather than two, and its capital-requests chart is five columns,
+  one per year, each divided into that year's categories -- see `spending`'s
+  own entry for `order` and `minHeight`, the two props that chart added.
+  The component draws whatever `rows` it gets, so neither is a special case
+  of it. A category
   page ends with **`src/lib/BookReferences.svelte`**, headed `References`: the
   pages of the book it was built out of, and then the parts it belongs with and
   does not carry, each linking to our page where one exists and to the city's
@@ -360,22 +360,20 @@ Notable pieces:
   composition a second time -- one copy, so the front page's column and this
   page's bar cannot disagree -- and carrying no `href`, since a bar linking
   to the page it is already on is that page offered twice. Across the top of
-  the reading column, a `BudgetLines` chart replaces page 29's own table,
-  "5-Year Capital Requests by Category": nine categories as a line each
-  rather than a heading and a fifty-odd-cell grid, "Grand Total" excluded as
-  both a row, which would draw a line that is every other category summed,
-  and a column, since it is a five-year sum and not a sixth year. Nothing
-  heads it -- the legend carries the nine names, the way neither of `debt`'s
-  two line charts is headed -- and the paragraphs that followed the table in
-  the book are untouched, just no longer sitting under a table that repeats
-  them. It reads `scale="log"`, since the 2028 building total is a hundred
-  times most other cells and a linear axis draws every smaller category flat
-  along the foot, and it passes `height`, `strokeWidth` and `fontSize`
-  smaller than `BudgetLines`' own defaults, since this chart sits above a
-  full page of reading rather than filling a column alone -- `debt`'s two
-  charts pass none of the three and keep the frame's own numbers.
-  `spending.spec.ts` pins `SPENDING_TOTAL` and checks the capital table
-  against its own row and column totals.
+  the reading column, a second `BudgetColumns` replaces page 29's own table,
+  "5-Year Capital Requests by Category": five columns, one per year, each
+  divided into that year's categories, "Grand Total" excluded as a category
+  and read as each bar's own stated total rather than summed. A category
+  keeps one colour and one band across every bar -- `order`, largest
+  five-year total first, which is the new prop that lets a column stack and
+  colour by a fixed sequence instead of its own rank, since a reader tracking
+  one category across five years wants it in the same place in every bar, not
+  the front page's two-column case of picking each column's own largest
+  first. `minHeight` is the other new prop, overriding the `min-h-64` this
+  component used to fix unconditionally -- right for a full-height column,
+  too tall for a chart sitting above a page of reading. `spending.spec.ts`
+  pins `SPENDING_TOTAL` and checks the capital table against its own row and
+  column totals.
 - **`src/lib/BudgetTimeline.svelte`** draws page 13, the budget calendar, as the
   footer of _every_ page of a book, fixed to the bottom of the window: a row of
   twelve boxes

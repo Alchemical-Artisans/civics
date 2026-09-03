@@ -34,46 +34,15 @@
 
 <script lang="ts">
   import { COLOURS } from "$lib/chart-colours"
-  import {
-    WIDTH,
-    HEIGHT as DEFAULT_HEIGHT,
-    LEFT,
-    RIGHT,
-    TOP,
-    FOOT,
-    bandCentre,
-  } from "$lib/chart-frame"
+  import { WIDTH, HEIGHT, LEFT, RIGHT, TOP, FOOT, bandCentre } from "$lib/chart-frame"
 
   let {
     years,
     rows,
-    scale = "linear",
-    height = DEFAULT_HEIGHT,
-    strokeWidth = 2,
-    fontSize = 11,
   }: {
     /** The table's columns, which are the chart's x positions. */
     years: string[]
     rows: Series[]
-    /**
-     * "log" for a table where one row dwarfs the rest -- the capital
-     * requests chart's 2028 building spike is a hundred times most other
-     * years, and a linear axis draws every smaller line as a flat line
-     * along the foot. Every value charted has to be strictly positive; a
-     * table with a zero or a loss in it stays linear.
-     */
-    scale?: "linear" | "log"
-    /**
-     * Overrides the frame's own height, in the same units as `WIDTH` --
-     * `h-auto` on the `<svg>` means this is the chart's aspect ratio, not a
-     * pixel count, so a smaller figure draws a shorter chart at whatever
-     * width the page gives it.
-     */
-    height?: number
-    /** The polylines' own width -- thinner where more of them share the plot. */
-    strokeWidth?: number
-    /** The axis and year text, in the same units as `strokeWidth`. */
-    fontSize?: number
   } = $props()
 
   const money = new Intl.NumberFormat("en-US", {
@@ -103,21 +72,8 @@
    * that never leaves the top of the plot. The figures at the two ends of the
    * axis are what say where the plot begins, which is why they are drawn
    * whatever else is.
-   *
-   * On a log scale the padding is worked out in log space -- a fixed dollar
-   * pad either overwhelms a chart of small figures or vanishes against a
-   * chart of large ones -- and then converted back, so `bounds` is always
-   * dollars whichever scale reads it.
    */
   const bounds = $derived.by(() => {
-    if (scale === "log") {
-      const positive = drawn.filter((value) => value > 0)
-      const low = Math.log10(Math.min(...positive))
-      const high = Math.log10(Math.max(...positive))
-      const pad = (high - low) * 0.12 || 0.3
-      return { low: 10 ** (low - pad), high: 10 ** (high + pad) }
-    }
-
     const low = Math.min(...drawn)
     const high = Math.max(...drawn)
     const pad = (high - low) * 0.12 || Math.abs(high) * 0.1 || 1
@@ -126,13 +82,8 @@
 
   const across = (at: number) => bandCentre(at, years.length)
 
-  const up = (value: number) => {
-    const [low, high, at] =
-      scale === "log"
-        ? [Math.log10(bounds.low), Math.log10(bounds.high), Math.log10(value)]
-        : [bounds.low, bounds.high, value]
-    return TOP + (1 - (at - low) / (high - low)) * (height - TOP - FOOT)
-  }
+  const up = (value: number) =>
+    TOP + (1 - (value - bounds.low) / (bounds.high - bounds.low)) * (HEIGHT - TOP - FOOT)
 
   /**
    * Each series as the runs of years it actually has figures for.
@@ -207,7 +158,7 @@
     {/each}
   </ul>
 
-  <svg class="block h-auto w-full" viewBox="0 0 {WIDTH} {height}" role="presentation">
+  <svg class="block h-auto w-full" viewBox="0 0 {WIDTH} {HEIGHT}" role="presentation">
     <!-- The two ends of the scale, drawn because the scale does not start at
          zero and a reader is owed the figures that say so. -->
     {#each [bounds.high, bounds.low] as edge (edge)}
@@ -219,15 +170,14 @@
         stroke="#e2e8f0"
         stroke-width="1"
       />
-      <text x={LEFT - 8} y={up(edge) + 4} text-anchor="end" font-size={fontSize} fill="#64748b">
+      <text x={LEFT - 8} y={up(edge) + 4} text-anchor="end" font-size="11" fill="#64748b">
         {brief.format(edge)}
       </text>
     {/each}
 
     <!-- Zero, where the plot happens to contain it: a line crossing it has
-         changed sign, which no shape on its own says. A log axis has no zero
-         to cross -- every value on one is strictly positive. -->
-    {#if scale === "linear" && bounds.low < 0 && bounds.high > 0}
+         changed sign, which no shape on its own says. -->
+    {#if bounds.low < 0 && bounds.high > 0}
       <line
         x1={LEFT}
         x2={WIDTH - RIGHT}
@@ -237,13 +187,11 @@
         stroke-width="1"
         stroke-dasharray="3 3"
       />
-      <text x={LEFT - 8} y={up(0) + 4} text-anchor="end" font-size={fontSize} fill="#64748b"
-        >$0</text
-      >
+      <text x={LEFT - 8} y={up(0) + 4} text-anchor="end" font-size="11" fill="#64748b">$0</text>
     {/if}
 
     {#each years as year, at (year)}
-      <text x={across(at)} y={height - 6} text-anchor="middle" font-size={fontSize} fill="#475569">
+      <text x={across(at)} y={HEIGHT - 6} text-anchor="middle" font-size="11" fill="#475569">
         {year}
       </text>
     {/each}
@@ -254,7 +202,7 @@
           points={run.map((point) => `${across(point.year)},${up(point.value)}`).join(" ")}
           fill="none"
           stroke={line.colour}
-          stroke-width={strokeWidth}
+          stroke-width="2"
           stroke-linejoin="round"
           stroke-linecap="round"
         />
