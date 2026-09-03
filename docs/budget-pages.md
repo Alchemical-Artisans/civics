@@ -389,11 +389,11 @@ what has to happen if the fund balance falls out of the bottom of #1's — "a pl
 for specific expenditure reductions and/or revenue increases shall be submitted
 to the City Council during the next budget cycle". The book states it in
 "Financial Reserve Policies" on page 228, and that is where the page quotes it
-from, label included: that page numbers them "Reserve Policy 2" where the
-reserves section writes "City Reserve Policy #2:", and the words here are the
-city's, so the label is the one printed over the sentence rather than the one
-that would match its neighbours. It is the second of the four sections below
-because it is #1's consequence — the floor it names is #1's own.
+from. That page numbers it "Reserve Policy 2"; the section it is missing from
+would have called it "City Reserve Policy #2:" — two labels for one policy, and
+neither is quoted below any more (see the next paragraph). It is the second of
+the four sections because it is #1's consequence — the floor it names is #1's
+own.
 
 **The four policies are four `<details>`, closed until asked for.** The
 reading used to run straight down the column when it was the only thing on the
@@ -404,6 +404,14 @@ on four one-line summaries rather than four paragraphs to scroll past, and
 open on request for a reader who wants the policy's own words.
 `page.svelte.e2e.ts` opens one to check the words are still there and closed
 to check the rest start that way.
+
+**Each summary carries its own "Policy #", 1 through 4 — ours, not the book's.**
+The book numbers these two ways across its two sections, as the paragraph above
+says, so neither of its labels reads as one running count across all four. The
+quoted paragraph beneath each summary drops the book's own label along with it
+and opens on the policy's first word instead, since the number the reader wants
+while comparing four sections is the summary's now rather than a label chosen
+twice.
 
 **Each summary carries a compliance mark**, computed from the same `bands`
 `BudgetBands` charts — `standing` reads a policy's actual figure against its

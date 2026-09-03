@@ -249,8 +249,23 @@
           than a length, for the reader who wants the verdict without reading
           a bar chart. `standing` and `trigger` above compute it from the same
           `bands` the chart draws from, so the two can not disagree.
+
+          Each summary also carries its own "Policy #", 1 through 4 -- ours,
+          not the book's: the book numbers these inconsistently across its two
+          sections (see the note by #2, below), so a reader comparing four
+          summaries wants one running count more than either of the book's.
+          The quoted paragraph beneath drops the book's own label along with
+          it, opening on the policy's first word rather than a number chosen
+          twice.
         -->
-        {#snippet summaryRow(name: string, figure: string | undefined, ok: boolean, label: string)}
+        {#snippet summaryRow(
+          number: number,
+          name: string,
+          figure: string | undefined,
+          ok: boolean,
+          label: string,
+        )}
+          <span class="text-xs font-medium text-slate-400 tabular-nums">Policy #{number}</span>
           <h2 class="m-0 flex-1 text-sm font-semibold text-slate-900">{name}</h2>
           {#if figure}
             <span class="font-normal text-slate-600 tabular-nums">{figure}</span>
@@ -274,16 +289,13 @@
           <summary
             class="not-prose flex cursor-pointer flex-wrap items-center gap-x-3 gap-y-1 rounded-lg px-3 py-2 select-none [&::-webkit-details-marker]:hidden"
           >
-            {@render summaryRow(bands[0].label, bands[0].actual.cell, policy1.ok, policy1.label)}
+            {@render summaryRow(1, bands[0].label, bands[0].actual.cell, policy1.ok, policy1.label)}
           </summary>
 
           <div class="border-t border-slate-100 px-3 pt-3 pb-1">
             <p>
-              <strong>City Reserve Policy #1:</strong> The City shall maintain an undesignated <GlossaryTerm
-                term="Fund">fund</GlossaryTerm
-              > balance between 5% and 15% of <GlossaryTerm term="General Fund"
-                >general fund</GlossaryTerm
-              >
+              The City shall maintain an undesignated <GlossaryTerm term="Fund">fund</GlossaryTerm> balance
+              between 5% and 15% of <GlossaryTerm term="General Fund">general fund</GlossaryTerm>
               <GlossaryTerm term="Revenues">revenues</GlossaryTerm>, less debt exclusion and Ch. 70.
             </p>
 
@@ -305,11 +317,13 @@
           #2 is the only one of the four with no dial to draw, because it is
           not a band to sit inside but what has to happen if the fund balance
           falls out of the bottom of #1's. The book states it in "Financial
-          Reserve Policies" (page 228), which is where this is quoted from,
-          label and all -- that page numbers them "Reserve Policy 2" where the
-          reserves section writes "City Reserve Policy #2:", and the words on
-          this site are the city's, so the label is the one printed over the
-          sentence.
+          Reserve Policies" (page 228), which is where this is quoted from.
+
+          That page numbers it "Reserve Policy 2"; the section it is missing
+          from would have called it "City Reserve Policy #2:" -- two labels
+          for one policy, and neither is printed below any more, now that the
+          summary above carries its own "Policy #2" in one voice with the
+          other three.
 
           It is the next of the four sections because it is #1's consequence:
           the floor it names is #1's own, and its indicator is #1's standing
@@ -319,12 +333,12 @@
           <summary
             class="not-prose flex cursor-pointer flex-wrap items-center gap-x-3 gap-y-1 rounded-lg px-3 py-2 select-none [&::-webkit-details-marker]:hidden"
           >
-            {@render summaryRow(FUND_BALANCE_FLOOR, undefined, policy2.ok, policy2.label)}
+            {@render summaryRow(2, FUND_BALANCE_FLOOR, undefined, policy2.ok, policy2.label)}
           </summary>
 
           <div class="border-t border-slate-100 px-3 pt-3 pb-1">
             <p>
-              <strong>Reserve Policy 2:</strong> In the event that the city's undesignated
+              In the event that the city's undesignated
               <GlossaryTerm term="Fund">fund</GlossaryTerm> balance falls below 5% of
               <GlossaryTerm term="General Fund">general fund</GlossaryTerm>
               <GlossaryTerm term="Revenues">revenues</GlossaryTerm>, less debt exclusions and
@@ -339,14 +353,13 @@
           <summary
             class="not-prose flex cursor-pointer flex-wrap items-center gap-x-3 gap-y-1 rounded-lg px-3 py-2 select-none [&::-webkit-details-marker]:hidden"
           >
-            {@render summaryRow(bands[1].label, bands[1].actual.cell, policy3.ok, policy3.label)}
+            {@render summaryRow(3, bands[1].label, bands[1].actual.cell, policy3.ok, policy3.label)}
           </summary>
 
           <div class="border-t border-slate-100 px-3 pt-3 pb-1">
             <p>
-              <strong>City Reserve Policy #3:</strong> The amount to be held in <GlossaryTerm
-                term="Free Cash">free cash</GlossaryTerm
-              > shall not be less than 2% or more than 8% of <GlossaryTerm term="General Fund"
+              The amount to be held in <GlossaryTerm term="Free Cash">free cash</GlossaryTerm> shall not
+              be less than 2% or more than 8% of <GlossaryTerm term="General Fund"
                 >general fund</GlossaryTerm
               >
               <GlossaryTerm term="Revenues">revenues</GlossaryTerm>, less debt exclusion and Ch. 70.
@@ -373,13 +386,13 @@
           <summary
             class="not-prose flex cursor-pointer flex-wrap items-center gap-x-3 gap-y-1 rounded-lg px-3 py-2 select-none [&::-webkit-details-marker]:hidden"
           >
-            {@render summaryRow(bands[2].label, bands[2].actual.cell, policy4.ok, policy4.label)}
+            {@render summaryRow(4, bands[2].label, bands[2].actual.cell, policy4.ok, policy4.label)}
           </summary>
 
           <div class="border-t border-slate-100 px-3 pt-3 pb-1">
             <p>
-              <strong>City Reserve Policy #4:</strong> The city shall maintain a Stabilization <GlossaryTerm
-                term="Reserve Fund">Reserve Fund</GlossaryTerm
+              The city shall maintain a Stabilization <GlossaryTerm term="Reserve Fund"
+                >Reserve Fund</GlossaryTerm
               > of at least 3% of <GlossaryTerm term="General Fund">general fund</GlossaryTerm> revenue,
               less debt exclusion and Chapter 70.
             </p>

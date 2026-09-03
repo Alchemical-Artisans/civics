@@ -409,14 +409,15 @@ test.describe("budget pages", () => {
     // Four sections, in the book's own order -- #2 is the second of them,
     // right after #1, because it is #1's consequence.
     await expect(details).toHaveCount(4)
-    await expect(details.nth(0)).toContainText("City Reserve Policy #1:")
-    await expect(details.nth(1)).toContainText("Reserve Policy 2:")
-    await expect(details.nth(2)).toContainText("City Reserve Policy #3:")
+    await expect(details.nth(0)).toContainText("The City shall maintain an undesignated")
+    await expect(details.nth(1)).toContainText("In the event that the city's undesignated")
+    await expect(details.nth(2)).toContainText("The amount to be held in")
 
-    // Labelled as page 228 labels it. The reserves section writes "City Reserve
-    // Policy #2:" for the ones it carries; the words here are the city's, so
-    // the label is the one printed over this sentence and not the other.
-    await expect(article).not.toContainText("City Reserve Policy #2")
+    // Neither of the book's own two labels for this policy is printed any
+    // more -- the summary above carries its own "Policy #2" instead, in one
+    // voice with the other three.
+    await expect(article).not.toContainText("City Reserve Policy #")
+    await expect(article).not.toContainText("Reserve Policy 2:")
   })
 
   test("opens each reserve policy on its standing, closed until asked for", async ({ page }) => {
@@ -429,29 +430,35 @@ test.describe("budget pages", () => {
       expect(await section.getAttribute("open")).toBeNull()
     }
 
-    // Each summary names the fund, prices it exactly as the dial beside it
-    // does, and says in words the same thing the chart says in a bar's
-    // length -- computed from the same figures, so the two can not disagree.
-    // Free cash is the one of the four below its floor this year.
+    // Each summary carries its own running count -- ours, not the book's two
+    // disagreeing labels -- names the fund, prices it exactly as the dial
+    // beside it does, and says in words the same thing the chart says in a
+    // bar's length, computed from the same figures so the two can not
+    // disagree. Free cash is the one of the four below its floor this year.
     const summaries = details.locator("summary")
+    await expect(summaries.nth(0)).toContainText("Policy #1")
     await expect(summaries.nth(0)).toContainText("Undesignated Fund Balance")
     await expect(summaries.nth(0)).toContainText("$13,985,452 (7.85%)")
     await expect(summaries.nth(0)).toContainText("Within policy")
 
+    await expect(summaries.nth(1)).toContainText("Policy #2")
     await expect(summaries.nth(1)).toContainText("Fund Balance Floor")
     await expect(summaries.nth(1)).toContainText("Not triggered")
 
+    await expect(summaries.nth(2)).toContainText("Policy #3")
     await expect(summaries.nth(2)).toContainText("Free Cash")
     await expect(summaries.nth(2)).toContainText("$0 (0%)")
     await expect(summaries.nth(2)).toContainText("Below floor")
 
+    await expect(summaries.nth(3)).toContainText("Policy #4")
     await expect(summaries.nth(3)).toContainText("Stabilization Reserve")
     await expect(summaries.nth(3)).toContainText("$8,001,094 (4.49%)")
     await expect(summaries.nth(3)).toContainText("Within policy")
 
     // A native disclosure: nothing but a click on the summary is what reveals
-    // the policy's own words, and the word "shall" is only ever inside them.
-    const body = details.nth(2).getByText(/^City Reserve Policy #3:/)
+    // the policy's own words -- which open on the policy itself now, the
+    // book's own numbering label no longer printed above them.
+    const body = details.nth(2).getByText(/^The amount to be held in/)
     await expect(body).toBeHidden()
     await summaries.nth(2).click()
     await expect(body).toBeVisible()
