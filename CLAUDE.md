@@ -269,9 +269,13 @@ Notable pieces:
   `reserves` is the third bucket, opened from the reserves bar. Columns rather
   than pies because two circles cannot be compared by eye, and whether the two
   sides are the same size is the first thing to know about a budget. A category
-  page ends with **`src/lib/BookElsewhere.svelte`**, the site's only "see also":
-  the parts of the book it belongs with and does not carry, each linking to our
-  page where one exists and to the city's PDF where it does not. A segment names
+  page ends with **`src/lib/BookReferences.svelte`**, headed `References`: the
+  pages of the book it was built out of, and then the parts it belongs with and
+  does not carry, each linking to our page where one exists and to the city's
+  PDF where it does not. It was "Elsewhere in the book", which named only the
+  second half; `reserves` is the page with a full set, listing the four pages it
+  transcribes one heading at a time rather than the single contents number that
+  covers them. A segment names
   itself and prints its dollars and share on hover or focus; every segment is
   focusable, which is the only way to reach one worth $250,000 of $316 million,
   and each carries its figures as its accessible name, so nothing is only

@@ -1,10 +1,16 @@
 <!--
-  The parts of the book a page belongs with but does not carry: the tail of a
-  category page.
+  Where a page came from, and what it belongs with: the tail of a category page.
+
+  It was "Elsewhere in the book", which named half of what it holds. A list of
+  what a page is next to is a see-also; a list of what a page was built out of
+  is a reference, and a reader who wants to check a figure against the city's
+  own file wants the second one. So the heading is "References" and both go in
+  it -- the pages the words and the charts were taken off, and the pages the
+  book keeps the rest of the subject on. What a reader does with either is the
+  same thing: open the book there.
 
   The heading is ours -- the one line on these pages that is not the book's --
-  and so is the choice of what to list, which makes this the site's only
-  "see also" and worth keeping short. Everything else follows the rule the
+  and so is the choice of what to list. Everything else follows the rule the
   contents page follows: a section written up here opens on this site, and one
   that is not opens the city's own file at the page the book gives it, so the
   reader lands on the section either way.
@@ -12,8 +18,8 @@
 <script lang="ts">
   import { Router } from "$lib/router"
 
-  export interface Elsewhere {
-    /** The section, named as the book's contents names it. */
+  export interface Reference {
+    /** The section, named as the book's contents or its own page names it. */
     title: string
     /** A section written up here: its route segment under the book. */
     section?: string
@@ -21,12 +27,12 @@
     href?: string
   }
 
-  let { items, book }: { items: Elsewhere[]; book: { id: string } } = $props()
+  let { items, book }: { items: Reference[]; book: { id: string } } = $props()
 
-  const away = (item: Elsewhere) => !item.section
+  const away = (item: Reference) => !item.section
 </script>
 
-<h2>Elsewhere in the book</h2>
+<h2>References</h2>
 
 <ul>
   {#each items as item (item.title)}

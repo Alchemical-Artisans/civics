@@ -16,6 +16,6 @@ export const load: PageLoad = async ({ parent }) => {
 
   return {
     section: { title: "Outstanding Debt", page: 21 },
-    elsewhere: [{ title: "Fund Accounting", href: Router.pdfPage(book.budget!, 218) }],
+    references: [{ title: "Fund Accounting", href: Router.pdfPage(book.budget!, 218) }],
   }
 }

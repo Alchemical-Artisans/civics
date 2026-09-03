@@ -57,7 +57,7 @@ export const load: PageLoad = async ({ parent }) => {
 
     // The other document this page rests on: the orders quoted at the foot of
     // it are on the Council's agenda, not in the book.
-    elsewhere: [
+    references: [
       { title: "Fiscal Reserves", section: "reserves" },
       // Where this spending is going: the ten-year projection, which was on
       // this page until it was clear that what it has in common with the rest

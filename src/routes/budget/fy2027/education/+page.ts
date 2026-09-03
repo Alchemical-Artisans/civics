@@ -22,7 +22,7 @@ export const load: PageLoad = async ({ parent }) => {
 
   return {
     section: { title: "Education", page: 26 },
-    elsewhere: [
+    references: [
       { title: "Regional Schools", href: Router.pdfPage(book.budget!, 150) },
       { title: "School Department", href: Router.pdfPage(book.budget!, 152) },
     ],

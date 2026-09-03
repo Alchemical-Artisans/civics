@@ -594,13 +594,30 @@ sentence `revenue` prints in prose ("this reserve may be nearly exhausted by
 2028"). Rows cannot be lifted out of a table without breaking it, and retyping
 them would be a second copy, so the two pages point at each other instead.
 
-**"Elsewhere in the book"** is the device for that, shared by `education`,
-`spending` and `reserves` as
-[`BookElsewhere`](../src/lib/BookElsewhere.svelte). Its items follow the rule
+**"References"** is the device for that, shared by `education`, `spending`,
+`outstanding-debt` and `reserves` as
+[`BookReferences`](../src/lib/BookReferences.svelte). Its items follow the rule
 the contents page follows — a section written up here opens on this site, one
 that is not opens the city's file at its own page — so one list carries both.
-The heading is ours, and so is the choice of what to list: this is the site's
-only "see also", and the book has none, which is reason to keep it short.
+The heading is ours, and so is the choice of what to list.
+
+It was headed "Elsewhere in the book", which named half of what it holds. A list
+of what a page sits next to is a see-also; a list of what a page was built out
+of is a reference, and a reader who wants to check a figure against the city's
+own file wants the second one. Both go in it now, because what a reader does
+with either is the same thing: open the book there.
+
+**`reserves` is the one that carries a full set.** Its first four entries are
+the run the page transcribes — the book's contents calls all of it "Fiscal
+Reserves" and gives one number, 17, but it is four pages with four headings, and
+each of those is one of this page's own headings, so a reader checking the free
+cash figure lands on the free cash page rather than three pages before it. Then
+"Financial Reserve Policies", at 228 rather than the 227 its contents line
+gives: 227 is a title page with nothing on it but the words, and Reserve Policy
+2 — the one the reserves section leaves out and this page carries — is on 228. A
+reference is worth pointing at the sentence. The last two, "Liability, Overlay &
+Reserves" and "Fund Accounting", are neither transcribed nor drawn from; they
+were the whole of the list when it was a see-also.
 
 A chart title that is a link says so with a 2px underline rather than the
 hairline the contents lines carry, and the pie's heading needs `font-semibold`
@@ -909,8 +926,8 @@ before matching, since a cell is a figure rather than a sentence.
    School Spending" (26), "Regional Schools" (150) and "School Department"
    (152); only the first has been read off the page, and the other two are links
    into the city's file at the page the book gives them, under a heading of ours
-   — "Elsewhere in the book", the one line on any of these pages that is not the
-   book's (see [`BookElsewhere`](../src/lib/BookElsewhere.svelte)). That is the same thing a contents line does for a section nobody has
+   — "References", the one line on any of these pages that is not the
+   book's (see [`BookReferences`](../src/lib/BookReferences.svelte)). That is the same thing a contents line does for a section nobody has
    written up, so covering them loses nothing; when either is transcribed it
    becomes an `<h2>` and drops off the list. Its `+page.ts` builds those links
    from the book URL on the layout above it, which is why that one takes
@@ -1002,7 +1019,7 @@ src/lib/BudgetBands.svelte                 a fund against the band its policy al
 src/lib/BudgetLines.svelte                 a table's rows followed across its years
 src/lib/BudgetBars.svelte                  a year's figures either side of zero
 src/lib/chart-frame.ts                     the viewBox and bands those two share
-src/lib/BookElsewhere.svelte               a category page's "see also" list
+src/lib/BookReferences.svelte              where a page came from, and what it sits by
 src/lib/data/glossary.json                 the book's glossary, transcribed
 src/lib/glossary.ts                        reads it; the definition lookup
 src/lib/GlossaryTerm.svelte                a defined word, with its definition

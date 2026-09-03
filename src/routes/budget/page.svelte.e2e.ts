@@ -333,10 +333,25 @@ test.describe("budget pages", () => {
     // now, and a forecast is not that.
     await expect(page.getByRole("link", { name: /Appropriation Projection/ })).toHaveCount(0)
 
-    // The two reserve sections nobody has transcribed, at their own pages.
+    // Every page of the book this one was built out of, then the pages the book
+    // keeps the rest of the subject on -- the whole of it under "References",
+    // which was "Elsewhere in the book" while it held only the second half.
+    await expect(page.getByRole("heading", { name: "References" })).toBeVisible()
+    await expect(page.getByRole("heading", { name: "Elsewhere in the book" })).toHaveCount(0)
+
+    // The book's contents calls the whole run "Fiscal Reserves" and gives one
+    // number. It is four pages with four headings, each of them one of this
+    // page's own, so a reader checking the free cash figure lands on the free
+    // cash page.
     for (const [title, at] of [
+      ["Fiscal Reserves", 17],
+      ["Fund Balance", 18],
+      ["Free Cash", 19],
+      ["Stabilization Reserve", 20],
+      // 228, not the 227 its contents line gives: 227 is a title page with
+      // nothing on it but the words, and Reserve Policy 2 is on 228.
+      ["Financial Reserve Policies", 228],
       ["Liability, Overlay & Reserves", 213],
-      ["Financial Reserve Policies", 227],
     ] as const) {
       const link = page.getByRole("link", { name: new RegExp(`^${title.replace("&", "&")}`) })
       expect(await link.getAttribute("href")).toMatch(new RegExp(`#page=${at}$`))

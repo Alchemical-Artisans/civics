@@ -2,7 +2,7 @@
   // A script here because this table is a bar on the book's front page as well;
   // see docs/budget-pages.md.
   import BudgetTable from "$lib/BudgetTable.svelte"
-  import BookElsewhere from "$lib/BookElsewhere.svelte"
+  import BookReferences from "$lib/BookReferences.svelte"
   import { LONG_TERM_DEBT } from "./tables"
   import GlossaryTerm from "$lib/GlossaryTerm.svelte"
 
@@ -190,4 +190,4 @@
   </tbody>
 </table>
 
-<BookElsewhere items={data.elsewhere} book={data.book} />
+<BookReferences items={data.references} book={data.book} />

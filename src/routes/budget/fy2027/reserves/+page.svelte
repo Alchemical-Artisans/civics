@@ -5,7 +5,7 @@
   // exactly as the book sets them.
   import BudgetBands from "$lib/BudgetBands.svelte"
   import BudgetBars from "$lib/BudgetBars.svelte"
-  import BookElsewhere from "$lib/BookElsewhere.svelte"
+  import BookReferences from "$lib/BookReferences.svelte"
   import { amount, cell, type BudgetTableData } from "$lib/budget-table"
   import { FUND_BALANCE, FUND_BALANCE_HISTORY, FREE_CASH, STABILIZATION } from "./tables"
   import GlossaryTerm from "$lib/GlossaryTerm.svelte"
@@ -237,4 +237,4 @@
   or 4.41%.
 </p>
 
-<BookElsewhere items={data.elsewhere} book={data.book} />
+<BookReferences items={data.references} book={data.book} />

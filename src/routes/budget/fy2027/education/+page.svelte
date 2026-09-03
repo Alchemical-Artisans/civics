@@ -1,7 +1,7 @@
 <script lang="ts">
   // A script here for the two parts of the book this page covers that nobody
   // has transcribed; see this page's `+page.ts` and docs/budget-pages.md.
-  import BookElsewhere from "$lib/BookElsewhere.svelte"
+  import BookReferences from "$lib/BookReferences.svelte"
   import GlossaryTerm from "$lib/GlossaryTerm.svelte"
 
   let { data } = $props()
@@ -183,4 +183,4 @@
   <li>Required NSS - 4%</li>
 </ul>
 
-<BookElsewhere items={data.elsewhere} book={data.book} />
+<BookReferences items={data.references} book={data.book} />

@@ -1,7 +1,7 @@
 <script lang="ts">
   // A script here for the parts of the book this page belongs with and does not
   // carry; see this page's `+page.ts` and docs/budget-pages.md.
-  import BookElsewhere from "$lib/BookElsewhere.svelte"
+  import BookReferences from "$lib/BookReferences.svelte"
   import { APPROPRIATED, ENTERPRISE, GENERAL_FUND, ORDERS } from "../council-orders"
   import BudgetTable from "$lib/BudgetTable.svelte"
   import { APPROPRIATIONS, DEPARTMENTS } from "./tables"
@@ -1634,4 +1634,4 @@
   why the front page counts those transfers once.
 </p>
 
-<BookElsewhere items={data.elsewhere} book={data.book} />
+<BookReferences items={data.references} book={data.book} />
