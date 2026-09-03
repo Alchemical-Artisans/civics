@@ -194,7 +194,7 @@
   }
 </script>
 
-<div class="budget-bars not-prose relative my-4" bind:this={root}>
+<div class="budget-bars not-prose relative" bind:this={root}>
   <!-- A legend whatever the count, because one bar is told from the one under
        it by colour and by nothing else. -->
   <ul class="m-0 mb-1 flex list-none flex-wrap gap-x-5 gap-y-1 p-0 text-xs">

@@ -177,9 +177,7 @@
     own cells, so charting both would be one row drawn twice -- except 2022,
     which has no closing row of its own and draws the opening one instead.
   -->
-    <div class="mb-6">
-      <BudgetBars {years} rows={balance} />
-    </div>
+    <BudgetBars {years} rows={balance} />
 
     <!-- The one thing on this page that scrolls. `min-h-0` because a flex child
          will not shrink below its content without it, and a box that cannot
