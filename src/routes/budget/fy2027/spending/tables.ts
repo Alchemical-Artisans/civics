@@ -13,7 +13,74 @@
  * sides facing each other to show that they balance; the front page makes that
  * point instead, with two pies carrying the same total.
  */
-import type { BudgetTableData } from "$lib/budget-table"
+import { column, cell, amount, sum, type BudgetTableData } from "$lib/budget-table"
+import { ENTERPRISE } from "../council-orders"
+
+/**
+ * Page 29: five years of capital requests, by the same category headings the
+ * line-item tables below use. Held as data because this page's own line
+ * graph reads it -- see the note there for why the chart replaces the table
+ * rather than sitting beside it.
+ */
+export const CAPITAL_REQUESTS: BudgetTableData = {
+  columns: ["5-Year Capital Requests", "2027", "2028", "2029", "2030", "2031", "Grand Total"],
+  rows: [
+    {
+      label: "Buildings & Building Improvements",
+      cells: [
+        "$3,560,656",
+        "$125,002,000",
+        "$1,270,000",
+        "$6,045,000",
+        "$3,995,000",
+        "$139,872,656",
+      ],
+    },
+    {
+      label: "Computer Equipment",
+      cells: ["$70,000", "$133,870", "$184,124", "", "$160,972", "$548,966"],
+    },
+    {
+      label: "Computer Software",
+      cells: ["$495,146", "", "$308,994", "", "", "$804,140"],
+    },
+    {
+      label: "Equipment",
+      cells: ["$3,904,998", "$780,713", "$1,630,000", "$445,000", "$365,000", "$7,125,711"],
+    },
+    {
+      label: "Infrastructure",
+      cells: ["$8,697,500", "$3,411,500", "$1,913,042", "$1,871,232", "$1,928,315", "$17,821,589"],
+    },
+    {
+      label: "Land & Land Improvements",
+      cells: ["$66,320", "$130,000", "$200,000", "$75,000", "$225,000", "$696,320"],
+    },
+    {
+      label: "Planning & Design",
+      cells: ["", "", "$575,000", "", "", "$575,000"],
+    },
+    {
+      label: "Software",
+      cells: ["$50,000", "", "", "", "", "$50,000"],
+    },
+    {
+      label: "Vehicles",
+      cells: ["$375,000", "$2,849,570", "$2,355,000", "$475,000", "$355,000", "$6,409,570"],
+    },
+    {
+      label: "Grand Total",
+      cells: [
+        "$17,219,620",
+        "$132,307,653",
+        "$8,436,160",
+        "$8,911,232",
+        "$7,029,287",
+        "$173,903,952",
+      ],
+    },
+  ],
+}
 
 /**
  * Pages 76 and 77: every department on one line. The book splits it across two
@@ -850,3 +917,30 @@ export const APPROPRIATIONS: BudgetTableData = {
     },
   ],
 }
+
+const CHARTED = "2027 Proposed"
+
+/** The only row of `APPROPRIATIONS` that is not a category. */
+const NOT_A_CATEGORY = ["Grand Total"]
+
+/**
+ * What the city spends, as parts for this page's own bar and the front
+ * page's column: the general fund's page-78 categories -- state assessments
+ * and the overlay included, since nobody gets a choice about either but both
+ * are spent -- plus the two enterprise funds, appropriated in orders of
+ * their own and printed nowhere in the book. See `fy2027/+page.ts` and
+ * `council-orders.ts`. One copy, read by both charts, so neither can print a
+ * total the other disagrees with.
+ */
+export const SPENDING = [
+  ...column(APPROPRIATIONS, CHARTED, { exclude: NOT_A_CATEGORY }),
+  ...column(ENTERPRISE, "Amount"),
+]
+
+/**
+ * The book's own stated total, not summed: the appropriations column adds to
+ * a dollar over the total it prints, and the site shows the one the book
+ * states.
+ */
+export const SPENDING_TOTAL =
+  amount(cell(APPROPRIATIONS, "Grand Total", CHARTED))! + sum(column(ENTERPRISE, "Amount"))

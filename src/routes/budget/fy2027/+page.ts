@@ -1,10 +1,10 @@
 import type { PageLoad } from "./$types"
 import { contents, type BookSection } from "$lib/budget"
 import { amount, cell, column, sum, type BudgetTableData } from "$lib/budget-table"
-import { APPROPRIATIONS, DEPARTMENTS } from "./spending/tables"
+import { DEPARTMENTS, SPENDING, SPENDING_TOTAL } from "./spending/tables"
 import { FUND_BALANCE, FREE_CASH, STABILIZATION } from "./reserves/tables"
 import { LONG_TERM_DEBT } from "./debt/tables"
-import { ENTERPRISE, ENTERPRISE_REVENUE } from "./council-orders"
+import { ENTERPRISE_REVENUE } from "./council-orders"
 import { OTHER_AVAILABLE, REVENUE } from "./revenue/tables"
 import type { Part } from "$lib/BudgetStack.svelte"
 
@@ -39,25 +39,14 @@ const NOT_A_CATEGORY = ["Grand Total", "Budget Surplus (Deficit)"]
 
 /**
  * What the city spends: the book's own table, and the two departments it does
- * not carry.
- *
- * The book's page-78 table is the general fund, every line of it -- including
- * the state assessments ($10,271,435) and the overlay ($250,000), which the
- * Council does not appropriate because nobody gets a choice about them: the
- * Commonwealth bills the city for charter school tuition, school choice, the
- * MBTA and the rest, and the assessors raise the overlay to cover the property
- * tax abatements the year will grant. Charged rather than chosen, but spent
- * either way, which is what this chart is about.
- *
- * Water and wastewater are the enterprise funds, appropriated in orders of
- * their own on the Council's agenda of 2 June 2026 and printed nowhere in the
- * book. What the Council did vote, and what it left to the recap sheet, is set
- * out on the spending page in the orders' own words.
+ * not carry -- including the state assessments and the overlay, which the
+ * Council does not appropriate because nobody gets a choice about them, and
+ * water and wastewater, appropriated in orders of their own and printed
+ * nowhere in the book. Read from `spending/tables.ts`, which is also what the
+ * spending page's own bar draws, rather than built again here: one copy, so
+ * the two charts cannot print totals that disagree.
  */
-const spending = [
-  ...column(APPROPRIATIONS, CHARTED, { exclude: NOT_A_CATEGORY }),
-  ...column(ENTERPRISE, "Amount"),
-]
+const spending = SPENDING
 
 /**
  * Where that money comes from -- and only what actually comes from somewhere.
@@ -120,8 +109,7 @@ const revenue = [
  * revenue column leaves out, and the $1,539 by which the orders' enterprise
  * reimbursement differs from the book's May projection of it.
  */
-const spendingTotal =
-  amount(cell(APPROPRIATIONS, "Grand Total", CHARTED))! + sum(column(ENTERPRISE, "Amount"))
+const spendingTotal = SPENDING_TOTAL
 const revenueTotal = sum(revenue)
 
 /**

@@ -55,6 +55,14 @@ export const load: PageLoad = async ({ parent }) => {
   return {
     section: { title: "Spending", page: 15 },
 
+    /**
+     * Laid out as `reserves` and `debt` are: charts down the left and the
+     * reading in the only box that scrolls. The spending bar and the
+     * five-year capital line graph both want more room than a 48rem strip
+     * has to give.
+     */
+    wide: true,
+
     // The other document this page rests on: the orders quoted at the foot of
     // it are on the Council's agenda, not in the book.
     references: [

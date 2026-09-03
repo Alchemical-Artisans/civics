@@ -287,7 +287,10 @@ Notable pieces:
   which gather that side's sections and so have no contents lines of their own.
   `reserves` is the third bucket, opened from the reserves bar. Columns rather
   than pies because two circles cannot be compared by eye, and whether the two
-  sides are the same size is the first thing to know about a budget. A category
+  sides are the same size is the first thing to know about a budget.
+  `spending` reuses the same component for its own left-column bar, handed a
+  single row rather than two -- the component draws whatever `rows` it gets,
+  so a page wanting one column is not a special case of it. A category
   page ends with **`src/lib/BookReferences.svelte`**, headed `References`: the
   pages of the book it was built out of, and then the parts it belongs with and
   does not carry, each linking to our page where one exists and to the city's
@@ -345,6 +348,25 @@ Notable pieces:
   book's own label stays out of the quoted paragraph beneath. `debt.spec.ts`
   pins the three policies' figures and the arithmetic the payments chart
   depends on, the way `reserves.spec.ts` does for the dials.
+- **`spending`** is `wide: true` too, for the two charts at the top rather
+  than a policy to keep or fail -- there is no accordion here the way
+  `reserves` and `debt` each open with one. The left column is not a chart of
+  its own: it is `BudgetColumns` handed one row instead of two, the same
+  "Spending" column the front page draws, reading the same `SPENDING` and
+  `SPENDING_TOTAL` from `spending/tables.ts` rather than building the
+  composition a second time -- one copy, so the front page's column and this
+  page's bar cannot disagree -- and carrying no `href`, since a bar linking
+  to the page it is already on is that page offered twice. Across the top of
+  the reading column, a `BudgetLines` chart replaces page 29's own table,
+  "5-Year Capital Requests by Category": nine categories as a line each
+  rather than a heading and a fifty-odd-cell grid, "Grand Total" excluded as
+  both a row, which would draw a line that is every other category summed,
+  and a column, since it is a five-year sum and not a sixth year. Nothing
+  heads it -- the legend carries the nine names, the way neither of `debt`'s
+  two line charts is headed -- and the paragraphs that followed the table in
+  the book are untouched, just no longer sitting under a table that repeats
+  them. `spending.spec.ts` pins `SPENDING_TOTAL` and checks the capital table
+  against its own row and column totals.
 - **`src/lib/BudgetTimeline.svelte`** draws page 13, the budget calendar, as the
   footer of _every_ page of a book, fixed to the bottom of the window: a row of
   twelve boxes

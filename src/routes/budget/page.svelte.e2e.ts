@@ -323,6 +323,45 @@ test.describe("budget pages", () => {
     }
   })
 
+  test("charts the spending page's own bar and its five-year capital requests", async ({
+    page,
+  }) => {
+    await page.goto(`/budget/${books[0]}/spending`)
+
+    // The same bar the front page draws for "Spending", one column of it --
+    // and with no link back to a page it is already on, unlike the front
+    // page's own.
+    const bar = page.locator(".budget-columns")
+    await expect(bar.locator(".budget-column")).toHaveCount(1)
+    await expect(bar).toContainText("Spending")
+    await expect(bar).toContainText("$316,044,835")
+    await expect(bar.getByRole("link", { name: "Spending" })).toHaveCount(0)
+
+    const segment = bar.getByRole("img").first()
+    await segment.focus()
+    await expect(bar).toContainText("Education")
+
+    // Page 29's table, as a line per category rather than a heading and a
+    // grid of its own: nine categories, "Grand Total" excluded both as a row,
+    // which would draw a line that is every other category added together,
+    // and as a column, which is a five-year sum rather than a sixth year.
+    await expect(
+      page.getByRole("heading", { name: "5-Year Capital Requests by Category" }),
+    ).toHaveCount(0)
+    const lines = page.locator(".budget-lines")
+    await expect(lines).toHaveCount(1)
+    await expect(lines).toContainText("Buildings & Building Improvements")
+    await expect(lines).not.toContainText("Grand Total")
+    await expect(lines.locator("circle")).toHaveCount(33)
+    await expect(
+      lines.locator("circle[aria-label='Buildings & Building Improvements, 2028, $125,002,000']"),
+    ).toHaveCount(1)
+
+    // The old table's own total is gone with it -- read from the chart's
+    // tooltips now, not off a grid of fifty-odd cells.
+    await expect(page.getByRole("article")).not.toContainText("$173,903,952")
+  })
+
   test("links the reserves and the spending it pays for", async ({ page }) => {
     await page.goto(`/budget/${books[0]}/reserves`)
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("Reserves")

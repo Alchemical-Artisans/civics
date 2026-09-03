@@ -661,6 +661,45 @@ sentence.
 total against the section's own sentence, and the arithmetic the payments
 chart depends on -- the same role `reserves.spec.ts` plays for the dials.
 
+### The two charts on `spending`
+
+`spending` has no policy to keep or fail, so it has no accordion the way
+`reserves` and `debt` each open with one -- it is `wide: true` for the same
+reason theirs are, a chart fixed in the left column and one fixed above the
+reading, with everything else exactly the prose and the tables it always was,
+reflowed into the one box that scrolls.
+
+**The left column is not a chart of its own -- it is the front page's,
+handed one row instead of two.**
+[`BudgetColumns.svelte`](../src/lib/BudgetColumns.svelte) already draws
+however many columns its `rows` prop gives it, so the page passes the single
+"Spending" column read out of `spending/tables.ts`'s `SPENDING` and
+`SPENDING_TOTAL` -- the same two exports the front page's own column now
+reads, rather than building the composition a second time from
+`APPROPRIATIONS` and `council-orders.ts`'s `ENTERPRISE`. One copy, so the
+front page's column and this page's bar cannot print totals that disagree.
+It carries no `href`: the front page's column links here because it is
+somewhere else, and a bar linking to the page it is already on is the same
+page offered twice.
+
+**The top of the reading column charts page 29, "5-Year Capital Requests by
+Category", as a line per category rather than a heading and a fifty-odd-cell
+grid.** The table is held as `CAPITAL_REQUESTS` in `spending/tables.ts` and
+read into [`BudgetLines.svelte`](../src/lib/BudgetLines.svelte) with its own
+"Grand Total" excluded twice over -- as a row, which would draw a line that
+is every other category added together, and as a column, since it is a
+five-year sum rather than a sixth year and `BudgetLines` reads only years.
+Nothing heads the chart: its legend carries the nine category names, the way
+neither of `debt`'s two line charts is headed either, and the paragraphs
+that followed the table in the book still say in words what the lines now
+say in a shape -- they are untouched, just no longer sitting under a table
+that repeats them.
+
+`spending.spec.ts` pins `SPENDING_TOTAL` and the composition it is built
+from, and checks `CAPITAL_REQUESTS` against its own row and column totals the
+way `debt.spec.ts` checks the debt tables against the sentences that quote
+them.
+
 ### history-forecasts
 
 **Every year but this one.** `/budget/fy2027/history` is titled
