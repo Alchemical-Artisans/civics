@@ -497,19 +497,35 @@ test.describe("budget pages", () => {
     await expect(summaries.nth(2)).toContainText("59%")
     await expect(summaries.nth(2)).toContainText("Below floor")
 
-    // Bond Rating sits between #2 and #3 in the book's own order, and keeps
-    // no disclosure of its own: it is not a policy, so it has no standing to
-    // mark.
-    const between = page.getByRole("heading", { name: "Bond Rating" })
-    const second = (await details.nth(1).boundingBox())!
-    const third = (await details.nth(2).boundingBox())!
-    expect((await between.boundingBox())!.y).toBeGreaterThan(second.y)
-    expect((await between.boundingBox())!.y).toBeLessThan(third.y)
-
     const body = details.nth(0).getByText(/^In accordance with MGL c\.58 s\.10c/)
     await expect(body).toBeHidden()
     await summaries.nth(0).click()
     await expect(body).toBeVisible()
+  })
+
+  test("opens the bond rating on the page its quotes are on, leftmost of the three", async ({
+    page,
+  }) => {
+    await page.goto(`/budget/${books[0]}/debt`)
+
+    // The card, not a transcription: the rating itself and the book's own
+    // attribution line, nothing quoted from S&P.
+    const rating = page.getByRole("link", { name: /^Bond Rating/ })
+    await expect(rating).toContainText("AA")
+    await expect(rating).toContainText("S&P Global Ratings April 1, 2026")
+    await expect(rating).toHaveAttribute("href", /#page=23$/)
+    await expect(rating).toHaveAttribute("target", "_blank")
+
+    // Furthest left of the three things in the top row -- first in the DOM,
+    // which is what a grid with no `order` renders left to right as.
+    const row = page.locator(".debt-top-row")
+    const order = await row.evaluate((el) => [...el.children].map((child) => child.tagName))
+    expect(order[0]).toBe("A")
+
+    // Neither the quotes nor a second link to the same page survive: the
+    // card is the only way to page 23 now.
+    await expect(page.getByRole("article")).not.toContainText("Haverhill's creditworthiness")
+    await expect(page.getByRole("link", { name: /^Bond Rating/ })).toHaveCount(1)
   })
 
   test("charts what the debt page is made of and how it has moved", async ({ page }) => {

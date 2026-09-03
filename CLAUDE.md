@@ -326,11 +326,18 @@ Notable pieces:
   on end -- `BudgetStack`'s rail-and-segments idea turned vertical, written
   out in the page's own script since `BudgetStack` only lies flat, largest
   segment at the foot and named on hover or focus the way every chart on the
-  site is. Two `BudgetLines` charts sit side by side across the top of the
-  reading column instead of stacked, since neither is shaped like a bullet
-  column: annual payments, on their own scale, and the per-capita comparison
-  to the state average, which does share one scale because that is the
-  book's own point in drawing it. The three policies are still three
+  site is. Two `BudgetLines` charts join it side by side across the top of
+  the reading column instead of stacked, since neither is shaped like a
+  bullet column: annual payments, on their own scale, and the per-capita
+  comparison to the state average, which does share one scale because that
+  is the book's own point in drawing it. Leftmost of the three, a card
+  stands in for page 23, "Bond Rating": the rating itself, "AA", and the
+  book's own attribution line, both bare facts rather than the two S&P
+  quotes the page used to carry in full -- the card opens straight to page
+  23 of the city's PDF, so a reader who wants S&P's own words gets them from
+  S&P rather than a second copy of them here, and "Bond Rating" drops out of
+  the References list below for the same reason a chart-linked section never
+  keeps a contents line. The three policies are still three
   collapsed `<details>`, numbered "Policy #1" through "Policy #3" in the same
   voice `reserves`' four use and for the same reason: the book numbers them
   "#1", "#2a", "#2b" once and not at all a second time, so the summary's own

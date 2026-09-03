@@ -29,9 +29,16 @@ export const load: PageLoad = async ({ parent }) => {
     wide: true,
 
     /**
-     * The five pages this page transcribes, each with its own heading there
+     * The four pages this page transcribes, each with its own heading there
      * and its own section here, and then the one page it draws from without
      * transcribing.
+     *
+     * Page 23, "Bond Rating", is not a fifth: it is two quotes from S&P and
+     * nothing this page charts or states a policy against, so it is a card
+     * in the top row instead, linked straight to the page rather than listed
+     * again down here -- the same reason a chart's own name carries its
+     * link on `reserves` and the front page both, rather than repeating as a
+     * line beneath.
      *
      * "Fund Accounting" is listed on `reserves` for the same reason: half of
      * this debt is not the general fund's. $92,212,944 of the $175,745,444
@@ -42,7 +49,6 @@ export const load: PageLoad = async ({ parent }) => {
     references: [
       { title: "Long Term Debt", href: Router.pdfPage(book.budget!, 21) },
       { title: "Annual Debt Payments", href: Router.pdfPage(book.budget!, 22) },
-      { title: "Bond Rating", href: Router.pdfPage(book.budget!, 23) },
       { title: "Retiring Debt", href: Router.pdfPage(book.budget!, 24) },
       { title: "Debt Comparison to State Average", href: Router.pdfPage(book.budget!, 25) },
       { title: "Fund Accounting", href: Router.pdfPage(book.budget!, 218) },

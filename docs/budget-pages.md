@@ -629,6 +629,19 @@ against the state average, does share one scale, because holding the two
 against each other is the whole point of the book's own chart. Nothing heads
 either: each line chart's legend carries its series' names.
 
+**Page 23, "Bond Rating", is a card in that row rather than a transcription
+-- the one figure of the page, "AA", and the book's own attribution line,
+"S&P Global Ratings April 1, 2026", both bare facts rather than sentences.**
+The two paragraphs of S&P's own words the page used to carry are gone: the
+card opens straight to page 23 of the city's PDF, `#page=23` and all, so a
+reader who wants S&P's words gets them from S&P rather than from a second
+copy of them here that could drift from the first. It leads the row, furthest
+left of the three, because it is the one fact of the three worth a reader's
+first look rather than a shape to read. "Bond Rating" is not in the page's
+own References list any more either -- the same page offered twice on one
+screen, once as a card and once as a line, is the same rule that keeps a
+chart-linked section off a contents list.
+
 **The three policies are still numbered "Policy #1" through "Policy #3", in
 the same voice `reserves`' four use and for the same reason.** The book
 numbers these "#1", "#2a" and "#2b" across two sections and never as a plain

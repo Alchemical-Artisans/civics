@@ -6,6 +6,7 @@
   import BudgetLines from "$lib/BudgetLines.svelte"
   import BookReferences from "$lib/BookReferences.svelte"
   import GlossaryTerm from "$lib/GlossaryTerm.svelte"
+  import { Router } from "$lib/router"
   import { amount, cell, column, sum } from "$lib/budget-table"
   import { LONG_TERM_DEBT, ANNUAL_DEBT_PAYMENTS, DEBT_PER_CAPITA, DEBT_POLICIES } from "./tables"
   import { COLOURS } from "$lib/chart-colours"
@@ -130,6 +131,13 @@
   const policy1 = ceiling(longTermDebt.limit, longTermDebt.actual)
   const policy2 = ceiling(annualDebtPayments.limit, annualDebtPayments.actual)
   const policy3 = floor(retiringDebt.limit, retiringDebt.actual)
+
+  /** Page 23 in full: the two S&P quotes the book prints there. A card that
+      opens the page they're on is a truer transcription of a rating agency's
+      own words than a copy of them would be, and it is a fifth of the
+      reading this page used to carry for a section that answers none of the
+      three policies. */
+  const bondRatingHref = $derived(Router.pdfPage(data.book.budget!, 23))
 </script>
 
 <!--
@@ -207,15 +215,39 @@
 
   <div class="lg:flex lg:h-full lg:flex-col lg:overflow-hidden">
     <!--
-      The two trends side by side across the top rather than stacked, since
-      neither is shaped like a bullet column and both are short and wide --
-      payments alone, on their own scale (see the note in the script for why
-      revenue is not drawn beside them), and the per-capita comparison, whose
-      two series do share a scale because holding them against each other is
-      the book's own point in drawing it. Nothing heads either: each line
-      chart's legend carries its own series' names.
+      The bond rating and the two trends side by side across the top rather
+      than read in order, since none of the three is shaped like a bullet
+      column and all three are short and wide. The card leads because it
+      names the one figure of the three that is a single fact rather than a
+      shape -- payments alone, on their own scale (see the note in the script
+      for why revenue is not drawn beside them), and the per-capita
+      comparison, whose two series do share a scale because holding them
+      against each other is the book's own point in drawing it. Nothing
+      heads either chart: each line chart's legend carries its own series'
+      names.
     -->
-    <div class="grid gap-6 lg:grid-cols-2">
+    <div class="debt-top-row grid gap-6 lg:grid-cols-3">
+      <!--
+        Page 23 is two S&P quotes and nothing to chart, so it is a card
+        rather than a third line -- the rating itself, which is the one fact
+        of the page worth a reader's first look, and a link to the page
+        those quotes are on rather than a copy of them. A reader who wants
+        the words S&P actually used gets them from S&P, in the city's own
+        file, rather than from a second copy of them here that could drift
+        from the first.
+      -->
+      <a
+        href={bondRatingHref}
+        target="_blank"
+        rel="external noopener noreferrer"
+        class="not-prose flex flex-col items-center justify-center gap-1 rounded-lg border border-slate-200 px-4 py-6 text-center text-inherit no-underline transition-colors hover:border-slate-400"
+      >
+        <span class="text-xs font-medium text-slate-500">Bond Rating</span>
+        <span class="text-4xl font-bold text-slate-900">AA</span>
+        <span class="text-xs text-slate-500">S&amp;P Global Ratings April 1, 2026</span>
+        <span class="sr-only">, in the city's PDF, opens in a new tab</span>
+      </a>
+
       <BudgetLines years={paymentYears} rows={payments} />
       <BudgetLines years={capitaYears} rows={perCapita} />
     </div>
@@ -335,47 +367,6 @@
             </p>
           </div>
         </details>
-
-        <h2>Bond Rating</h2>
-
-        <p>The city's bond rating was reaffirmed with "AA"</p>
-
-        <blockquote>
-          <p>
-            "Haverhill's creditworthiness is characterized by the city's stable local economy, along
-            with robust budgeting practices and long-term planning that we believe are generally
-            stronger than those of similarly rated state peers and will continue to support balanced
-            operations despite pressures from unfunded retirement liabilities. Although available
-            reserves are below those of similarly rated peers, the city has maintained them at
-            consistent levels over the past few years. Nevertheless, we believe Haverhill's reserves
-            and large pension and other postemployment benefit (OPEB) liabilities remain an upward
-            limiting factor for the rating."
-          </p>
-        </blockquote>
-
-        <p>The rating further reflects our view of Haverhill's:</p>
-
-        <blockquote>
-          <p>
-            <em>
-              "Stable local economy, characterized by income indicators that are above the national
-              level but below those of Essex County, although we expect the city's economic growth
-              will continue. The local economy will likely continue to expand, along with the tax
-              base. In addition to local economic opportunities, residents have access to the
-              broader Boston metropolitan statistical area."
-            </em>
-          </p>
-          <p>
-            <em>
-              "Comprehensive budgeting practices and planning that include conservative budgeting
-              assumptions, monthly budget-to-actuals reporting, a five-year capital improvement
-              plan, and long-range revenue and expenditure forecasting, as well as a formal reserve
-              and debt management policy."
-            </em>
-          </p>
-        </blockquote>
-
-        <p>S&amp;P Global Ratings April 1, 2026</p>
 
         <!--
           "Retiring Debt by Major Function", an area chart running 2026 to
