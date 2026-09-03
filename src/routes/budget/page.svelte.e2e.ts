@@ -272,12 +272,13 @@ test.describe("budget pages", () => {
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("Spending")
 
     // The spending side of the book, in its order: what the city wants to
-    // build (28), where the spending is going (69), and what departments asked
-    // to add to it (72).
+    // build (28) and what departments asked to add to the budget (72). Where
+    // the spending is going (69) is not here any more -- it is a forecast, and
+    // this page is about 2027.
     await expect(page.getByRole("heading", { name: "Capital Planning" })).toBeVisible()
     await expect(
       page.getByRole("heading", { name: /^10-Year Appropriation Projection/ }),
-    ).toBeVisible()
+    ).toHaveCount(0)
     await expect(
       page.getByRole("heading", { name: "Summary Department Budget Requests" }),
     ).toBeVisible()
@@ -322,16 +323,15 @@ test.describe("budget pages", () => {
     }
   })
 
-  test("links the reserves and the spending that projects them", async ({ page }) => {
-    // The projections for the budget reserve and the excess levy are two rows
-    // of the ten-year appropriation forecast, which cannot be lifted out of
-    // that table -- so the two pages point at each other instead.
+  test("links the reserves and the spending it pays for", async ({ page }) => {
     await page.goto(`/budget/${books[0]}/reserves`)
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("Reserves")
     await expect(page.getByRole("heading", { name: "Fiscal Reserves" })).toBeVisible()
-    await expect(
-      page.getByRole("link", { name: /^10-Year Appropriation Forecast/ }),
-    ).toHaveAttribute("href", /\/spending$/)
+
+    // The ten-year projection was listed here, because two of its rows project
+    // these balances. It is not any more: this page is what the city holds
+    // now, and a forecast is not that.
+    await expect(page.getByRole("link", { name: /Appropriation Projection/ })).toHaveCount(0)
 
     // The two reserve sections nobody has transcribed, at their own pages.
     for (const [title, at] of [
@@ -444,7 +444,7 @@ test.describe("budget pages", () => {
     // and spent, and they belong with whatever else the book says about years
     // gone by rather than under a policy about fund balances.
     await page.goto(`/budget/${books[0]}`)
-    const opens = page.getByRole("link", { name: "History", exact: true })
+    const opens = page.getByRole("link", { name: "History/Forecasts", exact: true })
     await expect(opens).toBeVisible()
 
     // Under the two columns, which are those same two figures for 2027 alone,
@@ -456,7 +456,7 @@ test.describe("budget pages", () => {
 
     await opens.click()
     await expect(page).toHaveURL(/\/budget\/fy2027\/history$/)
-    await expect(page.getByRole("heading", { level: 1 })).toHaveText("History")
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("History/Forecasts")
 
     // The book's own row labels, sum and all -- and the money at the size it
     // was spent, since the parentheses on the expenditure line are the sum's
@@ -480,6 +480,22 @@ test.describe("budget pages", () => {
     // figures at the ends of the axis are drawn, and zero is not among them.
     await expect(flows.locator("svg")).not.toContainText("$0")
     await expect(flows.getByRole("listitem")).toHaveCount(2)
+
+    // And the forecast, which came off `spending`: what puts a section on this
+    // page is not that it is spending or revenue -- everything is one or the
+    // other -- but that it is about years other than 2027.
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("History/Forecasts")
+    await expect(
+      page.getByRole("heading", { name: /^10-Year Appropriation Projection/ }),
+    ).toBeVisible()
+    await expect(page.getByRole("article")).toContainText("19. BUDGET RESERVE")
+    await expect(page.getByRole("article")).toContainText("Estimated Excess Levy")
+
+    // Spending points here for it, since it is still that page's spending.
+    await page.goto(`/budget/${books[0]}/spending`)
+    await expect(
+      page.getByRole("link", { name: /^10-Year Appropriation Projection/ }),
+    ).toHaveAttribute("href", /\/history$/)
 
     // And it is not on the reserves page any more.
     await page.goto(`/budget/${books[0]}/reserves`)

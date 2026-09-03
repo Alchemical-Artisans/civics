@@ -254,8 +254,12 @@ source link opens where the run begins.
 
 **`spending` is the same idea on the other side**, opened from the other pie's
 heading, and holds the two sets of goals (15 and 16), "Capital Planning" (28),
-"10-Year Appropriation Forecast" (69), "2027 Budget Requests" (72) and "2027
-Budget Challenges" (73), in the book's order. It is called **Spending** rather
+"2027 Budget Requests" (72) and "2027 Budget Challenges" (73), in the book's
+order. The ten-year appropriation projection (69) was here too, and is on
+[`history-forecasts`](#history-forecasts) now: what it has in common with the
+rest of this page is that it is spending, and what it has in common with that
+one is that it is not about 2027, which turns out to be the stronger claim. This
+page still lists it at the foot. It is called **Spending** rather
 than "Appropriations", which is the book's word and the exact one but which a
 reader would have to look up before the page could tell them anything; the
 prose on it still says it, and the glossary defines it.
@@ -523,21 +527,41 @@ year with something missing from it, and the year it added is one the book
 itself does not account for. What it showed is still on the page in the city's
 own words: the balance fell in 2023, which is the year the flows above cross.
 
-### history
+### history-forecasts
 
-**`history` is not a section of the book.** The book keeps its history wherever
-the history happened to be needed — three years of revenue and expenditure
-inside the fund balance table on page 18, ten years of forecast inside the
-spending pages — so a reader who wants to know what has been happening has to
-know where to look first. This is the page for that, and it starts with page
-18's top rows.
+**Every year but this one.** `/budget/fy2027/history` is titled
+**History/Forecasts** and holds what the city took in and spent before 2027 —
+the top of page 18's table, as two lines — and what it expects to spend after —
+the ten-year appropriation projection from pages 69 to 71, which was on
+`spending`.
+
+It is not a section of the book. The book keeps both wherever they happened to
+be needed: three years of revenue and expenditure inside a fund balance table,
+ten years of projection inside the spending pages. A reader who wants to know
+which way any of it is going has to know where to look first, and this is the
+page for that.
+
+**What decides whether a section belongs here is not its side of the budget.**
+Everything in the book is spending or revenue, so that sorts nothing. It is
+whether the section is about 2027, which the rest of the book is about, or about
+the years either side of it.
+
+**The route is `history` and the title is not.** A book section's slug is
+derived from its title, but this page is in no contents, so `sectionSlug` never
+runs on it and the directory name is free: `/budget/fy2027/history` is the
+shorter URL, and `History/Forecasts` is what the bar says. Note that the title
+carries a slash and so does the bar's own separator, so the bar reads "Haverhill
+Public Documents / 2027 Budget / History/Forecasts".
 
 It is reached from under the two columns on the book's front page, which are
-those same two figures for 2027 alone: what the city takes in against what it
-spends, which is the one question the front page answers for a single year. There is no
+those same two figures for 2027 alone. There is no
 contents line for it, because it is in no contents — `linkedElsewhere` in the
 e2e suite names it so the "every section the contents links to" count still
-adds up.
+adds up. `spending` lists it at the foot, for the projection that came off it;
+`reserves` no longer does. Two of the projection's rows are projections of the
+reserve balances — "19. BUDGET RESERVE" and "Estimated Excess Levy" — which is
+why that link existed, but the reserves page is what the city holds now and a
+forecast is not that.
 
 **The expenditure line is drawn at what was spent.** The book prints these rows
 inside a sum — "Plus Fiscal Year Revenue", "Less Fiscal Year Expenditures" — and

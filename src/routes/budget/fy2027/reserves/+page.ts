@@ -12,10 +12,13 @@ import { Router } from "$lib/router"
  * dial to draw. What else the book says about
  * reserves is listed at the foot rather than copied here: the policies (227),
  * the appropriated reserve (213) and "Fund Accounting" (218) -- which is what
- * says these funds are separate things at all -- have no page here, and the projections are
- * two rows inside the ten-year appropriation forecast -- "19. Budget Reserve"
- * and "Estimated Excess Levy" -- which cannot be lifted out of that table
- * without breaking it, so the forecast is linked where it stands.
+ * says these funds are separate things at all -- have no page here.
+ *
+ * The ten-year appropriation projection was listed too, because two of its rows
+ * are projections of these balances: "19. BUDGET RESERVE" and "Estimated Excess
+ * Levy". It is not any more. This page is what the city holds now, and a
+ * forecast is not that; it is on `history-forecasts` with the rest of what the
+ * book says about years other than 2027.
  */
 export const load: PageLoad = async ({ parent }) => {
   const { book } = await parent()
@@ -23,7 +26,6 @@ export const load: PageLoad = async ({ parent }) => {
   return {
     section: { title: "Reserves", page: 17 },
     elsewhere: [
-      { title: "10-Year Appropriation Forecast", section: "spending" },
       { title: "Liability, Overlay & Reserves", href: Router.pdfPage(book.budget!, 213) },
       { title: "Fund Accounting", href: Router.pdfPage(book.budget!, 218) },
       { title: "Financial Reserve Policies", href: Router.pdfPage(book.budget!, 227) },

@@ -11,8 +11,8 @@ import { Router } from "$lib/router"
  * anything. It is in the glossary, and the prose here still says it.
  *
  * What it holds: the two sets of goals
- * (pages 15 and 16), "Capital Planning" (28), "10-Year Appropriation Forecast"
- * (69), "2027 Budget Requests" (72) and "2027 Budget Challenges" (73), in the
+ * (pages 15 and 16), "Capital Planning" (28), "2027 Budget Requests" (72) and
+ * "2027 Budget Challenges" (73), in the
  * book's order, and three of the
  * appropriation's own lines -- Debt Service (200), State Assessments (209) and
  * Employee Benefits (211) -- which nobody has transcribed and which are
@@ -21,10 +21,6 @@ import { Router } from "$lib/router"
  * "Budget Policies" (221) is listed with them: it is the rules the year's
  * spending is made under, which is this page's subject seen from the process
  * side, and it sits with the reserve policies on `reserves` as a pair.
- *
- * The reserves are listed with them, pointing the other way: the forecast on
- * this page carries the projections for the budget reserve and the excess levy,
- * and the balances those are projections of are on that one.
  *
  * The rest are a different kind of thing from the four sections above: those are
  * accounts *of* the year's spending, and these are parts *of* it, each a line
@@ -41,8 +37,8 @@ import { Router } from "$lib/router"
  * The sections here are that authorisation from every side the book takes it
  * from: what departments asked to add to it (the requests, which are increments
  * to existing budgets rather than money of their own), what had to come out of
- * it to balance and what is driving it up (the challenges), where it is going
- * (the forecast), and what the city wants to build or buy, which is mostly
+ * it to balance and what is driving it up (the challenges), and what the city
+ * wants to build or buy, which is mostly
  * *not* in this year's appropriation at all -- capital over $250,000 is
  * borrowed, and reaches the budget years later as debt service.
  *
@@ -63,6 +59,10 @@ export const load: PageLoad = async ({ parent }) => {
     // it are on the Council's agenda, not in the book.
     elsewhere: [
       { title: "Fiscal Reserves", section: "reserves" },
+      // Where this spending is going: the ten-year projection, which was on
+      // this page until it was clear that what it has in common with the rest
+      // of the book is not that it is spending but that it is not about 2027.
+      { title: "10-Year Appropriation Projection", section: "history" },
       { title: "Debt Service", href: Router.pdfPage(book.budget!, 200) },
       { title: "State Assessments", href: Router.pdfPage(book.budget!, 209) },
       { title: "Employee Benefits", href: Router.pdfPage(book.budget!, 211) },

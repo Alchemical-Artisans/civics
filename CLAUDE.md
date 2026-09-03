@@ -217,10 +217,13 @@ Notable pieces:
   because its policy sets no ceiling.
 - **`src/lib/BudgetLines.svelte`** follows a table's rows across the years it
   gives them for, and draws `history`: what the city took in and what it spent,
-  from the top of page 18. `history` is not a section of the book -- the book
-  keeps its history wherever the history happened to be needed -- so it has no
-  contents line and is reached from under the two columns on the front page,
-  which are those same two figures for 2027 alone. The years belong to the chart, not the
+  from the top of page 18. That page is `/budget/fy2027/history`, titled
+  `History/Forecasts`, and it holds the ten-year appropriation projection too,
+  which was on `spending`: what decides whether a section belongs there is not
+  its side of the budget -- everything is spending or revenue -- but whether it
+  is about 2027 or about the years either side. It is not a section of the book,
+  so it has no contents line and is reached from under the two columns on the
+  front page; `spending` lists it at the foot and `reserves` no longer does. The years belong to the chart, not the
   series: each series gives one value per year and `null` where the book prints
   none, so a row the book is silent about for a year draws nothing there rather
   than shifting everything along. The expenditure line is drawn at what was
