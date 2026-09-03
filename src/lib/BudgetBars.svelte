@@ -78,13 +78,13 @@
    * are rows rather than columns because that is the shape that leaves.
    */
   const WIDTH = 640
-  const HEIGHT = 190
+  const HEIGHT = 130
   /** Room at the left for the year each row is. */
   const LEFT = 56
   const RIGHT = 16
-  const TOP = 10
+  const TOP = 8
   /** Room under the plot for the figures at the ends of the scale. */
-  const BOTTOM = 24
+  const BOTTOM = 20
 
   const x = (value: number) =>
     LEFT + ((value - bounds.low) / (bounds.high - bounds.low)) * (WIDTH - LEFT - RIGHT)
