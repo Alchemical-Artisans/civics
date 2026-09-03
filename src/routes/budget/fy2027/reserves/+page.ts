@@ -39,11 +39,13 @@ export const load: PageLoad = async ({ parent }) => {
      * Every page of the book this one was built out of, and then the pages the
      * book keeps the rest of the subject on.
      *
-     * The first four are the run the page transcribes. The book's contents
-     * calls all of it "Fiscal Reserves" and gives one number, 17, but it is
-     * four pages with four headings, and each of them is one of this page's own
-     * headings -- so a reader checking the free cash figure lands on the free
-     * cash page rather than three pages before it.
+     * The first three are the run the page transcribes: "Fiscal Reserves" (17),
+     * the page Policy #1 and #2 are quoted from, and "Free Cash" (19) and
+     * "Stabilization Reserve" (20), each still headed on this page too, inside
+     * the fund's own section. Page 18, "Fund Balance", is not: it defined the
+     * term rather than stating a policy, so it answered none of the four
+     * questions the sections below it do, and carried no compliance mark of
+     * its own to close beside theirs.
      *
      * "Financial Reserve Policies" is 228 rather than the 227 its contents line
      * gives: 227 is a title page with nothing on it but the words, and the
@@ -59,7 +61,6 @@ export const load: PageLoad = async ({ parent }) => {
      */
     references: [
       { title: "Fiscal Reserves", href: Router.pdfPage(book.budget!, 17) },
-      { title: "Fund Balance", href: Router.pdfPage(book.budget!, 18) },
       { title: "Free Cash", href: Router.pdfPage(book.budget!, 19) },
       { title: "Stabilization Reserve", href: Router.pdfPage(book.budget!, 20) },
       { title: "Financial Reserve Policies", href: Router.pdfPage(book.budget!, 228) },

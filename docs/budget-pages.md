@@ -658,16 +658,19 @@ of is a reference, and a reader who wants to check a figure against the city's
 own file wants the second one. Both go in it now, because what a reader does
 with either is the same thing: open the book there.
 
-**`reserves` is the one that carries a full set.** Its first four entries are
-the run the page transcribes — the book's contents calls all of it "Fiscal
-Reserves" and gives one number, 17, but it is four pages with four headings, and
-each of those is one of this page's own headings, so a reader checking the free
-cash figure lands on the free cash page rather than three pages before it. Then
-"Financial Reserve Policies", at 228 rather than the 227 its contents line
-gives: 227 is a title page with nothing on it but the words, and Reserve Policy
-2 — the one the reserves section leaves out and this page carries — is on 228. A
-reference is worth pointing at the sentence. The last two, "Liability, Overlay &
-Reserves" and "Fund Accounting", are neither transcribed nor drawn from; they
+**`reserves` is the one that carries a full set.** Its first three entries are
+the run the page transcribes — "Fiscal Reserves" (17), the page Policy #1 and #2
+are quoted from, and "Free Cash" (19) and "Stabilization Reserve" (20), each
+still headed on this page too, inside the fund's own collapsed section, so a
+reader checking the free cash figure lands on the free cash page rather than
+three pages before it. Page 18, "Fund Balance", is not in the list any more: it
+defined the term rather than stating a policy, so it carried no compliance mark
+to close beside the four sections' and no section of its own to be a reference
+for. Then "Financial Reserve Policies", at 228 rather than the 227 its contents
+line gives: 227 is a title page with nothing on it but the words, and Reserve
+Policy 2 — the one the reserves section leaves out and this page carries — is on 228. A reference is worth pointing at the sentence. The last two, "Liability,
+Overlay & Reserves" and "Fund Accounting", are neither transcribed nor drawn
+from; they
 were the whole of the list when it was a see-also.
 
 A chart title that is a link says so with a 2px underline rather than the

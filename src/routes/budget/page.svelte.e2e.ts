@@ -326,7 +326,11 @@ test.describe("budget pages", () => {
   test("links the reserves and the spending it pays for", async ({ page }) => {
     await page.goto(`/budget/${books[0]}/reserves`)
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("Reserves")
-    await expect(page.getByRole("heading", { name: "Fiscal Reserves" })).toBeVisible()
+
+    // Fiscal Reserves headed the whole run when the reading was one straight
+    // column; now each policy heads its own collapsed section, and a heading
+    // naming the run as well would say the same thing twice.
+    await expect(page.getByRole("heading", { name: "Fiscal Reserves" })).toHaveCount(0)
 
     // The ten-year projection was listed here, because two of its rows project
     // these balances. It is not any more: this page is what the city holds
@@ -339,13 +343,13 @@ test.describe("budget pages", () => {
     await expect(page.getByRole("heading", { name: "References" })).toBeVisible()
     await expect(page.getByRole("heading", { name: "Elsewhere in the book" })).toHaveCount(0)
 
-    // The book's contents calls the whole run "Fiscal Reserves" and gives one
-    // number. It is four pages with four headings, each of them one of this
-    // page's own, so a reader checking the free cash figure lands on the free
-    // cash page.
+    // Three pages transcribed now, not four: "Fund Balance" (18) defined a
+    // term rather than stating a policy, so it carries no section -- and no
+    // reference -- of its own here any more.
+    await expect(page.getByRole("link", { name: /^Fund Balance/ })).toHaveCount(0)
+
     for (const [title, at] of [
       ["Fiscal Reserves", 17],
-      ["Fund Balance", 18],
       ["Free Cash", 19],
       ["Stabilization Reserve", 20],
       // 228, not the 227 its contents line gives: 227 is a title page with

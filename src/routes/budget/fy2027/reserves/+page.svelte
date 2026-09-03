@@ -230,10 +230,6 @@
          one. -->
     <div class="lg:relative lg:min-h-0 lg:flex-1 lg:overflow-y-auto">
       <div class="max-w-3xl">
-        <!-- Page 17. The page is "Reserves", which is the bucket; this is the
-             section of the book in it. -->
-        <h2>Fiscal Reserves</h2>
-
         <!--
           Four policies, four sections, each closed until asked for.
 
@@ -338,17 +334,6 @@
             </p>
           </div>
         </details>
-
-        <h2>Fund Balance</h2>
-
-        <p>
-          <GlossaryTerm term="Fund">Fund</GlossaryTerm> balance is the net position of a governmental
-          <GlossaryTerm term="Fund">fund</GlossaryTerm> (assets minus liabilities), representing the accumulated
-          difference between <GlossaryTerm term="Revenues">revenues</GlossaryTerm> and <GlossaryTerm
-            term="Expenditures">expenditures</GlossaryTerm
-          > over time. It measures available financial resources, acting as a "net worth" or savings account
-          for governments to pay bills, maintain cash flow, and ensure financial stability.
-        </p>
 
         <details class="group my-3 rounded-lg border border-slate-200">
           <summary
