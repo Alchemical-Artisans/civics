@@ -38,7 +38,7 @@ const unlinked = [
  */
 const linkedElsewhere = [
   "reserves",
-  "outstanding-debt",
+  "debt",
   "revenue",
   "spending",
   "glossary",
@@ -116,13 +116,13 @@ test.describe("budget pages", () => {
       "href",
       /\/reserves$/,
     )
-    await expect(bars.last().getByRole("link", { name: "Debt" })).toHaveAttribute(
-      "href",
-      /outstanding-debt$/,
-    )
-    const contents = page.locator("article ol li")
+    await expect(bars.last().getByRole("link", { name: "Debt" })).toHaveAttribute("href", /\/debt$/)
+    // The two-column contents list specifically, not `article ol li` broadly
+    // -- the budget calendar in the footer is inside the same `<article>` and
+    // has its own `<li>`s, one of which happens to mention "debt capacity".
+    const contents = page.locator("article > div ol li")
     await expect(contents.filter({ hasText: "Fiscal Reserves" })).toHaveCount(0)
-    await expect(contents.filter({ hasText: "Outstanding Debt" })).toHaveCount(0)
+    await expect(contents.filter({ hasText: "Debt" })).toHaveCount(0)
 
     // Free cash is nothing this year, so it draws no segment and keeps a line
     // for a screen reader instead.
@@ -370,7 +370,7 @@ test.describe("budget pages", () => {
     // "Fund Accounting" (218) is on the reserves page and the debt page both:
     // it is what says these funds are separate things, and half the debt drawn
     // on the front page is not the general fund's.
-    for (const at of ["reserves", "outstanding-debt"]) {
+    for (const at of ["reserves", "debt"]) {
       await page.goto(`/budget/${books[0]}/${at}`)
       const link = page.getByRole("link", { name: /^Fund Accounting/ })
       expect(await link.getAttribute("href")).toMatch(/#page=218$/)
@@ -462,6 +462,76 @@ test.describe("budget pages", () => {
     await expect(body).toBeHidden()
     await summaries.nth(2).click()
     await expect(body).toBeVisible()
+  })
+
+  test("opens each debt policy on its standing, the same as reserves", async ({ page }) => {
+    await page.goto(`/budget/${books[0]}/debt`)
+    const details = page.getByRole("article").locator("details")
+
+    // Three policies, not four -- the book states #1, #2a and #2b, and there
+    // is no #2 of its own the way reserves' is a use for the label.
+    await expect(details).toHaveCount(3)
+    for (const section of await details.all()) {
+      expect(await section.getAttribute("open")).toBeNull()
+    }
+
+    // Each summary carries a limit's worth of standing in a percentage rather
+    // than a dollar figure, since the book gives none of these a base in
+    // dollars the way a reserve dial's floor and ceiling have one. Two of the
+    // three are inside their policy; retiring debt is not, which is the
+    // book's own "not currently on track" read as a mark rather than a
+    // sentence.
+    const summaries = details.locator("summary")
+    await expect(summaries.nth(0)).toContainText("Policy #1")
+    await expect(summaries.nth(0)).toContainText("Long Term Debt")
+    await expect(summaries.nth(0)).toContainText("1.5%")
+    await expect(summaries.nth(0)).toContainText("Within policy")
+
+    await expect(summaries.nth(1)).toContainText("Policy #2")
+    await expect(summaries.nth(1)).toContainText("Annual Debt Payments")
+    await expect(summaries.nth(1)).toContainText("3.1%")
+    await expect(summaries.nth(1)).toContainText("Within policy")
+
+    await expect(summaries.nth(2)).toContainText("Policy #3")
+    await expect(summaries.nth(2)).toContainText("Retiring Debt")
+    await expect(summaries.nth(2)).toContainText("59%")
+    await expect(summaries.nth(2)).toContainText("Below floor")
+
+    // Bond Rating sits between #2 and #3 in the book's own order, and keeps
+    // no disclosure of its own: it is not a policy, so it has no standing to
+    // mark.
+    const between = page.getByRole("heading", { name: "Bond Rating" })
+    const second = (await details.nth(1).boundingBox())!
+    const third = (await details.nth(2).boundingBox())!
+    expect((await between.boundingBox())!.y).toBeGreaterThan(second.y)
+    expect((await between.boundingBox())!.y).toBeLessThan(third.y)
+
+    const body = details.nth(0).getByText(/^In accordance with MGL c\.58 s\.10c/)
+    await expect(body).toBeHidden()
+    await summaries.nth(0).click()
+    await expect(body).toBeVisible()
+  })
+
+  test("charts what the debt page is made of and how it has moved", async ({ page }) => {
+    await page.goto(`/budget/${books[0]}/debt`)
+
+    // The composition bar: every purpose the book lists, on hover or focus
+    // exactly as the reserve dials are.
+    const composition = page.locator(".budget-stack [role='img']")
+    await expect(composition).toHaveCount(6)
+    await composition.last().focus()
+    await expect(page.locator(".budget-stack .budget-tooltip")).toContainText("Public Works")
+
+    // Two line charts, each on its own scale: payments alone, since revenue
+    // is two orders of magnitude larger, and the per-capita comparison, whose
+    // two series share one because that is the book's own point in drawing
+    // them together.
+    const lines = page.locator(".budget-lines")
+    await expect(lines).toHaveCount(2)
+    await expect(lines.first().locator("circle")).toHaveCount(5)
+    await expect(lines.last().locator("circle")).toHaveCount(22)
+    await expect(lines.last()).toContainText("Haverhill")
+    await expect(lines.last()).toContainText("State Average")
   })
 
   test("draws each reserve against the policy it answers to", async ({ page }) => {
@@ -921,13 +991,14 @@ test.describe("budget pages", () => {
       /\$13,985,452 \(7\.85%\)/,
     )
 
-    await page.goto(`/budget/${books[0]}/outstanding-debt`)
-    const table = page.getByRole("table").first()
-    await expect(table).toContainText("School Department")
-    await expect(table).toContainText("$71,517,300")
-    // The book prints no headings over these two columns, so neither does the
-    // page: the names in the data are what a chart asks for a column by.
-    await expect(table.locator("thead")).toHaveCount(0)
+    await page.goto(`/budget/${books[0]}/debt`)
+    // No table on this page either now -- the composition chart carries every
+    // cell of it, the same as the reserve dials above.
+    await expect(page.getByRole("article").getByRole("table")).toHaveCount(0)
+    await expect(page.locator(".budget-stack [role='img']").first()).toHaveAttribute(
+      "aria-label",
+      /School Department, \$71,517,300/,
+    )
   })
 
   test("names and prices the column segment under the pointer", async ({ page }) => {

@@ -123,10 +123,10 @@ says it through `bookName`.
 `/budget/<year>` opens on the budget at a glance: the year, and what the year
 sits on.
 
-| Chart             | What it draws                                         | From                                                                 |
-| ----------------- | ----------------------------------------------------- | -------------------------------------------------------------------- |
-| Spending, Revenue | two columns on one scale, each divided into its parts | page 78 and page 63, plus the orders of 2 June 2026                  |
-| Reserves and Debt | two bars on one scale, each divided into its parts    | page 17, `reserves/tables.ts`; page 21, `outstanding-debt/tables.ts` |
+| Chart             | What it draws                                         | From                                                     |
+| ----------------- | ----------------------------------------------------- | -------------------------------------------------------- |
+| Spending, Revenue | two columns on one scale, each divided into its parts | page 78 and page 63, plus the orders of 2 June 2026      |
+| Reserves and Debt | two bars on one scale, each divided into its parts    | page 17, `reserves/tables.ts`; page 21, `debt/tables.ts` |
 
 The two columns are the year — everything the city spends, and everything that
 pays for it — and sit in the narrow left column of the page.
@@ -586,6 +586,60 @@ expenditure figure for it either, so the flows chart still opens on 2023. What
 the balance shows either way is in the city's own words: the balance fell in
 2023, which is the year the flows above cross.
 
+### The three charts on `debt`
+
+`debt` (pages 21-25) is laid out as `reserves` is -- `wide: true`, charts down
+the left, the reading in the only box that scrolls -- and its three numbered
+policies are three collapsed `<details>` for the same reasons `reserves`' four
+are. It was `outstanding-debt` before it had a layout worth sharing: the route
+matches the one-word names the rest of the bar's sections carry, and the front
+page's own "Debt" bar already used the word for it.
+
+**There is no dial chart here, because there is no one base to draw one on.**
+`reserves`' three policies are each a percentage of the same figure, general
+fund revenue less debt exclusion and Chapter 70, which is what lets
+`BudgetBands` put all three on one scale. Debt's three policies are each a
+percentage of a different base -- equalized valuation, general fund revenue,
+the debt itself -- and the book gives none of those bases in dollars on these
+pages, only the percentage each policy sets and the percentage the city
+stands at. Giving `BudgetBands` a dollar floor or ceiling it would have to
+invent was the alternative, and inventing a figure the book never states is
+not a chart, so `debt/tables.ts`'s `DEBT_POLICIES` keeps the policies as bare
+percentages instead, and the page reads them with its own `percent` rather
+than `amount`, which is built to read a dollar figure out of a cell.
+
+**The left column charts what the debt is made of and how it has moved
+instead.** `BudgetStack` draws page 21's list as one bar -- the same component
+the front page uses for its "Reserves and Debt" bar, given one row rather than
+two, since this chart is not holding two things against each other. Two
+`BudgetLines` charts follow it: page 22's "Annual Debt Payments" alone, on its
+own scale, because the "General Fund Revenue" row beside it in the book's
+table is two orders of magnitude larger and the two were never going to share
+an axis honestly; and page 25's debt-per-capita comparison, Haverhill against
+the state average, which does share one scale, because holding the two
+against each other is the whole point of the book's own chart. Nothing heads
+any of the three: the bar prints its own name the way the front page's bars
+do, and each line chart's legend carries its series'.
+
+**The three policies are still numbered "Policy #1" through "Policy #3", in
+the same voice `reserves`' four use and for the same reason.** The book
+numbers these "#1", "#2a" and "#2b" across two sections and never as a plain
+run, so the summary's own count is what a reader compares three sections by,
+and the book's own label -- "City Debt Policy #1:", "#2a:", "#2b:" -- stays
+out of the quoted paragraph beneath, opening each on its own first word
+instead. The compliance mark uses the same two words `reserves` settled on:
+"Within policy" where the city is, "Below floor" or "Above ceiling" where it
+is not -- `ceiling` and `floor` are two narrower functions than `reserves`'
+one `standing`, since none of debt's three policies sets both bounds the way
+a reserve can. Retiring debt is the one of the three currently below its
+floor, 59% against a policy of 65%, which is the book's own "not currently on
+track to achieve this financial benchmark" read as a mark rather than a
+sentence.
+
+`debt.spec.ts` pins the three policies' figures, the composition chart's
+total against the section's own sentence, and the arithmetic the payments
+chart depends on -- the same role `reserves.spec.ts` plays for the dials.
+
 ### history-forecasts
 
 **Every year but this one.** `/budget/fy2027/history` is titled
@@ -636,7 +690,7 @@ that begins at nothing never leaves the top of the plot. The figures at the two
 ends of the axis are drawn whatever else is. The bars on `reserves` do start at
 zero, because a bar's meaning is its length.
 
-**"Fund Accounting" is listed twice, on `reserves` and on `outstanding-debt`.**
+**"Fund Accounting" is listed twice, on `reserves` and on `debt`.**
 It is the section that says these funds are separate things, which is what the
 reserves page is about and what the debt page needs a reader to know: $92,212,944
 of the $175,745,444 it draws was borrowed for water and wastewater, and is
@@ -654,7 +708,7 @@ sentence `revenue` prints in prose ("this reserve may be nearly exhausted by
 them would be a second copy, so the two pages point at each other instead.
 
 **"References"** is the device for that, shared by `education`, `spending`,
-`outstanding-debt` and `reserves` as
+`debt` and `reserves` as
 [`BookReferences`](../src/lib/BookReferences.svelte). Its items follow the rule
 the contents page follows — a section written up here opens on this site, one
 that is not opens the city's file at its own page — so one list carries both.
@@ -1000,7 +1054,7 @@ before matching, since a cell is a figure rather than a sentence.
 A transcription is ordinarily plain markup. The exception is a section whose
 figures something else on the site also shows — `spending` and `revenue`,
 whose halves of page 78 are the two pies; `reserves`, whose three dials are the
-reserve bar; and `outstanding-debt`, whose page-21 list is the debt bar. Those
+reserve bar; and `debt`, whose page-21 list is the debt bar. Those
 tables live in a `tables.ts` beside the page that renders them:
 
 ```ts

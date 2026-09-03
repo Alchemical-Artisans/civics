@@ -3,7 +3,7 @@ import { contents, type BookSection } from "$lib/budget"
 import { amount, cell, column, sum, type BudgetTableData } from "$lib/budget-table"
 import { APPROPRIATIONS, DEPARTMENTS } from "./spending/tables"
 import { FUND_BALANCE, FREE_CASH, STABILIZATION } from "./reserves/tables"
-import { LONG_TERM_DEBT } from "./outstanding-debt/tables"
+import { LONG_TERM_DEBT } from "./debt/tables"
 import { ENTERPRISE, ENTERPRISE_REVENUE } from "./council-orders"
 import { OTHER_AVAILABLE, REVENUE } from "./revenue/tables"
 import type { Part } from "$lib/BudgetStack.svelte"
@@ -125,10 +125,12 @@ const spendingTotal =
 const revenueTotal = sum(revenue)
 
 /**
- * The reserve dials of "Fiscal Reserves" (page 17) and the debt of
- * "Outstanding Debt" (page 21), read out of those sections' own transcriptions
- * for the same reason the pies are read out of page 78's: one copy of a figure,
- * so the front page cannot contradict the section it links to.
+ * The reserve dials of "Fiscal Reserves" (page 17) and the debt of what the
+ * book's own contents page calls "Outstanding Debt" (page 21, headed "Long
+ * Term Debt" on the page itself) -- read out of those sections' own
+ * transcriptions for the same reason the pies are read out of page 78's: one
+ * copy of a figure, so the front page cannot contradict the section it links
+ * to.
  *
  * `figure` is the dollars in a cell that also carries a share -- the book
  * prints "$13,985,452 (7.85%)" in one cell of the dial. The share stays in the

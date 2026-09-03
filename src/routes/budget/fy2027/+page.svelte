@@ -177,7 +177,7 @@
           },
           {
             label: "Debt",
-            href: Router.budgetSection(book.id, "outstanding-debt"),
+            href: Router.budgetSection(book.id, "debt"),
             parts: debt,
           },
         ]}
