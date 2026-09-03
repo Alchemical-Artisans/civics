@@ -351,19 +351,30 @@ Notable pieces:
   book's own label stays out of the quoted paragraph beneath. `debt.spec.ts`
   pins the three policies' figures and the arithmetic the payments chart
   depends on, the way `reserves.spec.ts` does for the dials.
-- **`spending`** is `wide: true` too, for the two charts at the top rather
-  than a policy to keep or fail -- there is no accordion here the way
-  `reserves` and `debt` each open with one. The left column is not a chart of
-  its own: it is `BudgetColumns` handed one row instead of two, the same
-  "Spending" column the front page draws, reading the same `SPENDING` and
-  `SPENDING_TOTAL` from `spending/tables.ts` rather than building the
-  composition a second time -- one copy, so the front page's column and this
-  page's bar cannot disagree -- and carrying no `href`, since a bar linking
-  to the page it is already on is that page offered twice. Across the top of
-  the reading column, a second `BudgetColumns` replaces page 29's own table,
-  "5-Year Capital Requests by Category": five columns, one per year, each
-  divided into that year's categories, "Grand Total" excluded as a category
-  and read as each bar's own stated total rather than summed. A category
+- **`spending`** is `wide: true` too, for its left-column chart rather than a
+  policy to keep or fail -- there is no accordion here the way `reserves` and
+  `debt` each open with one. The left column is not a chart of its own: it is
+  `BudgetColumns` handed one row instead of two, the same "Spending" column
+  the front page draws, reading the same `SPENDING` and `SPENDING_TOTAL` from
+  `spending/tables.ts` rather than building the composition a second time --
+  one copy, so the front page's column and this page's bar cannot disagree --
+  and carrying no `href`, since a bar linking to the page it is already on is
+  that page offered twice; it answers to none of the tabs beside it. The
+  reading itself is five tabs -- Goals, Capital Planning, Requests &
+  Challenges, Budget in Brief, Council Orders, the book's own topics kept
+  apart on screen -- hidden markup rather than markup that is not there, the
+  same technique `SiteHeader`'s menu uses: a `live` flag set on mount is what
+  a CSS rule hiding the other four panels is keyed on, so a page that never
+  hydrates shows every panel stacked, exactly as this page used to render,
+  and no tab bar that would do nothing. Left/Right move between tabs and
+  select the one moved to, Home/End jump to the ends, and the open tab is the
+  only one in the natural tab order. "Capital Planning" is where a second
+  `BudgetColumns` replaces page 29's own table, "5-Year Capital Requests by
+  Category" -- moved off the top of the whole page, where it used to sit
+  above four tabs' worth of content it has nothing to do with, into the tab
+  it belongs beside: five columns, one per year, each divided into that
+  year's categories, "Grand Total" excluded as a category and read as each
+  bar's own stated total rather than summed. A category
   keeps one colour and one band across every bar -- `order`, largest
   five-year total first, which is the new prop that lets a column stack and
   colour by a fixed sequence instead of its own rank, since a reader tracking

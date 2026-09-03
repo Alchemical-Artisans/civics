@@ -57,6 +57,15 @@ const linkedElsewhere = [
 const bookPdf = (page: import("@playwright/test").Page) =>
   page.locator(".budget-timeline li").filter({ hasText: "Final review" }).getByRole("link")
 
+/**
+ * `spending`'s five tabs -- content elsewhere in the suite reaches into one
+ * before checking what is in it, since only the active tab's panel is
+ * visible once the page has hydrated. `BookReferences` sits outside every
+ * panel and needs no tab open at all.
+ */
+const openSpendingTab = (page: import("@playwright/test").Page, name: string) =>
+  page.getByRole("tab", { name }).click()
+
 test.describe("budget pages", () => {
   test("the book opens on the budget at a glance, before its contents", async ({ page }) => {
     await page.goto(`/budget/${books[0]}`)
@@ -274,17 +283,24 @@ test.describe("budget pages", () => {
     // The spending side of the book, in its order: what the city wants to
     // build (28) and what departments asked to add to the budget (72). Where
     // the spending is going (69) is not here any more -- it is a forecast, and
-    // this page is about 2027.
+    // this page is about 2027. Each is in its own tab now, so opening the one
+    // it is in is what makes it visible rather than merely in the DOM.
+    await openSpendingTab(page, "Capital Planning")
     await expect(page.getByRole("heading", { name: "Capital Planning" })).toBeVisible()
     await expect(
       page.getByRole("heading", { name: /^10-Year Appropriation Projection/ }),
     ).toHaveCount(0)
+
+    await openSpendingTab(page, "Requests & Challenges")
     await expect(
       page.getByRole("heading", { name: "Summary Department Budget Requests" }),
     ).toBeVisible()
     await expect(page.getByRole("heading", { name: /^Other Budget Reductions/ })).toBeVisible()
 
-    // And the goals the rest of it is an account of, from pages 15 and 16.
+    // And the goals the rest of it is an account of, from pages 15 and 16 --
+    // the tab this page opens on, so no click is needed to see them, but this
+    // test has clicked two tabs away from it by now.
+    await openSpendingTab(page, "Goals")
     await expect(page.getByRole("heading", { name: "Mayor's 2027 Budgetary Goals" })).toBeVisible()
     await expect(
       page.getByRole("heading", { name: "Long-Term Perspective Strategic Goals" }),
@@ -342,10 +358,11 @@ test.describe("budget pages", () => {
     await expect(bar).toContainText("Education")
 
     // Page 29's table, as one stacked bar per year rather than a heading and
-    // a grid of its own: five bars, nine categories between them, "Grand
-    // Total" excluded as a category (it would draw a band that is every
-    // other category added together) and read as each bar's own total
-    // instead.
+    // a grid of its own, in its own tab now rather than fixed above every
+    // other one: five bars, nine categories between them, "Grand Total"
+    // excluded as a category (it would draw a band that is every other
+    // category added together) and read as each bar's own total instead.
+    await openSpendingTab(page, "Capital Planning")
     await expect(
       page.getByRole("heading", { name: "5-Year Capital Requests by Category" }),
     ).toHaveCount(0)
@@ -394,6 +411,85 @@ test.describe("budget pages", () => {
     // The old table's own total is gone with it -- read from the chart's
     // tooltips now, not off a grid of fifty-odd cells.
     await expect(page.getByRole("article")).not.toContainText("$173,903,952")
+  })
+
+  test("splits the spending page into tabs, one panel visible at a time", async ({ page }) => {
+    await page.goto(`/budget/${books[0]}/spending`)
+
+    // Five tabs, in the book's own order, Goals open on arrival -- and only
+    // Goals: a heading from another tab is not merely scrolled away, it is
+    // out of the accessibility tree entirely until its tab is opened.
+    const tabs = page.getByRole("tab")
+    await expect(tabs).toHaveCount(5)
+    await expect(page.getByRole("tab", { name: "Goals" })).toHaveAttribute("aria-selected", "true")
+    await expect(page.getByRole("heading", { name: "Mayor's 2027 Budgetary Goals" })).toBeVisible()
+    await expect(page.getByRole("heading", { name: "Capital Planning" })).toHaveCount(0)
+
+    // Opening a tab is what makes its heading appear, and closes Goals the
+    // same way -- one panel on screen at a time, the point of tabs at all.
+    await openSpendingTab(page, "Capital Planning")
+    await expect(page.getByRole("tab", { name: "Capital Planning" })).toHaveAttribute(
+      "aria-selected",
+      "true",
+    )
+    await expect(page.getByRole("tab", { name: "Goals" })).toHaveAttribute("aria-selected", "false")
+    await expect(page.getByRole("heading", { name: "Capital Planning" })).toBeVisible()
+    await expect(page.getByRole("heading", { name: "Mayor's 2027 Budgetary Goals" })).toHaveCount(0)
+
+    // References sits outside every panel, so it never needs a tab of its
+    // own and stays reachable under whichever one is open.
+    await expect(page.getByRole("heading", { name: "References" })).toBeVisible()
+
+    // The spending bar in the left column answers to none of this: it is
+    // outside the tabs entirely.
+    await expect(page.locator(".budget-columns").first()).toContainText("$316,044,835")
+  })
+
+  test("moves between spending tabs with the arrow keys", async ({ page }) => {
+    await page.goto(`/budget/${books[0]}/spending`)
+
+    await page.getByRole("tab", { name: "Goals" }).focus()
+    await page.keyboard.press("ArrowRight")
+    await expect(page.getByRole("tab", { name: "Capital Planning" })).toHaveAttribute(
+      "aria-selected",
+      "true",
+    )
+    await expect(page.getByRole("tab", { name: "Capital Planning" })).toBeFocused()
+
+    // Wraps at either end rather than stopping.
+    await page.keyboard.press("ArrowLeft")
+    await page.keyboard.press("ArrowLeft")
+    await expect(page.getByRole("tab", { name: "Council Orders" })).toHaveAttribute(
+      "aria-selected",
+      "true",
+    )
+
+    await page.keyboard.press("Home")
+    await expect(page.getByRole("tab", { name: "Goals" })).toHaveAttribute("aria-selected", "true")
+    await page.keyboard.press("End")
+    await expect(page.getByRole("tab", { name: "Council Orders" })).toHaveAttribute(
+      "aria-selected",
+      "true",
+    )
+  })
+
+  test("keeps every spending tab's content on the page without script", async ({ browser }) => {
+    const context = await browser.newContext({ javaScriptEnabled: false })
+    const noscript = await context.newPage()
+    await noscript.goto(`/budget/${books[0]}/spending`)
+
+    // Hidden markup rather than markup that is not there: a reader who never
+    // hydrates gets every section, stacked, and no tab bar to click that
+    // would not do anything anyway.
+    await expect(noscript.getByRole("tab")).toHaveCount(0)
+    const article = noscript.getByRole("article")
+    await expect(article).toContainText("Mayor's 2027 Budgetary Goals")
+    await expect(article).toContainText("Capital Planning")
+    await expect(article).toContainText("Summary Department Budget Requests")
+    await expect(article).toContainText("2027 Budget in Brief")
+    await expect(article).toContainText("What the Council appropriated")
+
+    await context.close()
   })
 
   test("links the reserves and the spending it pays for", async ({ page }) => {
@@ -1000,6 +1096,7 @@ test.describe("budget pages", () => {
 
   test("says on the spending page what the chart leaves out", async ({ page }) => {
     await page.goto(`/budget/${books[0]}/spending`)
+    await openSpendingTab(page, "Council Orders")
 
     // The orders themselves, quoted as the agenda words them.
     await expect(page.getByRole("heading", { name: "What the Council appropriated" })).toBeVisible()

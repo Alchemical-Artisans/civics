@@ -661,13 +661,19 @@ sentence.
 total against the section's own sentence, and the arithmetic the payments
 chart depends on -- the same role `reserves.spec.ts` plays for the dials.
 
-### The two charts on `spending`
+### The tabs on `spending`, and its two charts
 
 `spending` has no policy to keep or fail, so it has no accordion the way
 `reserves` and `debt` each open with one -- it is `wide: true` for the same
-reason theirs are, a chart fixed in the left column and one fixed above the
-reading, with everything else exactly the prose and the tables it always was,
-reflowed into the one box that scrolls.
+reason theirs are, a chart fixed in the left column, but the reading beside
+it is five tabs now rather than one long scroll: **Goals**, **Capital
+Planning**, **Requests & Challenges**, **Budget in Brief** and **Council
+Orders**, the book's own topics (pages 15-16, 28-45, 72-73, 76-78, and the
+Council's agenda, which is ours rather than the book's) kept apart on
+screen the way they are apart in the book. Every heading and table this page
+ever carried is still exactly the prose and the tables it always was --
+nothing here paraphrases or retypes a word of it -- just split into panels
+instead of stacked one after another.
 
 **The left column is not a chart of its own -- it is the front page's,
 handed one row instead of two.**
@@ -680,12 +686,30 @@ reads, rather than building the composition a second time from
 front page's column and this page's bar cannot print totals that disagree.
 It carries no `href`: the front page's column links here because it is
 somewhere else, and a bar linking to the page it is already on is the same
-page offered twice.
+page offered twice. It answers to none of the tabs -- always on screen,
+whichever one is open.
 
-**The top of the reading column charts page 29, "5-Year Capital Requests by
-Category", as one stacked bar per year rather than a heading and a
-fifty-odd-cell grid.** The table is held as `CAPITAL_REQUESTS` in
-`spending/tables.ts` and read into
+**Tabs are hidden markup rather than markup that is not there, the same
+technique `SiteHeader`'s own menu uses for the same reason.** A `live`
+boolean, `false` until the component mounts, is what a CSS rule for hiding
+four of five panels is keyed on; before that -- prerendered markup, or a
+browser that never runs the script at all -- every panel sits in the flow
+and the tab bar itself stays `display: none`, so a reader who does not
+hydrate gets exactly the one long page this used to be, not four-fifths of
+it locked behind a control that does nothing. `left`/`right` move between
+tabs and select the one moved to (`home`/`end` jump to the first and last),
+the ARIA "automatic activation" pattern, and each keeps the currently open
+one as the only stop in the natural tab order (`tabindex="0"`), the rest
+reachable by arrow key alone -- the same construction a native browser tab
+strip uses.
+
+**"Capital Planning" charts page 29, "5-Year Capital Requests by Category",
+as one stacked bar per year rather than a heading and a fifty-odd-cell
+grid**, right where the book's own table used to sit, ahead of the category
+breakdowns and the individual project write-ups it belongs beside -- not
+fixed above the whole page, where it used to sit above four tabs' worth of
+content that has nothing to do with it. The table is held as
+`CAPITAL_REQUESTS` in `spending/tables.ts` and read into
 [`BudgetColumns.svelte`](../src/lib/BudgetColumns.svelte) a second time --
 five "columns" now, one per year, each divided into that year's categories
 the same way the front page's "Spending" and "Revenue" columns divide into
