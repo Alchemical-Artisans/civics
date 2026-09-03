@@ -78,13 +78,13 @@
    * are rows rather than columns because that is the shape that leaves.
    */
   const WIDTH = 640
-  const HEIGHT = 100
+  const HEIGHT = 75
   /** Room at the left for the year each row is. */
-  const LEFT = 40
-  const RIGHT = 12
-  const TOP = 6
+  const LEFT = 28
+  const RIGHT = 10
+  const TOP = 5
   /** Room under the plot for the figures at the ends of the scale. */
-  const BOTTOM = 14
+  const BOTTOM = 11
 
   const x = (value: number) =>
     LEFT + ((value - bounds.low) / (bounds.high - bounds.low)) * (WIDTH - LEFT - RIGHT)
@@ -95,7 +95,7 @@
   /** The thickest bar in a row: thick enough to read, thin enough to leave air
       between one year and the next. Series after the first are drawn thinner
       than this, in front. */
-  const thickness = $derived(Math.min(24, rowHeight(years.length) * 0.45))
+  const thickness = $derived(Math.min(18, rowHeight(years.length) * 0.45))
 
   /**
    * Every bar the chart draws, placed.
@@ -223,9 +223,9 @@
            rightmost line would. -->
       <text
         x={x(edge)}
-        y={HEIGHT - 4}
+        y={HEIGHT - 3}
         text-anchor={edge === bounds.high ? "end" : "start"}
-        font-size="9"
+        font-size="7"
         fill="#64748b"
       >
         {brief.format(edge)}
@@ -261,14 +261,14 @@
     <!-- Zero last, so it is drawn over the bars that stand on it: it is the
          line every one of them is measured from. -->
     <line x1={x(0)} x2={x(0)} y1={TOP} y2={HEIGHT - BOTTOM} stroke="#475569" stroke-width="1" />
-    <text x={x(0)} y={HEIGHT - 4} text-anchor="middle" font-size="9" fill="#64748b">$0</text>
+    <text x={x(0)} y={HEIGHT - 3} text-anchor="middle" font-size="7" fill="#64748b">$0</text>
 
     {#each years as year, at (year)}
       <text
-        x={LEFT - 6}
-        y={rowCentre(at, years.length) + 3}
+        x={LEFT - 5}
+        y={rowCentre(at, years.length) + 2.5}
         text-anchor="end"
-        font-size="9"
+        font-size="7"
         fill="#475569"
       >
         {year}
