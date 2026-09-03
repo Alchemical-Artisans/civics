@@ -203,9 +203,13 @@ Notable pieces:
   **`src/lib/chart-colours.ts`**, one validated sequence, restarted per pie and
   per bar.
 - **`src/lib/BudgetBands.svelte`** is the reserves page's own chart, and the
-  answer to what `BudgetStack` leaves out: each fund as a bullet bar -- a pale
-  rail the width of the largest ceiling, the band the policy allows drawn inside
-  it, and the balance as a thinner bar from zero. The three sit on one scale
+  answer to what `BudgetStack` leaves out: each fund as a bullet column -- a
+  pale rail the height of the largest ceiling, the band the policy allows drawn
+  inside it, and the balance as a narrower bar rising from the foot. It runs
+  down the left of that page, which is laid out as the book's front page is:
+  charts left and along the top, the reading under them in the only box that
+  scrolls. A section is normally a reading column, so `reserves` returns
+  `wide: true` and `budget/+layout.svelte` gives it the book page's width. The three sit on one scale
   because they are measured against one thing: every policy is a percentage of
   general fund revenue less debt exclusion and Chapter 70, and each floor and
   ceiling the book prints implies that same $178,261,600 back to within $20,

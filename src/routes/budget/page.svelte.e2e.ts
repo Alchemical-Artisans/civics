@@ -415,43 +415,90 @@ test.describe("budget pages", () => {
   test("draws each reserve against the policy it answers to", async ({ page }) => {
     await page.goto(`/budget/${books[0]}/reserves`)
 
-    // One row per policy, named as the book's own dial table heads it, and each
-    // carrying the three figures the book prints for it.
-    const bands = page.locator(".budget-band")
-    await expect(bands).toHaveCount(3)
-    await expect(bands.nth(0)).toContainText("Undesignated Fund Balance")
-    await expect(bands.nth(0)).toContainText("Actual $13,985,452 (7.85%)")
-    await expect(bands.nth(0)).toContainText("Minimum $8,913,079")
-    await expect(bands.nth(0)).toContainText("Maximum $26,739,238")
+    // One column per policy, named as the book's own dial table heads it, and
+    // each carrying the three figures the book prints for it, under the rail
+    // it draws them as.
+    const chart = page.locator(".budget-bands")
+    const rails = page.locator(".budget-band")
+    const labels = chart.locator("p")
 
-    // The middle row is this year: nothing held, and a floor of $3,565,232 it
-    // does not reach. The bar draws no width, and the band it falls short of
-    // does -- which is the whole of what the chart has to say.
-    await expect(bands.nth(1)).toContainText("Anticipated $0 (0%)")
-    const rail = bands.nth(1).locator("[role=img]")
-    const held = await rail.locator("div").last().boundingBox()
-    const allowed = (await rail.locator("div").first().boundingBox())!
-    expect(held?.width ?? 0).toBe(0)
-    expect(allowed.width).toBeGreaterThan(0)
+    await expect(rails).toHaveCount(3)
+    await expect(labels.nth(0)).toContainText("Undesignated Fund Balance")
+    await expect(labels.nth(0)).toContainText("Actual $13,985,452 (7.85%)")
+    await expect(labels.nth(0)).toContainText("Minimum $8,913,079")
+    await expect(labels.nth(0)).toContainText("Maximum $26,739,238")
+
+    // The middle column is this year: nothing held, and a floor of $3,565,232
+    // it does not reach. The bar draws no height, and the band it falls short
+    // of does -- which is the whole of what the chart has to say.
+    await expect(labels.nth(1)).toContainText("Anticipated $0 (0%)")
+    const held = await rails.nth(1).locator("div").last().boundingBox()
+    const allowed = (await rails.nth(1).locator("div").first().boundingBox())!
+    expect(held?.height ?? 0).toBe(0)
+    expect(allowed.height).toBeGreaterThan(0)
 
     // One scale across all three, which is what the shared denominator buys:
-    // the same width is the same money on every row.
-    const rails = await bands
-      .locator("[role=img]")
-      .evaluateAll((rows) => rows.map((row) => row.getBoundingClientRect().width))
-    expect(new Set(rails.map(Math.round)).size).toBe(1)
+    // the same inch of height is the same money in every column.
+    const scale = await rails.evaluateAll((each) =>
+      each.map((rail) => Math.round(rail.getBoundingClientRect().height)),
+    )
+    expect(new Set(scale).size).toBe(1)
+
+    // Bars rise from the foot of the rail, so the taller bar is the bigger
+    // balance and nothing is measured from anywhere but zero.
+    const feet = await rails.evaluateAll((each) =>
+      each.map((rail) => Math.round(rail.getBoundingClientRect().bottom)),
+    )
+    expect(new Set(feet).size).toBe(1)
 
     // The third policy sets no ceiling, so its band has no closing edge and no
     // maximum to print.
-    await expect(bands.nth(2)).toContainText("Minimum Balance $5,347,848 (3%)")
-    await expect(bands.nth(2)).not.toContainText("Maximum")
+    await expect(labels.nth(2)).toContainText("Minimum Balance $5,347,848 (3%)")
+    await expect(labels.nth(2)).not.toContainText("Maximum")
 
-    // Everything the chart draws is in the row's accessible name too, so the
+    // Everything the chart draws is in the column's accessible name too, so the
     // three figures are readable without seeing the bar.
-    await expect(rail).toHaveAttribute(
+    await expect(rails.nth(1)).toHaveAttribute(
       "aria-label",
       /Free Cash: Anticipated \$0 \(0%\), Minimum \$3,565,232, Maximum \$14,260,927/,
     )
+  })
+
+  test("lays the reserves page out as one screen", async ({ page }) => {
+    // The same shape as the book's front page: the charts down the left and
+    // across the top, and the reading under them in the only box that scrolls.
+    // A reader working down four sections of the city's prose is the reader who
+    // wants to know whether each fund is inside its band.
+    await page.setViewportSize({ width: 1280, height: 700 })
+    await page.goto(`/budget/${books[0]}/reserves`)
+
+    const moved = await page.evaluate(() => {
+      window.scrollTo(0, 5000)
+      const at = window.scrollY
+      window.scrollTo(0, 0)
+      return at
+    })
+    expect(moved).toBe(0)
+
+    const prose = page.locator("article div.lg\\:overflow-y-auto")
+    expect(await prose.evaluate((box) => box.scrollHeight - box.clientHeight)).toBeGreaterThan(50)
+
+    // The charts are outside it, so they stay while the prose moves.
+    const bands = (await page.locator(".budget-bands").boundingBox())!
+    await prose.evaluate((box) => box.scrollTo(0, box.scrollHeight))
+    expect((await page.locator(".budget-bands").boundingBox())!.y).toBe(bands.y)
+
+    // A section is normally a reading column, and this one asks not to be, so
+    // the page around the prose is wider than one -- the prose keeps its own.
+    const article = (await page.getByRole("article").boundingBox())!
+    expect(article.width).toBeGreaterThan(1000)
+
+    // Below `lg` it is a page again, and scrolls as one, charts first.
+    await page.setViewportSize({ width: 390, height: 800 })
+    await page.reload()
+    expect(
+      await page.evaluate(() => document.documentElement.scrollHeight - window.innerHeight),
+    ).toBeGreaterThan(200)
   })
 
   test("puts what came in and went out on a page of its own", async ({ page }) => {

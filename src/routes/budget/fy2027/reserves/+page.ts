@@ -25,6 +25,16 @@ export const load: PageLoad = async ({ parent }) => {
 
   return {
     section: { title: "Reserves", page: 17 },
+
+    /**
+     * The book page's full width rather than a section's reading column.
+     *
+     * The page is laid out the way the book's front page is -- charts down the
+     * left, the year across the top of what is left, and the reading under
+     * them in the only box that scrolls -- and none of that fits in a 48rem
+     * strip. The prose keeps its own measure inside the scroll box.
+     */
+    wide: true,
     /**
      * Every page of the book this one was built out of, and then the pages the
      * book keeps the rest of the subject on.

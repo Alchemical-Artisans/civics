@@ -123,10 +123,10 @@ says it through `bookName`.
 `/budget/<year>` opens on the budget at a glance: the year, and what the year
 sits on.
 
-| Chart              | What it draws                                                                     | From                               |
-| ------------------ | --------------------------------------------------------------------------------- | ---------------------------------- |
-| The three policies | a bullet bar per fund on one scale: the band it may hold in, the balance it holds | the three dial tables, pages 17-20 |
-| What they left     | columns on a zero line: the undesignated balance above, encumbrances below        | page 18's bottom rows              |
+| Chart             | What it draws                                         | From                                                                 |
+| ----------------- | ----------------------------------------------------- | -------------------------------------------------------------------- |
+| Spending, Revenue | two columns on one scale, each divided into its parts | page 78 and page 63, plus the orders of 2 June 2026                  |
+| Reserves and Debt | two bars on one scale, each divided into its parts    | page 17, `reserves/tables.ts`; page 21, `outstanding-debt/tables.ts` |
 
 The two columns are the year — everything the city spends, and everything that
 pays for it — and sit in the narrow left column of the page.
@@ -402,17 +402,28 @@ The front page draws the reserves as one bar, deliberately ignoring what the
 city is _allowed_ to hold: the bands are this section's subject, not the front
 page's. This is where they are drawn.
 
-| Chart              | What it draws                                                                     | From                               |
-| ------------------ | --------------------------------------------------------------------------------- | ---------------------------------- |
-| The three policies | a bullet bar per fund on one scale: the band it may hold in, the balance it holds | the three dial tables, pages 17-20 |
-| What came and went | two lines: a year's revenue against its expenditure                               | page 18                            |
-| What they left     | columns on a zero line: the undesignated balance above, encumbrances below        | page 18                            |
+| Chart              | What it draws                                                                        | Where          | From                               |
+| ------------------ | ------------------------------------------------------------------------------------ | -------------- | ---------------------------------- |
+| The three policies | a bullet column per fund on one scale: the band it may hold in, the balance it holds | down the left  | the three dial tables, pages 17-20 |
+| What they left     | columns on a zero line: the undesignated balance above, encumbrances below           | across the top | page 18's bottom rows              |
+
+**`reserves` is laid out as the book's front page is.** Charts down the left and
+across the top, and the reading under them in the only box that scrolls: the
+three policies are the page's answer — is each fund where it is supposed to be —
+and a reader working down four sections of the city's prose is the reader who
+wants that answer still in view. A section is normally a 48rem reading column,
+so this one returns `wide: true` from its load and
+[`budget/+layout.svelte`](../src/routes/budget/+layout.svelte) gives it the book
+page's width instead; the prose keeps its own measure inside the scroll box,
+which is `relative` for the same reason the front page's is — an `sr-only` note
+with no positioned ancestor lays out against the page, which a scroller cannot
+clip.
 
 **One scale for the three policies, and it is not an assumption.**
 [`BudgetBands.svelte`](../src/lib/BudgetBands.svelte) draws a pale rail the full
-width of the largest ceiling, the policy's band inside it, and the balance as a
-thinner bar from zero — a bullet chart, which is what the book's dial is trying
-to be. Three dials cannot be compared with each other at all: a needle halfway
+height of the largest ceiling, the policy's band inside it, and the balance as a
+narrower bar rising from the foot — a bullet chart stood on end, which is what
+the book's dial is trying to be. Three dials cannot be compared with each other at all: a needle halfway
 round a small arc and a needle halfway round a large one look the same, and
 there is no reading money off either. These three can be, because every one of
 the policies is a percentage of the same figure — general fund revenue less debt
@@ -428,21 +439,21 @@ tables are still the transcription, still in `reserves/tables.ts`, still what
 both charts and the front page's reserves bar are drawn from, and every figure
 in them is the accessible name of the mark that draws it.
 
-Nothing on the chart is written here. Each row is named as its own dial table
-heads it ("Undesignated Fund Balance", "Free Cash", "Stabilization Reserve"),
+Nothing on the chart is written here. Each column is named as its own dial
+table heads it ("Undesignated Fund Balance", "Free Cash", "Stabilization Reserve"),
 and the three figures beside it are the book's cells printed as the book prints
 them, shares and all — including the row label, which is not the same word
 twice: "Actual" on the fund balance, "Anticipated" on free cash, which is a year
 not closed yet, and "Actual Balance" on stabilization.
 
 **The year's story is a bar that isn't there.** Free cash is anticipated at $0
-against a floor of $3,565,232, so the middle row draws no bar at all beneath a
+against a floor of $3,565,232, so the middle column draws no bar at all under a
 band it never reaches. The page says why in the city's own words — a winter of
 $4.6 million in snow removal — and the chart says nothing the prose does not; it
 just says it first, and next to the two funds that are inside their bands.
 
 **Stabilization's band has no closing edge**, because policy #4 sets a floor and
-no ceiling. The band runs to the end of the rail and the row prints no maximum:
+no ceiling. The band runs to the top of the rail and the column prints no maximum:
 the only honest thing to draw at a limit that does not exist is nothing.
 
 **The rest of the page is the bottom of page 18's table, drawn.** That table is

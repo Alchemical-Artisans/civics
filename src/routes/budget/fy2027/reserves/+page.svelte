@@ -117,34 +117,85 @@
   ]
 </script>
 
-<!-- Page 17. The page is "Reserves", which is the bucket; this is the section
-     of the book in it. -->
-<h2>Fiscal Reserves</h2>
-
 <!--
-  The three policies before the three sections that set them out, the way the
-  book's front page opens on its two columns: the page is about whether each
-  fund is where it is supposed to be, and that is one picture rather than three
-  pages of reading. Each bar is repeated below in the book's own dial table, at
-  the policy it belongs to.
+  Laid out as the book's front page is: the charts down the left and across the
+  top, and the reading under them in the only box that scrolls.
+
+  A section is usually a reading column, and this one is not, because it is not
+  usually two charts either. The three policies are the page's answer -- is each
+  fund where it is supposed to be -- and a reader working down four sections of
+  the city's prose is exactly the reader who wants that answer still in view.
+
+  So the page is one screen on a wide window: 181px of it is spoken for -- the
+  bar at the top (53), the padding the layout puts above the page (16) and the
+  padding it puts below to clear the fixed calendar (112) -- and the grid takes
+  the rest. Below `lg` it is a single column and scrolls as a page, charts
+  first, because a column narrower than these has nowhere to put them.
 -->
-<BudgetBands rows={bands} />
+<div class="lg:grid lg:h-[calc(100vh-181px)] lg:grid-cols-[max-content_minmax(0,1fr)] lg:gap-x-10">
+  <!--
+    The three policies as three columns, down the left where the book's front
+    page keeps its two: the page's whole question is whether each fund is where
+    it is supposed to be, and that is one picture rather than four pages of
+    reading. Nothing heads it -- each column carries its own name, and the
+    prose it belongs to is the first thing in the column beside it.
+  -->
+  <div class="lg:h-full">
+    <BudgetBands rows={bands} />
+  </div>
 
-<p>
-  <strong>City Reserve Policy #1:</strong> The City shall maintain an undesignated <GlossaryTerm
-    term="Fund">fund</GlossaryTerm
-  > balance between 5% and 15% of <GlossaryTerm term="General Fund">general fund</GlossaryTerm>
-  <GlossaryTerm term="Revenues">revenues</GlossaryTerm>, less debt exclusion and Ch. 70.
-</p>
+  <div class="lg:flex lg:h-full lg:flex-col lg:overflow-hidden">
+    <!--
+    Page 18's bottom rows: what each of those years left behind, as columns rather
+    than a line, because these are not a trend
+    but where the city stood at four closes of business. A line between two
+    balances invites the eye to read its slope as though something happened along
+    the way, and the book claims nothing about the months in between.
+  
+    The undesignated balance stands above the zero line and the year's
+    encumbrances hang below it, so a column's span is the distance between what
+    the city could spend and what it had already promised. The beginning and
+    balance is the book's closing row alone: the opening one is the same figure a
+    year earlier, which `reserves.spec.ts` checks against the book's own cells, so
+    charting both would be one row drawn twice.
+  -->
+    <div class="mb-6">
+      <BudgetBars {years} rows={balance} />
+    </div>
 
-<p>
-  <strong>Results:</strong> The city's undesignated <GlossaryTerm term="Fund">fund</GlossaryTerm> balance
-  as of June 30, 2025, was $13,985,452 or 7.85% of <GlossaryTerm term="General Fund"
-    >general fund</GlossaryTerm
-  > revenue. This is up from June 2024, which was $12,569,995 or 7.36%.
-</p>
+    <!-- The one thing on this page that scrolls. `min-h-0` because a flex child
+         will not shrink below its content without it, and a box that cannot
+         shrink cannot scroll; `relative` because the `sr-only` note on a
+         reference that opens the city's PDF is absolutely positioned, and
+         without a positioned ancestor it is laid out against the page instead
+         of this box -- which a scroller does not clip, so the page grew by the
+         height of the list hanging out of the bottom of it. The prose keeps its
+         own reading measure in here, since the page around it no longer sets
+         one. -->
+    <div class="lg:relative lg:min-h-0 lg:flex-1 lg:overflow-y-auto">
+      <div class="max-w-3xl">
+        <!-- Page 17. The page is "Reserves", which is the bucket; this is the
+             section of the book in it. -->
+        <h2>Fiscal Reserves</h2>
 
-<!--
+        <p>
+          <strong>City Reserve Policy #1:</strong> The City shall maintain an undesignated <GlossaryTerm
+            term="Fund">fund</GlossaryTerm
+          > balance between 5% and 15% of <GlossaryTerm term="General Fund"
+            >general fund</GlossaryTerm
+          >
+          <GlossaryTerm term="Revenues">revenues</GlossaryTerm>, less debt exclusion and Ch. 70.
+        </p>
+
+        <p>
+          <strong>Results:</strong> The city's undesignated <GlossaryTerm term="Fund"
+            >fund</GlossaryTerm
+          > balance as of June 30, 2025, was $13,985,452 or 7.85% of <GlossaryTerm
+            term="General Fund">general fund</GlossaryTerm
+          > revenue. This is up from June 2024, which was $12,569,995 or 7.36%.
+        </p>
+
+        <!--
   Page 228, not page 17.
 
   The book's own "Fiscal Reserves" section runs #1, #3, #4 and skips #2, which
@@ -159,82 +210,70 @@
   It sits under #1's result because it is #1's consequence: the floor it names
   is the left edge of the first bar in the chart above.
 -->
-<p>
-  <strong>Reserve Policy 2:</strong> In the event that the city's undesignated
-  <GlossaryTerm term="Fund">fund</GlossaryTerm> balance falls below 5% of
-  <GlossaryTerm term="General Fund">general fund</GlossaryTerm>
-  <GlossaryTerm term="Revenues">revenues</GlossaryTerm>, less debt exclusions and Chapter 70 Aid,
-  (the "Fund Balance Floor"), a plan for specific expenditure reductions and/or revenue increases
-  shall be submitted to the City Council during the next budget cycle.
-</p>
+        <p>
+          <strong>Reserve Policy 2:</strong> In the event that the city's undesignated
+          <GlossaryTerm term="Fund">fund</GlossaryTerm> balance falls below 5% of
+          <GlossaryTerm term="General Fund">general fund</GlossaryTerm>
+          <GlossaryTerm term="Revenues">revenues</GlossaryTerm>, less debt exclusions and Chapter 70
+          Aid, (the "Fund Balance Floor"), a plan for specific expenditure reductions and/or revenue
+          increases shall be submitted to the City Council during the next budget cycle.
+        </p>
 
-<h2>Fund Balance</h2>
+        <h2>Fund Balance</h2>
 
-<p>
-  <GlossaryTerm term="Fund">Fund</GlossaryTerm> balance is the net position of a governmental <GlossaryTerm
-    term="Fund">fund</GlossaryTerm
-  > (assets minus liabilities), representing the accumulated difference between <GlossaryTerm
-    term="Revenues">revenues</GlossaryTerm
-  > and <GlossaryTerm term="Expenditures">expenditures</GlossaryTerm> over time. It measures available
-  financial resources, acting as a "net worth" or savings account for governments to pay bills, maintain
-  cash flow, and ensure financial stability.
-</p>
+        <p>
+          <GlossaryTerm term="Fund">Fund</GlossaryTerm> balance is the net position of a governmental
+          <GlossaryTerm term="Fund">fund</GlossaryTerm> (assets minus liabilities), representing the accumulated
+          difference between <GlossaryTerm term="Revenues">revenues</GlossaryTerm> and <GlossaryTerm
+            term="Expenditures">expenditures</GlossaryTerm
+          > over time. It measures available financial resources, acting as a "net worth" or savings account
+          for governments to pay bills, maintain cash flow, and ensure financial stability.
+        </p>
 
-<!--
-  Page 18's bottom rows: what each of those years left behind, as columns rather
-  than a line, because these are not a trend
-  but where the city stood at four closes of business. A line between two
-  balances invites the eye to read its slope as though something happened along
-  the way, and the book claims nothing about the months in between.
+        <h2>Free Cash</h2>
 
-  The undesignated balance stands above the zero line and the year's
-  encumbrances hang below it, so a column's span is the distance between what
-  the city could spend and what it had already promised. The beginning and
-  balance is the book's closing row alone: the opening one is the same figure a
-  year earlier, which `reserves.spec.ts` checks against the book's own cells, so
-  charting both would be one row drawn twice.
--->
-<BudgetBars {years} rows={balance} />
+        <p>
+          <strong>City Reserve Policy #3:</strong> The amount to be held in <GlossaryTerm
+            term="Free Cash">free cash</GlossaryTerm
+          > shall not be less than 2% or more than 8% of <GlossaryTerm term="General Fund"
+            >general fund</GlossaryTerm
+          >
+          <GlossaryTerm term="Revenues">revenues</GlossaryTerm>, less debt exclusion and Ch. 70.
+        </p>
 
-<h2>Free Cash</h2>
+        <p>
+          <strong>Results:</strong> The city is projected to have a <GlossaryTerm term="Free Cash"
+            >free cash</GlossaryTerm
+          > balance of $0 at the end of <GlossaryTerm term="Fiscal Year">fiscal year</GlossaryTerm> 2026,
+          largely due to exceptionally high snow removal costs that exceeded $4.6 million during the past
+          winter. This winter was the coldest and snowiest the area has experienced since 2014-2015. In
+          light of these unprecedented expenses, the Mayor and the city's Emergency Management Director
+          have requested financial assistance from the Commonwealth. This year's <GlossaryTerm
+            term="Free Cash">free cash</GlossaryTerm
+          > balance marks a significant decrease from the city's balance at the end of <GlossaryTerm
+            term="Fiscal Year">fiscal year</GlossaryTerm
+          > 2025, which was $2,578,279, reflecting a decline of 1.51%.
+        </p>
 
-<p>
-  <strong>City Reserve Policy #3:</strong> The amount to be held in <GlossaryTerm term="Free Cash"
-    >free cash</GlossaryTerm
-  > shall not be less than 2% or more than 8% of <GlossaryTerm term="General Fund"
-    >general fund</GlossaryTerm
-  >
-  <GlossaryTerm term="Revenues">revenues</GlossaryTerm>, less debt exclusion and Ch. 70.
-</p>
+        <h2>Stabilization Reserve</h2>
 
-<p>
-  <strong>Results:</strong> The city is projected to have a <GlossaryTerm term="Free Cash"
-    >free cash</GlossaryTerm
-  > balance of $0 at the end of <GlossaryTerm term="Fiscal Year">fiscal year</GlossaryTerm> 2026, largely
-  due to exceptionally high snow removal costs that exceeded $4.6 million during the past winter. This
-  winter was the coldest and snowiest the area has experienced since 2014-2015. In light of these unprecedented
-  expenses, the Mayor and the city's Emergency Management Director have requested financial assistance
-  from the Commonwealth. This year's <GlossaryTerm term="Free Cash">free cash</GlossaryTerm> balance marks
-  a significant decrease from the city's balance at the end of <GlossaryTerm term="Fiscal Year"
-    >fiscal year</GlossaryTerm
-  > 2025, which was $2,578,279, reflecting a decline of 1.51%.
-</p>
+        <p>
+          <strong>City Reserve Policy #4:</strong> The city shall maintain a Stabilization <GlossaryTerm
+            term="Reserve Fund">Reserve Fund</GlossaryTerm
+          > of at least 3% of <GlossaryTerm term="General Fund">general fund</GlossaryTerm> revenue, less
+          debt exclusion and Chapter 70.
+        </p>
 
-<h2>Stabilization Reserve</h2>
+        <p>
+          <strong>Results:</strong> The city's <GlossaryTerm term="Stabilization Fund"
+            >stabilization fund</GlossaryTerm
+          > is $8,001,094 or 4.49% of <GlossaryTerm term="General Fund">general fund</GlossaryTerm> revenue,
+          not including Chapter 70 and debt exclusions. This is up from fiscal 2025 which had a balance
+          of $7,533,248 or 4.41%.
+        </p>
 
-<p>
-  <strong>City Reserve Policy #4:</strong> The city shall maintain a Stabilization <GlossaryTerm
-    term="Reserve Fund">Reserve Fund</GlossaryTerm
-  > of at least 3% of <GlossaryTerm term="General Fund">general fund</GlossaryTerm> revenue, less debt
-  exclusion and Chapter 70.
-</p>
-
-<p>
-  <strong>Results:</strong> The city's <GlossaryTerm term="Stabilization Fund"
-    >stabilization fund</GlossaryTerm
-  > is $8,001,094 or 4.49% of <GlossaryTerm term="General Fund">general fund</GlossaryTerm> revenue, not
-  including Chapter 70 and debt exclusions. This is up from fiscal 2025 which had a balance of $7,533,248
-  or 4.41%.
-</p>
-
-<BookReferences items={data.references} book={data.book} />
+        <BookReferences items={data.references} book={data.book} />
+      </div>
+    </div>
+  </div>
+</div>

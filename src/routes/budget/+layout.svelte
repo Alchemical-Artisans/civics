@@ -16,7 +16,12 @@
   // its tallest, which is clearance rather than a margin. It was 8rem, and that
   // extra half-inch read as a gap between the chart's figures and the calendar.
   // Both kinds of page carry it, now that both carry the calendar.
-  const column = $derived(data.isSection ? "max-w-3xl pb-28" : "max-w-none pb-28")
+  // A section can ask for the book page's treatment instead, by returning
+  // `wide` from its own load: `reserves` is two charts and a column of prose
+  // laid out as one screen, and a 48rem strip has nowhere to put the charts.
+  // It keeps a reading measure on the prose itself rather than on the page.
+  const wide = $derived(!data.isSection || page.data.wide === true)
+  const column = $derived(wide ? "max-w-none pb-28" : "max-w-3xl pb-28")
 </script>
 
 <svelte:head>
