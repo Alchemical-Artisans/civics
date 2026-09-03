@@ -58,29 +58,37 @@
   ]
 
   /**
-   * The years page 18 accounts for, which are its own columns.
+   * The years page 18 accounts for, plus one it does not have a column of its
+   * own for: the book gives no row headed 2022, but its own "Beginning Fund
+   * Balance" for 2023 is the balance the city closed 2022 with, so that figure
+   * belongs to 2022 rather than to the year that happens to print it.
    *
-   * The book gives one figure outside them: the balance carried into 2023,
-   * which is the balance the city closed 2022 with. It was charted for a while
-   * and is not now -- a column holding one of the two rows this chart draws
-   * reads as a year with something missing from it, and the year it added is
-   * one the book itself does not account for.
+   * It reads fine now in a way it did not before the chart turned on its side:
+   * a column holding this figure and nothing else used to be a gap in the
+   * middle of the axis, three full years either side of an empty one. A row is
+   * a whole line with one bar on it instead of half a column, so the year that
+   * has only this to show does not read as a year with something missing.
    *
    * The top of the same table -- what came in and what went out each of these
-   * years -- is on `history`, which is not about reserves. What it says about
-   * this chart is that 2023, the year the balance fell, is the year the city
-   * spent more than it took in.
+   * years -- is on `history`, which is not about reserves and has no 2022 to
+   * add back: page 18 gives no revenue or expenditure figure for a year before
+   * its own first column. What it says about this chart is that 2023, the year
+   * the balance fell, is the year the city spent more than it took in.
    */
-  const years = FUND_BALANCE_HISTORY.columns.slice(1)
+  const HISTORY_YEARS = FUND_BALANCE_HISTORY.columns.slice(1)
+  const years = ["2022", ...HISTORY_YEARS]
 
   /**
-   * What they left behind, as columns standing on a zero line.
+   * What they left behind, as rows run off a zero line.
    *
-   * The book's "Ending Fund Balance" row, which is where each year left it.
-   * "Beginning Fund Balance" is the same figure read a second time -- every
-   * year opens where the last one closed, which `reserves.spec.ts` checks
-   * against the book's own cells -- so charting both would be one row drawn
-   * twice, a year apart.
+   * The book's "Ending Fund Balance" row, which is where 2023 through 2025
+   * left it. "Beginning Fund Balance" is the same figure read a second time
+   * for each of those -- every year opens where the last one closed, which
+   * `reserves.spec.ts` checks against the book's own cells -- so charting both
+   * would be one row drawn twice, a year apart. 2022 is the exception: the
+   * table's first column is 2023, so it has no "Ending Fund Balance" of its
+   * own, and its "Beginning Fund Balance" -- otherwise the figure charting
+   * skips -- is the only one the book gives for where 2022 closed.
    *
    * It is charted as "Undesignated Fund Balance", which is the book's own name
    * for this figure everywhere but in this table: the dial on page 17 heads its
@@ -89,30 +97,39 @@
    * nobody has spoken for, which is the only part of a fund balance a Council
    * can appropriate.
    *
-   * The encumbrances go under the line because that is where their sign puts
-   * them, not because they are subtracted from the bar above: the book's row is
-   * the *change* in what is set aside for open purchase orders over the year,
-   * and the balance beside it is already net of that change. The two are a year
-   * and its result, in one place because they are the same size and about the
-   * same money.
+   * The encumbrances go on the other side of the line because that is where
+   * their sign puts them, not because they are subtracted from the balance
+   * beside them: the book's row is the *change* in what is set aside for open
+   * purchase orders over the year, and the balance is already net of that
+   * change. The two are a year and its result, in one place because they are
+   * the same size and about the same money. 2022 draws none: the table gives
+   * no encumbrance movement for a year before its own first column, so that
+   * row is a single bar.
    *
    * Nothing is stacked, for the same reason: page 18 only reconciles with the
    * encumbrance term in it -- 2023 comes to $10,209,394 with it and $10,112,296
    * without -- so the bar beside it would be the same money drawn twice. They
-   * are given second, and the chart draws each row after the first narrower and
-   * in front, so the year the reserve released money reads against the balance
-   * rather than on top of it.
+   * are given second, and the chart draws each series after the first thinner
+   * and in front, so the year the reserve released money reads against the
+   * balance rather than on top of it.
    */
+  const OPENING = "Beginning Fund Balance"
   const CLOSING = "Ending Fund Balance"
   const ENCUMBRANCES = "Net Reserve for Encumbrances"
   const balance = [
     {
       label: "Undesignated Fund Balance",
-      values: years.map((year) => amount(cell(FUND_BALANCE_HISTORY, CLOSING, year))),
+      values: [
+        amount(cell(FUND_BALANCE_HISTORY, OPENING, HISTORY_YEARS[0])),
+        ...HISTORY_YEARS.map((year) => amount(cell(FUND_BALANCE_HISTORY, CLOSING, year))),
+      ],
     },
     {
       label: ENCUMBRANCES,
-      values: years.map((year) => amount(cell(FUND_BALANCE_HISTORY, ENCUMBRANCES, year))),
+      values: [
+        null,
+        ...HISTORY_YEARS.map((year) => amount(cell(FUND_BALANCE_HISTORY, ENCUMBRANCES, year))),
+      ],
     },
   ]
 </script>
@@ -146,18 +163,19 @@
 
   <div class="lg:flex lg:h-full lg:flex-col lg:overflow-hidden">
     <!--
-    Page 18's bottom rows: what each of those years left behind, as columns rather
-    than a line, because these are not a trend
-    but where the city stood at four closes of business. A line between two
-    balances invites the eye to read its slope as though something happened along
-    the way, and the book claims nothing about the months in between.
-  
-    The undesignated balance stands above the zero line and the year's
-    encumbrances hang below it, so a column's span is the distance between what
-    the city could spend and what it had already promised. The beginning and
-    balance is the book's closing row alone: the opening one is the same figure a
-    year earlier, which `reserves.spec.ts` checks against the book's own cells, so
-    charting both would be one row drawn twice.
+    Page 18's bottom rows: what each of those years left behind, as rows rather
+    than a line, because these are not a trend but where the city stood at four
+    closes of business. A line between two balances invites the eye to read its
+    slope as though something happened along the way, and the book claims
+    nothing about the months in between.
+
+    The undesignated balance runs to the right of the zero line and the year's
+    encumbrances hang to the left of it, so a bar's span is the distance
+    between what the city could spend and what it had already promised. The
+    balance is the book's closing row alone: the opening one is the same
+    figure a year earlier, which `reserves.spec.ts` checks against the book's
+    own cells, so charting both would be one row drawn twice -- except 2022,
+    which has no closing row of its own and draws the opening one instead.
   -->
     <div class="mb-6">
       <BudgetBars {years} rows={balance} />

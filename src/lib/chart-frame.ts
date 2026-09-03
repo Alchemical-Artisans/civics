@@ -1,10 +1,12 @@
 /**
- * The frame the two charts on a section page are drawn in.
+ * The frame `BudgetLines` draws in.
  *
- * They are read together -- a table's flows above what those flows left behind
- * -- so a reader looks straight down from a year in one to the same year in the
- * other. That only works if both put the year in the same place, which is why
- * the geometry is here rather than twice.
+ * This used to be shared with `BudgetBars` as well, back when the two sat on
+ * one page and a reader looked straight down from a year in one to the same
+ * year in the other -- which is what made a shared frame worth having rather
+ * than one geometry typed twice. They no longer share a page or an axis:
+ * `BudgetBars` is a row per year now, keeps its own frame, and this one is
+ * `BudgetLines`' alone.
  *
  * A fixed viewBox scaled to whatever width the page gives it, so these are the
  * drawing's own units and not pixels.
@@ -23,10 +25,8 @@ export const FOOT = 24
  * Where a year sits: the middle of its own band, not the edge of the plot.
  *
  * A line chart would happily put its first and last point hard against the
- * sides. A bar cannot -- half of it would hang over the axis figures -- and a
- * year has to be in one place for both charts, so both use bands. The cost is
- * a little air at either end of a line, which is what a categorical axis looks
- * like anyway.
+ * sides. Bands keep the years evenly spaced regardless, which costs a little
+ * air at either end of the line -- what a categorical axis looks like anyway.
  */
 export function bandCentre(at: number, count: number): number {
   return LEFT + (at + 0.5) * bandWidth(count)

@@ -586,15 +586,16 @@ test.describe("budget pages", () => {
     const balance = page.locator(".budget-bars")
     await expect(balance).toHaveCount(1)
 
-    // Bars, not a line: these are three closes of business rather than a trend,
+    // Bars, not a line: these are four closes of business rather than a trend,
     // and the balance is charted under the name the dial and the prose give it
     // -- undesignated, which is the part a Council can appropriate. The book's
-    // closing row only: its opening row is the same figure a year earlier, so
-    // charting both would be one row drawn twice.
+    // closing row for 2023 through 2025; 2022 has none of its own, so it draws
+    // the opening row instead and carries no encumbrance mark at all.
     const named = (chart: ReturnType<typeof balance.locator>) =>
       chart.evaluateAll((marks) => marks.map((m) => m.getAttribute("aria-label")))
 
     expect(await named(balance.locator("rect"))).toEqual([
+      "Undesignated Fund Balance, 2022, $12,429,870",
       "Undesignated Fund Balance, 2023, $10,209,394",
       "Net Reserve for Encumbrances, 2023, $97,098",
       "Undesignated Fund Balance, 2024, $12,569,995",
@@ -603,52 +604,53 @@ test.describe("budget pages", () => {
       "Net Reserve for Encumbrances, 2025, -$3,738,924",
     ])
 
-    // The bars stand on zero and run in the direction of their sign.
+    // Rows now, transposed from columns: years run down the chart and dollars
+    // run across it, so the bars stand on a vertical zero line and run left or
+    // right rather than up or down.
     const zero = await balance
       .locator("svg line")
       .last()
-      .evaluate((line) => Number(line.getAttribute("y1")))
+      .evaluate((line) => Number(line.getAttribute("x1")))
 
     const sides = await balance.locator("rect").evaluateAll((bars) =>
       bars.map((bar) => ({
         label: bar.getAttribute("aria-label")!,
-        top: Number(bar.getAttribute("y")),
-        depth: Number(bar.getAttribute("height")),
+        left: Number(bar.getAttribute("x")),
+        span: Number(bar.getAttribute("width")),
       })),
     )
 
     // Every bar hangs off the zero line and runs the way its sign points.
     // Nothing is stacked on anything: the balance is already net of the
     // encumbrance movement -- page 18 only reconciles with that term in -- so
-    // stacking them would draw the same money twice and put the top of a
-    // column at a total the book never states.
+    // stacking them would draw the same money twice and put the end of a row
+    // at a total the book never states.
     for (const bar of sides) {
       const negative = bar.label.includes(", -$")
-      // SVG y grows downwards, so a bar below the line starts on it and one
-      // above it ends on it.
-      expect(negative ? bar.top : bar.top + bar.depth).toBeCloseTo(zero, 0)
-      expect(bar.depth).toBeGreaterThan(0)
+      // A bar to the left of the line ends on it; one to the right starts on it.
+      expect(negative ? bar.left + bar.span : bar.left).toBeCloseTo(zero, 0)
+      expect(bar.span).toBeGreaterThan(0)
     }
 
     // The encumbrances are drawn in front of the balance rather than beside or
-    // on top of it: a narrower bar from the same line, so the year they
-    // released money instead of taking it is still read against the balance.
-    const widths = await balance.locator("rect").evaluateAll((bars) =>
+    // on top of it: a thinner bar from the same row, so the year they released
+    // money instead of taking it is still read against the balance.
+    const thicknesses = await balance.locator("rect").evaluateAll((bars) =>
       bars.map((bar) => ({
         label: bar.getAttribute("aria-label")!,
-        span: Number(bar.getAttribute("width")),
+        thickness: Number(bar.getAttribute("height")),
       })),
     )
 
-    const wide = widths.find((bar) => bar.label.startsWith("Undesignated"))!.span
-    for (const bar of widths) {
-      if (bar.label.startsWith("Net Reserve")) expect(bar.span).toBeLessThan(wide)
+    const thickest = thicknesses.find((bar) => bar.label.startsWith("Undesignated"))!.thickness
+    for (const bar of thicknesses) {
+      if (bar.label.startsWith("Net Reserve")) expect(bar.thickness).toBeLessThan(thickest)
     }
 
     // And a figure too small to draw is still drawn: 2023's $97,098 is a third
     // of a pixel against a scale of twenty million, and it is a focus target.
     const sliver = sides.find((bar) => bar.label.includes("$97,098"))!
-    expect(sliver.depth).toBeGreaterThanOrEqual(2)
+    expect(sliver.span).toBeGreaterThanOrEqual(2)
 
     // Zero is drawn, because the bars stand on it.
     await expect(balance.locator("svg")).toContainText("$0")
@@ -667,8 +669,8 @@ test.describe("budget pages", () => {
 
     const tooltip = page.locator(".budget-bars .budget-tooltip")
     await expect(tooltip).toContainText("Undesignated Fund Balance")
-    await expect(tooltip).toContainText("2023")
-    await expect(tooltip).toContainText("$10,209,394")
+    await expect(tooltip).toContainText("2022")
+    await expect(tooltip).toContainText("$12,429,870")
 
     // Gone when the pointer is, and the mark carries the same as its name, so
     // nothing here is only visible to a mouse.

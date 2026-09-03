@@ -241,23 +241,34 @@ Notable pieces:
   axis.
 - **`src/lib/BudgetBars.svelte`** draws the other half of that table, on
   `reserves`, where it belongs -- the flows are the city's, the balance they
-  left is the reserves page's subject. Each year is a
-  column standing on a zero line, the undesignated fund balance above it and
-  that year's encumbrances below. Bars because these are three closes of
-  business rather than a trend, and they start at zero because a bar's meaning
-  is its length. Only the book's closing row is charted: its opening row is the
-  same figure a year earlier, so charting both would be one row drawn twice.
-  Nothing is stacked either -- page 18 only reconciles with the encumbrance term
-  in it, so the balance is already net of the bar beside it and a stack would
-  draw the same money twice and top the column at a total the book never states.
-  The bars overlap instead: the first row is the width of the band, each one
-  after it narrower and drawn in front, and every bar hangs off the zero line so
-  the edge a reader measures from is exact. The book never says what the
-  encumbrance reserve itself stands at, only what it moved by. A non-zero figure
-  is never drawn thinner than two units, since the mark is a focus target too.
-  **`src/lib/chart-frame.ts`** is the
-  viewBox and the band positions both charts take, so a year is in the same
-  place in each and a reader can look straight down.
+  left is the reserves page's subject. Each year is a row run off a vertical
+  zero line, the undesignated fund balance to the right of it and that year's
+  encumbrances to the left. Rows rather than columns because the chart sits
+  beside its own reading now, in a column that is wide and short, and four
+  years stacked as rows fit that shape where four side by side would not. Bars
+  because these are four closes of business rather than a trend, and they
+  start at zero because a bar's meaning is its length. 2022 is one of the
+  four: the book gives it no "Ending Fund Balance" of its own, only the
+  "Beginning Fund Balance" it lends 2023, and that used to read as a year with
+  something missing -- an empty gap in a column, three full ones either side.
+  A row does not: it is a whole line with one bar on it rather than half a
+  column, which is what let 2022 back in once the chart turned on its side.
+  Only the book's closing row is charted for 2023 through 2025: the opening
+  row is the same figure a year earlier, so charting both would be one row
+  drawn twice. Nothing is stacked either -- page 18 only reconciles with the
+  encumbrance term in it, so the balance is already net of the bar beside it
+  and a stack would draw the same money twice and put the end of a row at a
+  total the book never states. The bars overlap instead: the first series is
+  the thickness of the row, each one after it thinner and drawn in front, and
+  every bar hangs off the zero line so the edge a reader measures from is
+  exact. The book never says what the encumbrance reserve itself stands at,
+  only what it moved by. A non-zero figure is never drawn thinner than two
+  units, since the mark is a focus target too. It keeps its own viewBox and
+  band geometry now rather than sharing **`src/lib/chart-frame.ts`** with
+  `BudgetLines` -- that sharing was for when the two sat on one page and a
+  reader looked straight down from a year in one to the same year in the
+  other, which stopped being true once the flows chart moved to `history` and
+  this one turned sideways.
 - **`src/lib/GlossaryTerm.svelte`** links a word in the city's prose to the
   book's definition of it: a plain link to that term's entry on
   `/budget/fy2027/glossary`, nothing more. It briefly carried the definition

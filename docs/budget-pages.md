@@ -405,7 +405,7 @@ page's. This is where they are drawn.
 | Chart              | What it draws                                                                        | Where          | From                               |
 | ------------------ | ------------------------------------------------------------------------------------ | -------------- | ---------------------------------- |
 | The three policies | a bullet column per fund on one scale: the band it may hold in, the balance it holds | down the left  | the three dial tables, pages 17-20 |
-| What they left     | columns on a zero line: the undesignated balance above, encumbrances below           | across the top | page 18's bottom rows              |
+| What they left     | rows on a zero line: the undesignated balance to the right, encumbrances to the left | across the top | page 18's bottom rows              |
 
 **`reserves` is laid out as the book's front page is.** Charts down the left and
 across the top, and the reading under them in the only box that scrolls: the
@@ -478,23 +478,28 @@ Both components — [`BudgetLines.svelte`](../src/lib/BudgetLines.svelte) and
 [`BudgetBars.svelte`](../src/lib/BudgetBars.svelte) — take `years` and a value
 per year per series, `null` where the book prints none; the line chart breaks
 across a gap rather than drawing through it, and the bar chart draws no bar.
-Both take their geometry from
-[`chart-frame.ts`](../src/lib/chart-frame.ts) — the viewBox and the band
-positions — so two charts drawn from one table put a year in the same place
-whether they are on one page or two. Years sit in the middle of their own band
-and not at the edges of the plot: a bar at the edge would hang over the axis
-figures.
+They no longer share [`chart-frame.ts`](../src/lib/chart-frame.ts): that was
+for when both sat on the reserves page and a reader looked straight down from
+a year in one to the same year in the other, which stopped holding once the
+flows moved to `history` and the bar chart turned on its side to sit beside
+its own reading instead of above it. `BudgetLines` still uses that shared
+frame; `BudgetBars` keeps its own now. Both still put years in the middle of
+their own band and not at the edges of the plot: a bar at the edge would hang
+over the axis figures.
 
 **What they left is bars, not a line.** Those four figures are not a trend but
 where the city stood at four closes of business, and a line drawn between two
 balances invites the eye to read its slope as though something happened along
 the way, which the book claims nothing about.
-[`BudgetBars.svelte`](../src/lib/BudgetBars.svelte) draws each year as a column
-standing on a zero line: the undesignated balance above it, that year's
-encumbrances below, so a column's span is the distance between what the city
-could spend and what it had already promised. Bars start at zero and the zero
-line is drawn, because a bar's meaning is its length — unlike a line, which is
-read for its shape and may begin where it likes.
+[`BudgetBars.svelte`](../src/lib/BudgetBars.svelte) draws each year as a row run
+off a vertical zero line: the undesignated balance to the right of it, that
+year's encumbrances to the left, so a bar's span is the distance between what
+the city could spend and what it had already promised. Rows rather than columns
+because the chart sits beside its own reading now, in a column that is wide and
+short — four years stacked as rows fit that shape, four side by side would not.
+Bars start at zero and the zero line is drawn, because a bar's meaning is its
+length — unlike a line, which is read for its shape and may begin where it
+likes.
 
 **It is charted as the _undesignated_ fund balance**, which is what that figure
 is: money nobody has spoken for, and the only part of a fund balance a Council
@@ -503,25 +508,26 @@ page 17 heads its column "Undesignated Fund Balance" and the prose gives the
 same $13,985,452 for the same date, so the book calls this figure undesignated
 everywhere except in this one table.
 
-**The encumbrances hang below the line because of their sign, not because they
-are taken off the bar above.** The book's row is the _change_ over the year in
-what is set aside for open purchase orders, and the balance beside it is already
-net of that change: adding the two together gives nothing, since one is a stock
-and the other a flow. The book gives no figure at all for what the encumbrance
-reserve stands at, only what it moved by, so no chart here can show the reserve
-itself. Each bar runs from zero in the direction of its own sign, so 2023 — the year the
-reserve released money rather than taking it — draws its $97,098 above the line
-rather than below.
+**The encumbrances go to the left of the line because of their sign, not
+because they are taken off the bar beside them.** The book's row is the
+_change_ over the year in what is set aside for open purchase orders, and the
+balance beside it is already net of that change: adding the two together gives
+nothing, since one is a stock and the other a flow. The book gives no figure at
+all for what the encumbrance reserve stands at, only what it moved by, so no
+chart here can show the reserve itself. Each bar runs from zero in the
+direction of its own sign, so 2023 — the year the reserve released money rather
+than taking it — draws its $97,098 to the right of the line rather than the
+left.
 
 **Nothing is stacked, and the arithmetic is why.** Page 18 only reconciles with
 the encumbrance term in it: 2023 comes to $10,209,394 with it and $10,112,296
 without. So the balance is already net of the movement beside it, and a stack —
-which claims its parts add up to the column — would draw the same money twice
-and put the top of the column at a total the book never states. Instead the bars
-overlap: the first row is the width of the band, and each row after it is
-narrower and drawn in front, centred, so a smaller figure is read against the
+which claims its parts add up to the row — would draw the same money twice and
+put the end of the row at a total the book never states. Instead the bars
+overlap: the first series is the thickness of the row, and each series after it
+is thinner and drawn in front, centred, so a smaller figure is read against the
 one behind it. Where a sign puts a bar the other side of the line there is
-nothing to be in front of and it simply hangs below.
+nothing to be in front of and it simply hangs to the left.
 
 **A figure too small to draw is still drawn.** $97,098 against a scale of twenty
 million is a third of a pixel, and the mark is a focus target as well as a
@@ -535,12 +541,20 @@ figure read a second time — every year opens where the last one closed, which
 `reserves.spec.ts` checks against the book's own cells — so charting both would
 be one row drawn twice, a year apart.
 
-The book does give one figure outside its own three columns — the balance
-carried into 2023, which is the close of 2022 — and it was charted for a while.
-It is not now. A column holding one of the two rows the chart draws reads as a
-year with something missing from it, and the year it added is one the book
-itself does not account for. What it showed is still on the page in the city's
-own words: the balance fell in 2023, which is the year the flows above cross.
+**2022 is charted too, from a figure outside the table's own three columns.**
+The book gives no "Ending Fund Balance" for 2022 — its own first column is
+2023 — but that year's "Beginning Fund Balance" is the balance the city closed
+2022 with, so that figure is charted under the year it belongs to rather than
+the year that happens to print it. A column holding this and nothing else used
+to read as a year with something missing — an empty gap in the middle of the
+axis, three full years either side. A row does not: it is a whole line with one
+bar on it rather than half a column, which is what let 2022 back in once the
+chart turned on its side. Its row draws no encumbrance mark at all, since the
+book gives no encumbrance movement for a year before its own first column.
+`history` has no 2022 to add back the same way: page 18 gives no revenue or
+expenditure figure for it either, so the flows chart still opens on 2023. What
+the balance shows either way is in the city's own words: the balance fell in
+2023, which is the year the flows above cross.
 
 ### history-forecasts
 
@@ -1033,7 +1047,7 @@ src/lib/BudgetStack.svelte                 reserves and debt, two bars on one sc
 src/lib/BudgetBands.svelte                 a fund against the band its policy allows
 src/lib/BudgetLines.svelte                 a table's rows followed across its years
 src/lib/BudgetBars.svelte                  a year's figures either side of zero
-src/lib/chart-frame.ts                     the viewBox and bands those two share
+src/lib/chart-frame.ts                     the viewBox and bands BudgetLines draws in
 src/lib/BookReferences.svelte              where a page came from, and what it sits by
 src/lib/data/glossary.json                 the book's glossary, transcribed
 src/lib/glossary.ts                        reads it; the definition lookup
