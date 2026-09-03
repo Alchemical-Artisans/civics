@@ -74,3 +74,32 @@ describe("the five-year capital requests chart", () => {
     )
   })
 })
+
+/**
+ * The chart's own arithmetic for the two projects it leaves out of 2028 --
+ * `+page.svelte` builds this same subtraction from the page's own data, and
+ * this pins the dollar figures independently against the book's stated 2028
+ * totals, so a book update that moves either project's cost is a failing
+ * test here rather than a chart and a note that quietly disagree.
+ */
+describe("what the 2028 bar leaves out", () => {
+  const JGW_TILTON = 90000000
+  const FIRE_STATION = 30000000
+  const EXCLUDED = JGW_TILTON + FIRE_STATION
+
+  it("is $120,000,000, almost the whole of the category's 2028 total", () => {
+    expect(EXCLUDED).toBe(120000000)
+    const building = amount(cell(CAPITAL_REQUESTS, "Buildings & Building Improvements", "2028"))!
+    expect(EXCLUDED / building).toBeGreaterThan(0.95)
+  })
+
+  it("leaves $5,002,000 of Buildings & Building Improvements once both are out", () => {
+    const building = amount(cell(CAPITAL_REQUESTS, "Buildings & Building Improvements", "2028"))!
+    expect(building - EXCLUDED).toBe(5002000)
+  })
+
+  it("leaves 2028's bar at $12,307,653 once both are out of its total", () => {
+    const total = amount(cell(CAPITAL_REQUESTS, "Grand Total", "2028"))!
+    expect(total - EXCLUDED).toBe(12307653)
+  })
+})

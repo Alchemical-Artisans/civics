@@ -713,10 +713,26 @@ unconditionally -- right for the front page's two full-height columns, too
 tall for a chart that sits above a page of reading rather than filling the
 column alone.
 
+**Two projects are left out of the 2028 bar: $90,000,000 for the JGW/Tilton
+School core project and $30,000,000 for a new Fire Station, $120,000,000 of
+the $125,002,000 the Buildings category totals that year.** Between them they
+are 90% of everything the city requests in 2028, which sets the scale every
+other category and every other year has to be read against -- against
+$132,307,653, 2027's whole $17,219,620 draws as a thin line at the foot, and
+so does everything past 2028. `+page.svelte` subtracts the $120,000,000 from
+the Buildings segment and from the bar's own total before either reaches
+`BudgetColumns`, leaving $5,002,000 of ordinary building spending in the 2028
+band rather than none, and a note beside the chart discloses both projects
+and their figures by name. Nothing here touches `CAPITAL_REQUESTS` -- the
+table below the chart still carries both projects at their own rows, in the
+book's own figures, exactly as printed.
+
 `spending.spec.ts` pins `SPENDING_TOTAL` and the composition it is built
-from, and checks `CAPITAL_REQUESTS` against its own row and column totals the
-way `debt.spec.ts` checks the debt tables against the sentences that quote
-them.
+from, checks `CAPITAL_REQUESTS` against its own row and column totals the way
+`debt.spec.ts` checks the debt tables against the sentences that quote them,
+and pins the two excluded projects' figures against the book's own 2028
+totals, so a book update that moves either project's cost is a failing test
+rather than a chart and a note that quietly disagree.
 
 ### history-forecasts
 

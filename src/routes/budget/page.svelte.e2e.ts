@@ -354,15 +354,30 @@ test.describe("budget pages", () => {
     await expect(capital).toContainText("2027")
     await expect(capital).toContainText("$17,219,620")
     await expect(capital).toContainText("2028")
-    await expect(capital).toContainText("$132,307,653")
     await expect(capital).not.toContainText("Grand Total")
     await expect(capital.getByRole("img")).toHaveCount(33)
 
+    // Two one-time projects, $120 million of the 2028 building total, are
+    // left out of the chart -- disclosed beside it -- so 2028's bar is its
+    // stated $132,307,653 less that, and the building segment is what is
+    // left of the category once they are gone.
+    await expect(capital).toContainText("$12,307,653")
+    const note = page.locator("p", { hasText: "Excludes $120,000,000" })
+    await expect(note).toContainText("JGW/Tilton School Core Project ($90,000,000)")
+    await expect(note).toContainText("Fire Station ($30,000,000)")
+
     const building = capital.getByRole("img", {
-      name: "2028, Buildings & Building Improvements, $125,002,000, 94.5%",
+      name: "2028, Buildings & Building Improvements, $5,002,000, 40.6%",
     })
     await building.focus()
     await expect(capital).toContainText("Buildings & Building Improvements")
+
+    // The two excluded projects still carry their own rows, in full, in the
+    // table below -- only the chart leaves them out.
+    const article = page.getByRole("article")
+    await expect(article).toContainText("JGW / Tilton School Core Project")
+    await expect(article).toContainText("$90,000,000")
+    await expect(article.getByRole("row", { name: "Fire Station $30,000,000" })).toHaveCount(1)
 
     // A category keeps the same colour in every bar it appears in, so it can
     // be read down its own band across years -- not each bar's own largest

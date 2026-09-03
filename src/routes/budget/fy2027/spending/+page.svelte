@@ -40,12 +40,39 @@
       amount(cell(CAPITAL_REQUESTS, b, "Grand Total"))! -
       amount(cell(CAPITAL_REQUESTS, a, "Grand Total"))!,
   )
+
+  /**
+   * Two one-time projects that are almost the whole of the 2028 building
+   * total: $90 million for JGW/Tilton and $30 million for the Fire Station,
+   * $120 million of the category's $125,002,000 that year. Left out of this
+   * chart only -- the table below still carries both in full, at their own
+   * rows -- because $120 million in two projects sets the scale every other
+   * category and every other year is read against, and against it they all
+   * draw as a flat line at the foot. The note beside the chart says so; nothing
+   * here touches `CAPITAL_REQUESTS` itself, which stays the book's own figures.
+   */
+  const EXCLUDED_YEAR = "2028"
+  const EXCLUDED_CATEGORY = "Buildings & Building Improvements"
+  const EXCLUDED_PROJECTS = [
+    { label: "JGW / Tilton School Core Project", amount: 90000000 },
+    { label: "Fire Station", amount: 30000000 },
+  ]
+  const excludedTotal = EXCLUDED_PROJECTS.reduce((sum, project) => sum + project.amount, 0)
+
   const capitalRequests = capitalYears.map((year) => ({
     label: year,
-    total: amount(cell(CAPITAL_REQUESTS, "Grand Total", year))!,
+    total:
+      amount(cell(CAPITAL_REQUESTS, "Grand Total", year))! -
+      (year === EXCLUDED_YEAR ? excludedTotal : 0),
     parts: capitalCategories
-      .map((label) => ({ label, amount: amount(cell(CAPITAL_REQUESTS, label, year)) }))
-      .filter((part): part is { label: string; amount: number } => part.amount !== null),
+      .map((label) => {
+        const raw = amount(cell(CAPITAL_REQUESTS, label, year))
+        if (raw === null) return null
+        const value =
+          year === EXCLUDED_YEAR && label === EXCLUDED_CATEGORY ? raw - excludedTotal : raw
+        return value > 0 ? { label, amount: value } : null
+      })
+      .filter((part): part is { label: string; amount: number } => part !== null),
   }))
 </script>
 
@@ -54,9 +81,9 @@
   rest fixed above the reading, and the reading itself in the only box that
   scrolls. This page has no policy to keep or fail, so there is no accordion
   at the top of the reading column the way debt and reserves each have one --
-  the spending bar and the capital line graph are the whole of what moved out
-  of the reading, and everything else stays exactly the prose and the tables
-  it always was, reflowed into the scrolling box.
+  the spending bar and the capital chart are the whole of what moved out of
+  the reading, and everything else stays exactly the prose and the tables it
+  always was, reflowed into the scrolling box.
 -->
 <div class="lg:grid lg:h-[calc(100vh-181px)] lg:grid-cols-[max-content_minmax(0,1fr)] lg:gap-x-10">
   <!-- The same bar the front page draws for "Spending", one column of it --
@@ -72,9 +99,19 @@
          five independently-sorted bars; see the script for `order`. Fixed to
          a height short of the frame's own, since this chart sits above a
          full page of reading rather than filling the column alone. -->
-    <div class="mb-6 h-40">
+    <div class="h-40">
       <BudgetColumns rows={capitalRequests} order={capitalOrder} minHeight={96} />
     </div>
+
+    <!-- What the chart above leaves out, since the axis it draws is not the
+         axis the table states -- a reader comparing bar heights across years
+         is owed the reason 2028's is shorter than the table under it says.
+         The two projects are still in that table, at their own rows. -->
+    <p class="not-prose mb-6 max-w-md text-xs text-slate-500">
+      Excludes $120,000,000 of one-time 2028 construction -- the JGW/Tilton School Core Project
+      ($90,000,000) and the Fire Station ($30,000,000) -- so the categories beside it stay readable
+      on the same scale.
+    </p>
 
     <div class="lg:relative lg:min-h-0 lg:flex-1 lg:overflow-y-auto">
       <div class="max-w-3xl">

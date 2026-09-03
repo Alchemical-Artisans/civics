@@ -371,9 +371,16 @@ Notable pieces:
   the front page's two-column case of picking each column's own largest
   first. `minHeight` is the other new prop, overriding the `min-h-64` this
   component used to fix unconditionally -- right for a full-height column,
-  too tall for a chart sitting above a page of reading. `spending.spec.ts`
-  pins `SPENDING_TOTAL` and checks the capital table against its own row and
-  column totals.
+  too tall for a chart sitting above a page of reading. The chart also
+  leaves out two 2028 projects, $90,000,000 for JGW/Tilton and $30,000,000
+  for a new Fire Station -- 90% of that year's request and the reason every
+  other year used to draw as a flat line against it -- subtracted from the
+  Buildings segment and the bar's own total before either reaches
+  `BudgetColumns`, disclosed by a note beside the chart, and left untouched
+  in `CAPITAL_REQUESTS` and the table below, which still carry both at their
+  own rows. `spending.spec.ts` pins `SPENDING_TOTAL`, checks the capital
+  table against its own row and column totals, and pins the two excluded
+  projects' figures against the book's own 2028 totals.
 - **`src/lib/BudgetTimeline.svelte`** draws page 13, the budget calendar, as the
   footer of _every_ page of a book, fixed to the bottom of the window: a row of
   twelve boxes
