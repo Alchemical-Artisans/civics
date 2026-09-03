@@ -517,10 +517,10 @@ test.describe("budget pages", () => {
 
     // The composition bar: every purpose the book lists, on hover or focus
     // exactly as the reserve dials are.
-    const composition = page.locator(".budget-stack [role='img']")
+    const composition = page.locator(".budget-debt-bar [role='img']")
     await expect(composition).toHaveCount(6)
     await composition.last().focus()
-    await expect(page.locator(".budget-stack .budget-tooltip")).toContainText("Public Works")
+    await expect(page.locator(".budget-debt-bar .budget-tooltip")).toContainText("Public Works")
 
     // Two line charts, each on its own scale: payments alone, since revenue
     // is two orders of magnitude larger, and the per-capita comparison, whose
@@ -995,7 +995,7 @@ test.describe("budget pages", () => {
     // No table on this page either now -- the composition chart carries every
     // cell of it, the same as the reserve dials above.
     await expect(page.getByRole("article").getByRole("table")).toHaveCount(0)
-    await expect(page.locator(".budget-stack [role='img']").first()).toHaveAttribute(
+    await expect(page.locator(".budget-debt-bar [role='img']").first()).toHaveAttribute(
       "aria-label",
       /School Department, \$71,517,300/,
     )

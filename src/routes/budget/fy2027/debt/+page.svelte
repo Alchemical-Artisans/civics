@@ -3,12 +3,12 @@
   // bar on the book's front page, and the three tables below are what this
   // page's own charts read from, so a figure transcribed once cannot come
   // back different in a chart.
-  import BudgetStack from "$lib/BudgetStack.svelte"
   import BudgetLines from "$lib/BudgetLines.svelte"
   import BookReferences from "$lib/BookReferences.svelte"
   import GlossaryTerm from "$lib/GlossaryTerm.svelte"
-  import { amount, cell, column } from "$lib/budget-table"
+  import { amount, cell, column, sum } from "$lib/budget-table"
   import { LONG_TERM_DEBT, ANNUAL_DEBT_PAYMENTS, DEBT_PER_CAPITA, DEBT_POLICIES } from "./tables"
+  import { COLOURS } from "$lib/chart-colours"
   // The same offline icons reserves uses for the same mark.
   import Icon from "@iconify/svelte/dist/OfflineIcon.svelte"
   import checkCircle from "@iconify-icons/material-symbols/check-circle-rounded"
@@ -16,10 +16,58 @@
 
   let { data } = $props()
 
-  /** Page 21's bar, as `BudgetStack` takes it -- one row, since this chart
-      draws what the debt is made of rather than holding two bars against
-      each other the way the front page's "Reserves and Debt" does. */
-  const composition = [{ label: "Long Term Debt", parts: column(LONG_TERM_DEBT, "Amount") }]
+  const money = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    maximumFractionDigits: 0,
+  })
+  const share = new Intl.NumberFormat("en-US", {
+    style: "percent",
+    minimumFractionDigits: 1,
+    maximumFractionDigits: 1,
+  })
+
+  /**
+   * Page 21's list, as one bar standing on end rather than lying flat -- the
+   * same rail-and-segments idea `BudgetStack` draws for the front page's
+   * "Reserves and Debt", turned vertical to sit in the narrow left column
+   * `BudgetBands` sits in on `reserves`. Largest first and drawn from the
+   * foot up, the way a bar's meaning is its length whichever way it runs.
+   */
+  const compositionTotal = sum(column(LONG_TERM_DEBT, "Amount"))
+  const composition = column(LONG_TERM_DEBT, "Amount")
+    .slice()
+    .sort((a, b) => b.amount - a.amount)
+    .map((part, at) => ({ ...part, colour: COLOURS[at % COLOURS.length] }))
+
+  /** The segment under the pointer, or the one holding focus -- the same
+      pattern every chart on this site names itself by. */
+  let active = $state<string | null>(null)
+  const shown = $derived(composition.find((part) => part.label === active) ?? null)
+
+  /** Centred on the segment, the way `BudgetBands`' tooltip is on a column
+      that runs the full height of the chart rather than pinned above it. */
+  let root = $state<HTMLElement | null>(null)
+  let spot = $state({ x: 0, y: 0 })
+
+  const TOOLTIP = 200
+
+  const show = (label: string, segment: HTMLElement) => {
+    active = label
+    if (!root) return
+
+    const edge = root.getBoundingClientRect()
+    const box = segment.getBoundingClientRect()
+    const half = Math.min(TOOLTIP, edge.width) / 2
+
+    spot = {
+      x: Math.min(
+        Math.max(box.left + box.width / 2 - edge.left, half),
+        Math.max(edge.width - half, half),
+      ),
+      y: box.top + box.height / 2 - edge.top,
+    }
+  }
 
   /** Page 22's payments, on their own scale: a quarter of a billion dollars
       of revenue and single-digit millions of debt service were never going
@@ -88,30 +136,90 @@
   Laid out as `reserves` is: charts down the left and the reading in the only
   box that scrolls -- see that page for the full account of why. This page's
   three policies never share one base the way the three reserve dials share
-  general fund revenue, so there is no single dial chart here; what a reader
-  gets from the left column instead is what the debt is made of and how it has
-  moved, and what a reader gets from the collapsed sections on the right is
-  whether each policy is being kept, the same question reserves answers with a
+  general fund revenue -- a percentage of equalized valuation, of general fund
+  revenue, of the debt itself -- so there is still no `BudgetBands` dial chart
+  here; what a reader gets from the collapsed sections on the right is whether
+  each policy is being kept, the same question `reserves` answers with a
   chart. Three policies, not four -- the book states Policy #1, #2a and #2b,
   and there is no #2 of its own the way reserves' #2 is a use for the label.
 -->
-<div class="lg:grid lg:h-[calc(100vh-181px)] lg:grid-cols-[24rem_minmax(0,1fr)] lg:gap-x-10">
+<div class="lg:grid lg:h-[calc(100vh-181px)] lg:grid-cols-[max-content_minmax(0,1fr)] lg:gap-x-10">
   <!--
-    Three charts stacked rather than reserves' three narrow columns, because
-    none of these is shaped like a bullet column the way a reserve's floor
-    and ceiling are -- a composition is one bar, and a trend is a line, and
-    forcing either into `BudgetBands` would mean giving it a "minimum" or
-    "maximum" the book never actually prints, which is inventing a figure
-    rather than drawing one. Nothing heads any of them: the composition bar
-    carries its own name, and each line chart's legend carries its series'.
+    What the debt is made of, standing on end in the narrow column
+    `BudgetBands` occupies on `reserves` -- a composition rather than a
+    policy, so it is a single bar in parts rather than a set of them, but the
+    same idea: a rail run vertically, each figure named and priced on hover
+    or focus, and nothing printed until then. Its own name is the one thing
+    always on the page, the way a `BudgetBands` column keeps its fund's name
+    under the rail.
   -->
-  <div class="lg:flex lg:h-full lg:flex-col lg:justify-center lg:gap-6">
-    <BudgetStack rows={composition} />
-    <BudgetLines years={paymentYears} rows={payments} />
-    <BudgetLines years={capitaYears} rows={perCapita} />
+  <div class="lg:h-full">
+    <div
+      class="budget-debt-bar not-prose relative flex h-full flex-col items-center"
+      bind:this={root}
+    >
+      <div
+        class="flex min-h-64 w-20 flex-1 flex-col-reverse gap-0.5 overflow-hidden rounded-sm bg-slate-100"
+      >
+        {#each composition as part (part.label)}
+          <!--
+            Focusable and named, the same as every segment on this site: a
+            picture of one figure, reachable without a mouse.
+          -->
+          <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+          <div
+            class="cursor-default transition-opacity outline-none"
+            style="height: {(part.amount / compositionTotal) *
+              100}%; background: {part.colour}; opacity: {active === null || active === part.label
+              ? 1
+              : 0.4}"
+            role="img"
+            aria-label="{part.label}, {money.format(part.amount)}, {share.format(
+              part.amount / compositionTotal,
+            )}"
+            tabindex="0"
+            onpointerenter={(event) => show(part.label, event.currentTarget)}
+            onpointerleave={() => (active = null)}
+            onfocus={(event) => show(part.label, event.currentTarget)}
+            onblur={() => (active = null)}
+          ></div>
+        {/each}
+      </div>
+
+      <p class="m-0 mt-2 text-center text-sm font-semibold text-slate-900">Long Term Debt</p>
+
+      {#if shown}
+        <!-- Over the segment it belongs to. Hidden from assistive technology,
+             because the segment already carries all of it as its name. -->
+        <div
+          class="budget-tooltip pointer-events-none absolute z-10 -translate-x-1/2 -translate-y-1/2 rounded-md bg-white/95 px-2.5 py-1.5 text-xs whitespace-nowrap shadow-md ring-1 ring-slate-200"
+          style="left: {spot.x}px; top: {spot.y}px"
+          aria-hidden="true"
+        >
+          <span class="block font-medium text-slate-900">{shown.label}</span>
+          <span class="block text-slate-600 tabular-nums">
+            {money.format(shown.amount)} &middot; {share.format(shown.amount / compositionTotal)}
+          </span>
+        </div>
+      {/if}
+    </div>
   </div>
 
   <div class="lg:flex lg:h-full lg:flex-col lg:overflow-hidden">
+    <!--
+      The two trends side by side across the top rather than stacked, since
+      neither is shaped like a bullet column and both are short and wide --
+      payments alone, on their own scale (see the note in the script for why
+      revenue is not drawn beside them), and the per-capita comparison, whose
+      two series do share a scale because holding them against each other is
+      the book's own point in drawing it. Nothing heads either: each line
+      chart's legend carries its own series' names.
+    -->
+    <div class="grid gap-6 lg:grid-cols-2">
+      <BudgetLines years={paymentYears} rows={payments} />
+      <BudgetLines years={capitaYears} rows={perCapita} />
+    </div>
+
     <!-- The one thing on this page that scrolls; see `reserves` for why the
          wrapper is `relative` and the reading keeps its own measure. -->
     <div class="lg:relative lg:min-h-0 lg:flex-1 lg:overflow-y-auto">

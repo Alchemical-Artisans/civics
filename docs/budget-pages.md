@@ -588,12 +588,12 @@ the balance shows either way is in the city's own words: the balance fell in
 
 ### The three charts on `debt`
 
-`debt` (pages 21-25) is laid out as `reserves` is -- `wide: true`, charts down
-the left, the reading in the only box that scrolls -- and its three numbered
-policies are three collapsed `<details>` for the same reasons `reserves`' four
-are. It was `outstanding-debt` before it had a layout worth sharing: the route
-matches the one-word names the rest of the bar's sections carry, and the front
-page's own "Debt" bar already used the word for it.
+`debt` (pages 21-25) is laid out as `reserves` is -- `wide: true`, a narrow
+left column and the reading in the only box that scrolls -- and its three
+numbered policies are three collapsed `<details>` for the same reasons
+`reserves`' four are. It was `outstanding-debt` before it had a layout worth
+sharing: the route matches the one-word names the rest of the bar's sections
+carry, and the front page's own "Debt" bar already used the word for it.
 
 **There is no dial chart here, because there is no one base to draw one on.**
 `reserves`' three policies are each a percentage of the same figure, general
@@ -608,18 +608,26 @@ not a chart, so `debt/tables.ts`'s `DEBT_POLICIES` keeps the policies as bare
 percentages instead, and the page reads them with its own `percent` rather
 than `amount`, which is built to read a dollar figure out of a cell.
 
-**The left column charts what the debt is made of and how it has moved
-instead.** `BudgetStack` draws page 21's list as one bar -- the same component
-the front page uses for its "Reserves and Debt" bar, given one row rather than
-two, since this chart is not holding two things against each other. Two
-`BudgetLines` charts follow it: page 22's "Annual Debt Payments" alone, on its
+**The narrow left column draws what the debt is made of, standing on end.**
+Page 21's list is one bar, the same rail-and-segments idea `BudgetStack`
+draws for the front page's "Reserves and Debt", but turned vertical to sit in
+the column `BudgetBands` occupies on `reserves` rather than lying flat the
+way the front page's bars do -- so it is written out in the page's own
+script rather than reusing `BudgetStack`, which only knows how to lie flat.
+Largest first and drawn from the foot up: the same segment-hover pattern
+every chart on the site uses, named and priced on hover or focus and nothing
+printed until then, with "Long Term Debt" the one thing always on the page,
+the way a `BudgetBands` column keeps its fund's name under the rail.
+
+**The two trends sit side by side across the top of the reading column
+instead of stacked**, since neither is shaped like a bullet column and both
+are short and wide. Page 22's "Annual Debt Payments" is charted alone, on its
 own scale, because the "General Fund Revenue" row beside it in the book's
-table is two orders of magnitude larger and the two were never going to share
-an axis honestly; and page 25's debt-per-capita comparison, Haverhill against
-the state average, which does share one scale, because holding the two
+table is two orders of magnitude larger and the two were never going to
+share an axis honestly. Page 25's debt-per-capita comparison, Haverhill
+against the state average, does share one scale, because holding the two
 against each other is the whole point of the book's own chart. Nothing heads
-any of the three: the bar prints its own name the way the front page's bars
-do, and each line chart's legend carries its series'.
+either: each line chart's legend carries its series' names.
 
 **The three policies are still numbered "Policy #1" through "Policy #3", in
 the same voice `reserves`' four use and for the same reason.** The book

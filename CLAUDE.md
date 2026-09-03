@@ -314,25 +314,30 @@ Notable pieces:
   book's page-78 tables, not its own revenue pie on page 65, which is $3,458,864
   short of the total it prints.
 - **`debt`** (`/budget/<year>/debt`, `debt/tables.ts`) is `reserves` for what
-  the city owes rather than what it holds: page 21 to 25, `wide: true`, charts
-  down the left and the reading in the only box that scrolls. It was
+  the city owes rather than what it holds: page 21 to 25, `wide: true`, a
+  narrow left column and the reading in the only box that scrolls. It was
   `outstanding-debt` before it had a layout to share with `reserves` -- the
   route matches the one-word names the rest of the bar's sections carry, and
   the front page's own "Debt" bar already used the word. Its three policies
   never share one base the way the three reserve dials share general fund
   revenue -- a percentage of equalized valuation, of general fund revenue, of
   the debt itself -- so there is no dial chart here the way `BudgetBands`
-  draws one; the left column instead stacks `BudgetStack` (the debt-by-purpose
-  bar, one row) over two `BudgetLines` charts on their own scales, annual
-  payments and the per-capita comparison to the state average. The three
-  policies are still three collapsed `<details>`, numbered "Policy #1"
-  through "Policy #3" in the same voice `reserves`' four use and for the same
-  reason: the book numbers them "#1", "#2a", "#2b" once and not at all a
-  second time, so the summary's own count is what a reader compares four --
-  now three -- sections by, and the book's own label stays out of the quoted
-  paragraph beneath. `debt.spec.ts` pins the three policies' figures and the
-  arithmetic the payments chart depends on, the way `reserves.spec.ts` does
-  for the dials.
+  draws one; the left column instead draws page 21's list as one bar standing
+  on end -- `BudgetStack`'s rail-and-segments idea turned vertical, written
+  out in the page's own script since `BudgetStack` only lies flat, largest
+  segment at the foot and named on hover or focus the way every chart on the
+  site is. Two `BudgetLines` charts sit side by side across the top of the
+  reading column instead of stacked, since neither is shaped like a bullet
+  column: annual payments, on their own scale, and the per-capita comparison
+  to the state average, which does share one scale because that is the
+  book's own point in drawing it. The three policies are still three
+  collapsed `<details>`, numbered "Policy #1" through "Policy #3" in the same
+  voice `reserves`' four use and for the same reason: the book numbers them
+  "#1", "#2a", "#2b" once and not at all a second time, so the summary's own
+  count is what a reader compares four -- now three -- sections by, and the
+  book's own label stays out of the quoted paragraph beneath. `debt.spec.ts`
+  pins the three policies' figures and the arithmetic the payments chart
+  depends on, the way `reserves.spec.ts` does for the dials.
 - **`src/lib/BudgetTimeline.svelte`** draws page 13, the budget calendar, as the
   footer of _every_ page of a book, fixed to the bottom of the window: a row of
   twelve boxes
