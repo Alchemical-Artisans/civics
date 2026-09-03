@@ -9,6 +9,12 @@
   import { amount, cell, type BudgetTableData } from "$lib/budget-table"
   import { FUND_BALANCE, FUND_BALANCE_HISTORY, FREE_CASH, STABILIZATION } from "./tables"
   import GlossaryTerm from "$lib/GlossaryTerm.svelte"
+  // Iconify's offline component, the same one `Note` uses: the artwork is
+  // inlined at build time rather than fetched, so a reader's browser never has
+  // to reach api.iconify.design for a checkmark.
+  import Icon from "@iconify/svelte/dist/OfflineIcon.svelte"
+  import checkCircle from "@iconify-icons/material-symbols/check-circle-rounded"
+  import warning from "@iconify-icons/material-symbols/warning-rounded"
 
   let { data } = $props()
 
@@ -56,6 +62,40 @@
       actual: point(STABILIZATION, "Actual Balance"),
     },
   ]
+
+  /**
+   * Whether a fund sits inside the band its own policy sets -- the same test
+   * the chart draws as a bar falling short of, or past, its rail. Kept to bare
+   * facts rather than a sentence, the way an accessible name built from the
+   * book's own cells is elsewhere on this page: "Within policy" names what the
+   * chart already shows, "Below floor" and "Above ceiling" the two ways a fund
+   * can fail to.
+   */
+  const standing = (band: (typeof bands)[number]): { ok: boolean; label: string } => {
+    if (band.actual.amount < band.minimum.amount) return { ok: false, label: "Below floor" }
+    if (band.maximum && band.actual.amount > band.maximum.amount) {
+      return { ok: false, label: "Above ceiling" }
+    }
+    return { ok: true, label: "Within policy" }
+  }
+
+  /**
+   * Policy #2 sets no band of its own to be measured against -- it is what has
+   * to happen when #1's does not hold, so its standing is #1's turned into the
+   * question of whether the plan it names is currently owed.
+   */
+  const trigger = (band: (typeof bands)[number]): { ok: boolean; label: string } =>
+    standing(band).ok ? { ok: true, label: "Not triggered" } : { ok: false, label: "Triggered" }
+
+  const policy1 = standing(bands[0])
+  const policy2 = trigger(bands[0])
+  const policy3 = standing(bands[1])
+  const policy4 = standing(bands[2])
+
+  /** What Reserve Policy 2 itself is quoted calling the figure it answers to,
+      in the sentence that names it -- there is no dial table to read a label
+      off, the way the other three sections' names come off `bands`. */
+  const FUND_BALANCE_FLOOR = "Fund Balance Floor"
 
   /**
    * The years page 18 accounts for, plus one it does not have a column of its
@@ -194,46 +234,110 @@
              section of the book in it. -->
         <h2>Fiscal Reserves</h2>
 
-        <p>
-          <strong>City Reserve Policy #1:</strong> The City shall maintain an undesignated <GlossaryTerm
-            term="Fund">fund</GlossaryTerm
-          > balance between 5% and 15% of <GlossaryTerm term="General Fund"
-            >general fund</GlossaryTerm
-          >
-          <GlossaryTerm term="Revenues">revenues</GlossaryTerm>, less debt exclusion and Ch. 70.
-        </p>
+        <!--
+          Four policies, four sections, each closed until asked for.
 
-        <p>
-          <strong>Results:</strong> The city's undesignated <GlossaryTerm term="Fund"
-            >fund</GlossaryTerm
-          > balance as of June 30, 2025, was $13,985,452 or 7.85% of <GlossaryTerm
-            term="General Fund">general fund</GlossaryTerm
-          > revenue. This is up from June 2024, which was $12,569,995 or 7.36%.
-        </p>
+          The book gives each one a paragraph or two, which read fine end to
+          end when this was the only thing on the page. It no longer is: the
+          reading now sits beside the two charts rather than under them, in a
+          column that is short as well as narrow, and a fund's standing is the
+          first thing a reader wants from it -- not a paragraph to search for
+          the word "below" in. `<details>` costs nothing to get that for free:
+          a native disclosure with its own keyboard handling, closed by
+          default so the column opens on four one-line answers rather than
+          four paragraphs to scroll past, and open on request for the reader
+          who wants the policy's own words.
+
+          The indicator repeats a comparison `BudgetBands` already draws --
+          a bar reaching its rail or falling short of it -- as a word rather
+          than a length, for the reader who wants the verdict without reading
+          a bar chart. `standing` and `trigger` above compute it from the same
+          `bands` the chart draws from, so the two can not disagree.
+        -->
+        {#snippet summaryRow(name: string, figure: string | undefined, ok: boolean, label: string)}
+          <h2 class="m-0 flex-1 text-sm font-semibold text-slate-900">{name}</h2>
+          {#if figure}
+            <span class="font-normal text-slate-600 tabular-nums">{figure}</span>
+          {/if}
+          <span
+            class="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium {ok
+              ? 'bg-emerald-50 text-emerald-700'
+              : 'bg-red-50 text-red-700'}"
+          >
+            <Icon icon={ok ? checkCircle : warning} width="14" height="14" aria-hidden="true" />
+            {label}
+          </span>
+          <span
+            aria-hidden="true"
+            class="text-slate-400 transition-transform duration-150 group-open:rotate-180"
+            >&#9662;</span
+          >
+        {/snippet}
+
+        <details class="group my-3 rounded-lg border border-slate-200">
+          <summary
+            class="not-prose flex cursor-pointer flex-wrap items-center gap-x-3 gap-y-1 rounded-lg px-3 py-2 select-none [&::-webkit-details-marker]:hidden"
+          >
+            {@render summaryRow(bands[0].label, bands[0].actual.cell, policy1.ok, policy1.label)}
+          </summary>
+
+          <div class="border-t border-slate-100 px-3 pt-3 pb-1">
+            <p>
+              <strong>City Reserve Policy #1:</strong> The City shall maintain an undesignated <GlossaryTerm
+                term="Fund">fund</GlossaryTerm
+              > balance between 5% and 15% of <GlossaryTerm term="General Fund"
+                >general fund</GlossaryTerm
+              >
+              <GlossaryTerm term="Revenues">revenues</GlossaryTerm>, less debt exclusion and Ch. 70.
+            </p>
+
+            <p>
+              <strong>Results:</strong> The city's undesignated <GlossaryTerm term="Fund"
+                >fund</GlossaryTerm
+              > balance as of June 30, 2025, was $13,985,452 or 7.85% of <GlossaryTerm
+                term="General Fund">general fund</GlossaryTerm
+              > revenue. This is up from June 2024, which was $12,569,995 or 7.36%.
+            </p>
+          </div>
+        </details>
 
         <!--
-  Page 228, not page 17.
+          Page 228, not page 17.
 
-  The book's own "Fiscal Reserves" section runs #1, #3, #4 and skips #2, which
-  reads on a page as a policy that went missing. It did not: #2 is the only one
-  of the four with no dial to draw, because it is not a band to sit inside but
-  what has to happen if the fund balance falls out of the bottom of #1's. The
-  book states it in "Financial Reserve Policies" (page 228), which is where this
-  is quoted from, label and all -- that page numbers them "Reserve Policy 2"
-  where the reserves section writes "City Reserve Policy #2:", and the words on
-  this site are the city's, so the label is the one printed over the sentence.
+          The book's own "Fiscal Reserves" section runs #1, #3, #4 and skips
+          #2, which reads on a page as a policy that went missing. It did not:
+          #2 is the only one of the four with no dial to draw, because it is
+          not a band to sit inside but what has to happen if the fund balance
+          falls out of the bottom of #1's. The book states it in "Financial
+          Reserve Policies" (page 228), which is where this is quoted from,
+          label and all -- that page numbers them "Reserve Policy 2" where the
+          reserves section writes "City Reserve Policy #2:", and the words on
+          this site are the city's, so the label is the one printed over the
+          sentence.
 
-  It sits under #1's result because it is #1's consequence: the floor it names
-  is the left edge of the first bar in the chart above.
--->
-        <p>
-          <strong>Reserve Policy 2:</strong> In the event that the city's undesignated
-          <GlossaryTerm term="Fund">fund</GlossaryTerm> balance falls below 5% of
-          <GlossaryTerm term="General Fund">general fund</GlossaryTerm>
-          <GlossaryTerm term="Revenues">revenues</GlossaryTerm>, less debt exclusions and Chapter 70
-          Aid, (the "Fund Balance Floor"), a plan for specific expenditure reductions and/or revenue
-          increases shall be submitted to the City Council during the next budget cycle.
-        </p>
+          It is the next of the four sections because it is #1's consequence:
+          the floor it names is #1's own, and its indicator is #1's standing
+          read the other way -- triggered exactly when #1 is not.
+        -->
+        <details class="group my-3 rounded-lg border border-slate-200">
+          <summary
+            class="not-prose flex cursor-pointer flex-wrap items-center gap-x-3 gap-y-1 rounded-lg px-3 py-2 select-none [&::-webkit-details-marker]:hidden"
+          >
+            {@render summaryRow(FUND_BALANCE_FLOOR, undefined, policy2.ok, policy2.label)}
+          </summary>
+
+          <div class="border-t border-slate-100 px-3 pt-3 pb-1">
+            <p>
+              <strong>Reserve Policy 2:</strong> In the event that the city's undesignated
+              <GlossaryTerm term="Fund">fund</GlossaryTerm> balance falls below 5% of
+              <GlossaryTerm term="General Fund">general fund</GlossaryTerm>
+              <GlossaryTerm term="Revenues">revenues</GlossaryTerm>, less debt exclusions and
+              Chapter 70 Aid, (the "Fund Balance Floor"), a plan for specific expenditure reductions
+              and/or revenue increases shall be submitted to the City Council during the next budget
+              cycle.
+            </p>
+          </div>
+        </details>
 
         <h2>Fund Balance</h2>
 
@@ -246,47 +350,65 @@
           for governments to pay bills, maintain cash flow, and ensure financial stability.
         </p>
 
-        <h2>Free Cash</h2>
-
-        <p>
-          <strong>City Reserve Policy #3:</strong> The amount to be held in <GlossaryTerm
-            term="Free Cash">free cash</GlossaryTerm
-          > shall not be less than 2% or more than 8% of <GlossaryTerm term="General Fund"
-            >general fund</GlossaryTerm
+        <details class="group my-3 rounded-lg border border-slate-200">
+          <summary
+            class="not-prose flex cursor-pointer flex-wrap items-center gap-x-3 gap-y-1 rounded-lg px-3 py-2 select-none [&::-webkit-details-marker]:hidden"
           >
-          <GlossaryTerm term="Revenues">revenues</GlossaryTerm>, less debt exclusion and Ch. 70.
-        </p>
+            {@render summaryRow(bands[1].label, bands[1].actual.cell, policy3.ok, policy3.label)}
+          </summary>
 
-        <p>
-          <strong>Results:</strong> The city is projected to have a <GlossaryTerm term="Free Cash"
-            >free cash</GlossaryTerm
-          > balance of $0 at the end of <GlossaryTerm term="Fiscal Year">fiscal year</GlossaryTerm> 2026,
-          largely due to exceptionally high snow removal costs that exceeded $4.6 million during the past
-          winter. This winter was the coldest and snowiest the area has experienced since 2014-2015. In
-          light of these unprecedented expenses, the Mayor and the city's Emergency Management Director
-          have requested financial assistance from the Commonwealth. This year's <GlossaryTerm
-            term="Free Cash">free cash</GlossaryTerm
-          > balance marks a significant decrease from the city's balance at the end of <GlossaryTerm
-            term="Fiscal Year">fiscal year</GlossaryTerm
-          > 2025, which was $2,578,279, reflecting a decline of 1.51%.
-        </p>
+          <div class="border-t border-slate-100 px-3 pt-3 pb-1">
+            <p>
+              <strong>City Reserve Policy #3:</strong> The amount to be held in <GlossaryTerm
+                term="Free Cash">free cash</GlossaryTerm
+              > shall not be less than 2% or more than 8% of <GlossaryTerm term="General Fund"
+                >general fund</GlossaryTerm
+              >
+              <GlossaryTerm term="Revenues">revenues</GlossaryTerm>, less debt exclusion and Ch. 70.
+            </p>
 
-        <h2>Stabilization Reserve</h2>
+            <p>
+              <strong>Results:</strong> The city is projected to have a <GlossaryTerm
+                term="Free Cash">free cash</GlossaryTerm
+              > balance of $0 at the end of <GlossaryTerm term="Fiscal Year"
+                >fiscal year</GlossaryTerm
+              > 2026, largely due to exceptionally high snow removal costs that exceeded $4.6 million
+              during the past winter. This winter was the coldest and snowiest the area has experienced
+              since 2014-2015. In light of these unprecedented expenses, the Mayor and the city's Emergency
+              Management Director have requested financial assistance from the Commonwealth. This year's
+              <GlossaryTerm term="Free Cash">free cash</GlossaryTerm> balance marks a significant decrease
+              from the city's balance at the end of <GlossaryTerm term="Fiscal Year"
+                >fiscal year</GlossaryTerm
+              > 2025, which was $2,578,279, reflecting a decline of 1.51%.
+            </p>
+          </div>
+        </details>
 
-        <p>
-          <strong>City Reserve Policy #4:</strong> The city shall maintain a Stabilization <GlossaryTerm
-            term="Reserve Fund">Reserve Fund</GlossaryTerm
-          > of at least 3% of <GlossaryTerm term="General Fund">general fund</GlossaryTerm> revenue, less
-          debt exclusion and Chapter 70.
-        </p>
+        <details class="group my-3 rounded-lg border border-slate-200">
+          <summary
+            class="not-prose flex cursor-pointer flex-wrap items-center gap-x-3 gap-y-1 rounded-lg px-3 py-2 select-none [&::-webkit-details-marker]:hidden"
+          >
+            {@render summaryRow(bands[2].label, bands[2].actual.cell, policy4.ok, policy4.label)}
+          </summary>
 
-        <p>
-          <strong>Results:</strong> The city's <GlossaryTerm term="Stabilization Fund"
-            >stabilization fund</GlossaryTerm
-          > is $8,001,094 or 4.49% of <GlossaryTerm term="General Fund">general fund</GlossaryTerm> revenue,
-          not including Chapter 70 and debt exclusions. This is up from fiscal 2025 which had a balance
-          of $7,533,248 or 4.41%.
-        </p>
+          <div class="border-t border-slate-100 px-3 pt-3 pb-1">
+            <p>
+              <strong>City Reserve Policy #4:</strong> The city shall maintain a Stabilization <GlossaryTerm
+                term="Reserve Fund">Reserve Fund</GlossaryTerm
+              > of at least 3% of <GlossaryTerm term="General Fund">general fund</GlossaryTerm> revenue,
+              less debt exclusion and Chapter 70.
+            </p>
+
+            <p>
+              <strong>Results:</strong> The city's <GlossaryTerm term="Stabilization Fund"
+                >stabilization fund</GlossaryTerm
+              > is $8,001,094 or 4.49% of <GlossaryTerm term="General Fund"
+                >general fund</GlossaryTerm
+              > revenue, not including Chapter 70 and debt exclusions. This is up from fiscal 2025 which
+              had a balance of $7,533,248 or 4.41%.
+            </p>
+          </div>
+        </details>
 
         <BookReferences items={data.references} book={data.book} />
       </div>

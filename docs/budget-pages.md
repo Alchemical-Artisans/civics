@@ -392,9 +392,31 @@ to the City Council during the next budget cycle". The book states it in
 from, label included: that page numbers them "Reserve Policy 2" where the
 reserves section writes "City Reserve Policy #2:", and the words here are the
 city's, so the label is the one printed over the sentence rather than the one
-that would match its neighbours. It sits under #1's result because it is #1's
-consequence — the floor it names is the left edge of the first bar in the chart
-above.
+that would match its neighbours. It is the second of the four sections below
+because it is #1's consequence — the floor it names is #1's own.
+
+**The four policies are four `<details>`, closed until asked for.** The
+reading used to run straight down the column when it was the only thing on the
+page; it no longer is, and a fund's standing is the first thing a reader wants
+from a column that now sits beside two charts rather than under them. A native
+disclosure costs nothing to get that: closed by default, so the column opens
+on four one-line summaries rather than four paragraphs to scroll past, and
+open on request for a reader who wants the policy's own words.
+`page.svelte.e2e.ts` opens one to check the words are still there and closed
+to check the rest start that way.
+
+**Each summary carries a compliance mark**, computed from the same `bands`
+`BudgetBands` charts — `standing` reads a policy's actual figure against its
+floor and, where it has one, its ceiling, so the word in the summary and the
+bar's own length can not disagree. Policy #2 sets no band of its own to read:
+its mark is `trigger`, which is #1's standing turned into the question the
+policy is actually about — whether the plan it names is currently owed. The
+labels are kept to bare facts rather than a sentence, the way an accessible
+name built from the book's own cells is elsewhere on this page: "Within
+policy", "Below floor", "Above ceiling", "Triggered", "Not triggered". The
+icons are Iconify's offline component, the same one [`Note`](../src/lib/Note.svelte)
+uses for its own icon, so a reader's browser never has to reach
+api.iconify.design to see a checkmark.
 
 ### The two charts on `reserves`
 

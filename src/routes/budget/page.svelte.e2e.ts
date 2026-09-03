@@ -386,12 +386,15 @@ test.describe("budget pages", () => {
   test("carries the reserve policy the book's own section leaves out", async ({ page }) => {
     await page.goto(`/budget/${books[0]}/reserves`)
     const article = page.getByRole("article")
+    const details = article.locator("details")
 
     // Pages 17 to 20 run #1, #3, #4 and skip #2, which reads as a policy that
     // went missing. It is not missing: it is the one of the four with no dial
     // to draw, being what has to happen when the fund balance falls out of the
     // bottom of #1's band rather than a band of its own. The book states it on
-    // page 228, and that is where this is quoted from.
+    // page 228, and that is where this is quoted from. `toContainText` reads
+    // the DOM regardless of what a closed `<details>` hides on screen, which
+    // is what lets this check run before any section is opened.
     await expect(article).toContainText(
       "In the event that the city's undesignated fund balance falls below 5%",
     )
@@ -399,17 +402,55 @@ test.describe("budget pages", () => {
       "shall be submitted to the City Council during the next budget cycle",
     )
 
-    // Under #1's result, because it is #1's consequence.
-    const second = (await article.getByText(/^Reserve Policy 2:/).boundingBox())!
-    const first = (await article.getByText(/^City Reserve Policy #1:/).boundingBox())!
-    const third = (await article.getByText(/^City Reserve Policy #3:/).boundingBox())!
-    expect(second.y).toBeGreaterThan(first.y)
-    expect(second.y).toBeLessThan(third.y)
+    // Four sections, in the book's own order -- #2 is the second of them,
+    // right after #1, because it is #1's consequence.
+    await expect(details).toHaveCount(4)
+    await expect(details.nth(0)).toContainText("City Reserve Policy #1:")
+    await expect(details.nth(1)).toContainText("Reserve Policy 2:")
+    await expect(details.nth(2)).toContainText("City Reserve Policy #3:")
 
     // Labelled as page 228 labels it. The reserves section writes "City Reserve
     // Policy #2:" for the ones it carries; the words here are the city's, so
     // the label is the one printed over this sentence and not the other.
     await expect(article).not.toContainText("City Reserve Policy #2")
+  })
+
+  test("opens each reserve policy on its standing, closed until asked for", async ({ page }) => {
+    await page.goto(`/budget/${books[0]}/reserves`)
+    const details = page.getByRole("article").locator("details")
+
+    // Four sections, all closed on arrival -- the column a reader lands on is
+    // four one-line answers, not four paragraphs to scroll past.
+    for (const section of await details.all()) {
+      expect(await section.getAttribute("open")).toBeNull()
+    }
+
+    // Each summary names the fund, prices it exactly as the dial beside it
+    // does, and says in words the same thing the chart says in a bar's
+    // length -- computed from the same figures, so the two can not disagree.
+    // Free cash is the one of the four below its floor this year.
+    const summaries = details.locator("summary")
+    await expect(summaries.nth(0)).toContainText("Undesignated Fund Balance")
+    await expect(summaries.nth(0)).toContainText("$13,985,452 (7.85%)")
+    await expect(summaries.nth(0)).toContainText("Within policy")
+
+    await expect(summaries.nth(1)).toContainText("Fund Balance Floor")
+    await expect(summaries.nth(1)).toContainText("Not triggered")
+
+    await expect(summaries.nth(2)).toContainText("Free Cash")
+    await expect(summaries.nth(2)).toContainText("$0 (0%)")
+    await expect(summaries.nth(2)).toContainText("Below floor")
+
+    await expect(summaries.nth(3)).toContainText("Stabilization Reserve")
+    await expect(summaries.nth(3)).toContainText("$8,001,094 (4.49%)")
+    await expect(summaries.nth(3)).toContainText("Within policy")
+
+    // A native disclosure: nothing but a click on the summary is what reveals
+    // the policy's own words, and the word "shall" is only ever inside them.
+    const body = details.nth(2).getByText(/^City Reserve Policy #3:/)
+    await expect(body).toBeHidden()
+    await summaries.nth(2).click()
+    await expect(body).toBeVisible()
   })
 
   test("draws each reserve against the policy it answers to", async ({ page }) => {
@@ -681,6 +722,10 @@ test.describe("budget pages", () => {
   test("links the book's own terms wherever its prose uses them", async ({ page }) => {
     await page.goto(`/budget/${books[0]}/reserves`)
 
+    // The first use is inside the first of the page's collapsed reserve
+    // policies now, so reaching it is what opening that section is for.
+    await page.locator("details").first().locator("summary").click()
+
     // A link to the term's own entry in the glossary, and nothing else: it
     // works with no script, is announced as a link, and a touch reader gets
     // somewhere to go rather than something to dismiss.
@@ -706,6 +751,7 @@ test.describe("budget pages", () => {
     await expect(page.locator("article > div ol li").filter({ hasText: "Glossary" })).toHaveCount(0)
 
     await page.goto(`/budget/${books[0]}/reserves`)
+    await page.locator("details").first().locator("summary").click()
     await page.locator("a.glossary-term").first().click()
 
     await expect(page).toHaveURL(new RegExp(`/budget/${books[0]}/glossary#`))
