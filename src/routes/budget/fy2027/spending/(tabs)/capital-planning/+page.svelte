@@ -31,8 +31,9 @@
    * chart only -- the table below still carries both in full, at their own
    * rows -- because $120 million in two projects sets the scale every other
    * category and every other year is read against, and against it they all
-   * draw as a flat line at the foot. The note beside the chart says so; nothing
-   * here touches `CAPITAL_REQUESTS` itself, which stays the book's own figures.
+   * draw as a flat line at the foot. The bar beside the chart says so now,
+   * charted rather than written out in a note; nothing here touches
+   * `CAPITAL_REQUESTS` itself, which stays the book's own figures.
    */
   const EXCLUDED_YEAR = "2028"
   const EXCLUDED_CATEGORY = "Buildings & Building Improvements"
@@ -83,10 +84,13 @@ its own: nine categories across five years read as a shape charted, not as
 fifty-odd cells read one at a time. It opens the section, ahead of the
 book's own prose, rather than sitting fixed above every tab the way it used
 to -- a reader lands on the shape of the five years before the paragraphs
-that explain them. The second bar beside it is the two projects the first
-one leaves out, charted rather than only named in the note under both.
+that explain them. The second bar beside it is what the first one leaves out
+of 2028 -- the two projects themselves, charted rather than written out in a
+note under both, so a reader comparing bar heights across years is shown the
+reason 2028's is shorter than the table under it says, not just told it. The
+two projects are still in that table, at their own rows.
 -->
-<div class="not-prose mb-2 flex flex-wrap items-end gap-10">
+<div class="not-prose mb-6 flex flex-wrap items-end gap-10">
   <div class="h-40">
     <BudgetColumns rows={capitalRequests} order={capitalOrder} minHeight={96} />
   </div>
@@ -94,16 +98,6 @@ one leaves out, charted rather than only named in the note under both.
     <BudgetColumns rows={excludedSummary} minHeight={96} />
   </div>
 </div>
-
-<!-- What the left chart leaves out, since the axis it draws is not the
-   axis the table states -- a reader comparing bar heights across years
-   is owed the reason 2028's is shorter than the table under it says.
-   The two projects are still in that table, at their own rows. -->
-<p class="not-prose mb-6 max-w-md text-xs text-slate-500">
-  Excludes $120,000,000 of one-time 2028 construction -- the JGW/Tilton School Core Project
-  ($90,000,000) and the Fire Station ($30,000,000), charted at right -- so the categories beside it
-  stay readable on the same scale.
-</p>
 
 <p>
   The city keeps a continuous inventory of all capital requirements to effectively connect <GlossaryTerm

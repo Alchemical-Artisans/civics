@@ -378,13 +378,10 @@ test.describe("budget pages", () => {
     await expect(capital.getByRole("img")).toHaveCount(33)
 
     // Two one-time projects, $120 million of the 2028 building total, are
-    // left out of the chart -- disclosed beside it -- so 2028's bar is its
-    // stated $132,307,653 less that, and the building segment is what is
-    // left of the category once they are gone.
+    // left out of the chart -- charted beside it rather than disclosed in a
+    // note -- so 2028's bar is its stated $132,307,653 less that, and the
+    // building segment is what is left of the category once they are gone.
     await expect(capital).toContainText("$12,307,653")
-    const note = page.locator("p", { hasText: "Excludes $120,000,000" })
-    await expect(note).toContainText("JGW/Tilton School Core Project ($90,000,000)")
-    await expect(note).toContainText("Fire Station ($30,000,000)")
 
     const building = capital.getByRole("img", {
       name: "2028, Buildings & Building Improvements, $5,002,000, 40.6%",
@@ -392,10 +389,9 @@ test.describe("budget pages", () => {
     await building.focus()
     await expect(capital).toContainText("Buildings & Building Improvements")
 
-    // What the note names in words is also its own bar beside the five years
-    // -- the same two projects, stacked to their own $120,000,000, so a
-    // reader can hover or focus them the way every other segment on the site
-    // is read.
+    // The same two projects, stacked to their own $120,000,000 in their own
+    // bar beside the five years, so a reader can hover or focus them the way
+    // every other segment on the site is read.
     const excluded = page.locator(".budget-columns").nth(2)
     await expect(excluded.locator(".budget-column")).toHaveCount(1)
     await expect(excluded).toContainText("Excluded from 2028")

@@ -400,13 +400,15 @@ Notable pieces:
   JGW/Tilton and $30,000,000 for a new Fire Station -- 90% of that year's
   request and the reason every other year used to draw as a flat line
   against it -- subtracted from the Buildings segment and the bar's own
-  total before either reaches `BudgetColumns`, disclosed by a note beneath
-  the chart, and left untouched in `CAPITAL_REQUESTS` and the table below,
-  which still carry both at their own rows. A second `BudgetColumns` sits
-  beside the first, no `order` -- one column, the two excluded projects
-  themselves stacked to their own $120,000,000, so the note's figures are
-  also a bar a reader can hover or focus rather than only a sentence.
-  `spending.spec.ts` pins `SPENDING_TOTAL`, checks the capital table against
+  total before either reaches `BudgetColumns`, and left untouched in
+  `CAPITAL_REQUESTS` and the table below, which still carry both at their
+  own rows. A second `BudgetColumns` sits beside the first, no `order` --
+  one column, the two excluded projects themselves stacked to their own
+  $120,000,000, which is what discloses them now: a bar a reader can hover
+  or focus, not a note written out in prose beside the chart -- the note
+  said exactly what the second bar draws, so once the bar existed the note
+  was the same fact twice. `spending.spec.ts` pins `SPENDING_TOTAL`, checks
+  the capital table against
   its own row and column totals, and pins the two excluded projects' figures
   against the book's own 2028 totals.
 - **`src/lib/BudgetTimeline.svelte`** draws page 13, the budget calendar, as the

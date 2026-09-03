@@ -769,21 +769,22 @@ $132,307,653, 2027's whole $17,219,620 draws as a thin line at the foot, and
 so does everything past 2028. `capital-planning/+page.svelte` subtracts the
 $120,000,000 from the Buildings segment and from the bar's own total before
 either reaches `BudgetColumns`, leaving $5,002,000 of ordinary building
-spending in the 2028 band rather than none, and a note beneath the chart
-discloses both projects
-and their figures by name. A second `BudgetColumns` sits to the right of the
-five-year chart, one bar with no `order` of its own: the same two projects,
-stacked to their own $120,000,000, so what the note names is also a shape a
-reader can hover or focus rather than only read as a sentence. Nothing here
-touches `CAPITAL_REQUESTS` -- the table below the charts still carries both
-projects at their own rows, in the book's own figures, exactly as printed.
+spending in the 2028 band rather than none. A second `BudgetColumns` sits to
+the right of the five-year chart, one bar with no `order` of its own: the
+same two projects, stacked to their own $120,000,000 -- what discloses them
+now, a shape a reader can hover or focus rather than a note written out in
+prose beside the chart. There was one, briefly, until the second bar existed
+to say the same figures in the same place; a note beside a chart that already
+draws what it would say is the fact twice. Nothing here touches
+`CAPITAL_REQUESTS` -- the table below the charts still carries both projects
+at their own rows, in the book's own figures, exactly as printed.
 
 `spending.spec.ts` pins `SPENDING_TOTAL` and the composition it is built
 from, checks `CAPITAL_REQUESTS` against its own row and column totals the way
 `debt.spec.ts` checks the debt tables against the sentences that quote them,
 and pins the two excluded projects' figures against the book's own 2028
 totals, so a book update that moves either project's cost is a failing test
-rather than a chart and a note that quietly disagree.
+rather than a chart that quietly disagrees with them.
 
 ### history-forecasts
 
