@@ -389,8 +389,27 @@ test.describe("budget pages", () => {
     await building.focus()
     await expect(capital).toContainText("Buildings & Building Improvements")
 
+    // What the note names in words is also its own bar beside the five years
+    // -- the same two projects, stacked to their own $120,000,000, so a
+    // reader can hover or focus them the way every other segment on the site
+    // is read.
+    const excluded = page.locator(".budget-columns").nth(2)
+    await expect(excluded.locator(".budget-column")).toHaveCount(1)
+    await expect(excluded).toContainText("Excluded from 2028")
+    await expect(excluded).toContainText("$120,000,000")
+    const jgw = excluded.getByRole("img", {
+      name: "Excluded from 2028, JGW / Tilton School Core Project, $90,000,000, 75.0%",
+    })
+    await jgw.focus()
+    await expect(excluded).toContainText("JGW / Tilton School Core Project")
+    const fireStation = excluded.getByRole("img", {
+      name: "Excluded from 2028, Fire Station, $30,000,000, 25.0%",
+    })
+    await fireStation.focus()
+    await expect(excluded).toContainText("Fire Station")
+
     // The two excluded projects still carry their own rows, in full, in the
-    // table below -- only the chart leaves them out.
+    // table below -- only the charts leave them out.
     const article = page.getByRole("article")
     await expect(article).toContainText("JGW / Tilton School Core Project")
     await expect(article).toContainText("$90,000,000")

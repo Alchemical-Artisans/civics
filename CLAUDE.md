@@ -372,9 +372,11 @@ Notable pieces:
   `BudgetColumns` replaces page 29's own table, "5-Year Capital Requests by
   Category" -- moved off the top of the whole page, where it used to sit
   above four tabs' worth of content it has nothing to do with, into the tab
-  it belongs beside: five columns, one per year, each divided into that
-  year's categories, "Grand Total" excluded as a category and read as each
-  bar's own stated total rather than summed. A category
+  it belongs beside, and to the top of that tab, ahead of the book's own
+  prose, so a reader lands on the shape of the five years first: five
+  columns, one per year, each divided into that year's categories, "Grand
+  Total" excluded as a category and read as each bar's own stated total
+  rather than summed. A category
   keeps one colour and one band across every bar -- `order`, largest
   five-year total first, which is the new prop that lets a column stack and
   colour by a fixed sequence instead of its own rank, since a reader tracking
@@ -387,11 +389,15 @@ Notable pieces:
   for a new Fire Station -- 90% of that year's request and the reason every
   other year used to draw as a flat line against it -- subtracted from the
   Buildings segment and the bar's own total before either reaches
-  `BudgetColumns`, disclosed by a note beside the chart, and left untouched
+  `BudgetColumns`, disclosed by a note beneath the chart, and left untouched
   in `CAPITAL_REQUESTS` and the table below, which still carry both at their
-  own rows. `spending.spec.ts` pins `SPENDING_TOTAL`, checks the capital
-  table against its own row and column totals, and pins the two excluded
-  projects' figures against the book's own 2028 totals.
+  own rows. A second `BudgetColumns` sits beside the first, no `order` --
+  one column, the two excluded projects themselves stacked to their own
+  $120,000,000, so the note's figures are also a bar a reader can hover or
+  focus rather than only a sentence. `spending.spec.ts` pins
+  `SPENDING_TOTAL`, checks the capital table against its own row and column
+  totals, and pins the two excluded projects' figures against the book's own
+  2028 totals.
 - **`src/lib/BudgetTimeline.svelte`** draws page 13, the budget calendar, as the
   footer of _every_ page of a book, fixed to the bottom of the window: a row of
   twelve boxes

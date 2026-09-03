@@ -119,6 +119,17 @@
       })
       .filter((part): part is { label: string; amount: number } => part !== null),
   }))
+
+  /**
+   * The same two projects, drawn as their own bar rather than only named in
+   * the note -- one column, largest first, the same component and the same
+   * reading (hover or focus a segment for its figure) as the chart it sits
+   * beside. It carries no `order`: two projects that appear in no other bar
+   * have no shared band to keep a colour for.
+   */
+  const excludedSummary = [
+    { label: "Excluded from 2028", parts: EXCLUDED_PROJECTS, total: excludedTotal },
+  ]
 </script>
 
 <!--
@@ -249,6 +260,34 @@
      debt service on what was borrowed for it in years past. -->
           <h2>Capital Planning</h2>
 
+          <!--
+  Page 29's table is a stacked bar per year now, not a heading and a grid of
+  its own: nine categories across five years read as a shape charted, not as
+  fifty-odd cells read one at a time. It opens the section, ahead of the
+  book's own prose, rather than sitting fixed above every tab the way it used
+  to -- a reader lands on the shape of the five years before the paragraphs
+  that explain them. The second bar beside it is the two projects the first
+  one leaves out, charted rather than only named in the note under both.
+-->
+          <div class="not-prose mb-2 flex flex-wrap items-end gap-10">
+            <div class="h-40">
+              <BudgetColumns rows={capitalRequests} order={capitalOrder} minHeight={96} />
+            </div>
+            <div class="h-40">
+              <BudgetColumns rows={excludedSummary} minHeight={96} />
+            </div>
+          </div>
+
+          <!-- What the left chart leaves out, since the axis it draws is not the
+             axis the table states -- a reader comparing bar heights across years
+             is owed the reason 2028's is shorter than the table under it says.
+             The two projects are still in that table, at their own rows. -->
+          <p class="not-prose mb-6 max-w-md text-xs text-slate-500">
+            Excludes $120,000,000 of one-time 2028 construction -- the JGW/Tilton School Core
+            Project ($90,000,000) and the Fire Station ($30,000,000), charted at right -- so the
+            categories beside it stay readable on the same scale.
+          </p>
+
           <p>
             The city keeps a continuous inventory of all capital requirements to effectively connect <GlossaryTerm
               term="Grant">grant</GlossaryTerm
@@ -283,28 +322,6 @@
             <li>Any legal obligations associated with project completion</li>
             <li>The financial impact on the city</li>
           </ul>
-
-          <!--
-  Page 29's table is a stacked bar per year now, not a heading and a grid of
-  its own: nine categories across five years read as a shape charted, not as
-  fifty-odd cells read one at a time. It moved here, into its own tab, from a
-  fixed strip at the top of the whole page -- it has nothing to do with a
-  reader in Council Orders or Budget in Brief, and used to sit above them
-  anyway.
--->
-          <div class="h-40">
-            <BudgetColumns rows={capitalRequests} order={capitalOrder} minHeight={96} />
-          </div>
-
-          <!-- What the chart above leaves out, since the axis it draws is not the
-             axis the table states -- a reader comparing bar heights across years
-             is owed the reason 2028's is shorter than the table under it says.
-             The two projects are still in that table, at their own rows. -->
-          <p class="not-prose mb-6 max-w-md text-xs text-slate-500">
-            Excludes $120,000,000 of one-time 2028 construction -- the JGW/Tilton School Core
-            Project ($90,000,000) and the Fire Station ($30,000,000) -- so the categories beside it
-            stay readable on the same scale.
-          </p>
 
           <p>
             The city's current five-year capital requests exceed $173 million, primarily focusing on
