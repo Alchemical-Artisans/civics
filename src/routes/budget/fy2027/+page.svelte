@@ -121,7 +121,7 @@
         rows={[
           {
             label: "Spending",
-            href: Router.budgetSection(book.id, "spending"),
+            href: Router.spendingTab(book.id, "goals"),
             parts: overview.spending,
             total: overview.spendingTotal,
           },

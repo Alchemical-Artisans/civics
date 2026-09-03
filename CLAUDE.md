@@ -353,51 +353,62 @@ Notable pieces:
   depends on, the way `reserves.spec.ts` does for the dials.
 - **`spending`** is `wide: true` too, for its left-column chart rather than a
   policy to keep or fail -- there is no accordion here the way `reserves` and
-  `debt` each open with one. The left column is not a chart of its own: it is
+  `debt` each open with one. The reading itself is five routes now, not five
+  tabs a script switched: Goals, Capital Planning, Requests & Challenges,
+  Budget in Brief, Council Orders, the book's own topics kept apart on
+  screen, each its own directory under a `(tabs)` route group so a reader can
+  link or bookmark straight into "Council Orders" the way every other
+  write-up on the site is linked -- the reason for the change, and the reason
+  it is a group rather than plain directories: `spending/(tabs)/+layout.ts`
+  and `+layout.svelte` carry the title, width, references and the chart and
+  nav that are common to all five, and a route group is what lets `spending`
+  itself sit outside that layout, since a bare visit there is not a sixth
+  topic. There is no bare `/spending` page any more, not even a forward: the
+  one link to it, the front page's own chart heading, now goes straight to
+  `spending/goals`, `Router.spendingTab(id, slug)`, and nothing else pointed
+  at the old bare URL. The nav between the five is a plain `<nav>` of links,
+  `aria-current="page"` marking the open one -- matched on `page.route.id`'s
+  own last segment, never on the URL against a `Router`-built href, and never
+  a suffix match on the whole id either, since a route group's name sits in
+  `route.id` (`/budget/fy2027/spending/(tabs)/goals`) without ever reaching
+  the URL. No script manages any of this: an ordinary navigation is what
+  used to need a `live` flag and a hidden-markup fallback for a reader who
+  had not hydrated, and Left/Right/Home/End is gone with it -- a plain link
+  needs no keydown handler of its own, only Tab and Enter, which every
+  browser already gives it. The left column is not a chart of its own: it is
   `BudgetColumns` handed one row instead of two, the same "Spending" column
   the front page draws, reading the same `SPENDING` and `SPENDING_TOTAL` from
   `spending/tables.ts` rather than building the composition a second time --
   one copy, so the front page's column and this page's bar cannot disagree --
   and carrying no `href`, since a bar linking to the page it is already on is
-  that page offered twice; it answers to none of the tabs beside it. The
-  reading itself is five tabs -- Goals, Capital Planning, Requests &
-  Challenges, Budget in Brief, Council Orders, the book's own topics kept
-  apart on screen -- hidden markup rather than markup that is not there, the
-  same technique `SiteHeader`'s menu uses: a `live` flag set on mount is what
-  a CSS rule hiding the other four panels is keyed on, so a page that never
-  hydrates shows every panel stacked, exactly as this page used to render,
-  and no tab bar that would do nothing. Left/Right move between tabs and
-  select the one moved to, Home/End jump to the ends, and the open tab is the
-  only one in the natural tab order. "Capital Planning" is where a second
-  `BudgetColumns` replaces page 29's own table, "5-Year Capital Requests by
-  Category" -- moved off the top of the whole page, where it used to sit
-  above four tabs' worth of content it has nothing to do with, into the tab
-  it belongs beside, and to the top of that tab, ahead of the book's own
-  prose, so a reader lands on the shape of the five years first: five
-  columns, one per year, each divided into that year's categories, "Grand
-  Total" excluded as a category and read as each bar's own stated total
-  rather than summed. A category
-  keeps one colour and one band across every bar -- `order`, largest
-  five-year total first, which is the new prop that lets a column stack and
-  colour by a fixed sequence instead of its own rank, since a reader tracking
-  one category across five years wants it in the same place in every bar, not
-  the front page's two-column case of picking each column's own largest
-  first. `minHeight` is the other new prop, overriding the `min-h-64` this
-  component used to fix unconditionally -- right for a full-height column,
-  too tall for a chart sitting above a page of reading. The chart also
-  leaves out two 2028 projects, $90,000,000 for JGW/Tilton and $30,000,000
-  for a new Fire Station -- 90% of that year's request and the reason every
-  other year used to draw as a flat line against it -- subtracted from the
-  Buildings segment and the bar's own total before either reaches
-  `BudgetColumns`, disclosed by a note beneath the chart, and left untouched
-  in `CAPITAL_REQUESTS` and the table below, which still carry both at their
-  own rows. A second `BudgetColumns` sits beside the first, no `order` --
-  one column, the two excluded projects themselves stacked to their own
-  $120,000,000, so the note's figures are also a bar a reader can hover or
-  focus rather than only a sentence. `spending.spec.ts` pins
-  `SPENDING_TOTAL`, checks the capital table against its own row and column
-  totals, and pins the two excluded projects' figures against the book's own
-  2028 totals.
+  that page offered twice; it sits in the shared layout, the same on every
+  one of the five routes, and answers to none of them. "Capital Planning" is
+  where a second `BudgetColumns` replaces page 29's own table, "5-Year
+  Capital Requests by Category" -- at the top of that route, ahead of the
+  book's own prose, so a reader lands on the shape of the five years first:
+  five columns, one per year, each divided into that year's categories,
+  "Grand Total" excluded as a category and read as each bar's own stated
+  total rather than summed. A category keeps one colour and one band across
+  every bar -- `order`, largest five-year total first, which is the prop
+  that lets a column stack and colour by a fixed sequence instead of its own
+  rank, since a reader tracking one category across five years wants it in
+  the same place in every bar, not the front page's two-column case of
+  picking each column's own largest first. `minHeight` is the other prop,
+  overriding the `min-h-64` this component used to fix unconditionally --
+  right for a full-height column, too tall for a chart sitting above a page
+  of reading. The chart also leaves out two 2028 projects, $90,000,000 for
+  JGW/Tilton and $30,000,000 for a new Fire Station -- 90% of that year's
+  request and the reason every other year used to draw as a flat line
+  against it -- subtracted from the Buildings segment and the bar's own
+  total before either reaches `BudgetColumns`, disclosed by a note beneath
+  the chart, and left untouched in `CAPITAL_REQUESTS` and the table below,
+  which still carry both at their own rows. A second `BudgetColumns` sits
+  beside the first, no `order` -- one column, the two excluded projects
+  themselves stacked to their own $120,000,000, so the note's figures are
+  also a bar a reader can hover or focus rather than only a sentence.
+  `spending.spec.ts` pins `SPENDING_TOTAL`, checks the capital table against
+  its own row and column totals, and pins the two excluded projects' figures
+  against the book's own 2028 totals.
 - **`src/lib/BudgetTimeline.svelte`** draws page 13, the budget calendar, as the
   footer of _every_ page of a book, fixed to the bottom of the window: a row of
   twelve boxes

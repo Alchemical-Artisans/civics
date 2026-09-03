@@ -58,13 +58,12 @@ const bookPdf = (page: import("@playwright/test").Page) =>
   page.locator(".budget-timeline li").filter({ hasText: "Final review" }).getByRole("link")
 
 /**
- * `spending`'s five tabs -- content elsewhere in the suite reaches into one
- * before checking what is in it, since only the active tab's panel is
- * visible once the page has hydrated. `BookReferences` sits outside every
- * panel and needs no tab open at all.
+ * `spending`'s five topics, each its own route now rather than a tab a
+ * script switched -- content elsewhere in the suite goes straight to one
+ * rather than opening it first. `BookReferences` sits in the shared layout,
+ * outside every one of them, and needs no navigation of its own to reach.
  */
-const openSpendingTab = (page: import("@playwright/test").Page, name: string) =>
-  page.getByRole("tab", { name }).click()
+const spendingUrl = (slug: string) => `/budget/${books[0]}/spending/${slug}`
 
 test.describe("budget pages", () => {
   test("the book opens on the budget at a glance, before its contents", async ({ page }) => {
@@ -83,10 +82,12 @@ test.describe("budget pages", () => {
     await expect(chart).toContainText("$310,893,296")
 
     // Each name opens the side of the book its column is drawn from, and is the
-    // only way to it: neither has a line in the contents.
+    // only way to it: neither has a line in the contents. Spending's own
+    // link goes straight to its first topic -- there is no bare `/spending`
+    // page any more, only the five beneath it.
     await expect(chart.getByRole("link", { name: "Spending" })).toHaveAttribute(
       "href",
-      /\/spending$/,
+      /\/spending\/goals$/,
     )
     await expect(chart.getByRole("link", { name: "Revenue" })).toHaveAttribute("href", /\/revenue$/)
 
@@ -268,39 +269,41 @@ test.describe("budget pages", () => {
     await page.goto(`/budget/${books[0]}`)
 
     // Both pie headings are links now, each to the side of the book its chart
-    // is about, and neither section has a line in the contents.
+    // is about, and neither section has a line in the contents. Spending's
+    // goes straight to the first topic rather than through the bare page,
+    // which only forwards.
     await expect(page.getByRole("link", { name: "Spending", exact: true })).toHaveAttribute(
       "href",
-      /\/spending$/,
+      /\/spending\/goals$/,
     )
     const every = page.locator("article > div ol li")
     await expect(every.filter({ hasText: "Appropriation Forecast" })).toHaveCount(0)
     await expect(every.filter({ hasText: "Revenue Forecast" })).toHaveCount(0)
 
-    await page.goto(`/budget/${books[0]}/spending`)
+    await page.goto(spendingUrl("goals"))
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("Spending")
 
     // The spending side of the book, in its order: what the city wants to
     // build (28) and what departments asked to add to the budget (72). Where
     // the spending is going (69) is not here any more -- it is a forecast, and
-    // this page is about 2027. Each is in its own tab now, so opening the one
-    // it is in is what makes it visible rather than merely in the DOM.
-    await openSpendingTab(page, "Capital Planning")
+    // this page is about 2027. Each topic is its own route now, so going to it
+    // is what puts it on the page at all, rather than merely visible.
+    await page.goto(spendingUrl("capital-planning"))
     await expect(page.getByRole("heading", { name: "Capital Planning" })).toBeVisible()
     await expect(
       page.getByRole("heading", { name: /^10-Year Appropriation Projection/ }),
     ).toHaveCount(0)
 
-    await openSpendingTab(page, "Requests & Challenges")
+    await page.goto(spendingUrl("requests-challenges"))
     await expect(
       page.getByRole("heading", { name: "Summary Department Budget Requests" }),
     ).toBeVisible()
     await expect(page.getByRole("heading", { name: /^Other Budget Reductions/ })).toBeVisible()
 
     // And the goals the rest of it is an account of, from pages 15 and 16 --
-    // the tab this page opens on, so no click is needed to see them, but this
-    // test has clicked two tabs away from it by now.
-    await openSpendingTab(page, "Goals")
+    // the topic this page's own chart opens on, but this test has gone to two
+    // others by now.
+    await page.goto(spendingUrl("goals"))
     await expect(page.getByRole("heading", { name: "Mayor's 2027 Budgetary Goals" })).toBeVisible()
     await expect(
       page.getByRole("heading", { name: "Long-Term Perspective Strategic Goals" }),
@@ -342,11 +345,12 @@ test.describe("budget pages", () => {
   test("charts the spending page's own bar and its five-year capital requests", async ({
     page,
   }) => {
-    await page.goto(`/budget/${books[0]}/spending`)
+    await page.goto(spendingUrl("capital-planning"))
 
     // The same bar the front page draws for "Spending", one column of it --
     // and with no link back to a page it is already on, unlike the front
-    // page's own.
+    // page's own. It is in the shared layout, present on every topic's route,
+    // not particular to this one.
     const bar = page.locator(".budget-columns").first()
     await expect(bar.locator(".budget-column")).toHaveCount(1)
     await expect(bar).toContainText("Spending")
@@ -358,11 +362,10 @@ test.describe("budget pages", () => {
     await expect(bar).toContainText("Education")
 
     // Page 29's table, as one stacked bar per year rather than a heading and
-    // a grid of its own, in its own tab now rather than fixed above every
-    // other one: five bars, nine categories between them, "Grand Total"
+    // a grid of its own, on its own route now rather than fixed above every
+    // other topic: five bars, nine categories between them, "Grand Total"
     // excluded as a category (it would draw a band that is every other
     // category added together) and read as each bar's own total instead.
-    await openSpendingTab(page, "Capital Planning")
     await expect(
       page.getByRole("heading", { name: "5-Year Capital Requests by Category" }),
     ).toHaveCount(0)
@@ -432,81 +435,66 @@ test.describe("budget pages", () => {
     await expect(page.getByRole("article")).not.toContainText("$173,903,952")
   })
 
-  test("splits the spending page into tabs, one panel visible at a time", async ({ page }) => {
-    await page.goto(`/budget/${books[0]}/spending`)
+  test("splits spending into one route per topic, linked by a plain nav", async ({ page }) => {
+    await page.goto(spendingUrl("goals"))
 
-    // Five tabs, in the book's own order, Goals open on arrival -- and only
-    // Goals: a heading from another tab is not merely scrolled away, it is
-    // out of the accessibility tree entirely until its tab is opened.
-    const tabs = page.getByRole("tab")
-    await expect(tabs).toHaveCount(5)
-    await expect(page.getByRole("tab", { name: "Goals" })).toHaveAttribute("aria-selected", "true")
+    // Five links, in the book's own order, `aria-current` marking the one the
+    // reader is on -- and only Goals is on the page at all: Capital Planning
+    // is not merely hidden, its heading is not in the DOM until its own route
+    // is.
+    const nav = page.getByRole("navigation", { name: "Spending" })
+    await expect(nav.getByRole("link")).toHaveCount(5)
+    await expect(nav.getByRole("link", { name: "Goals" })).toHaveAttribute("aria-current", "page")
+    await expect(nav.getByRole("link", { name: "Capital Planning" })).not.toHaveAttribute(
+      "aria-current",
+    )
     await expect(page.getByRole("heading", { name: "Mayor's 2027 Budgetary Goals" })).toBeVisible()
     await expect(page.getByRole("heading", { name: "Capital Planning" })).toHaveCount(0)
 
-    // Opening a tab is what makes its heading appear, and closes Goals the
-    // same way -- one panel on screen at a time, the point of tabs at all.
-    await openSpendingTab(page, "Capital Planning")
-    await expect(page.getByRole("tab", { name: "Capital Planning" })).toHaveAttribute(
-      "aria-selected",
-      "true",
+    // Following the link is what puts Capital Planning on the page, and Goals
+    // off it -- an ordinary navigation, not a script swapping panels.
+    await nav.getByRole("link", { name: "Capital Planning" }).click()
+    await expect(page).toHaveURL(new RegExp(`${spendingUrl("capital-planning")}$`))
+    await expect(nav.getByRole("link", { name: "Capital Planning" })).toHaveAttribute(
+      "aria-current",
+      "page",
     )
-    await expect(page.getByRole("tab", { name: "Goals" })).toHaveAttribute("aria-selected", "false")
+    await expect(nav.getByRole("link", { name: "Goals" })).not.toHaveAttribute("aria-current")
     await expect(page.getByRole("heading", { name: "Capital Planning" })).toBeVisible()
     await expect(page.getByRole("heading", { name: "Mayor's 2027 Budgetary Goals" })).toHaveCount(0)
 
-    // References sits outside every panel, so it never needs a tab of its
-    // own and stays reachable under whichever one is open.
+    // References sits outside every topic, in the shared layout, so it never
+    // needs a route of its own and stays reachable under whichever one is
+    // open.
     await expect(page.getByRole("heading", { name: "References" })).toBeVisible()
 
     // The spending bar in the left column answers to none of this: it is
-    // outside the tabs entirely.
+    // outside the nav entirely, the same on every one of the five routes.
     await expect(page.locator(".budget-columns").first()).toContainText("$316,044,835")
   })
 
-  test("moves between spending tabs with the arrow keys", async ({ page }) => {
-    await page.goto(`/budget/${books[0]}/spending`)
-
-    await page.getByRole("tab", { name: "Goals" }).focus()
-    await page.keyboard.press("ArrowRight")
-    await expect(page.getByRole("tab", { name: "Capital Planning" })).toHaveAttribute(
-      "aria-selected",
-      "true",
-    )
-    await expect(page.getByRole("tab", { name: "Capital Planning" })).toBeFocused()
-
-    // Wraps at either end rather than stopping.
-    await page.keyboard.press("ArrowLeft")
-    await page.keyboard.press("ArrowLeft")
-    await expect(page.getByRole("tab", { name: "Council Orders" })).toHaveAttribute(
-      "aria-selected",
-      "true",
-    )
-
-    await page.keyboard.press("Home")
-    await expect(page.getByRole("tab", { name: "Goals" })).toHaveAttribute("aria-selected", "true")
-    await page.keyboard.press("End")
-    await expect(page.getByRole("tab", { name: "Council Orders" })).toHaveAttribute(
-      "aria-selected",
-      "true",
-    )
-  })
-
-  test("keeps every spending tab's content on the page without script", async ({ browser }) => {
+  test("stands each spending topic on its own page, reachable without script", async ({
+    browser,
+  }) => {
     const context = await browser.newContext({ javaScriptEnabled: false })
     const noscript = await context.newPage()
-    await noscript.goto(`/budget/${books[0]}/spending`)
 
-    // Hidden markup rather than markup that is not there: a reader who never
-    // hydrates gets every section, stacked, and no tab bar to click that
-    // would not do anything anyway.
-    await expect(noscript.getByRole("tab")).toHaveCount(0)
-    const article = noscript.getByRole("article")
-    await expect(article).toContainText("Mayor's 2027 Budgetary Goals")
-    await expect(article).toContainText("Capital Planning")
-    await expect(article).toContainText("Summary Department Budget Requests")
-    await expect(article).toContainText("2027 Budget in Brief")
-    await expect(article).toContainText("What the Council appropriated")
+    // An ordinary prerendered page per topic now, not a panel a script
+    // showed -- so a reader with no script at all reaches every one of them
+    // directly, the same as any other write-up on the site, and the nav
+    // between them is plain links rather than a control that needs script to
+    // do anything.
+    for (const [slug, heading] of [
+      ["goals", "Mayor's 2027 Budgetary Goals"],
+      ["capital-planning", "Capital Planning"],
+      ["requests-challenges", "Summary Department Budget Requests"],
+      ["budget-in-brief", "2027 Budget in Brief"],
+      ["council-orders", "What the Council appropriated"],
+    ] as const) {
+      await noscript.goto(spendingUrl(slug))
+      await expect(noscript.getByRole("heading", { name: heading })).toBeVisible()
+      await expect(noscript.getByRole("tab")).toHaveCount(0)
+    }
 
     await context.close()
   })
@@ -549,7 +537,7 @@ test.describe("budget pages", () => {
       expect(await link.getAttribute("href")).toMatch(new RegExp(`#page=${at}$`))
     }
 
-    await page.goto(`/budget/${books[0]}/spending`)
+    await page.goto(spendingUrl("goals"))
     await expect(page.getByRole("link", { name: /^Fiscal Reserves/ })).toHaveAttribute(
       "href",
       /\/reserves$/,
@@ -896,7 +884,7 @@ test.describe("budget pages", () => {
     await expect(page.getByRole("article")).toContainText("Estimated Excess Levy")
 
     // Spending points here for it, since it is still that page's spending.
-    await page.goto(`/budget/${books[0]}/spending`)
+    await page.goto(spendingUrl("goals"))
     await expect(
       page.getByRole("link", { name: /^10-Year Appropriation Projection/ }),
     ).toHaveAttribute("href", /\/history$/)
@@ -1114,8 +1102,7 @@ test.describe("budget pages", () => {
   })
 
   test("says on the spending page what the chart leaves out", async ({ page }) => {
-    await page.goto(`/budget/${books[0]}/spending`)
-    await openSpendingTab(page, "Council Orders")
+    await page.goto(spendingUrl("council-orders"))
 
     // The orders themselves, quoted as the agenda words them.
     await expect(page.getByRole("heading", { name: "What the Council appropriated" })).toBeVisible()

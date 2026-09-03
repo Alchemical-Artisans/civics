@@ -661,56 +661,77 @@ sentence.
 total against the section's own sentence, and the arithmetic the payments
 chart depends on -- the same role `reserves.spec.ts` plays for the dials.
 
-### The tabs on `spending`, and its two charts
+### Five routes on `spending`, and its two charts
 
 `spending` has no policy to keep or fail, so it has no accordion the way
 `reserves` and `debt` each open with one -- it is `wide: true` for the same
 reason theirs are, a chart fixed in the left column, but the reading beside
-it is five tabs now rather than one long scroll: **Goals**, **Capital
-Planning**, **Requests & Challenges**, **Budget in Brief** and **Council
-Orders**, the book's own topics (pages 15-16, 28-45, 72-73, 76-78, and the
-Council's agenda, which is ours rather than the book's) kept apart on
-screen the way they are apart in the book. Every heading and table this page
-ever carried is still exactly the prose and the tables it always was --
-nothing here paraphrases or retypes a word of it -- just split into panels
-instead of stacked one after another.
+it is five routes now rather than one long scroll or a script-driven set of
+tabs: **Goals**, **Capital Planning**, **Requests & Challenges**, **Budget
+in Brief** and **Council Orders**, the book's own topics (pages 15-16,
+28-45, 72-73, 76-78, and the Council's agenda, which is ours rather than
+the book's) kept apart on screen the way they are apart in the book, and
+now apart in the URL too -- `spending/goals`, `spending/council-orders`,
+each linkable and bookmarkable on its own, which tabs a script switched
+never were. Every heading and table this page ever carried is still exactly
+the prose and the tables it always was -- nothing here paraphrases or
+retypes a word of it -- just moved into its own route directory instead of
+sitting behind a panel a script showed and hid.
+
+**The five sit in a `(tabs)` route group,
+[`spending/(tabs)/+layout.ts`](<../src/routes/budget/fy2027/spending/(tabs)/+layout.ts>)
+and
+[`+layout.svelte`](<../src/routes/budget/fy2027/spending/(tabs)/+layout.svelte>),
+because they share a title, a width, a reference list, a chart and a nav
+that a bare visit to `spending` itself is not one more of.** A route group's
+name is invisible in the URL -- `spending/(tabs)/goals` is still
+`/spending/goals` -- so the five keep their plain, linkable paths while the
+layout stays out of any page that is not one of the five. There is no bare
+`/spending` page any more, not even a forward: the one link to it, the
+front page's own "Spending" chart heading, goes straight to
+`spending/goals` now (`Router.spendingTab(id, "goals")`), and nothing else
+on the site ever pointed at the bare URL, so there was nothing left for a
+forward to catch.
 
 **The left column is not a chart of its own -- it is the front page's,
 handed one row instead of two.**
 [`BudgetColumns.svelte`](../src/lib/BudgetColumns.svelte) already draws
-however many columns its `rows` prop gives it, so the page passes the single
-"Spending" column read out of `spending/tables.ts`'s `SPENDING` and
+however many columns its `rows` prop gives it, so the layout passes the
+single "Spending" column read out of `spending/tables.ts`'s `SPENDING` and
 `SPENDING_TOTAL` -- the same two exports the front page's own column now
 reads, rather than building the composition a second time from
 `APPROPRIATIONS` and `council-orders.ts`'s `ENTERPRISE`. One copy, so the
 front page's column and this page's bar cannot print totals that disagree.
 It carries no `href`: the front page's column links here because it is
 somewhere else, and a bar linking to the page it is already on is the same
-page offered twice. It answers to none of the tabs -- always on screen,
-whichever one is open.
+page offered twice. It sits in the shared layout and answers to none of the
+five routes beneath it -- always on screen, whichever one is open.
 
-**Tabs are hidden markup rather than markup that is not there, the same
-technique `SiteHeader`'s own menu uses for the same reason.** A `live`
-boolean, `false` until the component mounts, is what a CSS rule for hiding
-four of five panels is keyed on; before that -- prerendered markup, or a
-browser that never runs the script at all -- every panel sits in the flow
-and the tab bar itself stays `display: none`, so a reader who does not
-hydrate gets exactly the one long page this used to be, not four-fifths of
-it locked behind a control that does nothing. `left`/`right` move between
-tabs and select the one moved to (`home`/`end` jump to the first and last),
-the ARIA "automatic activation" pattern, and each keeps the currently open
-one as the only stop in the natural tab order (`tabindex="0"`), the rest
-reachable by arrow key alone -- the same construction a native browser tab
-strip uses.
+**The nav between the five is a plain `<nav>` of links, not an ARIA
+tablist.** `aria-current="page"` marks the open one, matched on
+`page.route.id`'s own last path segment -- never on the URL against a
+`Router`-built href, the same reason `SiteHeader`'s own menu avoids that
+comparison: with `paths.relative` on it cannot match during prerendering
+and starts matching only after hydration, so the served markup and the
+hydrated markup would silently disagree. Not a suffix match on the whole
+id either, the way a page with no route group could get away with: a group's
+own name sits in `route.id` exactly as it sits on disk
+(`/budget/fy2027/spending/(tabs)/goals`) without ever reaching the URL, so
+comparing the last segment alone is what survives the group being there at
+all. Nothing here runs a script to work: an ordinary link needs no `live`
+flag and no hidden-markup fallback for a reader who has not hydrated, the
+way the old script-switched tabs did, and Left/Right/Home/End is gone with
+them -- Tab and Enter are what a browser already gives a list of links, and
+a custom keydown handler would only be reimplementing that.
 
 **"Capital Planning" charts page 29, "5-Year Capital Requests by Category",
 as one stacked bar per year rather than a heading and a fifty-odd-cell
-grid**, opening the tab now rather than sitting where the book's own table
-used to, ahead of the category breakdowns and the individual project
-write-ups it belongs beside -- not fixed above the whole page either, where
-it used to sit above four tabs' worth of content that has nothing to do with
-it. A reader lands on the shape of the five years before any of the prose
-that explains them. The table is held as `CAPITAL_REQUESTS` in
+grid**, at the top of its own route, ahead of the category breakdowns and
+the individual project write-ups it belongs beside -- not fixed above the
+whole page either, where it used to sit above four tabs' worth of content
+that has nothing to do with it. A reader lands on the shape of the five
+years before any of the prose that explains them. The table is held as
+`CAPITAL_REQUESTS` in
 `spending/tables.ts` and read into
 [`BudgetColumns.svelte`](../src/lib/BudgetColumns.svelte) a second time --
 five "columns" now, one per year, each divided into that year's categories
@@ -745,10 +766,11 @@ the $125,002,000 the Buildings category totals that year.** Between them they
 are 90% of everything the city requests in 2028, which sets the scale every
 other category and every other year has to be read against -- against
 $132,307,653, 2027's whole $17,219,620 draws as a thin line at the foot, and
-so does everything past 2028. `+page.svelte` subtracts the $120,000,000 from
-the Buildings segment and from the bar's own total before either reaches
-`BudgetColumns`, leaving $5,002,000 of ordinary building spending in the 2028
-band rather than none, and a note beneath the chart discloses both projects
+so does everything past 2028. `capital-planning/+page.svelte` subtracts the
+$120,000,000 from the Buildings segment and from the bar's own total before
+either reaches `BudgetColumns`, leaving $5,002,000 of ordinary building
+spending in the 2028 band rather than none, and a note beneath the chart
+discloses both projects
 and their figures by name. A second `BudgetColumns` sits to the right of the
 five-year chart, one bar with no `order` of its own: the same two projects,
 stacked to their own $120,000,000, so what the note names is also a shape a

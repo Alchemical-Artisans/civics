@@ -1,4 +1,4 @@
-import type { PageLoad } from "./$types"
+import type { LayoutLoad } from "./$types"
 import { Router } from "$lib/router"
 
 /**
@@ -48,8 +48,13 @@ import { Router } from "$lib/router"
  *
  * The page number is the first of them, so the bar's source link opens the
  * city's file where the run begins.
+ *
+ * A `+layout.ts` rather than a `+page.ts` now: the five topics below are their
+ * own routes, one directory each under this one, and every one of them wants
+ * this same title, width and reference list. Loading it once here is what lets
+ * `/spending` itself have nothing to load at all -- it only forwards.
  */
-export const load: PageLoad = async ({ parent }) => {
+export const load: LayoutLoad = async ({ parent }) => {
   const { book } = await parent()
 
   return {
@@ -58,8 +63,8 @@ export const load: PageLoad = async ({ parent }) => {
     /**
      * Laid out as `reserves` and `debt` are: charts down the left and the
      * reading in the only box that scrolls. The spending bar and the
-     * five-year capital line graph both want more room than a 48rem strip
-     * has to give.
+     * five-year capital chart both want more room than a 48rem strip has to
+     * give.
      */
     wide: true,
 

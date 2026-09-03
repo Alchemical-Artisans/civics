@@ -88,6 +88,17 @@ export class Router {
   }
 
   /**
+   * One topic of the spending section -- Goals, Capital Planning and the
+   * rest, each its own route under `spending/` now rather than a tab a
+   * script switched, so one can be linked or bookmarked on its own. `slug` is
+   * the topic's directory name; `spending` itself has no contents of its own,
+   * only a forward onto the first.
+   */
+  static spendingTab(id: string, slug: string): string {
+    return path(`/budget/${id}/spending/${slug}`)
+  }
+
+  /**
    * One term in a book's glossary, which is where a defined word in the city's
    * prose leads. The fragment is the term slugged, and the page puts that id on
    * every entry.
