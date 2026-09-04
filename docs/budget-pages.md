@@ -285,11 +285,12 @@ reserve policies on `reserves`. They are a different kind of thing
 from the four sections above them: those are accounts _of_ the year's spending,
 and these are parts _of_ it, each a line in the page-78 table the pie is drawn
 from. Page 78, which both pies are drawn from, is split the same way: "2027
-Budget in Brief" is three tables and no prose, so its two spending tables are at
-the foot of this page and its revenue table at the foot of `revenue`, each
-beside the chart that reads it. The book prints the two sides facing each other
-to show that they balance; the front page makes that point instead, with two
-pies carrying the same total.
+Budget in Brief" is three tables and no prose, so its two spending tables are
+two stacked-bar charts now, on `spending`'s own "Budget in Brief" tab (more
+on those below, in the `spending` section), and its revenue table stays a
+table, at the foot of `revenue`. The book prints the two sides facing each
+other to show that they balance; the front page makes that point instead,
+with two pies carrying the same total.
 
 **The pies are the whole city's budget, not the book's.** The book's page-78
 tables are the general fund, and the front page draws both of them entire —
@@ -713,6 +714,33 @@ its tab already says, and repeating "requests" or "challenges" in a heading
 under a tab of that name said nothing a reader did not already know. Only
 "Major Budget Driver - Group Health Insurance" survives on Challenges,
 since it names a specific topic the tab label does not.
+
+**Budget in Brief holds two stacked-bar charts now, not two tables.** Pages
+76 and 77 ("Summary of All Municipal Departments", split across two pages
+purely for room, one table here) list forty-four departments; page 78 rolls
+the same budget up by fourteen categories. Both used to run as
+[`BudgetTable`s](../src/lib/BudgetTable.svelte); both are
+[`BudgetColumns`](../src/lib/BudgetColumns.svelte) now, one stacked bar per
+year across the same six years (2022 through 2027) each table already gave,
+`order` shared across the six bars the same way `capital-planning`'s chart
+shares it across five, so a department or category keeps one colour and one
+band down every bar rather than being picked out of six independently-sorted
+stacks. Both totals are the book's own stated "Grand Total" row, not summed,
+the same reason `SPENDING_TOTAL` is. The book gives each department five
+columns beyond the six years charted -- two average/annual percent changes,
+the 2027 department request kept apart from what was actually recommended,
+and that request's and the recommendation's own percent and dollar change --
+dropped rather than carried into a second, smaller table beside the chart:
+comparing bar heights across years already shows the change a percentage
+would only restate, and the request is superseded by the recommendation,
+the figure that became the appropriation. Forty-four departments is three
+times the categories any other chart on the site stacks in one bar, cycling
+through the fourteen-colour palette more than three times over -- accepted
+rather than folded into an invented "Other" bucket the book never states,
+on the same reasoning the front page's own fifteen-category Spending column
+already rests on: a segment's name is never colour alone, since every one
+carries it as its own accessible name on hover or focus, focusable whatever
+its width.
 
 **References is the seventh tab and the one topic that is not the book's own:
 what every other topic here was built out of, and the parts of the book they

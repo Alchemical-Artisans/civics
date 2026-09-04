@@ -687,6 +687,62 @@ test.describe("budget pages", () => {
     await context.close()
   })
 
+  test("charts every department and every appropriation category across six years", async ({
+    page,
+  }) => {
+    await page.goto(spendingUrl("budget-in-brief"))
+
+    // Pages 76 and 77, forty-four departments, one stacked bar per year
+    // instead of a grid running to four hundred-odd cells. The old table's
+    // own total is gone with it -- read from the chart's tooltips now.
+    // `.first()` is the spending bar in the left column, present on every
+    // spending route, so the page's own two charts are `.nth(1)` and
+    // `.nth(2)`.
+    const departments = page.locator(".budget-columns").nth(1)
+    await expect(departments.locator(".budget-column")).toHaveCount(6)
+    await expect(departments).toContainText("2022")
+    await expect(departments).toContainText("$216,708,713")
+    await expect(departments).toContainText("2027")
+    await expect(departments).toContainText("$285,272,160")
+
+    const school = departments.getByRole("img", {
+      name: "2027, School Department, $136,998,618, 48.0%",
+    })
+    await school.focus()
+    await expect(departments).toContainText("School Department")
+
+    // The five extra columns the book gives each department -- both average
+    // percent changes, the request kept apart from the recommendation, and
+    // the recommendation's own percent and dollar change -- are gone with
+    // the table; only the department's name and its six years of dollars
+    // remain, on the chart's segments.
+    await expect(page.getByRole("article")).not.toContainText("9.4%")
+
+    // Page 78, the fourteen categories the same budget rolls up by --
+    // Education is the largest of them, the same figure the front page's
+    // own column draws.
+    const appropriations = page.locator(".budget-columns").nth(2)
+    await expect(appropriations.locator(".budget-column")).toHaveCount(6)
+    await expect(appropriations).toContainText("$285,272,159")
+    const education = appropriations.getByRole("img", {
+      name: "2027, Education, $147,158,454, 51.6%",
+    })
+    await education.focus()
+    await expect(appropriations).toContainText("Education")
+
+    // A category keeps the same colour in every bar it appears in, read
+    // down its own band across years rather than picked out of six
+    // independently-sorted stacks.
+    const colour = (chart: typeof appropriations, label: string, year: string) =>
+      chart.getByRole("img", { name: new RegExp(`^${year}, ${label},`) }).evaluate((el) => {
+        const style = el.getAttribute("style") ?? ""
+        return style.match(/background:\s*([^;]+)/)?.[1]
+      })
+    expect(await colour(appropriations, "Education", "2022")).toBe(
+      await colour(appropriations, "Education", "2027"),
+    )
+  })
+
   test("links the reserves and the spending it pays for", async ({ page }) => {
     await page.goto(`/budget/${books[0]}/reserves`)
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("Reserves")

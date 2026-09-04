@@ -370,7 +370,22 @@ Notable pieces:
   Challenges" / "Budgetary Challenges Continued": each tab already says what
   its page is, and repeating that in a heading under it said nothing new.
   "Major Budget Driver - Group Health Insurance" stays, since it names a
-  topic the tab label does not. References was pulled out of the shared
+  topic the tab label does not. Budget in Brief's own two `BudgetTable`s
+  (pages 76-77's forty-four departments, page 78's fourteen categories) are
+  `BudgetColumns` now, one stacked bar per year across the same six years
+  each table gave, `order` shared across the six bars the way
+  `capital-planning`'s own chart shares it across five, and each bar's total
+  the book's own stated "Grand Total" row rather than summed. The five
+  columns the book gives each department beyond the six years charted -- two
+  percent changes, the request kept apart from the recommendation, and the
+  recommendation's own percent and dollar change -- are dropped rather than
+  kept in a second table, since a reader comparing bar heights across years
+  already sees the change a percentage would restate, and the request is
+  superseded by the recommendation. Forty-four departments cycle the
+  fourteen-colour palette more than three times over, accepted the way the
+  front page's own fifteen-category Spending column already is, on the same
+  reasoning: a segment's name is never colour alone, it is on every one as
+  its own accessible name on hover or focus. References was pulled out of the shared
   layout into its own tab the same way: `BookReferences` used to render
   unconditionally after
   `{@render children()}`, under whichever of the (then five) topics was
