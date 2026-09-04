@@ -3,7 +3,6 @@
   // topic beneath it, and for the nav bar between them. See `+layout.ts` and
   // docs/budget-pages.md.
   import { page } from "$app/state"
-  import BookReferences from "$lib/BookReferences.svelte"
   import BudgetColumns from "$lib/BudgetColumns.svelte"
   import { Router } from "$lib/router"
   import { SPENDING, SPENDING_TOTAL } from "../tables"
@@ -11,28 +10,47 @@
   let { data, children } = $props()
 
   /**
-   * The five topics the reading splits into, in the book's own order -- the
-   * goals (15-16), capital planning (28-45), the year's requests and
-   * challenges (72-73), "2027 Budget in Brief" (76-78), and the Council's own
-   * orders, which are ours rather than the book's. Each is its own route
-   * directory under this one now, rather than a panel a script showed and
-   * hid, so a reader can link straight into "Council Orders" the way every
-   * other write-up on the site is linked.
+   * The reading splits into seven topics now, in the book's own order where
+   * it has one -- the goals (15-16), capital planning (28-45), the year's
+   * requests (72), its challenges (73), "2027 Budget in Brief" (76-78), and
+   * the Council's own orders, which are ours rather than the book's -- each
+   * its own route directory under this one, rather than a panel a script
+   * showed and hid, so a reader can link straight into "Council Orders" the
+   * way every other write-up on the site is linked.
    *
    * "Goals & Recommendations" carries more than page 15-16's own goals now:
    * "Preliminary Budget Goals for Fiscal 2027" and "Final Recommendations"
-   * are page 73's, the lead-in and the close of Requests & Challenges'
-   * "Other Budget Reductions to Create a Balanced Budget" -- moved here
-   * because the two tabs sit next to each other in the nav, which is the
-   * same adjacency the book's own linear pages gave them, and because both
-   * are goals or their resolution rather than a challenge or a request.
+   * are page 73's, the lead-in and the close of "Other Budget Reductions to
+   * Create a Balanced Budget" -- moved here because both are goals or their
+   * resolution rather than a challenge, whatever page the book happened to
+   * print them on. The book bracketed its challenges with them only because
+   * a straight run of pages had nowhere else to put either; a reader
+   * looking for what the year set out to do and what it landed on wants
+   * both in one place, not one of them buried inside the account of what
+   * went wrong in between.
+   *
+   * Requests and Challenges were one tab, "Requests & Challenges" -- pages
+   * 72 and 73 are two different accounts (what departments asked to add,
+   * and what had to come out to balance the budget instead), not two halves
+   * of one, and a label naming both was a hint they wanted to be read
+   * separately.
+   *
+   * References is last, and is the one topic that is not the book's: what
+   * every other topic on this page was built out of, and the parts of the
+   * book they sit beside. It used to sit outside the tabs entirely, under
+   * whichever one was open, on the theory that a reader never has to go
+   * looking for it -- true, but it meant six topics' worth of references
+   * arrived whether the reader had asked a question yet or not. Its own tab
+   * is exactly as reachable and answers only when opened.
    */
   const TABS = [
     { slug: "goals-recommendations", label: "Goals & Recommendations" },
     { slug: "capital-planning", label: "Capital Planning" },
-    { slug: "requests-challenges", label: "Requests & Challenges" },
+    { slug: "requests", label: "Requests" },
+    { slug: "challenges", label: "Challenges" },
     { slug: "budget-in-brief", label: "Budget in Brief" },
     { slug: "council-orders", label: "Council Orders" },
+    { slug: "references", label: "References" },
   ]
 
   /**
@@ -42,8 +60,9 @@
    * markup and the hydrated markup would silently disagree. `SiteHeader`'s
    * own menu is matched the same way, for the same reason.
    *
-   * A segment match on `route.id` -- `/budget/fy2027/spending/(tabs)/goals`,
-   * since a route group is invisible in the URL but not in the id it is
+   * A segment match on `route.id` --
+   * `/budget/fy2027/spending/(tabs)/goals-recommendations`, since a route
+   * group is invisible in the URL but not in the id it is
    * matched on -- rather than a suffix match on the whole thing, and a
    * segment rather than a plain substring so "capital-planning" cannot match
    * some future topic whose slug merely contains it. Capital Planning's own
@@ -65,7 +84,7 @@
 
 <!--
   Laid out as `debt` and `reserves` are along the left: a chart fixed in its
-  own column and the rest of the page beside it. The rest is five routes now
+  own column and the rest of the page beside it. The rest is seven routes now
   rather than one long scroll or a script-driven set of panels -- this page
   has no single chart or policy the whole reading answers to the way debt and
   reserves each have one, and a plain nav of links needs no script at all to
@@ -99,10 +118,6 @@
     <div class="lg:relative lg:min-h-0 lg:flex-1 lg:overflow-y-auto">
       <div class="max-w-3xl">
         {@render children()}
-
-        <!-- Outside every topic, so it stays under whichever one is open
-             rather than needing a copy in each. -->
-        <BookReferences items={data.references} book={data.book} />
       </div>
     </div>
   </div>

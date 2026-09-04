@@ -58,10 +58,10 @@ const bookPdf = (page: import("@playwright/test").Page) =>
   page.locator(".budget-timeline li").filter({ hasText: "Final review" }).getByRole("link")
 
 /**
- * `spending`'s five topics, each its own route now rather than a tab a
+ * `spending`'s seven topics, each its own route now rather than a tab a
  * script switched -- content elsewhere in the suite goes straight to one
- * rather than opening it first. `BookReferences` sits in the shared layout,
- * outside every one of them, and needs no navigation of its own to reach.
+ * rather than opening it first. `BookReferences` is one of the seven now,
+ * `references`, rather than sitting in the shared layout under all of them.
  */
 const spendingUrl = (slug: string) => `/budget/${books[0]}/spending/${slug}`
 
@@ -294,10 +294,11 @@ test.describe("budget pages", () => {
       page.getByRole("heading", { name: /^10-Year Appropriation Projection/ }),
     ).toHaveCount(0)
 
-    await page.goto(spendingUrl("requests-challenges"))
+    await page.goto(spendingUrl("requests"))
     await expect(
       page.getByRole("heading", { name: "Summary Department Budget Requests" }),
     ).toBeVisible()
+    await page.goto(spendingUrl("challenges"))
     await expect(page.getByRole("heading", { name: /^Other Budget Reductions/ })).toBeVisible()
 
     // And the goals the rest of it is an account of, from pages 15 and 16 --
@@ -310,16 +311,16 @@ test.describe("budget pages", () => {
     ).toBeVisible()
 
     // Page 73's own lead-in and close of "Other Budget Reductions" moved
-    // here from Requests & Challenges: the book's linear run bracketed the
-    // challenges with them because a straight run of pages had nowhere else
-    // to put them, but the two tabs sit next to each other in the nav, so
-    // the same adjacency survives without either recap or resolution
-    // sitting in front of the cuts they explain.
+    // here from Challenges: the book's linear run bracketed the challenges
+    // with them because a straight run of pages had nowhere else to put
+    // them, but they are goals and their resolution, not a challenge, so
+    // Challenges opens and closes without either sitting in front of the
+    // cuts it explains.
     await expect(
       page.getByRole("heading", { name: "Preliminary Budget Goals for Fiscal 2027" }),
     ).toBeVisible()
     await expect(page.getByRole("heading", { name: "Final Recommendations" })).toBeVisible()
-    await page.goto(spendingUrl("requests-challenges"))
+    await page.goto(spendingUrl("challenges"))
     await expect(
       page.getByRole("heading", { name: "Preliminary Budget Goals for Fiscal 2027" }),
     ).toHaveCount(0)
@@ -330,7 +331,9 @@ test.describe("budget pages", () => {
     expect(await bookPdf(page).getAttribute("href")).toMatch(/#page=15$/)
 
     // Three lines of the appropriation itself, which nobody has transcribed:
-    // the city's own file, opened at the page the book gives them.
+    // the city's own file, opened at the page the book gives them -- on
+    // References now, not merely visible from wherever the reader was.
+    await page.goto(spendingUrl("references"))
     for (const [title, at] of [
       ["Debt Service", 200],
       ["State Assessments", 209],
@@ -606,12 +609,12 @@ test.describe("budget pages", () => {
   test("splits spending into one route per topic, linked by a plain nav", async ({ page }) => {
     await page.goto(spendingUrl("goals-recommendations"))
 
-    // Five links, in the book's own order, `aria-current` marking the one the
-    // reader is on -- and only Goals & Recommendations is on the page at
+    // Seven links, in the book's own order, `aria-current` marking the one
+    // the reader is on -- and only Goals & Recommendations is on the page at
     // all: Capital Planning is not merely hidden, its heading is not in the
     // DOM until its own route is.
     const nav = page.getByRole("navigation", { name: "Spending" })
-    await expect(nav.getByRole("link")).toHaveCount(5)
+    await expect(nav.getByRole("link")).toHaveCount(7)
     await expect(nav.getByRole("link", { name: "Goals & Recommendations" })).toHaveAttribute(
       "aria-current",
       "page",
@@ -637,13 +640,16 @@ test.describe("budget pages", () => {
     await expect(page.getByRole("heading", { name: "Capital Planning" })).toBeVisible()
     await expect(page.getByRole("heading", { name: "Mayor's 2027 Budgetary Goals" })).toHaveCount(0)
 
-    // References sits outside every topic, in the shared layout, so it never
-    // needs a route of its own and stays reachable under whichever one is
-    // open.
+    // References is not on this page at all any more -- it is its own
+    // topic now, seventh in the nav, not a fixture under every other one.
+    await expect(page.getByRole("heading", { name: "References" })).toHaveCount(0)
+    await nav.getByRole("link", { name: "References" }).click()
+    await expect(page).toHaveURL(new RegExp(`${spendingUrl("references")}$`))
     await expect(page.getByRole("heading", { name: "References" })).toBeVisible()
+    await expect(page.getByRole("link", { name: "Fiscal Reserves" })).toBeVisible()
 
     // The spending bar in the left column answers to none of this: it is
-    // outside the nav entirely, the same on every one of the five routes.
+    // outside the nav entirely, the same on every one of the seven routes.
     await expect(page.locator(".budget-columns").first()).toContainText("$316,044,835")
   })
 
@@ -661,9 +667,11 @@ test.describe("budget pages", () => {
     for (const [slug, heading] of [
       ["goals-recommendations", "Mayor's 2027 Budgetary Goals"],
       ["capital-planning", "Capital Planning"],
-      ["requests-challenges", "Summary Department Budget Requests"],
+      ["requests", "Summary Department Budget Requests"],
+      ["challenges", "Other Budget Reductions to Create a Balanced Budget"],
       ["budget-in-brief", "2027 Budget in Brief"],
       ["council-orders", "What the Council appropriated"],
+      ["references", "References"],
     ] as const) {
       await noscript.goto(spendingUrl(slug))
       await expect(noscript.getByRole("heading", { name: heading })).toBeVisible()
@@ -711,7 +719,7 @@ test.describe("budget pages", () => {
       expect(await link.getAttribute("href")).toMatch(new RegExp(`#page=${at}$`))
     }
 
-    await page.goto(spendingUrl("goals-recommendations"))
+    await page.goto(spendingUrl("references"))
     await expect(page.getByRole("link", { name: /^Fiscal Reserves/ })).toHaveAttribute(
       "href",
       /\/reserves$/,
@@ -1058,7 +1066,7 @@ test.describe("budget pages", () => {
     await expect(page.getByRole("article")).toContainText("Estimated Excess Levy")
 
     // Spending points here for it, since it is still that page's spending.
-    await page.goto(spendingUrl("goals-recommendations"))
+    await page.goto(spendingUrl("references"))
     await expect(
       page.getByRole("link", { name: /^10-Year Appropriation Projection/ }),
     ).toHaveAttribute("href", /\/history$/)

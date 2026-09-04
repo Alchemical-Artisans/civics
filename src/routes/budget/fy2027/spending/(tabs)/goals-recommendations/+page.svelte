@@ -49,11 +49,12 @@
 </ul>
 
 <!-- Page 73's own lead-in to "Other Budget Reductions to Create a Balanced
-Budget", on the Requests & Challenges tab -- the book's linear run put it
-right before the challenges it sets up, since page 73 has no other order to
-be in. The tabs do: Goals sits next to Requests & Challenges in the nav, so
-it belongs with the rest of what the Mayor set out to do rather than
-repeated in front of the cuts that follow it. -->
+Budget", on the Challenges tab -- the book's linear run put it right before
+the challenges it sets up, since page 73 has no other order to be in. It
+belongs here instead: it is goals, the same as everything else on this tab,
+not a challenge, and a reader after what the Mayor set out to do wants it
+with the rest of what the Mayor set out to do rather than repeated in front
+of the cuts that follow it on page 73. -->
 <h2>Preliminary Budget Goals for Fiscal 2027</h2>
 
 <p>The Mayor's initial budget objectives for fiscal 2027 encompassed several key components:</p>
@@ -75,11 +76,11 @@ repeated in front of the cuts that follow it. -->
 </ul>
 
 <!-- Page 73's own close, the last of the three subsections "Other Budget
-Reductions to Create a Balanced Budget" runs on Requests & Challenges --
-moved for the same reason the goals recap above it was: the book's linear
-run put the resolution right after the cuts it resolves because a straight
-run of pages has nowhere else to put it, and the tabs let it sit with the
-rest of what the year's goals came down to instead. -->
+Reductions to Create a Balanced Budget" runs on the Challenges tab -- moved
+for the same reason the goals recap above it was: the book's linear run put
+the resolution right after the cuts it resolves because a straight run of
+pages has nowhere else to put it, and it belongs with the rest of what the
+year's goals came down to instead. -->
 <h2>Final Recommendations</h2>
 
 <p>
