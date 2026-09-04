@@ -309,6 +309,19 @@ test.describe("budget pages", () => {
       page.getByRole("heading", { name: "Long-Term Perspective Strategic Goals" }),
     ).toBeVisible()
 
+    // Page 73's own lead-in to "Other Budget Reductions" moved here from
+    // Requests & Challenges: the book's linear run put it right before the
+    // challenges it sets up, but Goals sits next to Requests & Challenges in
+    // the nav, so the same adjacency survives without repeating a goals
+    // recap in front of the cuts that follow it.
+    await expect(
+      page.getByRole("heading", { name: "Preliminary Budget Goals for Fiscal 2027" }),
+    ).toBeVisible()
+    await page.goto(spendingUrl("requests-challenges"))
+    await expect(
+      page.getByRole("heading", { name: "Preliminary Budget Goals for Fiscal 2027" }),
+    ).toHaveCount(0)
+
     // The calendar's link to the book opens it where the run begins, which is
     // now the goals.
     expect(await bookPdf(page).getAttribute("href")).toMatch(/#page=15$/)

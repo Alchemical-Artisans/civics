@@ -678,6 +678,18 @@ the prose and the tables it always was -- nothing here paraphrases or
 retypes a word of it -- just moved into its own route directory instead of
 sitting behind a panel a script showed and hid.
 
+**One exception to grouping by page range: "Preliminary Budget Goals for
+Fiscal 2027" sits on Goals now, not Requests & Challenges, even though it is
+page 73's own text.** In the book it opens "Other Budget Reductions to
+Create a Balanced Budget", a short recap of what the Mayor set out to do
+before the section explains what had to be cut to afford it -- necessary
+there because the book is a straight run of pages and page 73 has no other
+order to reach page 15's goals from. The tabs do: Goals sits next to
+Requests & Challenges in the nav, so the same adjacency the book's own
+pagination gave this passage survives one click over, and the recap no
+longer has to repeat itself in front of the cuts it sets up. Nothing in the
+words changed, only which tab holds them.
+
 **The five sit in a `(tabs)` route group,
 [`spending/(tabs)/+layout.ts`](<../src/routes/budget/fy2027/spending/(tabs)/+layout.ts>)
 and

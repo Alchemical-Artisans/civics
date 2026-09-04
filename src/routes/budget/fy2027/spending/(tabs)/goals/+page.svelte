@@ -47,3 +47,29 @@
     Whittier Technical High School.
   </li>
 </ul>
+
+<!-- Page 73's own lead-in to "Other Budget Reductions to Create a Balanced
+Budget", on the Requests & Challenges tab -- the book's linear run put it
+right before the challenges it sets up, since page 73 has no other order to
+be in. The tabs do: Goals sits next to Requests & Challenges in the nav, so
+it belongs with the rest of what the Mayor set out to do rather than
+repeated in front of the cuts that follow it. -->
+<h2>Preliminary Budget Goals for Fiscal 2027</h2>
+
+<p>The Mayor's initial budget objectives for fiscal 2027 encompassed several key components:</p>
+
+<ul>
+  <li>A <strong>3.3% property tax increase.</strong></li>
+  <li>
+    Absorption of the <strong>first 50% reduction</strong> from the Fire Department's Federal SAFER grant,
+    with the second half needing to be absorbed in 2028 to avoid potential layoffs.
+  </li>
+  <li>
+    Incorporation of the Police Department's <strong>Crisis Intervention Counselor</strong>
+    and
+    <strong>BRU Clinician</strong>, previously funded by Federal ARPA funds.
+  </li>
+  <li>
+    Allocation of funds to maintain <strong>level services</strong> across the city.
+  </li>
+</ul>

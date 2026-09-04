@@ -446,7 +446,14 @@ Notable pieces:
   wants before the detail, not after it -- and "What is OPEB?" is gone
   entirely: the paragraph beside it already names OPEB without needing the
   term defined, and the definition itself carried nothing the rest of the
-  page depends on.
+  page depends on. "Preliminary Budget Goals for Fiscal 2027" moved off
+  Requests & Challenges onto Goals too, despite being page 73's own text and
+  not page 15's -- it is the book's lead-in to "Other Budget Reductions to
+  Create a Balanced Budget", necessary there only because the book is a
+  straight run of pages with no way back to page 15's goals except turning
+  to it. Goals sits next to Requests & Challenges in the nav, so the same
+  adjacency survives one tab over without a goals recap sitting in front of
+  the cuts it sets up.
 - **`src/lib/BudgetTimeline.svelte`** draws page 13, the budget calendar, as the
   footer of _every_ page of a book, fixed to the bottom of the window: a row of
   twelve boxes

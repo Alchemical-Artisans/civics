@@ -66,28 +66,13 @@ inside a department's total. -->
 </table>
 
 <!-- Page 73: what had to come out of the budget above to balance it, and
-what is driving it up. -->
+what is driving it up. Its own lead-in, "Preliminary Budget Goals for Fiscal
+2027", moved to the Goals tab -- the book's linear run put it here, right
+before the challenges it sets up, because page 73 has no other order to be
+in; the tabs do, and Goals sits next to Requests & Challenges in the nav, so
+the same adjacency survives the move without this page needing its own
+recap of goals to open on. -->
 <h2>Other Budget Reductions to Create a Balanced Budget</h2>
-
-<h3>Preliminary Budget Goals for Fiscal 2027</h3>
-
-<p>The Mayor's initial budget objectives for fiscal 2027 encompassed several key components:</p>
-
-<ul>
-  <li>A <strong>3.3% property tax increase.</strong></li>
-  <li>
-    Absorption of the <strong>first 50% reduction</strong> from the Fire Department's Federal SAFER grant,
-    with the second half needing to be absorbed in 2028 to avoid potential layoffs.
-  </li>
-  <li>
-    Incorporation of the Police Department's <strong>Crisis Intervention Counselor</strong>
-    and
-    <strong>BRU Clinician</strong>, previously funded by Federal ARPA funds.
-  </li>
-  <li>
-    Allocation of funds to maintain <strong>level services</strong> across the city.
-  </li>
-</ul>
 
 <h3>Budgetary Challenges</h3>
 
