@@ -10,15 +10,6 @@ challenges with them because a straight run of pages had nowhere else to
 put either, but they are goals and their resolution, not a challenge, so
 this page needs neither a goals recap to open on nor a resolution to close
 with. -->
-<h2>Other Budget Reductions to Create a Balanced Budget</h2>
-
-<h3>Budgetary Challenges</h3>
-
-<p>
-  The challenge was to meet these budget goals amidst rising inflation and declining state and
-  federal <GlossaryTerm term="Revenues">revenues</GlossaryTerm>, all while minimizing the impact on
-  local property taxes.
-</p>
 
 <p>Some significant budgetary hurdles for 2027 included:</p>
 
@@ -47,8 +38,6 @@ with. -->
   >, or <strong>$12.2 million</strong>, over fiscal 2026. These requests surpassed the Mayor's
   target budget by <strong>$5.8 million</strong>.
 </p>
-
-<h3>Budgetary Challenges Continued</h3>
 
 <p>
   During initial budget discussions, the Mayor and Department Heads reached an agreement to reduce

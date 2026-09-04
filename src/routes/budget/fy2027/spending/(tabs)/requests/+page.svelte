@@ -5,7 +5,6 @@
 <!-- Page 72: what departments asked to add to the budgets above, and what
 they were granted. Not money of its own -- every approved line is already
 inside a department's total. -->
-<h2>Summary Department Budget Requests</h2>
 
 <p>
   Due to budgetary constraints, not all requested items could be included in the 2027 <GlossaryTerm

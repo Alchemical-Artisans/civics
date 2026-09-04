@@ -295,11 +295,11 @@ test.describe("budget pages", () => {
     ).toHaveCount(0)
 
     await page.goto(spendingUrl("requests"))
-    await expect(
-      page.getByRole("heading", { name: "Summary Department Budget Requests" }),
-    ).toBeVisible()
+    await expect(page.getByRole("article")).toContainText("Non-Union Step Increase")
     await page.goto(spendingUrl("challenges"))
-    await expect(page.getByRole("heading", { name: /^Other Budget Reductions/ })).toBeVisible()
+    await expect(
+      page.getByRole("heading", { name: "Major Budget Driver - Group Health Insurance" }),
+    ).toBeVisible()
 
     // And the goals the rest of it is an account of, from pages 15 and 16 --
     // the topic this page's own chart opens on, but this test has gone to two
@@ -667,8 +667,7 @@ test.describe("budget pages", () => {
     for (const [slug, heading] of [
       ["goals-recommendations", "Mayor's 2027 Budgetary Goals"],
       ["capital-planning", "Capital Planning"],
-      ["requests", "Summary Department Budget Requests"],
-      ["challenges", "Other Budget Reductions to Create a Balanced Budget"],
+      ["challenges", "Major Budget Driver - Group Health Insurance"],
       ["budget-in-brief", "2027 Budget in Brief"],
       ["council-orders", "What the Council appropriated"],
       ["references", "References"],
@@ -677,6 +676,13 @@ test.describe("budget pages", () => {
       await expect(noscript.getByRole("heading", { name: heading })).toBeVisible()
       await expect(noscript.getByRole("tab")).toHaveCount(0)
     }
+
+    // Requests carries no heading of its own at all now -- redundant with
+    // the tab it is already on -- so it is checked by its own content
+    // instead.
+    await noscript.goto(spendingUrl("requests"))
+    await expect(noscript.getByRole("article")).toContainText("Non-Union Step Increase")
+    await expect(noscript.getByRole("tab")).toHaveCount(0)
 
     await context.close()
   })

@@ -365,9 +365,14 @@ Notable pieces:
   common to all seven, and a route group is what lets `spending` itself sit
   outside that layout, since a bare visit there is not an eighth topic.
   Requests and Challenges were one tab, "Requests & Challenges", until pages
-  72 and 73 -- two different accounts, not two halves of one -- were split
-  the same way References was pulled out of the shared layout into its own
-  tab: `BookReferences` used to render unconditionally after
+  72 and 73 -- two different accounts, not two halves of one -- were split.
+  Neither keeps the book's own top heading now, or Challenges' "Budgetary
+  Challenges" / "Budgetary Challenges Continued": each tab already says what
+  its page is, and repeating that in a heading under it said nothing new.
+  "Major Budget Driver - Group Health Insurance" stays, since it names a
+  topic the tab label does not. References was pulled out of the shared
+  layout into its own tab the same way: `BookReferences` used to render
+  unconditionally after
   `{@render children()}`, under whichever of the (then five) topics was
   open, so six topics' worth of references arrived whether asked for or
   not; its own tab now answers only when opened, `spending/references`,

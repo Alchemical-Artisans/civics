@@ -704,11 +704,15 @@ departments asked to add to their budgets, and what had to come out of the
 budget instead to balance it -- not two halves of one story, and a label
 naming both was already a hint they wanted reading separately. Splitting
 cost nothing structural: each keeps its own route under the same `(tabs)`
-group, `spending/requests` and `spending/challenges`, and Challenges keeps
-the book's own three subsections ("Budgetary Challenges", "Budgetary
-Challenges Continued", "Major Budget Driver - Group Health Insurance") now
-that the goals recap and the resolution that used to bracket them have
-moved elsewhere.
+group, `spending/requests` and `spending/challenges`. Neither keeps the
+book's own top heading any more, or two of Challenges' own three
+subsections ("Summary Department Budget Requests" on Requests; "Other
+Budget Reductions to Create a Balanced Budget" and "Budgetary Challenges" /
+"Budgetary Challenges Continued" on Challenges) -- each is now exactly what
+its tab already says, and repeating "requests" or "challenges" in a heading
+under a tab of that name said nothing a reader did not already know. Only
+"Major Budget Driver - Group Health Insurance" survives on Challenges,
+since it names a specific topic the tab label does not.
 
 **References is the seventh tab and the one topic that is not the book's own:
 what every other topic here was built out of, and the parts of the book they
