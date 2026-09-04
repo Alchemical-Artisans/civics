@@ -134,6 +134,11 @@ book's other four years and the rows that belong to them only, dropped along
 with the rest of the site's history and forecasts, since this page is about
 2027's own request. The 40 rows that survive are exactly the ones with a page
 of their own under "2027 Capital Requests", linked here the same as before.
+With only one column left, the year is no longer what heads it -- "2027" is
+already the whole page's subject, named in the heading above and nowhere else
+on this table, so the money column reads "Amount" instead, the same word the
+one-column tables elsewhere on the site (`LONG_TERM_DEBT`, the reserve dials)
+head theirs with.
 -->
 <div class="tables" class:live={tablesLive}>
   <div
@@ -173,7 +178,7 @@ of their own under "2027 Capital Requests", linked here the same as before.
       <thead>
         <tr>
           <th scope="col"></th>
-          <th scope="col">2027</th>
+          <th scope="col">Amount</th>
         </tr>
       </thead>
       <tbody>
@@ -303,7 +308,7 @@ of their own under "2027 Capital Requests", linked here the same as before.
       <thead>
         <tr>
           <th scope="col"></th>
-          <th scope="col">2027</th>
+          <th scope="col">Amount</th>
         </tr>
       </thead>
       <tbody>
@@ -345,7 +350,7 @@ of their own under "2027 Capital Requests", linked here the same as before.
       <thead>
         <tr>
           <th scope="col"></th>
-          <th scope="col">2027</th>
+          <th scope="col">Amount</th>
         </tr>
       </thead>
       <tbody>
@@ -400,7 +405,7 @@ of their own under "2027 Capital Requests", linked here the same as before.
       <thead>
         <tr>
           <th scope="col"></th>
-          <th scope="col">2027</th>
+          <th scope="col">Amount</th>
         </tr>
       </thead>
       <tbody>
@@ -461,7 +466,7 @@ of their own under "2027 Capital Requests", linked here the same as before.
       <thead>
         <tr>
           <th scope="col"></th>
-          <th scope="col">2027</th>
+          <th scope="col">Amount</th>
         </tr>
       </thead>
       <tbody>
@@ -598,7 +603,7 @@ of their own under "2027 Capital Requests", linked here the same as before.
       <thead>
         <tr>
           <th scope="col"></th>
-          <th scope="col">2027</th>
+          <th scope="col">Amount</th>
         </tr>
       </thead>
       <tbody>
@@ -653,7 +658,7 @@ of their own under "2027 Capital Requests", linked here the same as before.
       <thead>
         <tr>
           <th scope="col"></th>
-          <th scope="col">2027</th>
+          <th scope="col">Amount</th>
         </tr>
       </thead>
       <tbody>
