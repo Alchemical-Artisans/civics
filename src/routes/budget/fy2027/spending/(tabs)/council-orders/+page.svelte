@@ -2,6 +2,13 @@
   import BudgetTable from "$lib/BudgetTable.svelte"
   import GlossaryTerm from "$lib/GlossaryTerm.svelte"
   import { APPROPRIATED, ENTERPRISE, GENERAL_FUND, ORDERS } from "../../../council-orders"
+
+  // 13.1, the Water Department order, is on Budget in Brief now -- a trial
+  // move, to see how folding an order into the spending-side topic it is
+  // about reads before doing the same with the rest. Filtered out here
+  // rather than in `council-orders.ts` itself, since the data is still every
+  // order the agenda carries; only this page's own selection of it changed.
+  const remaining = ORDERS.filter((order) => order.item !== "13.1")
 </script>
 
 <!-- Ours, not the book's: the book is the Mayor's proposal, and what follows is
@@ -16,7 +23,7 @@ orders are quoted as the agenda words them, spacing and all. -->
   carry.
 </p>
 
-{#each ORDERS as order (order.item)}
+{#each remaining as order (order.item)}
   <p><strong>{order.item}</strong> {order.text}</p>
 
   {#if order.parts}
@@ -27,7 +34,7 @@ orders are quoted as the agenda words them, spacing and all. -->
     </ul>
   {/if}
 
-  {#if order.item === "13.1"}
+  {#if order.item === "13.2"}
     <BudgetTable table={ENTERPRISE} />
   {/if}
 

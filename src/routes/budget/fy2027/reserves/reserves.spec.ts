@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest"
 import { amount, cell } from "$lib/budget-table"
-import { FUND_BALANCE, FUND_BALANCE_HISTORY, FREE_CASH, STABILIZATION } from "./tables"
+import { FUND_BALANCE, FREE_CASH, STABILIZATION } from "./tables"
 
 const money = (table: typeof FUND_BALANCE, row: string, column = "Amount") =>
   amount(cell(table, row, column))!
@@ -62,56 +62,5 @@ describe("the three reserve policies", () => {
       "Minimum Balance",
       "Actual Balance",
     ])
-  })
-})
-
-/** What the page's second chart draws: the bottom row of page 18's table. */
-describe("three years of the fund balance", () => {
-  const YEARS = ["2023", "2024", "2025"]
-  const ending = YEARS.map((year) => money(FUND_BALANCE_HISTORY, "Ending Fund Balance", year))
-
-  it("rises across the three years the book accounts for", () => {
-    expect(ending).toEqual([10209394, 12569995, 13985453])
-    expect(ending).toEqual([...ending].sort((a, b) => a - b))
-  })
-
-  // Each year opens where the last one closed, which is what makes the three
-  // columns one line rather than three unrelated figures.
-  it("opens each year where the last one closed", () => {
-    for (const [at, year] of YEARS.slice(1).entries()) {
-      expect(money(FUND_BALANCE_HISTORY, "Beginning Fund Balance", year)).toBe(ending[at])
-    }
-  })
-
-  // The book's own arithmetic: what came in, less what went out, less the
-  // encumbrances carried forward.
-  it("moves by the year's own revenue, spending and encumbrances", () => {
-    for (const [at, year] of YEARS.entries()) {
-      const moved =
-        money(FUND_BALANCE_HISTORY, "Plus Fiscal Year Revenue", year) +
-        money(FUND_BALANCE_HISTORY, "Less Fiscal Year Expenditures", year) +
-        money(FUND_BALANCE_HISTORY, "Net Reserve for Encumbrances", year)
-
-      expect(money(FUND_BALANCE_HISTORY, "Beginning Fund Balance", year) + moved).toBe(ending[at])
-    }
-  })
-
-  // The expenditure row is printed in parentheses, which is the sum's minus
-  // sign and not a negative amount of spending. The chart draws the line at
-  // what was spent, under the book's own label for the row, so this is the
-  // reading that has to stay true of the cell.
-  it("prints the expenditures as the sum's subtraction", () => {
-    for (const year of YEARS) {
-      expect(cell(FUND_BALANCE_HISTORY, "Less Fiscal Year Expenditures", year)).toMatch(/^\$\(/)
-      expect(money(FUND_BALANCE_HISTORY, "Less Fiscal Year Expenditures", year)).toBeLessThan(0)
-    }
-  })
-
-  // The book gives the same balance on the same date twice and differs from
-  // itself by a dollar: $13,985,453 in this table, $13,985,452 on the dial and
-  // in the prose beside it. Both are printed as printed; this is here so a
-  // correction has to account for the dollar rather than quietly absorb it.
-  it("closes a dollar over the dial's figure for the same date", () => {
-    expect(ending[2] - money(FUND_BALANCE, "Actual")).toBe(1)
   })
 })

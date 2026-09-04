@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest"
-import { amount, cell, column, sum } from "$lib/budget-table"
-import { LONG_TERM_DEBT, ANNUAL_DEBT_PAYMENTS, DEBT_PER_CAPITA, DEBT_POLICIES } from "./tables"
+import { cell, column, sum } from "$lib/budget-table"
+import { LONG_TERM_DEBT, DEBT_POLICIES } from "./tables"
 
 const percent = (value: string) => Number(value.replace("%", ""))
 
@@ -42,46 +42,5 @@ describe("the three debt policies", () => {
     expect(limit).toBe(65)
     expect(actual).toBe(59)
     expect(actual).toBeLessThan(limit)
-  })
-})
-
-/** What the payments chart draws: page 22's middle row, on its own scale
-    because the revenue row beside it is two orders of magnitude larger. */
-describe("five years of annual debt payments", () => {
-  const YEARS = ANNUAL_DEBT_PAYMENTS.columns.slice(1)
-
-  it("rises to $8,834,819 by 2027", () => {
-    expect(amount(cell(ANNUAL_DEBT_PAYMENTS, "Annual Debt Payments", "2027"))).toBe(8834819)
-  })
-
-  // The book's own row is the two other rows' share, to the tenth of a
-  // percent -- checked here so a correction to either dollar row has to
-  // account for this one too.
-  it("prints the payment's share of revenue in its own row", () => {
-    for (const year of YEARS) {
-      const revenue = amount(cell(ANNUAL_DEBT_PAYMENTS, "General Fund Revenue", year))!
-      const payment = amount(cell(ANNUAL_DEBT_PAYMENTS, "Annual Debt Payments", year))!
-      const share = cell(ANNUAL_DEBT_PAYMENTS, "Debt Payments as % of Revenue", year)
-
-      expect(Math.round((payment / revenue) * 1000) / 10).toBeCloseTo(percent(share), 1)
-    }
-  })
-})
-
-/** What the comparison chart draws: eleven years of Haverhill against the
-    state average, both in the same units. */
-describe("eleven years of debt per capita", () => {
-  it("has Haverhill below the state average every year but its own high", () => {
-    for (const row of DEBT_PER_CAPITA.rows) {
-      const haverhill = amount(cell(DEBT_PER_CAPITA, row.label, "Haverhill"))!
-      const state = amount(cell(DEBT_PER_CAPITA, row.label, "State Average"))!
-      expect(haverhill).toBeLessThanOrEqual(state)
-    }
-  })
-
-  it("closes 2026 the closest it has been to the state average", () => {
-    const haverhill = amount(cell(DEBT_PER_CAPITA, "2026", "Haverhill"))!
-    const state = amount(cell(DEBT_PER_CAPITA, "2026", "State Average"))!
-    expect(state - haverhill).toBe(136)
   })
 })

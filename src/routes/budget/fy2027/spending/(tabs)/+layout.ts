@@ -72,10 +72,6 @@ export const load: LayoutLoad = async ({ parent }) => {
     // it are on the Council's agenda, not in the book.
     references: [
       { title: "Fiscal Reserves", section: "reserves" },
-      // Where this spending is going: the ten-year projection, which was on
-      // this page until it was clear that what it has in common with the rest
-      // of the book is not that it is spending but that it is not about 2027.
-      { title: "10-Year Appropriation Projection", section: "history" },
       { title: "Debt Service", href: Router.pdfPage(book.budget!, 200) },
       { title: "State Assessments", href: Router.pdfPage(book.budget!, 209) },
       { title: "Employee Benefits", href: Router.pdfPage(book.budget!, 211) },

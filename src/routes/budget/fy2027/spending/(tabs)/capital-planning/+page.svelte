@@ -1,87 +1,23 @@
 <script lang="ts">
   import { onMount } from "svelte"
-  import BudgetColumns from "$lib/BudgetColumns.svelte"
   import GlossaryTerm from "$lib/GlossaryTerm.svelte"
-  import { CAPITAL_REQUESTS } from "../../tables"
-  import { amount, cell } from "$lib/budget-table"
   import { Router } from "$lib/router"
 
   let { data } = $props()
 
   /**
-   * Page 29's table, as one stacked bar per year rather than a grid of
-   * fifty-odd cells. `order` is every category's five-year total, largest
-   * first, so a category keeps one colour and one band running across all
-   * five bars -- read down the same band in each rather than picked out of
-   * five independently-sorted ones. "Grand Total" is excluded as a category
-   * (`order` would draw a tenth band that is every other category added
-   * together) and read directly as each bar's own stated total instead of
-   * summed, the same reason `SPENDING_TOTAL` is stated rather than summed.
-   */
-  const capitalYears = CAPITAL_REQUESTS.columns.slice(1, -1)
-  const capitalCategories = CAPITAL_REQUESTS.rows
-    .map((row) => row.label)
-    .filter((label) => label !== "Grand Total")
-  const capitalOrder = [...capitalCategories].sort(
-    (a, b) =>
-      amount(cell(CAPITAL_REQUESTS, b, "Grand Total"))! -
-      amount(cell(CAPITAL_REQUESTS, a, "Grand Total"))!,
-  )
-
-  /**
-   * Two one-time projects that are almost the whole of the 2028 building
-   * total: $90 million for JGW/Tilton and $30 million for the Fire Station,
-   * $120 million of the category's $125,002,000 that year. Left out of this
-   * chart only -- the table below still carries both in full, at their own
-   * rows -- because $120 million in two projects sets the scale every other
-   * category and every other year is read against, and against it they all
-   * draw as a flat line at the foot. The bar beside the chart says so now,
-   * charted rather than written out in a note; nothing here touches
-   * `CAPITAL_REQUESTS` itself, which stays the book's own figures.
-   */
-  const EXCLUDED_YEAR = "2028"
-  const EXCLUDED_CATEGORY = "Buildings & Building Improvements"
-  const EXCLUDED_PROJECTS = [
-    { label: "JGW / Tilton School Core Project", amount: 90000000 },
-    { label: "Fire Station", amount: 30000000 },
-  ]
-  const excludedTotal = EXCLUDED_PROJECTS.reduce((sum, project) => sum + project.amount, 0)
-
-  const capitalRequests = capitalYears.map((year) => ({
-    label: year,
-    total:
-      amount(cell(CAPITAL_REQUESTS, "Grand Total", year))! -
-      (year === EXCLUDED_YEAR ? excludedTotal : 0),
-    parts: capitalCategories
-      .map((label) => {
-        const raw = amount(cell(CAPITAL_REQUESTS, label, year))
-        if (raw === null) return null
-        const value =
-          year === EXCLUDED_YEAR && label === EXCLUDED_CATEGORY ? raw - excludedTotal : raw
-        return value > 0 ? { label, amount: value } : null
-      })
-      .filter((part): part is { label: string; amount: number } => part !== null),
-  }))
-
-  /**
-   * The same two projects, drawn as their own bar rather than only named in
-   * the note -- one column, largest first, the same component and the same
-   * reading (hover or focus a segment for its figure) as the chart it sits
-   * beside. It carries no `order`: two projects that appear in no other bar
-   * have no shared band to keep a colour for.
-   */
-  const excludedSummary = [
-    { label: "Excluded from 2028", parts: EXCLUDED_PROJECTS, total: excludedTotal },
-  ]
-
-  /**
-   * Pages 30 to 35's own tables, one per category -- eight short tables of
-   * the same shape, facets of one dataset rather than eight distinct topics,
+   * Pages 30 to 35's own tables, one per category -- seven short tables of
+   * the same shape, facets of one dataset rather than seven distinct topics,
    * so a route each the way the five topics above got would be a page with
    * nothing on it but one table. Tabbed in place instead, the same
    * `live`/hidden-markup mechanism `spending`'s own topics used before they
    * became routes -- right again here, since nothing here needs linking to
    * on its own the way "Council Orders" did.
+   *
+   * The book gives eight of these, but "Planning & Design" carries only two
+   * line items and both are 2029 requests -- nothing for 2027, not even a
+   * total the book prints as $0 -- so trimmed to this year alone it is a tab
+   * with nothing on it, and it is left out rather than kept empty.
    */
   const TABLES = [
     { slug: "buildings", label: "Buildings & Building Improvements" },
@@ -90,7 +26,6 @@
     { slug: "equipment", label: "Equipment" },
     { slug: "infrastructure", label: "Infrastructure" },
     { slug: "land", label: "Land & Land Improvements" },
-    { slug: "planning", label: "Planning & Design" },
     { slug: "vehicles", label: "Vehicles" },
   ]
 
@@ -118,27 +53,6 @@ the page-78 table's "Capital - Pay as you go" line is empty for 2027 and
 the funding decision was postponed. What capital costs this year is the
 debt service on what was borrowed for it in years past. -->
 <h2>Capital Planning</h2>
-
-<!--
-Page 29's table is a stacked bar per year now, not a heading and a grid of
-its own: nine categories across five years read as a shape charted, not as
-fifty-odd cells read one at a time. It opens the section, ahead of the
-book's own prose, rather than sitting fixed above every tab the way it used
-to -- a reader lands on the shape of the five years before the paragraphs
-that explain them. The second bar beside it is what the first one leaves out
-of 2028 -- the two projects themselves, charted rather than written out in a
-note under both, so a reader comparing bar heights across years is shown the
-reason 2028's is shorter than the table under it says, not just told it. The
-two projects are still in that table, at their own rows.
--->
-<div class="not-prose mb-6 flex flex-wrap items-end gap-10">
-  <div class="h-40">
-    <BudgetColumns rows={capitalRequests} order={capitalOrder} minHeight={96} />
-  </div>
-  <div class="h-40">
-    <BudgetColumns rows={excludedSummary} minHeight={96} />
-  </div>
-</div>
 
 <p>
   The city's current five-year capital requests exceed $173 million, primarily focusing on building
@@ -211,9 +125,15 @@ pages wherever it runs out of room -- so the page titles ("Building
 Improvements", "Building Improvements Continued & Computer Equipment", and so
 on) name whatever happens to start or finish on that page rather than a
 section. The category headings the table itself carries are used here
-instead, which keeps each category whole, and now tabbed -- eight tables run
+instead, which keeps each category whole, and now tabbed -- seven tables run
 long as a straight scroll, and a reader after one category no longer has to
-pass the other seven to reach it.
+pass the others to reach it.
+
+Each table keeps only its 2027 column and the rows with a figure in it -- the
+book's other four years and the rows that belong to them only, dropped along
+with the rest of the site's history and forecasts, since this page is about
+2027's own request. The 40 rows that survive are exactly the ones with a page
+of their own under "2027 Capital Requests", linked here the same as before.
 -->
 <div class="tables" class:live={tablesLive}>
   <div
@@ -254,209 +174,118 @@ pass the other seven to reach it.
         <tr>
           <th scope="col"></th>
           <th scope="col">2027</th>
-          <th scope="col">2028</th>
-          <th scope="col">2029</th>
-          <th scope="col">2030</th>
-          <th scope="col">2031</th>
         </tr>
       </thead>
       <tbody>
-        <tr
-          ><th scope="row">Animal Shelter - Police</th><td></td><td>$1,725,000</td><td></td><td
-          ></td><td></td></tr
-        >
-        <tr
-          ><th scope="row">Boilers at High School Schematic Design</th><td></td><td>$100,000</td><td
-          ></td><td></td><td></td></tr
-        >
-        <tr
-          ><th scope="row">Bradford Elementary HVAC</th><td></td><td>$1,000,000</td><td></td><td
-          ></td><td></td></tr
-        >
-        <tr
-          ><th scope="row">Bradford Elementary Roof</th><td></td><td></td><td>$300,000</td><td
-          ></td><td></td></tr
-        >
-        <tr
-          ><th scope="row">City Hall Auditorium Air Conditioning</th><td></td><td></td><td></td><td
-            >$750,000</td
-          ><td></td></tr
-        >
-        <tr
-          ><th scope="row">City Hall Auditorium Balcony Railings</th><td></td><td></td><td
-            >$275,000</td
-          ><td></td><td></td></tr
-        >
-        <tr
-          ><th scope="row"
+        <tr>
+          <th scope="row"
             ><a href={Router.capitalRequestItem(data.book.id, "city-hall-elevator-rehabilitation")}
               >City Hall Elevator Rehabilitation</a
             ></th
-          ><td>$130,000</td><td></td><td></td><td></td><td></td></tr
-        >
-        <tr
-          ><th scope="row">City Hall Heating Circulation &amp; Controls</th><td></td><td
-            >$770,000</td
-          ><td></td><td></td><td></td></tr
-        >
-        <tr
-          ><th scope="row">City Hall Repairs &amp; Maintenance</th><td></td><td>$75,000</td><td
-          ></td><td>$80,000</td><td></td></tr
-        >
-        <tr
-          ><th scope="row">City Hall Window Replacement</th><td></td><td></td><td></td><td></td><td
-            >$2,900,000</td
-          ></tr
-        >
-        <tr
-          ><th scope="row"
+          >
+          <td>$130,000</td>
+        </tr>
+        <tr>
+          <th scope="row"
             ><a href={Router.capitalRequestItem(data.book.id, "elevator-repair-high-school")}
               >Elevator Repair - High School</a
             ></th
-          ><td>$200,000</td><td></td><td></td><td></td><td></td></tr
-        >
-        <tr
-          ><th scope="row"
+          >
+          <td>$200,000</td>
+        </tr>
+        <tr>
+          <th scope="row"
             ><a
               href={Router.capitalRequestItem(
                 data.book.id,
                 "elevator-repair-pentucket-lake-silver-hill-golden-hill",
               )}>Elevator Repair: Pentucket Lake, Silver Hill, Golden Hill</a
             ></th
-          ><td>$525,000</td><td></td><td></td><td></td><td></td></tr
-        >
-        <tr
-          ><th scope="row"
+          >
+          <td>$525,000</td>
+        </tr>
+        <tr>
+          <th scope="row"
             ><a href={Router.capitalRequestItem(data.book.id, "fire-alarm-high-school")}
               >Fire Alarm - High School</a
             ></th
-          ><td>$800,000</td><td></td><td></td><td></td><td></td></tr
-        >
-        <tr
-          ><th scope="row">Fire Station</th><td></td><td>$30,000,000</td><td></td><td></td><td
-          ></td></tr
-        >
-        <tr
-          ><th scope="row"
+          >
+          <td>$800,000</td>
+        </tr>
+        <tr>
+          <th scope="row"
             ><a href={Router.capitalRequestItem(data.book.id, "generators-transfer-panels-school")}
               >Generators &amp; Transfer Panels - School</a
             ></th
-          ><td>$80,000</td><td>$80,000</td><td>$80,000</td><td>$80,000</td><td>$80,000</td></tr
-        >
-        <tr
-          ><th scope="row"
+          >
+          <td>$80,000</td>
+        </tr>
+        <tr>
+          <th scope="row"
             ><a href={Router.capitalRequestItem(data.book.id, "golden-hill-roof-school")}
               >Golden Hill Roof - School</a
             ></th
-          ><td>$750,000</td><td></td><td></td><td></td><td></td></tr
-        >
-        <tr
-          ><th scope="row"
+          >
+          <td>$750,000</td>
+        </tr>
+        <tr>
+          <th scope="row"
             ><a href={Router.capitalRequestItem(data.book.id, "heating-system-highway-garage")}
               >Heating System Highway Garage</a
             ></th
-          ><td>$130,000</td><td></td><td></td><td></td><td></td></tr
-        >
-        <tr
-          ><th scope="row"
+          >
+          <td>$130,000</td>
+        </tr>
+        <tr>
+          <th scope="row"
             ><a
               href={Router.capitalRequestItem(
                 data.book.id,
                 "highway-administration-roof-replacement",
               )}>Highway Administration Roof Replacement</a
             ></th
-          ><td>$50,000</td><td></td><td></td><td></td><td></td></tr
-        >
-        <tr
-          ><th scope="row"
+          >
+          <td>$50,000</td>
+        </tr>
+        <tr>
+          <th scope="row"
             ><a href={Router.capitalRequestItem(data.book.id, "highway-garage-roof-repairs")}
               >Highway Garage Roof Repairs</a
             ></th
-          ><td>$15,000</td><td></td><td></td><td></td><td></td></tr
-        >
-        <tr
-          ><th scope="row">Highway Yard Rehabilitation</th><td></td><td>$300,000</td><td></td><td
-            >$20,000</td
-          ><td></td></tr
-        >
-        <tr
-          ><th scope="row">HVAC replacement for Indoor Skating Rink</th><td></td><td></td><td
-            >$300,000</td
-          ><td></td><td></td></tr
-        >
-        <tr
-          ><th scope="row">JGW / Tilton School Core Project</th><td></td><td>$90,000,000</td><td
-          ></td><td></td><td></td></tr
-        >
-        <tr
-          ><th scope="row">Oil Tank Removals - School</th><td></td><td>$100,000</td><td>$100,000</td
-          ><td></td><td></td></tr
-        >
-        <tr
-          ><th scope="row"
+          >
+          <td>$15,000</td>
+        </tr>
+        <tr>
+          <th scope="row"
             ><a
               href={Router.capitalRequestItem(
                 data.book.id,
                 "park-barn-asbestos-removal-and-floor-and-stair-replacement-highway",
               )}>Park Barn Asbestos Removal and Floor and Stair Replacement - Highway</a
             ></th
-          ><td>$50,000</td><td></td><td></td><td></td><td></td></tr
-        >
-        <tr
-          ><th scope="row"
+          >
+          <td>$50,000</td>
+        </tr>
+        <tr>
+          <th scope="row"
             ><a href={Router.capitalRequestItem(data.book.id, "park-barn-rehabilitation-highway")}
               >Park Barn Rehabilitation - Highway</a
             ></th
-          ><td>$15,000</td><td>$40,000</td><td>$15,000</td><td>$15,000</td><td>$15,000</td></tr
-        >
-        <tr
-          ><th scope="row">Parking Lot Repairs - School</th><td></td><td>$100,000</td><td
-            >$100,000</td
-          ><td>$100,000</td><td></td></tr
-        >
-        <tr
-          ><th scope="row">Pentucket Lake Roof - School</th><td></td><td>$300,000</td><td></td><td
-          ></td><td></td></tr
-        >
-        <tr
-          ><th scope="row">Police Locker Rooms</th><td></td><td></td><td></td><td></td><td
-            >$1,000,000</td
-          ></tr
-        >
-        <tr
-          ><th scope="row">Police Water Heater</th><td></td><td>$12,000</td><td></td><td></td><td
-          ></td></tr
-        >
-        <tr
-          ><th scope="row">Powder House Renovations - Community Development</th><td></td><td
-            >$100,000</td
-          ><td></td><td></td><td></td></tr
-        >
-        <tr
-          ><th scope="row">School Ceiling Refurbishments</th><td></td><td>$100,000</td><td
-            >$100,000</td
-          ><td></td><td></td></tr
-        >
-        <tr
-          ><th scope="row"
+          >
+          <td>$15,000</td>
+        </tr>
+        <tr>
+          <th scope="row"
             ><a href={Router.capitalRequestItem(data.book.id, "silver-hill-roof-school")}
               >Silver Hill Roof - School</a
             ></th
-          ><td>$815,656</td><td></td><td></td><td></td><td></td></tr
-        >
-        <tr
-          ><th scope="row">Stadium Restrooms</th><td></td><td>$200,000</td><td></td><td></td><td
-          ></td></tr
-        >
-        <tr
-          ><th scope="row">Winnekenni Castle Repairs &amp; Restorations - CONSTRUCTION</th><td
-          ></td><td></td><td></td><td>$5,000,000</td><td></td></tr
-        >
-        <tr
-          ><th scope="row">Buildings &amp; Building Improvements Total</th><td>$3,560,656</td><td
-            >$125,002,000</td
-          ><td>$1,270,000</td><td>$6,045,000</td><td>$3,995,000</td></tr
-        >
+          >
+          <td>$815,656</td>
+        </tr>
+        <tr>
+          <th scope="row">Buildings &amp; Building Improvements Total</th>
+          <td>$3,560,656</td>
+        </tr>
       </tbody>
     </table>
   </div>
@@ -475,61 +304,30 @@ pass the other seven to reach it.
         <tr>
           <th scope="col"></th>
           <th scope="col">2027</th>
-          <th scope="col">2028</th>
-          <th scope="col">2029</th>
-          <th scope="col">2030</th>
-          <th scope="col">2031</th>
         </tr>
       </thead>
       <tbody>
-        <tr
-          ><th scope="row">Backup System Redundancy - IT</th><td></td><td></td><td>$25,972</td><td
-          ></td><td></td></tr
-        >
-        <tr
-          ><th scope="row">Core Network Overhaul - IT</th><td></td><td>$103,870</td><td></td><td
-          ></td><td></td></tr
-        >
-        <tr
-          ><th scope="row">DPW Internet Resilience - IT</th><td></td><td>$30,000</td><td></td><td
-          ></td><td></td></tr
-        >
-        <tr
-          ><th scope="row"
+        <tr>
+          <th scope="row"
             ><a
               href={Router.capitalRequestItem(data.book.id, "fire-station-internet-resilience-it")}
               >Fire Station Internet Resilience- IT</a
             ></th
-          ><td>$45,000</td><td></td><td></td><td></td><td></td></tr
-        >
-        <tr
-          ><th scope="row">Firewall Upgrade - IT</th><td></td><td></td><td>$57,940</td><td></td><td
-          ></td></tr
-        >
-        <tr
-          ><th scope="row"
+          >
+          <td>$45,000</td>
+        </tr>
+        <tr>
+          <th scope="row"
             ><a href={Router.capitalRequestItem(data.book.id, "legacy-wiring-clean-up-it")}
               >Legacy Wiring Clean Up - IT</a
             ></th
-          ><td>$25,000</td><td></td><td></td><td></td><td></td></tr
-        >
-        <tr
-          ><th scope="row">Remote Location Fiber Upgrade - IT</th><td></td><td></td><td></td><td
-          ></td><td>$160,972</td></tr
-        >
-        <tr
-          ><th scope="row">Server Hardware Refresh - IT</th><td></td><td></td><td>$56,972</td><td
-          ></td><td></td></tr
-        >
-        <tr
-          ><th scope="row">Server Room Upgrade - IT</th><td></td><td></td><td>$43,240</td><td
-          ></td><td></td></tr
-        >
-        <tr
-          ><th scope="row">Computer Equipment Total</th><td>$70,000</td><td>$133,870</td><td
-            >$184,124</td
-          ><td></td><td>$160,972</td></tr
-        >
+          >
+          <td>$25,000</td>
+        </tr>
+        <tr>
+          <th scope="row">Computer Equipment Total</th>
+          <td>$70,000</td>
+        </tr>
       </tbody>
     </table>
   </div>
@@ -543,60 +341,48 @@ pass the other seven to reach it.
   >
     <h2>Computer Software</h2>
 
-    <!--
-This total is $545,146 in 2027 against the $495,146 the summary on page 29
-gives, because the summary lists the CMMS system's $50,000 as a category of
-its own called "Software" and this table folds it in here. Both are printed
-as they stand.
--->
     <table>
       <thead>
         <tr>
           <th scope="col"></th>
           <th scope="col">2027</th>
-          <th scope="col">2028</th>
-          <th scope="col">2029</th>
-          <th scope="col">2030</th>
-          <th scope="col">2031</th>
         </tr>
       </thead>
       <tbody>
-        <tr
-          ><th scope="row"
+        <tr>
+          <th scope="row"
             ><a
               href={Router.capitalRequestItem(
                 data.book.id,
                 "archival-inventory-and-digitization-city-clerk",
               )}>Archival Inventory and Digitization - City Clerk</a
             ></th
-          ><td>$160,000</td><td></td><td></td><td></td><td></td></tr
-        >
-        <tr
-          ><th scope="row"
+          >
+          <td>$160,000</td>
+        </tr>
+        <tr>
+          <th scope="row"
             ><a
               href={Router.capitalRequestItem(
                 data.book.id,
                 "cmms-computerized-maintenance-management-system-highway",
               )}>CMMS Computerized Maintenance Management System - Highway</a
             ></th
-          ><td>$50,000</td><td></td><td></td><td></td><td></td></tr
-        >
-        <tr
-          ><th scope="row">Dispatch &amp; Records Software Update - Police</th><td></td><td></td><td
-            >$308,994</td
-          ><td></td><td></td></tr
-        >
-        <tr
-          ><th scope="row"
+          >
+          <td>$50,000</td>
+        </tr>
+        <tr>
+          <th scope="row"
             ><a href={Router.capitalRequestItem(data.book.id, "tax-collection-software-treasurer")}
               >Tax Collection Software - Treasurer</a
             ></th
-          ><td>$335,146</td><td></td><td></td><td></td><td></td></tr
-        >
-        <tr
-          ><th scope="row">Computer Software Total</th><td>$545,146</td><td></td><td>$308,994</td
-          ><td></td><td></td></tr
-        >
+          >
+          <td>$335,146</td>
+        </tr>
+        <tr>
+          <th scope="row">Computer Software Total</th>
+          <td>$545,146</td>
+        </tr>
       </tbody>
     </table>
   </div>
@@ -615,103 +401,49 @@ as they stand.
         <tr>
           <th scope="col"></th>
           <th scope="col">2027</th>
-          <th scope="col">2028</th>
-          <th scope="col">2029</th>
-          <th scope="col">2030</th>
-          <th scope="col">2031</th>
         </tr>
       </thead>
       <tbody>
-        <tr
-          ><th scope="row">Airboat - Police</th><td></td><td>$113,403</td><td></td><td></td><td
-          ></td></tr
-        >
-        <tr
-          ><th scope="row">Backhoe - Highway</th><td></td><td></td><td>$170,000</td><td></td><td
-          ></td></tr
-        >
-        <tr
-          ><th scope="row"
+        <tr>
+          <th scope="row"
             ><a href={Router.capitalRequestItem(data.book.id, "batwing-attachment-highway")}
               >Batwing Attachment - Highway</a
             ></th
-          ><td>$50,000</td><td></td><td></td><td></td><td></td></tr
-        >
-        <tr
-          ><th scope="row">Crane CDL Grapple Truck - Highway</th><td></td><td></td><td></td><td
-          ></td><td>$365,000</td></tr
-        >
-        <tr
-          ><th scope="row">Front End Loader - Highway</th><td></td><td></td><td>$375,000</td><td
-          ></td><td></td></tr
-        >
-        <tr
-          ><th scope="row"
+          >
+          <td>$50,000</td>
+        </tr>
+        <tr>
+          <th scope="row"
             ><a href={Router.capitalRequestItem(data.book.id, "gasboy-vehicle-fuel-system-highway")}
               >Gasboy Vehicle Fuel System - Highway</a
             ></th
-          ><td>$60,000</td><td></td><td></td><td></td><td></td></tr
-        >
-        <tr
-          ><th scope="row">Harbormaster Boat</th><td></td><td>$252,310</td><td></td><td></td><td
-          ></td></tr
-        >
-        <tr
-          ><th scope="row">iPad &amp; Phones - Inspectional Services</th><td></td><td>$30,000</td
-          ><td></td><td></td><td></td></tr
-        >
-        <tr
-          ><th scope="row">Mini Excavator - Highway</th><td></td><td>$130,000</td><td></td><td
-          ></td><td></td></tr
-        >
-        <tr
-          ><th scope="row">Parking Kiosks - Highway</th><td></td><td></td><td>$500,000</td><td
-          ></td><td></td></tr
-        >
-        <tr
-          ><th scope="row"
+          >
+          <td>$60,000</td>
+        </tr>
+        <tr>
+          <th scope="row"
             ><a href={Router.capitalRequestItem(data.book.id, "radios-fire")}>Radios - Fire</a></th
-          ><td>$2,384,135</td><td></td><td></td><td></td><td></td></tr
-        >
-        <tr
-          ><th scope="row">Rubber Tired Excavator - Highway</th><td></td><td></td><td></td><td
-            >$220,000</td
-          ><td></td></tr
-        >
-        <tr
-          ><th scope="row"
+          >
+          <td>$2,384,135</td>
+        </tr>
+        <tr>
+          <th scope="row"
             ><a href={Router.capitalRequestItem(data.book.id, "scba-fire")}>SCBA - Fire</a></th
-          ><td>$1,290,863</td><td></td><td></td><td></td><td></td></tr
-        >
-        <tr
-          ><th scope="row"
+          >
+          <td>$1,290,863</td>
+        </tr>
+        <tr>
+          <th scope="row"
             ><a href={Router.capitalRequestItem(data.book.id, "skid-steer-highway")}
               >Skid Steer - Highway</a
             ></th
-          ><td>$120,000</td><td></td><td></td><td></td><td></td></tr
-        >
-        <tr
-          ><th scope="row">Street Sweeper - Highway</th><td></td><td></td><td>$300,000</td><td
-          ></td><td></td></tr
-        >
-        <tr
-          ><th scope="row">Trackless Tractor - Highway</th><td></td><td>$225,000</td><td
-            >$225,000</td
-          ><td>$225,000</td><td></td></tr
-        >
-        <tr
-          ><th scope="row">Tractor - Highway</th><td></td><td></td><td>$60,000</td><td></td><td
-          ></td></tr
-        >
-        <tr
-          ><th scope="row">Zero Turn Mower - Highway</th><td></td><td>$30,000</td><td></td><td
-          ></td><td></td></tr
-        >
-        <tr
-          ><th scope="row">Equipment Total</th><td>$3,904,998</td><td>$780,713</td><td
-            >$1,630,000</td
-          ><td>$445,000</td><td>$365,000</td></tr
-        >
+          >
+          <td>$120,000</td>
+        </tr>
+        <tr>
+          <th scope="row">Equipment Total</th>
+          <td>$3,904,998</td>
+        </tr>
       </tbody>
     </table>
   </div>
@@ -730,165 +462,125 @@ as they stand.
         <tr>
           <th scope="col"></th>
           <th scope="col">2027</th>
-          <th scope="col">2028</th>
-          <th scope="col">2029</th>
-          <th scope="col">2030</th>
-          <th scope="col">2031</th>
         </tr>
       </thead>
       <tbody>
-        <tr
-          ><th scope="row"
+        <tr>
+          <th scope="row"
             ><a
               href={Router.capitalRequestItem(
                 data.book.id,
                 "brandy-brow-east-meadow-river-culvert-highway",
               )}>Brandy Brow East Meadow River Culvert - Highway</a
             ></th
-          ><td>$65,000</td><td></td><td></td><td></td><td></td></tr
-        >
-        <tr
-          ><th scope="row"
+          >
+          <td>$65,000</td>
+        </tr>
+        <tr>
+          <th scope="row"
             ><a href={Router.capitalRequestItem(data.book.id, "bridge-cip-update-highway")}
               >Bridge CIP Update - Highway</a
             ></th
-          ><td>$50,000</td><td></td><td></td><td></td><td></td></tr
-        >
-        <tr
-          ><th scope="row">Forest Street Bridge Replacement - Engineering</th><td></td><td
-            >$287,500</td
-          ><td></td><td></td><td></td></tr
-        >
-        <tr
-          ><th scope="row">Intersection Improvements- Kingsbury/Chadwick/Willow - Highway</th><td
-          ></td><td>$600,000</td><td></td><td></td><td></td></tr
-        >
-        <tr
-          ><th scope="row"
+          >
+          <td>$50,000</td>
+        </tr>
+        <tr>
+          <th scope="row"
             ><a href={Router.capitalRequestItem(data.book.id, "kenoza-ave-improvements-highway")}
               >Kenoza Ave Improvements - Highway</a
             ></th
-          ><td>$200,000</td><td></td><td></td><td></td><td></td></tr
-        >
-        <tr
-          ><th scope="row">Kingsbury Ave/Chadwick/Willow Intersection Improvements - Engineering</th
-          ><td></td><td>$600,000</td><td></td><td></td><td></td></tr
-        >
-        <tr
-          ><th scope="row"
+          >
+          <td>$200,000</td>
+        </tr>
+        <tr>
+          <th scope="row"
             ><a href={Router.capitalRequestItem(data.book.id, "little-river-dam-removal-highway")}
               >Little River Dam Removal - Highway</a
             ></th
-          ><td>$4,500,000</td><td></td><td></td><td></td><td></td></tr
-        >
-        <tr
-          ><th scope="row"
+          >
+          <td>$4,500,000</td>
+        </tr>
+        <tr>
+          <th scope="row"
             ><a
               href={Router.capitalRequestItem(data.book.id, "miscellaneous-traffic-safety-highway")}
               >Miscellaneous Traffic Safety - Highway</a
             ></th
-          ><td>$50,000</td><td></td><td>$50,000</td><td></td><td>$50,000</td></tr
-        >
-        <tr
-          ><th scope="row"
+          >
+          <td>$50,000</td>
+        </tr>
+        <tr>
+          <th scope="row"
             ><a
               href={Router.capitalRequestItem(
                 data.book.id,
                 "parking-lot-paving-at-citizens-center",
               )}>Parking Lot Paving at Citizens Center</a
             ></th
-          ><td>$60,000</td><td></td><td></td><td></td><td></td></tr
-        >
-        <tr
-          ><th scope="row"
+          >
+          <td>$60,000</td>
+        </tr>
+        <tr>
+          <th scope="row"
             ><a href={Router.capitalRequestItem(data.book.id, "parking-lot-repairs-stadium")}
               >Parking Lot Repairs - Stadium</a
             ></th
-          ><td>$100,000</td><td></td><td></td><td></td><td></td></tr
-        >
-        <tr
-          ><th scope="row">Parking Lots - Elliott Place - Highway</th><td></td><td></td><td></td><td
-            >$15,450</td
-          ><td></td></tr
-        >
-        <tr
-          ><th scope="row">Parking Lots - Essex St - Highway</th><td></td><td></td><td></td><td
-            >$29,500</td
-          ><td></td></tr
-        >
-        <tr
-          ><th scope="row">Parking Lots - Locke Street - Highway</th><td></td><td></td><td></td><td
-          ></td><td>$78,315</td></tr
-        >
-        <tr
-          ><th scope="row">Parking Lots - Phoenix Row - Highway</th><td></td><td>$61,000</td><td
-          ></td><td></td><td></td></tr
-        >
-        <tr
-          ><th scope="row">Parking Lots - River Front Promenade - Highway</th><td></td><td></td><td
-          ></td><td>$26,282</td><td></td></tr
-        >
-        <tr
-          ><th scope="row">Parking Lots - Washington Square - Highway</th><td></td><td></td><td
-            >$63,042</td
-          ><td></td><td></td></tr
-        >
-        <tr
-          ><th scope="row"
+          >
+          <td>$100,000</td>
+        </tr>
+        <tr>
+          <th scope="row"
             ><a
               href={Router.capitalRequestItem(
                 data.book.id,
                 "sidewalks-annual-repair-replace-highway",
               )}>Sidewalks - Annual Repair &amp; Replace - Highway</a
             ></th
-          ><td>$1,100,000</td><td>$1,100,000</td><td>$1,100,000</td><td>$1,100,000</td><td
-            >$1,100,000</td
-          ></tr
-        >
-        <tr
-          ><th scope="row"
+          >
+          <td>$1,100,000</td>
+        </tr>
+        <tr>
+          <th scope="row"
             ><a
               href={Router.capitalRequestItem(
                 data.book.id,
                 "stormwater-assessment-at-dpw-facility-and-adjacent-property-on-downing",
               )}>Stormwater Assessment at DPW Facility and adjacent property on Downing</a
             ></th
-          ><td>$17,500</td><td></td><td></td><td></td><td></td></tr
-        >
-        <tr
-          ><th scope="row"
+          >
+          <td>$17,500</td>
+        </tr>
+        <tr>
+          <th scope="row"
             ><a href={Router.capitalRequestItem(data.book.id, "street-lights-highway")}
               >Street Lights - Highway</a
             ></th
-          ><td>$55,000</td><td></td><td></td><td></td><td></td></tr
-        >
-        <tr
-          ><th scope="row"
+          >
+          <td>$55,000</td>
+        </tr>
+        <tr>
+          <th scope="row"
             ><a href={Router.capitalRequestItem(data.book.id, "supplemental-paving-highway")}
               >Supplemental Paving - Highway</a
             ></th
-          ><td>$700,000</td><td>$700,000</td><td>$700,000</td><td>$700,000</td><td>$700,000</td></tr
-        >
-        <tr
-          ><th scope="row">W. Lowell Ave Bridge Replacement - Design - Engineering</th><td></td><td
-            >$63,000</td
-          ><td></td><td></td><td></td></tr
-        >
-        <tr
-          ><th scope="row"
+          >
+          <td>$700,000</td>
+        </tr>
+        <tr>
+          <th scope="row"
             ><a
               href={Router.capitalRequestItem(
                 data.book.id,
                 "washington-square-improvements-and-construction-highway",
               )}>Washington Square - Improvements and Construction - Highway</a
             ></th
-          ><td>$1,800,000</td><td></td><td></td><td></td><td></td></tr
-        >
-        <tr
-          ><th scope="row">Infrastructure Total</th><td>$8,697,500</td><td>$3,411,500</td><td
-            >$1,913,042</td
-          ><td>$1,871,232</td><td>$1,928,315</td></tr
-        >
+          >
+          <td>$1,800,000</td>
+        </tr>
+        <tr>
+          <th scope="row">Infrastructure Total</th>
+          <td>$8,697,500</td>
+        </tr>
       </tbody>
     </table>
   </div>
@@ -907,90 +599,43 @@ as they stand.
         <tr>
           <th scope="col"></th>
           <th scope="col">2027</th>
-          <th scope="col">2028</th>
-          <th scope="col">2029</th>
-          <th scope="col">2030</th>
-          <th scope="col">2031</th>
         </tr>
       </thead>
       <tbody>
-        <tr
-          ><th scope="row"
+        <tr>
+          <th scope="row"
             ><a
               href={Router.capitalRequestItem(
                 data.book.id,
                 "cooling-corridors-street-tree-planting-highway",
               )}>Cooling Corridors Street Tree Planting - Highway</a
             ></th
-          ><td>$7,500</td><td></td><td></td><td></td><td></td></tr
-        >
-        <tr
-          ><th scope="row">Puglielli Field Improvements - Highway</th><td></td><td>$50,000</td><td
-            >$200,000</td
-          ><td>$50,000</td><td>$200,000</td></tr
-        >
-        <tr
-          ><th scope="row">Railroad Square Garage Brownfields Closure - Community Development</th
-          ><td></td><td>$55,000</td><td></td><td></td><td></td></tr
-        >
-        <tr
-          ><th scope="row"
+          >
+          <td>$7,500</td>
+        </tr>
+        <tr>
+          <th scope="row"
             ><a href={Router.capitalRequestItem(data.book.id, "shade-trees-for-parks-highway")}
               >Shade Trees for Parks - Highway</a
             ></th
-          ><td>$25,000</td><td>$25,000</td><td></td><td>$25,000</td><td>$25,000</td></tr
-        >
-        <tr
-          ><th scope="row"
+          >
+          <td>$25,000</td>
+        </tr>
+        <tr>
+          <th scope="row"
             ><a
               href={Router.capitalRequestItem(
                 data.book.id,
                 "whittier-birthplace-trail-hub-highway",
               )}>Whittier Birthplace Trail Hub - Highway</a
             ></th
-          ><td>$33,820</td><td></td><td></td><td></td><td></td></tr
-        >
-        <tr
-          ><th scope="row">Land &amp; Land Improvements Total</th><td>$66,320</td><td>$130,000</td
-          ><td>$200,000</td><td>$75,000</td><td>$225,000</td></tr
-        >
-      </tbody>
-    </table>
-  </div>
-
-  <div
-    id="table-panel-planning"
-    role="tabpanel"
-    aria-labelledby="table-tab-planning"
-    class="table-tab-panel"
-    class:active={activeTable === "planning"}
-  >
-    <h2>Planning &amp; Design</h2>
-
-    <table>
-      <thead>
-        <tr>
-          <th scope="col"></th>
-          <th scope="col">2027</th>
-          <th scope="col">2028</th>
-          <th scope="col">2029</th>
-          <th scope="col">2030</th>
-          <th scope="col">2031</th>
+          >
+          <td>$33,820</td>
         </tr>
-      </thead>
-      <tbody>
-        <tr
-          ><th scope="row">City Hall Auditorium Air Conditioning - PLANNING &amp; DESIGN</th><td
-          ></td><td></td><td>$75,000</td><td></td><td></td></tr
-        >
-        <tr
-          ><th scope="row">Winnekenni Castle Repairs &amp; Restorations - PLANNING &amp; DESIGN</th
-          ><td></td><td></td><td>$500,000</td><td></td><td></td></tr
-        >
-        <tr
-          ><th scope="row">Planning &amp; Design Total</th><td></td><td></td><td>$575,000</td><td
-          ></td><td></td></tr
-        >
+        <tr>
+          <th scope="row">Land &amp; Land Improvements Total</th>
+          <td>$66,320</td>
+        </tr>
       </tbody>
     </table>
   </div>
@@ -1009,94 +654,42 @@ as they stand.
         <tr>
           <th scope="col"></th>
           <th scope="col">2027</th>
-          <th scope="col">2028</th>
-          <th scope="col">2029</th>
-          <th scope="col">2030</th>
-          <th scope="col">2031</th>
         </tr>
       </thead>
       <tbody>
-        <tr
-          ><th scope="row">(1) 6 Wheel Dump Trucks with Sanders and Plows - Highway</th><td></td><td
-            >$250,000</td
-          ><td>$250,000</td><td>$250,000</td><td>$250,000</td></tr
-        >
-        <tr
-          ><th scope="row">10-Wheeler Plow Truck - Highway</th><td></td><td>$250,000</td><td
-          ></td><td></td><td></td></tr
-        >
-        <tr
-          ><th scope="row"
+        <tr>
+          <th scope="row"
             ><a href={Router.capitalRequestItem(data.book.id, "1-ton-truck-highway")}
               >1-Ton Truck - Highway</a
             ></th
-          ><td>$105,000</td><td>$105,000</td><td>$105,000</td><td>$105,000</td><td>$105,000</td></tr
-        >
-        <tr
-          ><th scope="row"
+          >
+          <td>$105,000</td>
+        </tr>
+        <tr>
+          <th scope="row"
             ><a
               href={Router.capitalRequestItem(data.book.id, "2500-pick-up-truck-with-plow-highway")}
               >2500 Pick-up Truck with Plow - Highway</a
             ></th
-          ><td>$90,000</td><td>$90,000</td><td></td><td></td><td></td></tr
-        >
-        <tr
-          ><th scope="row">Chevrolet Tahoe C-2 - Fire</th><td></td><td>$80,000</td><td></td><td
-          ></td><td></td></tr
-        >
-        <tr
-          ><th scope="row">Chevrolet Traverse C-4 - Fire</th><td></td><td>$35,000</td><td></td><td
-          ></td><td></td></tr
-        >
-        <tr
-          ><th scope="row">Ford Escape - Inspectional Services</th><td></td><td>$45,000</td><td
-          ></td><td></td><td></td></tr
-        >
-        <tr
-          ><th scope="row">Ford F550 Bucket FA-2 - Fire</th><td></td><td></td><td></td><td
-            >$120,000</td
-          ><td></td></tr
-        >
-        <tr
-          ><th scope="row">Incident Command Vehicle - Police</th><td></td><td>$250,000</td><td
-          ></td><td></td><td></td></tr
-        >
-        <tr
-          ><th scope="row">Maintenance Vehicle - Recreation</th><td></td><td>$55,000</td><td
-          ></td><td></td><td></td></tr
-        >
-        <tr
-          ><th scope="row">Pick-Up Truck - Police</th><td></td><td>$57,000</td><td></td><td></td><td
-          ></td></tr
-        >
-        <tr
-          ><th scope="row">Pierce Ladder Truck - Fire</th><td></td><td></td><td>$2,000,000</td><td
-          ></td><td></td></tr
-        >
-        <tr
-          ><th scope="row">Pierce Pumper - Fire</th><td></td><td>$1,000,000</td><td></td><td
-          ></td><td></td></tr
-        >
-        <tr
-          ><th scope="row">Tanker - Fire</th><td></td><td>$632,570</td><td></td><td></td><td
-          ></td></tr
-        >
-        <tr
-          ><th scope="row"
+          >
+          <td>$90,000</td>
+        </tr>
+        <tr>
+          <th scope="row"
             ><a href={Router.capitalRequestItem(data.book.id, "trash-truck-highway")}
               >Trash Truck - Highway</a
             ></th
-          ><td>$180,000</td><td></td><td></td><td></td><td></td></tr
-        >
-        <tr
-          ><th scope="row">Vehicles Total</th><td>$375,000</td><td>$2,849,570</td><td>$2,355,000</td
-          ><td>$475,000</td><td>$355,000</td></tr
-        >
-        <tr
-          ><th scope="row">Grand Total</th><td>$17,219,620</td><td>$132,307,653</td><td
-            >$8,436,160</td
-          ><td>$8,911,232</td><td>$7,029,287</td></tr
-        >
+          >
+          <td>$180,000</td>
+        </tr>
+        <tr>
+          <th scope="row">Vehicles Total</th>
+          <td>$375,000</td>
+        </tr>
+        <tr>
+          <th scope="row">Grand Total</th>
+          <td>$17,219,620</td>
+        </tr>
       </tbody>
     </table>
   </div>
@@ -1106,10 +699,10 @@ as they stand.
   /*
     Hidden markup rather than markup that is not there, the same mechanism
     `spending`'s own topics used before they became routes: `tablesLive`,
-    `false` until this component mounts, is what a CSS rule for hiding seven
-    of eight panels is keyed on -- before that, every table sits in the flow
+    `false` until this component mounts, is what a CSS rule for hiding six
+    of seven panels is keyed on -- before that, every table sits in the flow
     and the tab bar itself stays `display: none`, so a reader who does not
-    hydrate gets all eight tables stacked, exactly as this page rendered
+    hydrate gets all seven tables stacked, exactly as this page rendered
     before tabs.
   */
   .table-tab-bar {

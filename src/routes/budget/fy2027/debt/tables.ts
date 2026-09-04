@@ -1,11 +1,11 @@
 /**
- * The debt the city carries, and the three policies it answers to: pages 21
- * to 25.
+ * The debt the city carries, and the three policies it answers to: page 21
+ * and the policy pages beside it.
  *
  * Data rather than markup for the same reason as the reserve dials -- the
- * book's front page charts `LONG_TERM_DEBT` as a bar, and this page charts
- * all three tables itself now, so a figure transcribed once and typed again
- * in a chart's own data is a figure that can come back different.
+ * book's front page charts `LONG_TERM_DEBT` as a bar, and this page charts it
+ * again on its own, so a figure transcribed once and typed again in a
+ * chart's own data is a figure that can come back different.
  */
 import type { BudgetTableData } from "$lib/budget-table"
 
@@ -27,58 +27,6 @@ export const LONG_TERM_DEBT: BudgetTableData = {
     { label: "Public Works", cells: ["$1,455,200"] },
     { label: "Public Safety", cells: ["$4,680,000"] },
     { label: "School Department", cells: ["$71,517,300"] },
-  ],
-}
-
-/**
- * Page 22's table: five years of what the city took in against what it paid
- * on its debt, and the book's own row for the second as a share of the
- * first.
- *
- * Revenue and debt payments are not on one scale -- a quarter of a billion
- * against single-digit millions -- so the page draws only the payments as a
- * chart of their own; the revenue and share rows stay here as the
- * transcription and are the figures the policy's own "Results" paragraph
- * quotes.
- */
-export const ANNUAL_DEBT_PAYMENTS: BudgetTableData = {
-  columns: ["", "2023", "2024", "2025", "2026", "2027"],
-  rows: [
-    {
-      label: "General Fund Revenue",
-      cells: ["$231,786,682", "$248,636,640", "$262,190,091", "$277,121,624", "$285,272,159"],
-    },
-    {
-      label: "Annual Debt Payments",
-      cells: ["$5,819,489", "$4,437,422", "$4,354,994", "$8,500,192", "$8,834,819"],
-    },
-    {
-      label: "Debt Payments as % of Revenue",
-      cells: ["2.5%", "1.8%", "1.7%", "3.1%", "3.1%"],
-    },
-  ],
-}
-
-/**
- * Page 25's table: Haverhill's debt per capita against the state average,
- * 2016 to 2026, both in the same units and on the same scale -- the point of
- * the book's own chart is holding the two against each other.
- */
-export const DEBT_PER_CAPITA: BudgetTableData = {
-  columns: ["Year", "Haverhill", "State Average"],
-  caption: "Debt per capita",
-  rows: [
-    { label: "2016", cells: ["$1,454", "$1,875"] },
-    { label: "2017", cells: ["$1,318", "$1,875"] },
-    { label: "2018", cells: ["$1,414", "$1,906"] },
-    { label: "2019", cells: ["$1,701", "$1,982"] },
-    { label: "2020", cells: ["$1,390", "$2,120"] },
-    { label: "2021", cells: ["$1,385", "$2,215"] },
-    { label: "2022", cells: ["$1,326", "$2,336"] },
-    { label: "2023", cells: ["$1,238", "$2,526"] },
-    { label: "2024", cells: ["$1,849", "$2,626"] },
-    { label: "2025", cells: ["$1,851", "$2,698"] },
-    { label: "2026", cells: ["$2,562", "$2,698"] },
   ],
 }
 

@@ -3,12 +3,11 @@
   // bar on the book's front page, and the three tables below are what this
   // page's own charts read from, so a figure transcribed once cannot come
   // back different in a chart.
-  import BudgetLines from "$lib/BudgetLines.svelte"
   import BookReferences from "$lib/BookReferences.svelte"
   import GlossaryTerm from "$lib/GlossaryTerm.svelte"
   import { Router } from "$lib/router"
-  import { amount, cell, column, sum } from "$lib/budget-table"
-  import { LONG_TERM_DEBT, ANNUAL_DEBT_PAYMENTS, DEBT_PER_CAPITA, DEBT_POLICIES } from "./tables"
+  import { cell, column, sum } from "$lib/budget-table"
+  import { LONG_TERM_DEBT, DEBT_POLICIES } from "./tables"
   import { COLOURS } from "$lib/chart-colours"
   // The same offline icons reserves uses for the same mark.
   import Icon from "@iconify/svelte/dist/OfflineIcon.svelte"
@@ -69,31 +68,6 @@
       y: box.top + box.height / 2 - edge.top,
     }
   }
-
-  /** Page 22's payments, on their own scale: a quarter of a billion dollars
-      of revenue and single-digit millions of debt service were never going
-      to share one, and `BudgetLines` says as much in its own header comment.
-      The revenue and the row for their share stay in `tables.ts` as the
-      transcription and are what the policy's own "Results" paragraph
-      quotes. */
-  const paymentYears = ANNUAL_DEBT_PAYMENTS.columns.slice(1)
-  const payments = [
-    {
-      label: "Annual Debt Payments",
-      values: paymentYears.map((year) =>
-        amount(cell(ANNUAL_DEBT_PAYMENTS, "Annual Debt Payments", year)),
-      ),
-    },
-  ]
-
-  /** Page 25's comparison, both series in the same units and so on the one
-      scale `BudgetLines` insists on -- which is the whole point of the
-      book's own chart here, holding the city against the state. */
-  const capitaYears = DEBT_PER_CAPITA.rows.map((row) => row.label)
-  const perCapita = ["Haverhill", "State Average"].map((series) => ({
-    label: series,
-    values: capitaYears.map((year) => amount(cell(DEBT_PER_CAPITA, year, series))),
-  }))
 
   /**
    * Whether the city is inside a policy's limit, told the same two ways
@@ -215,41 +189,34 @@
 
   <div class="lg:flex lg:h-full lg:flex-col lg:overflow-hidden">
     <!--
-      The bond rating and the two trends side by side across the top rather
-      than read in order, since none of the three is shaped like a bullet
-      column and all three are short and wide. The card leads because it
-      names the one figure of the three that is a single fact rather than a
-      shape -- payments alone, on their own scale (see the note in the script
-      for why revenue is not drawn beside them), and the per-capita
-      comparison, whose two series do share a scale because holding them
-      against each other is the book's own point in drawing it. Nothing
-      heads either chart: each line chart's legend carries its own series'
-      names.
+      Page 22's payments and page 25's per-capita comparison were two lines
+      here, both trends across several years -- cut along with the rest of
+      the site's history and forecasts, since this page describes 2027's own
+      debt, not the years either side of it. What is left of the three is one
+      card, not a row: the bond rating, this year's own single fact rather
+      than a shape.
     -->
-    <div class="debt-top-row grid gap-6 lg:grid-cols-3">
+    <div class="flex">
       <!--
         Page 23 is two S&P quotes and nothing to chart, so it is a card
-        rather than a third line -- the rating itself, which is the one fact
-        of the page worth a reader's first look, and a link to the page
-        those quotes are on rather than a copy of them. A reader who wants
-        the words S&P actually used gets them from S&P, in the city's own
-        file, rather than from a second copy of them here that could drift
-        from the first.
+        rather than a line -- the rating itself, which is the one fact of
+        the page worth a reader's first look, and a link to the page those
+        quotes are on rather than a copy of them. A reader who wants the
+        words S&P actually used gets them from S&P, in the city's own file,
+        rather than from a second copy of them here that could drift from
+        the first.
       -->
       <a
         href={bondRatingHref}
         target="_blank"
         rel="external noopener noreferrer"
-        class="not-prose flex flex-col items-center justify-center gap-1 rounded-lg border border-slate-200 px-4 py-6 text-center text-inherit no-underline transition-colors hover:border-slate-400"
+        class="not-prose flex w-48 flex-col items-center justify-center gap-1 rounded-lg border border-slate-200 px-4 py-6 text-center text-inherit no-underline transition-colors hover:border-slate-400"
       >
         <span class="text-xs font-medium text-slate-500">Bond Rating</span>
         <span class="text-4xl font-bold text-slate-900">AA</span>
         <span class="text-xs text-slate-500">S&amp;P Global Ratings April 1, 2026</span>
         <span class="sr-only">, in the city's PDF, opens in a new tab</span>
       </a>
-
-      <BudgetLines years={paymentYears} rows={payments} />
-      <BudgetLines years={capitaYears} rows={perCapita} />
     </div>
 
     <!-- The one thing on this page that scrolls; see `reserves` for why the

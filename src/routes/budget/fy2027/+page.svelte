@@ -133,22 +133,6 @@
         ]}
       />
     </div>
-
-    <!--
-      Under the two columns, because it is those two columns in every year but
-      this one: what the city took in against what it spent before 2027, and
-      what it expects to after. It is a page of ours rather than a section of
-      the book -- the book keeps both wherever they happened to be needed -- so
-      it has no contents line anywhere, and this is the way in.
-    -->
-    <p class="not-prose mt-4 text-xs">
-      <a
-        class="font-semibold text-slate-900 underline decoration-slate-400 decoration-2 underline-offset-2 hover:decoration-slate-900"
-        href={Router.budgetSection(book.id, "history")}
-      >
-        History/Forecasts
-      </a>
-    </p>
   </div>
 
   <div class="lg:flex lg:h-full lg:flex-col lg:overflow-hidden">

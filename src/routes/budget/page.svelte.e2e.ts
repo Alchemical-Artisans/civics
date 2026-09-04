@@ -36,16 +36,7 @@ const unlinked = [
  * city's prose links. A contents line as well would offer the same page twice
  * on one screen.
  */
-const linkedElsewhere = [
-  "reserves",
-  "debt",
-  "revenue",
-  "spending",
-  "glossary",
-  // Not a section of the book at all, and so in no contents to be dropped
-  // from: it is reached from under the two bars on the front page.
-  "history",
-]
+const linkedElsewhere = ["reserves", "debt", "revenue", "spending", "glossary"]
 
 /**
  * The calendar's link to the city's own file, which is on every page of a book.
@@ -361,9 +352,7 @@ test.describe("budget pages", () => {
     }
   })
 
-  test("charts the spending page's own bar and its five-year capital requests", async ({
-    page,
-  }) => {
+  test("charts the spending page's own bar", async ({ page }) => {
     await page.goto(spendingUrl("capital-planning"))
 
     // The same bar the front page draws for "Spending", one column of it --
@@ -380,90 +369,32 @@ test.describe("budget pages", () => {
     await segment.focus()
     await expect(bar).toContainText("Education")
 
-    // Page 29's table, as one stacked bar per year rather than a heading and
-    // a grid of its own, on its own route now rather than fixed above every
-    // other topic: five bars, nine categories between them, "Grand Total"
-    // excluded as a category (it would draw a band that is every other
-    // category added together) and read as each bar's own total instead.
+    // Page 29's own 5-year chart is gone with the rest of the site's
+    // forecasts, along with the two projects it left out of 2028 -- only the
+    // single `.budget-columns` bar above remains on this page.
     await expect(
       page.getByRole("heading", { name: "5-Year Capital Requests by Category" }),
     ).toHaveCount(0)
-    const capital = page.locator(".budget-columns").nth(1)
-    await expect(capital.locator(".budget-column")).toHaveCount(5)
-    await expect(capital).toContainText("2027")
-    await expect(capital).toContainText("$17,219,620")
-    await expect(capital).toContainText("2028")
-    await expect(capital).not.toContainText("Grand Total")
-    await expect(capital.getByRole("img")).toHaveCount(33)
-
-    // Two one-time projects, $120 million of the 2028 building total, are
-    // left out of the chart -- charted beside it rather than disclosed in a
-    // note -- so 2028's bar is its stated $132,307,653 less that, and the
-    // building segment is what is left of the category once they are gone.
-    await expect(capital).toContainText("$12,307,653")
-
-    const building = capital.getByRole("img", {
-      name: "2028, Buildings & Building Improvements, $5,002,000, 40.6%",
-    })
-    await building.focus()
-    await expect(capital).toContainText("Buildings & Building Improvements")
-
-    // The same two projects, stacked to their own $120,000,000 in their own
-    // bar beside the five years, so a reader can hover or focus them the way
-    // every other segment on the site is read.
-    const excluded = page.locator(".budget-columns").nth(2)
-    await expect(excluded.locator(".budget-column")).toHaveCount(1)
-    await expect(excluded).toContainText("Excluded from 2028")
-    await expect(excluded).toContainText("$120,000,000")
-    const jgw = excluded.getByRole("img", {
-      name: "Excluded from 2028, JGW / Tilton School Core Project, $90,000,000, 75.0%",
-    })
-    await jgw.focus()
-    await expect(excluded).toContainText("JGW / Tilton School Core Project")
-    const fireStation = excluded.getByRole("img", {
-      name: "Excluded from 2028, Fire Station, $30,000,000, 25.0%",
-    })
-    await fireStation.focus()
-    await expect(excluded).toContainText("Fire Station")
-
-    // The two excluded projects still carry their own rows, in full, in the
-    // table below -- only the charts leave them out.
-    const article = page.getByRole("article")
-    await expect(article).toContainText("JGW / Tilton School Core Project")
-    await expect(article).toContainText("$90,000,000")
-    await expect(article.getByRole("row", { name: "Fire Station $30,000,000" })).toHaveCount(1)
-
-    // A category keeps the same colour in every bar it appears in, so it can
-    // be read down its own band across years -- not each bar's own largest
-    // segment first, which is what every other BudgetColumns chart draws.
-    const colour = (label: string, year: string) =>
-      capital.getByRole("img", { name: new RegExp(`^${year}, ${label},`) }).evaluate((el) => {
-        const style = el.getAttribute("style") ?? ""
-        return style.match(/background:\s*([^;]+)/)?.[1]
-      })
-    expect(await colour("Buildings & Building Improvements", "2027")).toBe(
-      await colour("Buildings & Building Improvements", "2028"),
-    )
-
-    // The old table's own total is gone with it -- read from the chart's
-    // tooltips now, not off a grid of fifty-odd cells.
-    await expect(page.getByRole("article")).not.toContainText("$173,903,952")
+    await expect(page.locator(".budget-columns")).toHaveCount(1)
+    await expect(page.getByRole("article")).not.toContainText("Excluded from 2028")
   })
 
-  test("tabs the eight capital-request tables in place, on script alone", async ({ page }) => {
+  test("tabs the seven capital-request tables in place, on script alone", async ({ page }) => {
     await page.goto(spendingUrl("capital-planning"))
 
     // Scoped to the tabbed table group itself: "Vehicles" and most of the
-    // other seven category names are repeated below as `<h3>`s over the
+    // other six category names are repeated below as `<h3>`s over the
     // 2027 write-ups, which answer to none of this tab set.
     const tables = page.locator(".tables")
 
-    // Eight tabs, Buildings open on arrival -- and only Buildings: the other
-    // seven tables are not merely scrolled away, they are out of the
+    // Seven tabs, Buildings open on arrival -- and only Buildings: the other
+    // six tables are not merely scrolled away, they are out of the
     // accessibility tree entirely until their own tab is opened. This is a
-    // script switch, not a route -- eight tables of one dataset are facets
-    // of one topic rather than eight of their own, unlike the routes above.
-    await expect(tables.getByRole("tab")).toHaveCount(8)
+    // script switch, not a route -- seven tables of one dataset are facets
+    // of one topic rather than seven of their own, unlike the routes above.
+    // "Planning & Design" is not among them: trimmed to 2027 it has nothing
+    // to show, so it is left out rather than kept as an empty tab.
+    await expect(tables.getByRole("tab")).toHaveCount(7)
     await expect(
       tables.getByRole("tab", { name: "Buildings & Building Improvements" }),
     ).toHaveAttribute("aria-selected", "true")
@@ -515,7 +446,7 @@ test.describe("budget pages", () => {
     await expect(tables.getByRole("row", { name: /^Grand Total/ })).toContainText("$17,219,620")
   })
 
-  test("keeps all eight capital-request tables on the page without script", async ({ browser }) => {
+  test("keeps all seven capital-request tables on the page without script", async ({ browser }) => {
     const context = await browser.newContext({ javaScriptEnabled: false })
     const noscript = await context.newPage()
     await noscript.goto(spendingUrl("capital-planning"))
@@ -532,11 +463,11 @@ test.describe("budget pages", () => {
       "Equipment",
       "Infrastructure",
       "Land & Land Improvements",
-      "Planning & Design",
       "Vehicles",
     ]) {
       await expect(tables.getByRole("heading", { name: heading, exact: true })).toBeVisible()
     }
+    await expect(tables.getByRole("heading", { name: "Planning & Design" })).toHaveCount(0)
 
     await context.close()
   })
@@ -547,16 +478,20 @@ test.describe("budget pages", () => {
     await page.goto(spendingUrl("capital-planning"))
     const tables = page.locator(".tables")
 
-    // A row the city actually asked for in 2027 is a link into its own
-    // page, pages 36 to 45's case for it -- one that never made the 2027
-    // ask, like "Fire Station", is not: there is nothing there to link to.
+    // A row is a link into its own page, pages 36 to 45's case for it -- the
+    // category's own total at the foot of each table is not a project and
+    // has no page of its own to link to.
     const link = tables.getByRole("link", { name: "City Hall Elevator Rehabilitation" })
     await expect(link).toHaveAttribute(
       "href",
       /\/spending\/capital-planning\/city-hall-elevator-rehabilitation$/,
     )
-    await expect(tables.getByRole("rowheader", { name: "Fire Station", exact: true })).toBeVisible()
-    await expect(tables.getByRole("link", { name: "Fire Station", exact: true })).toHaveCount(0)
+    await expect(
+      tables.getByRole("rowheader", { name: "Buildings & Building Improvements Total" }),
+    ).toBeVisible()
+    await expect(
+      tables.getByRole("link", { name: "Buildings & Building Improvements Total" }),
+    ).toHaveCount(0)
 
     // The link opens the write-up itself: the case, the urgency, the figure
     // -- the same content that used to run in one long "2027 Capital
@@ -668,7 +603,7 @@ test.describe("budget pages", () => {
       ["goals-recommendations", "Mayor's 2027 Budgetary Goals"],
       ["capital-planning", "Capital Planning"],
       ["challenges", "Major Budget Driver - Group Health Insurance"],
-      ["budget-in-brief", "2027 Budget in Brief"],
+      ["budget-in-brief", "Departments"],
       ["council-orders", "What the Council appropriated"],
       ["references", "References"],
     ] as const) {
@@ -687,21 +622,15 @@ test.describe("budget pages", () => {
     await context.close()
   })
 
-  test("charts every department and every appropriation category across six years", async ({
-    page,
-  }) => {
+  test("charts every department and every appropriation category for 2027", async ({ page }) => {
     await page.goto(spendingUrl("budget-in-brief"))
 
-    // Pages 76 and 77, forty-four departments, one stacked bar per year
-    // instead of a grid running to four hundred-odd cells. The old table's
-    // own total is gone with it -- read from the chart's tooltips now.
-    // `.first()` is the spending bar in the left column, present on every
-    // spending route, so the page's own two charts are `.nth(1)` and
-    // `.nth(2)`.
+    // Pages 76 and 77, forty-four departments, one bar for 2027 rather than a
+    // grid running to four hundred-odd cells across six years. `.first()` is
+    // the spending bar in the left column, present on every spending route,
+    // so the page's own two charts are `.nth(1)` and `.nth(2)`.
     const departments = page.locator(".budget-columns").nth(1)
-    await expect(departments.locator(".budget-column")).toHaveCount(6)
-    await expect(departments).toContainText("2022")
-    await expect(departments).toContainText("$216,708,713")
+    await expect(departments.locator(".budget-column")).toHaveCount(1)
     await expect(departments).toContainText("2027")
     await expect(departments).toContainText("$285,272,160")
 
@@ -711,36 +640,26 @@ test.describe("budget pages", () => {
     await school.focus()
     await expect(departments).toContainText("School Department")
 
-    // The five extra columns the book gives each department -- both average
-    // percent changes, the request kept apart from the recommendation, and
-    // the recommendation's own percent and dollar change -- are gone with
-    // the table; only the department's name and its six years of dollars
-    // remain, on the chart's segments.
+    // The book's other five columns per department -- five other years, both
+    // average percent changes, the request kept apart from the
+    // recommendation, and the recommendation's own percent and dollar change
+    // -- are gone with the table, along with the site's history and
+    // forecasts generally; only the department's name and its 2027 dollars
+    // remain, on the chart's one segment for it.
     await expect(page.getByRole("article")).not.toContainText("9.4%")
+    await expect(page.getByRole("article")).not.toContainText("2022")
 
     // Page 78, the fourteen categories the same budget rolls up by --
     // Education is the largest of them, the same figure the front page's
     // own column draws.
     const appropriations = page.locator(".budget-columns").nth(2)
-    await expect(appropriations.locator(".budget-column")).toHaveCount(6)
+    await expect(appropriations.locator(".budget-column")).toHaveCount(1)
     await expect(appropriations).toContainText("$285,272,159")
     const education = appropriations.getByRole("img", {
       name: "2027, Education, $147,158,454, 51.6%",
     })
     await education.focus()
     await expect(appropriations).toContainText("Education")
-
-    // A category keeps the same colour in every bar it appears in, read
-    // down its own band across years rather than picked out of six
-    // independently-sorted stacks.
-    const colour = (chart: typeof appropriations, label: string, year: string) =>
-      chart.getByRole("img", { name: new RegExp(`^${year}, ${label},`) }).evaluate((el) => {
-        const style = el.getAttribute("style") ?? ""
-        return style.match(/background:\s*([^;]+)/)?.[1]
-      })
-    expect(await colour(appropriations, "Education", "2022")).toBe(
-      await colour(appropriations, "Education", "2027"),
-    )
   })
 
   test("links the reserves and the spending it pays for", async ({ page }) => {
@@ -923,9 +842,7 @@ test.describe("budget pages", () => {
     await expect(body).toBeVisible()
   })
 
-  test("opens the bond rating on the page its quotes are on, leftmost of the three", async ({
-    page,
-  }) => {
+  test("opens the bond rating on the page its quotes are on", async ({ page }) => {
     await page.goto(`/budget/${books[0]}/debt`)
 
     // The card, not a transcription: the rating itself and the book's own
@@ -936,19 +853,13 @@ test.describe("budget pages", () => {
     await expect(rating).toHaveAttribute("href", /#page=23$/)
     await expect(rating).toHaveAttribute("target", "_blank")
 
-    // Furthest left of the three things in the top row -- first in the DOM,
-    // which is what a grid with no `order` renders left to right as.
-    const row = page.locator(".debt-top-row")
-    const order = await row.evaluate((el) => [...el.children].map((child) => child.tagName))
-    expect(order[0]).toBe("A")
-
     // Neither the quotes nor a second link to the same page survive: the
     // card is the only way to page 23 now.
     await expect(page.getByRole("article")).not.toContainText("Haverhill's creditworthiness")
     await expect(page.getByRole("link", { name: /^Bond Rating/ })).toHaveCount(1)
   })
 
-  test("charts what the debt page is made of and how it has moved", async ({ page }) => {
+  test("charts what the debt page is made of", async ({ page }) => {
     await page.goto(`/budget/${books[0]}/debt`)
 
     // The composition bar: every purpose the book lists, on hover or focus
@@ -957,17 +868,6 @@ test.describe("budget pages", () => {
     await expect(composition).toHaveCount(6)
     await composition.last().focus()
     await expect(page.locator(".budget-debt-bar .budget-tooltip")).toContainText("Public Works")
-
-    // Two line charts, each on its own scale: payments alone, since revenue
-    // is two orders of magnitude larger, and the per-capita comparison, whose
-    // two series share one because that is the book's own point in drawing
-    // them together.
-    const lines = page.locator(".budget-lines")
-    await expect(lines).toHaveCount(2)
-    await expect(lines.first().locator("circle")).toHaveCount(5)
-    await expect(lines.last().locator("circle")).toHaveCount(22)
-    await expect(lines.last()).toContainText("Haverhill")
-    await expect(lines.last()).toContainText("State Average")
   })
 
   test("draws each reserve against the policy it answers to", async ({ page }) => {
@@ -1042,8 +942,11 @@ test.describe("budget pages", () => {
     // The same shape as the book's front page: the charts down the left and
     // across the top, and the reading under them in the only box that scrolls.
     // A reader working down four sections of the city's prose is the reader who
-    // wants to know whether each fund is inside its band.
-    await page.setViewportSize({ width: 1280, height: 700 })
+    // wants to know whether each fund is inside its band. A shorter viewport
+    // than the front page's own test needs, now that the page's own history
+    // chart and its explanatory prose are gone: four collapsed sections and an
+    // intro paragraph no longer overflow 700px, only something shorter.
+    await page.setViewportSize({ width: 1280, height: 500 })
     await page.goto(`/budget/${books[0]}/reserves`)
 
     const moved = await page.evaluate(() => {
@@ -1073,167 +976,6 @@ test.describe("budget pages", () => {
     expect(
       await page.evaluate(() => document.documentElement.scrollHeight - window.innerHeight),
     ).toBeGreaterThan(200)
-  })
-
-  test("puts what came in and went out on a page of its own", async ({ page }) => {
-    // Page 18's top rows are not about reserves: they are what the city took in
-    // and spent, and they belong with whatever else the book says about years
-    // gone by rather than under a policy about fund balances.
-    await page.goto(`/budget/${books[0]}`)
-    const opens = page.getByRole("link", { name: "History/Forecasts", exact: true })
-    await expect(opens).toBeVisible()
-
-    // Under the two columns, which are those same two figures for 2027 alone,
-    // and in their column rather than out in the middle of the page.
-    const columns = (await page.locator(".budget-columns").boundingBox())!
-    const link = (await opens.boundingBox())!
-    expect(link.y).toBeGreaterThan(columns.y + columns.height)
-    expect(link.x).toBeLessThan(columns.x + columns.width)
-
-    await opens.click()
-    await expect(page).toHaveURL(/\/budget\/fy2027\/history$/)
-    await expect(page.getByRole("heading", { level: 1 })).toHaveText("History/Forecasts")
-
-    // The book's own row labels, sum and all -- and the money at the size it
-    // was spent, since the parentheses on the expenditure line are the sum's
-    // minus sign rather than a negative amount of spending.
-    const flows = page.locator(".budget-lines")
-    await expect(flows).toHaveCount(1)
-    expect(
-      await flows
-        .locator("circle")
-        .evaluateAll((marks) => marks.map((m) => m.getAttribute("aria-label"))),
-    ).toEqual([
-      "Plus Fiscal Year Revenue, 2023, $231,470,272",
-      "Plus Fiscal Year Revenue, 2024, $244,738,056",
-      "Plus Fiscal Year Revenue, 2025, $262,614,748",
-      "Less Fiscal Year Expenditures, 2023, $233,787,846",
-      "Less Fiscal Year Expenditures, 2024, $241,759,531",
-      "Less Fiscal Year Expenditures, 2025, $257,460,366",
-    ])
-
-    // Neither line starts at zero -- a line is read for its shape -- so the
-    // figures at the ends of the axis are drawn, and zero is not among them.
-    await expect(flows.locator("svg")).not.toContainText("$0")
-    await expect(flows.getByRole("listitem")).toHaveCount(2)
-
-    // And the forecast, which came off `spending`: what puts a section on this
-    // page is not that it is spending or revenue -- everything is one or the
-    // other -- but that it is about years other than 2027.
-    await expect(page.getByRole("heading", { level: 1 })).toHaveText("History/Forecasts")
-    await expect(
-      page.getByRole("heading", { name: /^10-Year Appropriation Projection/ }),
-    ).toBeVisible()
-    await expect(page.getByRole("article")).toContainText("19. BUDGET RESERVE")
-    await expect(page.getByRole("article")).toContainText("Estimated Excess Levy")
-
-    // Spending points here for it, since it is still that page's spending.
-    await page.goto(spendingUrl("references"))
-    await expect(
-      page.getByRole("link", { name: /^10-Year Appropriation Projection/ }),
-    ).toHaveAttribute("href", /\/history$/)
-
-    // And it is not on the reserves page any more.
-    await page.goto(`/budget/${books[0]}/reserves`)
-    await expect(page.locator(".budget-lines")).toHaveCount(0)
-  })
-
-  test("draws what those years left behind on the reserves page", async ({ page }) => {
-    await page.goto(`/budget/${books[0]}/reserves`)
-
-    const balance = page.locator(".budget-bars")
-    await expect(balance).toHaveCount(1)
-
-    // Bars, not a line: these are four closes of business rather than a trend,
-    // and the balance is charted under the name the dial and the prose give it
-    // -- undesignated, which is the part a Council can appropriate. The book's
-    // closing row for 2023 through 2025; 2022 has none of its own, so it draws
-    // the opening row instead and carries no encumbrance mark at all.
-    const named = (chart: ReturnType<typeof balance.locator>) =>
-      chart.evaluateAll((marks) => marks.map((m) => m.getAttribute("aria-label")))
-
-    expect(await named(balance.locator("rect"))).toEqual([
-      "Undesignated Fund Balance, 2022, $12,429,870",
-      "Undesignated Fund Balance, 2023, $10,209,394",
-      "Net Reserve for Encumbrances, 2023, $97,098",
-      "Undesignated Fund Balance, 2024, $12,569,995",
-      "Net Reserve for Encumbrances, 2024, -$617,924",
-      "Undesignated Fund Balance, 2025, $13,985,453",
-      "Net Reserve for Encumbrances, 2025, -$3,738,924",
-    ])
-
-    // Rows now, transposed from columns: years run down the chart and dollars
-    // run across it, so the bars stand on a vertical zero line and run left or
-    // right rather than up or down.
-    const zero = await balance
-      .locator("svg line")
-      .last()
-      .evaluate((line) => Number(line.getAttribute("x1")))
-
-    const sides = await balance.locator("rect").evaluateAll((bars) =>
-      bars.map((bar) => ({
-        label: bar.getAttribute("aria-label")!,
-        left: Number(bar.getAttribute("x")),
-        span: Number(bar.getAttribute("width")),
-      })),
-    )
-
-    // Every bar hangs off the zero line and runs the way its sign points.
-    // Nothing is stacked on anything: the balance is already net of the
-    // encumbrance movement -- page 18 only reconciles with that term in -- so
-    // stacking them would draw the same money twice and put the end of a row
-    // at a total the book never states.
-    for (const bar of sides) {
-      const negative = bar.label.includes(", -$")
-      // A bar to the left of the line ends on it; one to the right starts on it.
-      expect(negative ? bar.left + bar.span : bar.left).toBeCloseTo(zero, 0)
-      expect(bar.span).toBeGreaterThan(0)
-    }
-
-    // The encumbrances are drawn in front of the balance rather than beside or
-    // on top of it: a thinner bar from the same row, so the year they released
-    // money instead of taking it is still read against the balance.
-    const thicknesses = await balance.locator("rect").evaluateAll((bars) =>
-      bars.map((bar) => ({
-        label: bar.getAttribute("aria-label")!,
-        thickness: Number(bar.getAttribute("height")),
-      })),
-    )
-
-    const thickest = thicknesses.find((bar) => bar.label.startsWith("Undesignated"))!.thickness
-    for (const bar of thicknesses) {
-      if (bar.label.startsWith("Net Reserve")) expect(bar.thickness).toBeLessThan(thickest)
-    }
-
-    // And a figure too small to draw is still drawn: 2023's $97,098 is a third
-    // of a pixel against a scale of twenty million, and it is a focus target.
-    const sliver = sides.find((bar) => bar.label.includes("$97,098"))!
-    expect(sliver.span).toBeGreaterThanOrEqual(2)
-
-    // Zero is drawn, because the bars stand on it.
-    await expect(balance.locator("svg")).toContainText("$0")
-    await expect(balance.getByRole("listitem")).toHaveCount(2)
-
-    // And no table: the charts carry every cell of page 18 between them, and a
-    // table saying again what a picture just said is a page read twice.
-    await expect(page.getByRole("article").getByRole("table")).toHaveCount(0)
-    await expect(page.getByRole("article")).not.toContainText("Beginning Fund Balance")
-  })
-
-  test("names and prices the point under the pointer", async ({ page }) => {
-    await page.goto(`/budget/${books[0]}/reserves`)
-    const mark = page.locator(".budget-bars").locator("rect").first()
-    await mark.hover()
-
-    const tooltip = page.locator(".budget-bars .budget-tooltip")
-    await expect(tooltip).toContainText("Undesignated Fund Balance")
-    await expect(tooltip).toContainText("2022")
-    await expect(tooltip).toContainText("$12,429,870")
-
-    // Gone when the pointer is, and the mark carries the same as its name, so
-    // nothing here is only visible to a mouse.
-    await page.mouse.move(0, 0)
-    await expect(tooltip).toBeHidden()
   })
 
   test("links the book's own terms wherever its prose uses them", async ({ page }) => {

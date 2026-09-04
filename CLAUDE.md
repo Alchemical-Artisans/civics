@@ -223,52 +223,6 @@ Notable pieces:
   name still carries all three for a reader who never hovers anything. Free
   cash draws no bar at all this year, which is the page's story; stabilization's
   band has no closing edge, because its policy sets no ceiling.
-- **`src/lib/BudgetLines.svelte`** follows a table's rows across the years it
-  gives them for, and draws `history`: what the city took in and what it spent,
-  from the top of page 18. That page is `/budget/fy2027/history`, titled
-  `History/Forecasts`, and it holds the ten-year appropriation projection too,
-  which was on `spending`: what decides whether a section belongs there is not
-  its side of the budget -- everything is spending or revenue -- but whether it
-  is about 2027 or about the years either side. It is not a section of the book,
-  so it has no contents line and is reached from under the two columns on the
-  front page; `spending` lists it at the foot and `reserves` no longer does. The years belong to the chart, not the
-  series: each series gives one value per year and `null` where the book prints
-  none, so a row the book is silent about for a year draws nothing there rather
-  than shifting everything along. The expenditure line is drawn at what was
-  spent, since the book's parentheses are its sum's minus sign, and the row
-  labels stay the book's, "Plus" and "Less" included. It does not start at zero
-  -- a line is read for its shape -- and prints the figures at the ends of the
-  axis.
-- **`src/lib/BudgetBars.svelte`** draws the other half of that table, on
-  `reserves`, where it belongs -- the flows are the city's, the balance they
-  left is the reserves page's subject. Each year is a row run off a vertical
-  zero line, the undesignated fund balance to the right of it and that year's
-  encumbrances to the left. Rows rather than columns because the chart sits
-  beside its own reading now, in a column that is wide and short, and four
-  years stacked as rows fit that shape where four side by side would not. Bars
-  because these are four closes of business rather than a trend, and they
-  start at zero because a bar's meaning is its length. 2022 is one of the
-  four: the book gives it no "Ending Fund Balance" of its own, only the
-  "Beginning Fund Balance" it lends 2023, and that used to read as a year with
-  something missing -- an empty gap in a column, three full ones either side.
-  A row does not: it is a whole line with one bar on it rather than half a
-  column, which is what let 2022 back in once the chart turned on its side.
-  Only the book's closing row is charted for 2023 through 2025: the opening
-  row is the same figure a year earlier, so charting both would be one row
-  drawn twice. Nothing is stacked either -- page 18 only reconciles with the
-  encumbrance term in it, so the balance is already net of the bar beside it
-  and a stack would draw the same money twice and put the end of a row at a
-  total the book never states. The bars overlap instead: the first series is
-  the thickness of the row, each one after it thinner and drawn in front, and
-  every bar hangs off the zero line so the edge a reader measures from is
-  exact. The book never says what the encumbrance reserve itself stands at,
-  only what it moved by. A non-zero figure is never drawn thinner than two
-  units, since the mark is a focus target too. It keeps its own viewBox and
-  band geometry now rather than sharing **`src/lib/chart-frame.ts`** with
-  `BudgetLines` -- that sharing was for when the two sat on one page and a
-  reader looked straight down from a year in one to the same year in the
-  other, which stopped being true once the flows chart moved to `history` and
-  this one turned sideways.
 - **`src/lib/GlossaryTerm.svelte`** links a word in the city's prose to the
   book's definition of it: a plain link to that term's entry on
   `/budget/fy2027/glossary`, nothing more. It briefly carried the definition
@@ -288,12 +242,16 @@ Notable pieces:
   `reserves` is the third bucket, opened from the reserves bar. Columns rather
   than pies because two circles cannot be compared by eye, and whether the two
   sides are the same size is the first thing to know about a budget.
-  `spending` reuses the same component twice over: its own left-column bar
-  is one row rather than two, and its capital-requests chart is five columns,
-  one per year, each divided into that year's categories -- see `spending`'s
-  own entry for `order` and `minHeight`, the two props that chart added.
-  The component draws whatever `rows` it gets, so neither is a special case
-  of it. A category
+  `spending` reuses the same component for its own left-column bar, one row
+  rather than two; `budget-in-brief` reuses it twice more, one 2027-only bar
+  apiece where six years of departments and appropriations used to run --
+  see that page's own entry for `minHeight`, the prop a chart sitting above a
+  page of reading needs. The component draws whatever `rows` it gets, so
+  none of them is a special case of it. `order`, a fixed category sequence
+  for stacking and colouring several same-shaped bars alike, is still there
+  for a chart that reads one category across several years -- nothing on the
+  site charts more than a single year any more, so nothing currently passes
+  it. A category
   page ends with **`src/lib/BookReferences.svelte`**, headed `References`: the
   pages of the book it was built out of, and then the parts it belongs with and
   does not carry, each linking to our page where one exists and to the city's
@@ -320,7 +278,7 @@ Notable pieces:
   book's page-78 tables, not its own revenue pie on page 65, which is $3,458,864
   short of the total it prints.
 - **`debt`** (`/budget/<year>/debt`, `debt/tables.ts`) is `reserves` for what
-  the city owes rather than what it holds: page 21 to 25, `wide: true`, a
+  the city owes rather than what it holds: page 21 to 24, `wide: true`, a
   narrow left column and the reading in the only box that scrolls. It was
   `outstanding-debt` before it had a layout to share with `reserves` -- the
   route matches the one-word names the rest of the bar's sections carry, and
@@ -332,12 +290,14 @@ Notable pieces:
   on end -- `BudgetStack`'s rail-and-segments idea turned vertical, written
   out in the page's own script since `BudgetStack` only lies flat, largest
   segment at the foot and named on hover or focus the way every chart on the
-  site is. Two `BudgetLines` charts join it side by side across the top of
-  the reading column instead of stacked, since neither is shaped like a
-  bullet column: annual payments, on their own scale, and the per-capita
-  comparison to the state average, which does share one scale because that
-  is the book's own point in drawing it. Leftmost of the three, a card
-  stands in for page 23, "Bond Rating": the rating itself, "AA", and the
+  site is. Page 22's five years of annual payments and page 25's eleven years
+  of debt per capita against the state average were two `BudgetLines` charts
+  here, cut along with the rest of the site's history and forecasts since
+  this page describes 2027's own debt rather than the years either side of
+  it -- `ANNUAL_DEBT_PAYMENTS` and `DEBT_PER_CAPITA` went with them, out of
+  `tables.ts` and `debt.spec.ts` both, since nothing on the page read them any
+  more. What is left of the top row is one card rather than three: the bond
+  rating, page 23's "Bond Rating": the rating itself, "AA", and the
   book's own attribution line, both bare facts rather than the two S&P
   quotes the page used to carry in full -- the card opens straight to page
   23 of the city's PDF, so a reader who wants S&P's own words gets them from
@@ -372,16 +332,15 @@ Notable pieces:
   "Major Budget Driver - Group Health Insurance" stays, since it names a
   topic the tab label does not. Budget in Brief's own two `BudgetTable`s
   (pages 76-77's forty-four departments, page 78's fourteen categories) are
-  `BudgetColumns` now, one stacked bar per year across the same six years
-  each table gave, `order` shared across the six bars the way
-  `capital-planning`'s own chart shares it across five, and each bar's total
-  the book's own stated "Grand Total" row rather than summed. The five
-  columns the book gives each department beyond the six years charted -- two
-  percent changes, the request kept apart from the recommendation, and the
-  recommendation's own percent and dollar change -- are dropped rather than
-  kept in a second table, since a reader comparing bar heights across years
-  already sees the change a percentage would restate, and the request is
-  superseded by the recommendation. Forty-four departments cycle the
+  `BudgetColumns` now, a single 2027 bar apiece rather than the six years
+  each table gave, cut along with the rest of the site's history, and each
+  bar's total the book's own stated "Grand Total" row rather than summed. The
+  five other columns the book gives each department beyond 2027 -- five other
+  years, two percent changes, the request kept apart from the recommendation,
+  and the recommendation's own percent and dollar change -- are dropped
+  rather than kept in a second table, since only the department's name and
+  its 2027 dollars remain, on the chart's one segment for it. Forty-four
+  departments cycle the
   fourteen-colour palette more than three times over, accepted the way the
   front page's own fifteen-category Spending column already is, on the same
   reasoning: a segment's name is never colour alone, it is on every one as
@@ -417,50 +376,39 @@ Notable pieces:
   one copy, so the front page's column and this page's bar cannot disagree --
   and carrying no `href`, since a bar linking to the page it is already on is
   that page offered twice; it sits in the shared layout, the same on every
-  one of the five routes, and answers to none of them. "Capital Planning" is
-  where a second `BudgetColumns` replaces page 29's own table, "5-Year
-  Capital Requests by Category" -- at the top of that route, ahead of the
-  book's own prose, so a reader lands on the shape of the five years first:
-  five columns, one per year, each divided into that year's categories,
-  "Grand Total" excluded as a category and read as each bar's own stated
-  total rather than summed. A category keeps one colour and one band across
-  every bar -- `order`, largest five-year total first, which is the prop
-  that lets a column stack and colour by a fixed sequence instead of its own
-  rank, since a reader tracking one category across five years wants it in
-  the same place in every bar, not the front page's two-column case of
-  picking each column's own largest first. `minHeight` is the other prop,
-  overriding the `min-h-64` this component used to fix unconditionally --
-  right for a full-height column, too tall for a chart sitting above a page
-  of reading. The chart also leaves out two 2028 projects, $90,000,000 for
-  JGW/Tilton and $30,000,000 for a new Fire Station -- 90% of that year's
-  request and the reason every other year used to draw as a flat line
-  against it -- subtracted from the Buildings segment and the bar's own
-  total before either reaches `BudgetColumns`, and left untouched in
-  `CAPITAL_REQUESTS` and the table below, which still carry both at their
-  own rows. A second `BudgetColumns` sits beside the first, no `order` --
-  one column, the two excluded projects themselves stacked to their own
-  $120,000,000, which is what discloses them now: a bar a reader can hover
-  or focus, not a note written out in prose beside the chart -- the note
-  said exactly what the second bar draws, so once the bar existed the note
-  was the same fact twice. `spending.spec.ts` pins `SPENDING_TOTAL`, checks
-  the capital table against
-  its own row and column totals, and pins the two excluded projects' figures
-  against the book's own 2028 totals. Pages 30 to 35's own line-item tables,
-  one per category below the chart, are tabbed in place -- the
-  `live`/hidden-markup mechanism `spending`'s own topics used before they
-  became routes, one level deeper: eight tables of one shape are facets of a
-  single dataset rather than eight topics worth a route and a bookmark each.
-  The book's own "Grand Total" row sits at the foot of the last table (a
-  page-layout accident, not Vehicles' own total) and stays there rather than
-  being pulled into a ninth table, since the chart above already reads the
-  same figures off `CAPITAL_REQUESTS` directly. Pages 36 to 45 -- the same
-  requests again, but only the ones the city actually asked for in 2027, each
-  with the department's own case for it and the urgency it was given -- used
-  to run as one long "2027 Capital Requests" section under the eight tables;
-  each write-up is its own route now, `capital-planning/<item>`, and the row
-  it belongs to in the table above links straight to it, which the section
-  never let a reader do. Not every row links: only the ~40 with a 2027 ask
-  have a write-up at all, and a row with none stays plain text. `<slug>` is
+  one of the seven routes, and answers to none of them. "Capital Planning"
+  used to open with a second `BudgetColumns` in place of page 29's own table,
+  "5-Year Capital Requests by Category" -- five columns, one per year, plus a
+  second bar for two 2028 projects ($90,000,000 for JGW/Tilton and
+  $30,000,000 for a new Fire Station) the first left out because they set the
+  scale every other category and year was read against. Both charts are gone
+  along with the rest of the site's forecasts and planning, and
+  `CAPITAL_REQUESTS`, the page-29 table they read, went with them, out of
+  `spending/tables.ts` and `spending.spec.ts` both, since nothing on the page
+  reads it any more. Pages 30 to 35's own line-item tables, one per category,
+  are tabbed in place below the prose -- the `live`/hidden-markup mechanism
+  `spending`'s own topics used before they became routes, one level deeper:
+  seven tables of one shape are facets of a single dataset rather than seven
+  topics worth a route and a bookmark each. Each keeps only its 2027 column
+  now, and only the rows with a figure in it -- the book's other four years
+  and the rows that belong to them alone, dropped with the rest of the site's
+  history. The book gives eight of these tables, not seven: "Planning &
+  Design" carries two line items, both 2029 requests, so trimmed to 2027 it
+  has nothing to show -- not even a total the book prints as $0, since it
+  prints none at all -- and it is left out of the tab set entirely rather
+  than kept as an empty one. The book's own "Grand Total" row sits at the
+  foot of the last table (a page-layout accident, not Vehicles' own total)
+  and stays there rather than being pulled into its own table. Pages 36 to
+  45 -- the same requests again, but only the ones the city actually asked
+  for in 2027, each with the department's own case for it and the urgency it
+  was given -- used to run as one long "2027 Capital Requests" section under
+  the eight tables; each write-up is its own route now, `capital-planning/<item>`,
+  and the row it belongs to in the table above links straight to it, which
+  the section never let a reader do. Not every row links: only the ~40 with
+  a 2027 ask have a write-up at all, and the trim to a 2027-only column left
+  exactly those rows standing -- a row with no 2027 figure had no write-up
+  either, so nothing here dropped a link the trim did not already drop the
+  row for. `<slug>` is
   built from the table row's own label, `sectionSlug`'s rule, rather than the
   write-up's -- the two occasionally spell a project differently ("Highway
   Administration Roof Replacement" in the table, "Admin. Roof Replacement -
@@ -474,7 +422,7 @@ Notable pieces:
   "Capital Planning" marked current in the nav three levels up.
   `Router.capitalRequestItem(id, slug)` builds the link. "2027 Capital
   Funding Recommendation" and "Plan for Funding Major Capital Projects" sit
-  above the eight tables now rather than below them -- the reading a reader
+  above the seven tables now rather than below them -- the reading a reader
   wants before the detail, not after it -- and "What is OPEB?" is gone
   entirely: the paragraph beside it already names OPEB without needing the
   term defined, and the definition itself carried nothing the rest of the
