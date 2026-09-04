@@ -73,3 +73,39 @@ repeated in front of the cuts that follow it. -->
     Allocation of funds to maintain <strong>level services</strong> across the city.
   </li>
 </ul>
+
+<!-- Page 73's own close, the last of the three subsections "Other Budget
+Reductions to Create a Balanced Budget" runs on Requests & Challenges --
+moved for the same reason the goals recap above it was: the book's linear
+run put the resolution right after the cuts it resolves because a straight
+run of pages has nowhere else to put it, and the tabs let it sit with the
+rest of what the year's goals came down to instead. -->
+<h2>Final Recommendations</h2>
+
+<p>
+  The final recommendation to balance the 2027 <GlossaryTerm term="Operating Budget"
+    >operating budget</GlossaryTerm
+  > involves utilizing a portion of the city's tax
+  <strong><GlossaryTerm term="Levy">levy</GlossaryTerm> reserve</strong>. This option was carefully
+  considered to prevent creating a structurally unbalanced budget or leaving unresolved issues for
+  2028. The city's projected excess <GlossaryTerm term="Levy">levy</GlossaryTerm> for 2027, which represents
+  the amount of funds that can be appropriated without a referendum, totals
+  <strong>$2.6 million</strong>. Using the entire excess <GlossaryTerm term="Levy"
+    >levy</GlossaryTerm
+  > would undoubtedly lead to a <GlossaryTerm term="Deficit">deficit</GlossaryTerm> for 2028, likely resulting
+  in layoffs.
+</p>
+
+<p>
+  The <strong>Mayor's budget proposal includes a year-over-year budget increase of 2.9%</strong>
+  and using an additional <strong>$1.1 million</strong> from the city's <GlossaryTerm term="Levy"
+    >levy</GlossaryTerm
+  > reserve, leaving an excess tax <GlossaryTerm term="Levy">levy</GlossaryTerm> of
+  <strong>$1.5 million</strong>. Utilizing this additional <GlossaryTerm term="Levy"
+    >levy</GlossaryTerm
+  > will increase the estimated tax bill by <strong>4.1%</strong>, or
+  <strong>$244.97</strong>
+  for the average single-family home, based on the 2026 valuations and tax shift percentages. The tax
+  bill increase for the average single-family home in 2026 was
+  <strong>4.6%</strong>.
+</p>

@@ -667,28 +667,33 @@ chart depends on -- the same role `reserves.spec.ts` plays for the dials.
 `reserves` and `debt` each open with one -- it is `wide: true` for the same
 reason theirs are, a chart fixed in the left column, but the reading beside
 it is five routes now rather than one long scroll or a script-driven set of
-tabs: **Goals**, **Capital Planning**, **Requests & Challenges**, **Budget
-in Brief** and **Council Orders**, the book's own topics (pages 15-16,
-28-45, 72-73, 76-78, and the Council's agenda, which is ours rather than
-the book's) kept apart on screen the way they are apart in the book, and
-now apart in the URL too -- `spending/goals`, `spending/council-orders`,
-each linkable and bookmarkable on its own, which tabs a script switched
-never were. Every heading and table this page ever carried is still exactly
-the prose and the tables it always was -- nothing here paraphrases or
-retypes a word of it -- just moved into its own route directory instead of
-sitting behind a panel a script showed and hid.
+tabs: **Goals & Recommendations**, **Capital Planning**, **Requests &
+Challenges**, **Budget in Brief** and **Council Orders**, the book's own
+topics (pages 15-16, 28-45, 72-73, 76-78, and the Council's agenda, which is
+ours rather than the book's) kept apart on screen the way they are apart in
+the book, and now apart in the URL too -- `spending/goals-recommendations`,
+`spending/council-orders`, each linkable and bookmarkable on its own, which
+tabs a script switched never were. Every heading and table this page ever
+carried is still exactly the prose and the tables it always was -- nothing
+here paraphrases or retypes a word of it -- just moved into its own route
+directory instead of sitting behind a panel a script showed and hid.
 
-**One exception to grouping by page range: "Preliminary Budget Goals for
-Fiscal 2027" sits on Goals now, not Requests & Challenges, even though it is
-page 73's own text.** In the book it opens "Other Budget Reductions to
-Create a Balanced Budget", a short recap of what the Mayor set out to do
-before the section explains what had to be cut to afford it -- necessary
-there because the book is a straight run of pages and page 73 has no other
-order to reach page 15's goals from. The tabs do: Goals sits next to
-Requests & Challenges in the nav, so the same adjacency the book's own
-pagination gave this passage survives one click over, and the recap no
-longer has to repeat itself in front of the cuts it sets up. Nothing in the
-words changed, only which tab holds them.
+**Two exceptions to grouping by page range, both on Goals & Recommendations
+rather than Requests & Challenges, even though both are page 73's own
+text.** "Preliminary Budget Goals for Fiscal 2027" opens "Other Budget
+Reductions to Create a Balanced Budget" and "Final Recommendations" closes
+it -- a short recap of what the Mayor set out to do bracketing the section
+that explains what had to be cut to afford it, and the resolution once the
+cutting was done. Both were necessary where the book put them only because
+the book is a straight run of pages with nowhere else to put them; page 73
+has no way to reach back to page 15's goals, or to end anywhere but where
+its own text runs out. The tabs read differently: Goals & Recommendations
+sits right next to Requests & Challenges in the nav, so the same adjacency
+the book's own pagination gave these two passages survives one click over,
+and Requests & Challenges no longer opens with a goals recap or closes with
+a resolution in front of the cuts they bracket. Nothing in the words
+changed, only which tab holds them and what the tab is called -- "Goals"
+alone stopped saying what its last two sections are once they landed on it.
 
 **The five sit in a `(tabs)` route group,
 [`spending/(tabs)/+layout.ts`](<../src/routes/budget/fy2027/spending/(tabs)/+layout.ts>)
@@ -696,13 +701,14 @@ and
 [`+layout.svelte`](<../src/routes/budget/fy2027/spending/(tabs)/+layout.svelte>),
 because they share a title, a width, a reference list, a chart and a nav
 that a bare visit to `spending` itself is not one more of.** A route group's
-name is invisible in the URL -- `spending/(tabs)/goals` is still
-`/spending/goals` -- so the five keep their plain, linkable paths while the
-layout stays out of any page that is not one of the five. There is no bare
-`/spending` page any more, not even a forward: the one link to it, the
-front page's own "Spending" chart heading, goes straight to
-`spending/goals` now (`Router.spendingTab(id, "goals")`), and nothing else
-on the site ever pointed at the bare URL, so there was nothing left for a
+name is invisible in the URL -- `spending/(tabs)/goals-recommendations` is
+still `/spending/goals-recommendations` -- so the five keep their plain,
+linkable paths while the layout stays out of any page that is not one of
+the five. There is no bare `/spending` page any more, not even a forward:
+the one link to it, the front page's own "Spending" chart heading, goes
+straight to `spending/goals-recommendations` now
+(`Router.spendingTab(id, "goals-recommendations")`), and nothing else on
+the site ever pointed at the bare URL, so there was nothing left for a
 forward to catch.
 
 **The left column is not a chart of its own -- it is the front page's,

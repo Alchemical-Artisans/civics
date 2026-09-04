@@ -87,7 +87,7 @@ test.describe("budget pages", () => {
     // page any more, only the five beneath it.
     await expect(chart.getByRole("link", { name: "Spending" })).toHaveAttribute(
       "href",
-      /\/spending\/goals$/,
+      /\/spending\/goals-recommendations$/,
     )
     await expect(chart.getByRole("link", { name: "Revenue" })).toHaveAttribute("href", /\/revenue$/)
 
@@ -270,17 +270,17 @@ test.describe("budget pages", () => {
 
     // Both pie headings are links now, each to the side of the book its chart
     // is about, and neither section has a line in the contents. Spending's
-    // goes straight to the first topic rather than through the bare page,
-    // which only forwards.
+    // own link goes straight to its first topic -- there is no bare
+    // `/spending` page any more, only the five beneath it.
     await expect(page.getByRole("link", { name: "Spending", exact: true })).toHaveAttribute(
       "href",
-      /\/spending\/goals$/,
+      /\/spending\/goals-recommendations$/,
     )
     const every = page.locator("article > div ol li")
     await expect(every.filter({ hasText: "Appropriation Forecast" })).toHaveCount(0)
     await expect(every.filter({ hasText: "Revenue Forecast" })).toHaveCount(0)
 
-    await page.goto(spendingUrl("goals"))
+    await page.goto(spendingUrl("goals-recommendations"))
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("Spending")
 
     // The spending side of the book, in its order: what the city wants to
@@ -303,24 +303,27 @@ test.describe("budget pages", () => {
     // And the goals the rest of it is an account of, from pages 15 and 16 --
     // the topic this page's own chart opens on, but this test has gone to two
     // others by now.
-    await page.goto(spendingUrl("goals"))
+    await page.goto(spendingUrl("goals-recommendations"))
     await expect(page.getByRole("heading", { name: "Mayor's 2027 Budgetary Goals" })).toBeVisible()
     await expect(
       page.getByRole("heading", { name: "Long-Term Perspective Strategic Goals" }),
     ).toBeVisible()
 
-    // Page 73's own lead-in to "Other Budget Reductions" moved here from
-    // Requests & Challenges: the book's linear run put it right before the
-    // challenges it sets up, but Goals sits next to Requests & Challenges in
-    // the nav, so the same adjacency survives without repeating a goals
-    // recap in front of the cuts that follow it.
+    // Page 73's own lead-in and close of "Other Budget Reductions" moved
+    // here from Requests & Challenges: the book's linear run bracketed the
+    // challenges with them because a straight run of pages had nowhere else
+    // to put them, but the two tabs sit next to each other in the nav, so
+    // the same adjacency survives without either recap or resolution
+    // sitting in front of the cuts they explain.
     await expect(
       page.getByRole("heading", { name: "Preliminary Budget Goals for Fiscal 2027" }),
     ).toBeVisible()
+    await expect(page.getByRole("heading", { name: "Final Recommendations" })).toBeVisible()
     await page.goto(spendingUrl("requests-challenges"))
     await expect(
       page.getByRole("heading", { name: "Preliminary Budget Goals for Fiscal 2027" }),
     ).toHaveCount(0)
+    await expect(page.getByRole("heading", { name: "Final Recommendations" })).toHaveCount(0)
 
     // The calendar's link to the book opens it where the run begins, which is
     // now the goals.
@@ -601,30 +604,36 @@ test.describe("budget pages", () => {
   })
 
   test("splits spending into one route per topic, linked by a plain nav", async ({ page }) => {
-    await page.goto(spendingUrl("goals"))
+    await page.goto(spendingUrl("goals-recommendations"))
 
     // Five links, in the book's own order, `aria-current` marking the one the
-    // reader is on -- and only Goals is on the page at all: Capital Planning
-    // is not merely hidden, its heading is not in the DOM until its own route
-    // is.
+    // reader is on -- and only Goals & Recommendations is on the page at
+    // all: Capital Planning is not merely hidden, its heading is not in the
+    // DOM until its own route is.
     const nav = page.getByRole("navigation", { name: "Spending" })
     await expect(nav.getByRole("link")).toHaveCount(5)
-    await expect(nav.getByRole("link", { name: "Goals" })).toHaveAttribute("aria-current", "page")
+    await expect(nav.getByRole("link", { name: "Goals & Recommendations" })).toHaveAttribute(
+      "aria-current",
+      "page",
+    )
     await expect(nav.getByRole("link", { name: "Capital Planning" })).not.toHaveAttribute(
       "aria-current",
     )
     await expect(page.getByRole("heading", { name: "Mayor's 2027 Budgetary Goals" })).toBeVisible()
     await expect(page.getByRole("heading", { name: "Capital Planning" })).toHaveCount(0)
 
-    // Following the link is what puts Capital Planning on the page, and Goals
-    // off it -- an ordinary navigation, not a script swapping panels.
+    // Following the link is what puts Capital Planning on the page, and
+    // Goals & Recommendations off it -- an ordinary navigation, not a
+    // script swapping panels.
     await nav.getByRole("link", { name: "Capital Planning" }).click()
     await expect(page).toHaveURL(new RegExp(`${spendingUrl("capital-planning")}$`))
     await expect(nav.getByRole("link", { name: "Capital Planning" })).toHaveAttribute(
       "aria-current",
       "page",
     )
-    await expect(nav.getByRole("link", { name: "Goals" })).not.toHaveAttribute("aria-current")
+    await expect(nav.getByRole("link", { name: "Goals & Recommendations" })).not.toHaveAttribute(
+      "aria-current",
+    )
     await expect(page.getByRole("heading", { name: "Capital Planning" })).toBeVisible()
     await expect(page.getByRole("heading", { name: "Mayor's 2027 Budgetary Goals" })).toHaveCount(0)
 
@@ -650,7 +659,7 @@ test.describe("budget pages", () => {
     // between them is plain links rather than a control that needs script to
     // do anything.
     for (const [slug, heading] of [
-      ["goals", "Mayor's 2027 Budgetary Goals"],
+      ["goals-recommendations", "Mayor's 2027 Budgetary Goals"],
       ["capital-planning", "Capital Planning"],
       ["requests-challenges", "Summary Department Budget Requests"],
       ["budget-in-brief", "2027 Budget in Brief"],
@@ -702,7 +711,7 @@ test.describe("budget pages", () => {
       expect(await link.getAttribute("href")).toMatch(new RegExp(`#page=${at}$`))
     }
 
-    await page.goto(spendingUrl("goals"))
+    await page.goto(spendingUrl("goals-recommendations"))
     await expect(page.getByRole("link", { name: /^Fiscal Reserves/ })).toHaveAttribute(
       "href",
       /\/reserves$/,
@@ -1049,7 +1058,7 @@ test.describe("budget pages", () => {
     await expect(page.getByRole("article")).toContainText("Estimated Excess Levy")
 
     // Spending points here for it, since it is still that page's spending.
-    await page.goto(spendingUrl("goals"))
+    await page.goto(spendingUrl("goals-recommendations"))
     await expect(
       page.getByRole("link", { name: /^10-Year Appropriation Projection/ }),
     ).toHaveAttribute("href", /\/history$/)

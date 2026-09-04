@@ -66,12 +66,13 @@ inside a department's total. -->
 </table>
 
 <!-- Page 73: what had to come out of the budget above to balance it, and
-what is driving it up. Its own lead-in, "Preliminary Budget Goals for Fiscal
-2027", moved to the Goals tab -- the book's linear run put it here, right
-before the challenges it sets up, because page 73 has no other order to be
-in; the tabs do, and Goals sits next to Requests & Challenges in the nav, so
-the same adjacency survives the move without this page needing its own
-recap of goals to open on. -->
+what is driving it up. Its own lead-in and close, "Preliminary Budget Goals
+for Fiscal 2027" and "Final Recommendations", moved to Goals &
+Recommendations -- the book's linear run put them here, bracketing the
+challenges they set up and resolve, because a straight run of pages has
+nowhere else to put them; the tabs sit next to each other in the nav, so the
+same adjacency survives the move without this page needing its own goals
+recap to open on or its own resolution to close with. -->
 <h2>Other Budget Reductions to Create a Balanced Budget</h2>
 
 <h3>Budgetary Challenges</h3>
@@ -174,36 +175,6 @@ recap of goals to open on. -->
     March 2026
   </li>
 </ul>
-
-<h3>Final Recommendations</h3>
-
-<p>
-  The final recommendation to balance the 2027 <GlossaryTerm term="Operating Budget"
-    >operating budget</GlossaryTerm
-  > involves utilizing a portion of the city's tax
-  <strong><GlossaryTerm term="Levy">levy</GlossaryTerm> reserve</strong>. This option was carefully
-  considered to prevent creating a structurally unbalanced budget or leaving unresolved issues for
-  2028. The city's projected excess <GlossaryTerm term="Levy">levy</GlossaryTerm> for 2027, which represents
-  the amount of funds that can be appropriated without a referendum, totals
-  <strong>$2.6 million</strong>. Using the entire excess <GlossaryTerm term="Levy"
-    >levy</GlossaryTerm
-  > would undoubtedly lead to a <GlossaryTerm term="Deficit">deficit</GlossaryTerm> for 2028, likely resulting
-  in layoffs.
-</p>
-
-<p>
-  The <strong>Mayor's budget proposal includes a year-over-year budget increase of 2.9%</strong>
-  and using an additional <strong>$1.1 million</strong> from the city's <GlossaryTerm term="Levy"
-    >levy</GlossaryTerm
-  > reserve, leaving an excess tax <GlossaryTerm term="Levy">levy</GlossaryTerm> of
-  <strong>$1.5 million</strong>. Utilizing this additional <GlossaryTerm term="Levy"
-    >levy</GlossaryTerm
-  > will increase the estimated tax bill by <strong>4.1%</strong>, or
-  <strong>$244.97</strong>
-  for the average single-family home, based on the 2026 valuations and tax shift percentages. The tax
-  bill increase for the average single-family home in 2026 was
-  <strong>4.6%</strong>.
-</p>
 
 <h3>Major Budget Driver - Group Health Insurance</h3>
 

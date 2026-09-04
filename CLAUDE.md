@@ -354,27 +354,29 @@ Notable pieces:
 - **`spending`** is `wide: true` too, for its left-column chart rather than a
   policy to keep or fail -- there is no accordion here the way `reserves` and
   `debt` each open with one. The reading itself is five routes now, not five
-  tabs a script switched: Goals, Capital Planning, Requests & Challenges,
-  Budget in Brief, Council Orders, the book's own topics kept apart on
-  screen, each its own directory under a `(tabs)` route group so a reader can
-  link or bookmark straight into "Council Orders" the way every other
-  write-up on the site is linked -- the reason for the change, and the reason
-  it is a group rather than plain directories: `spending/(tabs)/+layout.ts`
-  and `+layout.svelte` carry the title, width, references and the chart and
-  nav that are common to all five, and a route group is what lets `spending`
-  itself sit outside that layout, since a bare visit there is not a sixth
-  topic. There is no bare `/spending` page any more, not even a forward: the
-  one link to it, the front page's own chart heading, now goes straight to
-  `spending/goals`, `Router.spendingTab(id, slug)`, and nothing else pointed
-  at the old bare URL. The nav between the five is a plain `<nav>` of links,
+  tabs a script switched: Goals & Recommendations, Capital Planning,
+  Requests & Challenges, Budget in Brief, Council Orders, the book's own
+  topics kept apart on screen, each its own directory under a `(tabs)` route
+  group so a reader can link or bookmark straight into "Council Orders" the
+  way every other write-up on the site is linked -- the reason for the
+  change, and the reason it is a group rather than plain directories:
+  `spending/(tabs)/+layout.ts` and `+layout.svelte` carry the title, width,
+  references and the chart and nav that are common to all five, and a route
+  group is what lets `spending` itself sit outside that layout, since a bare
+  visit there is not a sixth topic. There is no bare `/spending` page any
+  more, not even a forward: the one link to it, the front page's own chart
+  heading, now goes straight to `spending/goals-recommendations`,
+  `Router.spendingTab(id, slug)`, and nothing else pointed at the old bare
+  URL. The nav between the five is a plain `<nav>` of links,
   `aria-current="page"` marking the open one -- matched on whether
   `page.route.id` carries the slug as one of its own segments, never on the
   URL against a `Router`-built href, and never a plain substring either,
   since a route group's name sits in `route.id`
-  (`/budget/fy2027/spending/(tabs)/goals`) without ever reaching the URL. A
-  segment match rather than only the last one is what lets Capital
-  Planning's own item pages, a level deeper still, keep it marked current
-  too. No script manages any of this: an ordinary navigation is what
+  (`/budget/fy2027/spending/(tabs)/goals-recommendations`) without ever
+  reaching the URL. A segment match rather than only the last one is what
+  lets Capital Planning's own item pages, a level deeper still, keep it
+  marked current too. No script manages any of this: an ordinary navigation
+  is what
   used to need a `live` flag and a hidden-markup fallback for a reader who
   had not hydrated, and Left/Right/Home/End is gone with it -- a plain link
   needs no keydown handler of its own, only Tab and Enter, which every
@@ -446,14 +448,17 @@ Notable pieces:
   wants before the detail, not after it -- and "What is OPEB?" is gone
   entirely: the paragraph beside it already names OPEB without needing the
   term defined, and the definition itself carried nothing the rest of the
-  page depends on. "Preliminary Budget Goals for Fiscal 2027" moved off
-  Requests & Challenges onto Goals too, despite being page 73's own text and
-  not page 15's -- it is the book's lead-in to "Other Budget Reductions to
-  Create a Balanced Budget", necessary there only because the book is a
-  straight run of pages with no way back to page 15's goals except turning
-  to it. Goals sits next to Requests & Challenges in the nav, so the same
-  adjacency survives one tab over without a goals recap sitting in front of
-  the cuts it sets up.
+  page depends on. "Preliminary Budget Goals for Fiscal 2027" and "Final
+  Recommendations" moved off Requests & Challenges onto this tab too,
+  despite being page 73's own text and not page 15's -- they are the book's
+  lead-in to and close of "Other Budget Reductions to Create a Balanced
+  Budget", necessary there only because the book is a straight run of pages
+  with nowhere else to put either. This tab sits next to Requests &
+  Challenges in the nav, so the same adjacency survives one tab over without
+  a goals recap or a resolution sitting in front of the cuts they bracket --
+  and is the reason the tab itself is renamed **Goals & Recommendations**
+  now (`goals-recommendations`, from `Goals`), since "goals" alone no longer
+  says what the last two sections on it are.
 - **`src/lib/BudgetTimeline.svelte`** draws page 13, the budget calendar, as the
   footer of _every_ page of a book, fixed to the bottom of the window: a row of
   twelve boxes

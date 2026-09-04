@@ -18,9 +18,17 @@
    * directory under this one now, rather than a panel a script showed and
    * hid, so a reader can link straight into "Council Orders" the way every
    * other write-up on the site is linked.
+   *
+   * "Goals & Recommendations" carries more than page 15-16's own goals now:
+   * "Preliminary Budget Goals for Fiscal 2027" and "Final Recommendations"
+   * are page 73's, the lead-in and the close of Requests & Challenges'
+   * "Other Budget Reductions to Create a Balanced Budget" -- moved here
+   * because the two tabs sit next to each other in the nav, which is the
+   * same adjacency the book's own linear pages gave them, and because both
+   * are goals or their resolution rather than a challenge or a request.
    */
   const TABS = [
-    { slug: "goals", label: "Goals" },
+    { slug: "goals-recommendations", label: "Goals & Recommendations" },
     { slug: "capital-planning", label: "Capital Planning" },
     { slug: "requests-challenges", label: "Requests & Challenges" },
     { slug: "budget-in-brief", label: "Budget in Brief" },
