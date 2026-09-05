@@ -483,7 +483,15 @@ Notable pieces:
   comes from, and 5a even names a specific local borrowing, "Consentino". The
   table's own caption went with the prose, for the same reason: "Illustration
   of..." was the phrase reading as a stock example rather than the city's own
-  figures. "Summary" is page 64 with the 10-year forecast of page 67
+  figures. "Local Receipts" tabs its own seven category tables (Local Excise
+  Taxes, Other Local Receipts, Fees, Department Revenue, License & Permits,
+  Fines & Investments, Other Available Revenue) in place below the shared
+  intro, the same `live`/hidden-markup mechanism `spending`'s own Capital
+  Planning tab uses for its own seven category tables -- each keeps its own
+  book heading and prose, unlike Capital Planning's bare tables, but the
+  reason is the same: seven facets of one page's worth of receipts, not
+  seven topics worth a route and a bookmark each. "Summary" is page 64 with
+  the 10-year forecast of page 67
   behind it; "Budget in Brief" is page 78's revenue table, page 79's tax bill,
   and order 13.3 ("What the Council Raised"), which sits here rather than
   anywhere else on the page because it reconciles against the same

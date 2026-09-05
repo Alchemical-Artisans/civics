@@ -268,7 +268,12 @@ test.describe("budget pages", () => {
 
     await nav.getByRole("link", { name: "Local Receipts" }).click()
     await expect(page.getByRole("heading", { name: "Local Revenue Receipts" })).toBeVisible()
-    await expect(page.getByRole("heading", { name: "License & Permits" })).toBeVisible()
+    // The seven categories below are tabbed in place now, the same
+    // mechanism Capital Planning's own seven tables use -- only the first
+    // ("Local Excise Taxes") is on the page until another tab is opened, so
+    // this checks the shared intro rather than a category heading.
+    await expect(page.getByRole("heading", { name: "Local Excise Taxes" })).toBeVisible()
+    await expect(page.getByRole("heading", { name: "License & Permits" })).toHaveCount(0)
 
     await nav.getByRole("link", { name: "Summary" }).click()
     await expect(
@@ -319,6 +324,7 @@ test.describe("budget pages", () => {
     ] as const) {
       await noscript.goto(revenueUrl(slug))
       await expect(noscript.getByRole("heading", { name: heading })).toBeVisible()
+      await expect(noscript.getByRole("tab")).toHaveCount(0)
     }
 
     // "2027 Revenue Projection", "Revenue Sources" and References carry no
@@ -334,6 +340,7 @@ test.describe("budget pages", () => {
     ] as const) {
       await noscript.goto(revenueUrl(slug))
       await expect(noscript.getByRole("article")).toContainText(text)
+      await expect(noscript.getByRole("tab")).toHaveCount(0)
     }
 
     await context.close()
@@ -360,6 +367,85 @@ test.describe("budget pages", () => {
     // this list is not left wondering which "Fire" a figure belongs to.
     await expect(page.getByRole("rowheader", { name: "Fire Fee" })).toBeVisible()
     await expect(page.getByRole("rowheader", { name: "Fire License" })).toBeVisible()
+  })
+
+  test("tabs the seven local-receipts tables in place, on script alone", async ({ page }) => {
+    await page.goto(revenueUrl("local-receipts"))
+
+    // Scoped to the tabbed group itself, the same mechanism and the same
+    // check Capital Planning's own seven tables use on `spending`.
+    const tables = page.locator(".tables")
+
+    // Seven tabs, Local Excise Taxes open on arrival -- and only it: the
+    // other six categories are not merely scrolled away, they are out of
+    // the accessibility tree entirely until their own tab is opened.
+    await expect(tables.getByRole("tab")).toHaveCount(7)
+    await expect(tables.getByRole("tab", { name: "Local Excise Taxes" })).toHaveAttribute(
+      "aria-selected",
+      "true",
+    )
+    await expect(tables.getByRole("heading", { name: "Fines & Investments" })).toHaveCount(0)
+    await expect(tables.getByRole("row", { name: /^Parking Fines/ })).toHaveCount(0)
+
+    // Left/Right move between tabs and select the one moved to, Home/End
+    // jump to the ends -- the same keyboard pattern Capital Planning uses.
+    await tables.getByRole("tab", { name: "Local Excise Taxes" }).focus()
+    await page.keyboard.press("ArrowRight")
+    await expect(tables.getByRole("tab", { name: "Other Local Receipts" })).toHaveAttribute(
+      "aria-selected",
+      "true",
+    )
+    await expect(tables.getByRole("tab", { name: "Other Local Receipts" })).toBeFocused()
+    await page.keyboard.press("End")
+    await expect(tables.getByRole("tab", { name: "Other Available Revenue" })).toHaveAttribute(
+      "aria-selected",
+      "true",
+    )
+    await page.keyboard.press("Home")
+    await expect(tables.getByRole("tab", { name: "Local Excise Taxes" })).toHaveAttribute(
+      "aria-selected",
+      "true",
+    )
+
+    // Opening a tab by pointer is what puts its table -- and its own
+    // prose -- on the page, and closes Local Excise Taxes the same way.
+    await tables.getByRole("tab", { name: "Fines & Investments" }).click()
+    await expect(tables.getByRole("tab", { name: "Fines & Investments" })).toHaveAttribute(
+      "aria-selected",
+      "true",
+    )
+    await expect(tables.getByRole("tab", { name: "Local Excise Taxes" })).toHaveAttribute(
+      "aria-selected",
+      "false",
+    )
+    await expect(tables.getByRole("heading", { name: "Fines & Investments" })).toBeVisible()
+    await expect(tables.getByRole("row", { name: /^Parking Fines/ })).toBeVisible()
+    await expect(tables.getByRole("heading", { name: "Local Excise Taxes" })).toHaveCount(0)
+  })
+
+  test("keeps all seven local-receipts tables on the page without script", async ({ browser }) => {
+    const context = await browser.newContext({ javaScriptEnabled: false })
+    const noscript = await context.newPage()
+    await noscript.goto(revenueUrl("local-receipts"))
+
+    // Hidden markup rather than markup that is not there: a reader who never
+    // hydrates gets every category, stacked, and no tab bar to click that
+    // would not do anything anyway.
+    await expect(noscript.getByRole("tab")).toHaveCount(0)
+    const tables = noscript.locator(".tables")
+    for (const heading of [
+      "Local Excise Taxes",
+      "Other Local Receipts",
+      "Fees",
+      "Department Revenue",
+      "License & Permits",
+      "Fines & Investments",
+      "Other Available Revenue",
+    ]) {
+      await expect(tables.getByRole("heading", { name: heading, exact: true })).toBeVisible()
+    }
+
+    await context.close()
   })
 
   test("opens the spending side from its own chart", async ({ page }) => {

@@ -1152,6 +1152,29 @@ of State Aid" are not: nothing charts a value out of either, so they stay
 exactly the markup they always were, the same reason the front page's own
 pie-label tables do.
 
+**"Local Receipts" tabs its own seven categories in place, the same
+mechanism Capital Planning's own seven tables use on `spending`.** Local
+Excise Taxes, Other Local Receipts, Fees, Department Revenue, License &
+Permits, Fines & Investments and Other Available Revenue run one after
+another as a plain scroll before this, six tables deep past two shared
+intro paragraphs -- long enough that a reader after Fines & Investments
+passes five other categories to reach it, the same problem Capital
+Planning's own seven tables had. `local-receipts/+page.svelte` picks up
+the same `live`/hidden-markup mechanism wholesale: a `tablesLive` flag
+`false` until the component mounts, a CSS rule keyed on it that hides six
+of seven panels and shows a tab bar only once it is true, and
+Left/Right/Home/End moving the open tab the identical way. The one
+difference is what a panel holds -- Capital Planning's seven are bare
+tables, a heading and nothing else, because the shared prose above already
+said everything page 30 to 35 had to say; each of these seven still
+carries its own book heading and its own paragraphs (motor vehicle excise,
+the Waste Disposal Fee PILOT, Medicaid reimbursement, and so on) alongside
+its `<BudgetTable>`, since the book's local-receipts prose is written
+category by category rather than as one lead-in the way Capital Planning's
+is. The two shared paragraphs above the tab set ("Local revenue receipts
+are funds generated...") stay outside it, common framing rather than any
+one category's own.
+
 **References is last, and lists the other two buckets.** The same
 tab-of-its-own device `spending` uses, `heading={false}` for the same
 reason -- but its own two entries are "Spending" and "Fiscal Reserves"
