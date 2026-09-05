@@ -358,10 +358,9 @@ department table is over the rest of it. `overview.spec.ts` holds all of
 this down.
 
 None of that is on the front page. A pie is a shape for one question, and the
-explanation belongs where a reader who wants it goes: the orders are quoted on
-`spending`, in the agenda's own words, with what they leave out and why --
-only 13.4 of them, now; see below for the three that are not, one of which
-moved to `revenue` rather than dropping off the site.
+explanation belongs where a reader who wants it goes: the orders used to be
+quoted on `spending`, in the agenda's own words -- none of the four are any
+more; see below for where each moved instead.
 
 **The book is not the whole city, and the orders are how we know.** Water and wastewater
 are enterprise funds — self-supporting, paid for out of what households are
@@ -420,10 +419,20 @@ it. Where it belongs among those is a question for `revenue`'s own
 eventual revamp; for now it stands on its own, the same way it stood alone
 as the last order quoted on `council-orders`.
 
-All three retired orders stay in `ORDERS`, filtered out in
-`council-orders/+page.svelte` rather than in `council-orders.ts` itself,
-since the data is still every order the agenda carries and only this one
-page's selection of it changed.
+**13.4 left for `reserves`, the last of the four.** It transfers $2,770,000
+out of fiscal 2025's certified free cash to cover the same snow-and-ice
+deficit Policy #3's own "Results" paragraph already describes in the
+book's words -- moved onto that policy's own collapsed section, right
+after the "Results" paragraph it confirms, since it is what the Council
+did about free cash rather than an appropriation. `council-orders` no
+longer quotes any order at all: what remains is two paragraphs of
+explanation, naming where each of the four actually is.
+
+All four retired orders stay in `ORDERS` -- the agenda's own transcription
+is untouched -- filtered out (or, for 13.4, simply not read) in each
+page's own script rather than in `council-orders.ts` itself, since the
+data is still every order the agenda carries and only which page renders
+which order changed.
 
 **The agenda is on the budget calendar in the footer**, on the run of public
 hearings its meeting of 2 June falls inside, the same way the book hangs off the
@@ -537,6 +546,14 @@ against a floor of $3,565,232, so the middle column draws no bar at all under a
 band it never reaches. The page says why in the city's own words — a winter of
 $4.6 million in snow removal — and the chart says nothing the prose does not; it
 just says it first, and next to the two funds that are inside their bands.
+
+**Order 13.4, moved here from Council Orders, sits right after that
+paragraph.** It transfers $2,770,000 out of fiscal 2025's certified free
+cash for the same snow-and-ice deficit the "Results" paragraph describes —
+ours, not the book's, so it is quoted rather than folded into the book's
+own words, the same way every Council order on the site is.
+
+**Stabilization's band has no closing edge**, because policy #4 sets a floor and
 
 **Stabilization's band has no closing edge**, because policy #4 sets a floor and
 no ceiling. The band runs to the top of the rail and the column prints no maximum:

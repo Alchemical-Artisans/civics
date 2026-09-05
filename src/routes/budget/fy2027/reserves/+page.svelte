@@ -7,7 +7,16 @@
   import BookReferences from "$lib/BookReferences.svelte"
   import { amount, cell, type BudgetTableData } from "$lib/budget-table"
   import { FUND_BALANCE, FREE_CASH, STABILIZATION } from "./tables"
+  import { ORDERS } from "../council-orders"
   import GlossaryTerm from "$lib/GlossaryTerm.svelte"
+
+  // 13.4, moved here from Council Orders: it transfers $2,770,000 out of
+  // fiscal 2025's certified free cash for the same snow-and-ice deficit
+  // Policy #3's own "Results" paragraph describes, so it is what the
+  // Council did about free cash rather than an appropriation -- read out
+  // of `council-orders.ts` rather than retyped, so this and the agenda
+  // transcription it comes from cannot drift apart.
+  const order = ORDERS.find((o) => o.item === "13.4")!
   // Iconify's offline component, the same one `Note` uses: the artwork is
   // inlined at build time rather than fetched, so a reader's browser never has
   // to reach api.iconify.design for a checkmark.
@@ -285,6 +294,10 @@
                 >fiscal year</GlossaryTerm
               > 2025, which was $2,578,279, reflecting a decline of 1.51%.
             </p>
+
+            <!-- Ours, not the book's: the Council's own order against the
+            same deficit the "Results" paragraph above describes. -->
+            <p><strong>{order.item}</strong> {order.text}</p>
           </div>
         </details>
 

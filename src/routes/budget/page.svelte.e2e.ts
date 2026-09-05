@@ -1095,13 +1095,11 @@ test.describe("budget pages", () => {
   test("says on the spending page what the chart leaves out", async ({ page }) => {
     await page.goto(spendingUrl("council-orders"))
 
-    // The orders themselves, quoted as the agenda words them -- 13.1 and
-    // 13.2, the Water and Wastewater Department orders, are not among them
-    // any more: both totals ($14,805,633 and $15,967,043) are already
-    // segments of the spending bar, so neither order's own text is quoted
-    // a second time here. 13.3 is gone too, moved to Revenue since it is
-    // that figure's revenue side; only 13.4 -- the snow and ice transfer --
-    // is still quoted on this page.
+    // None of the four orders are quoted here any more -- each reads better
+    // beside the figure it already belongs to. 13.1 and 13.2's totals
+    // ($14,805,633 and $15,967,043) are segments of the spending bar; 13.3
+    // is on Revenue, since it is that figure's revenue side; 13.4 is on
+    // Reserves, beside the free cash policy it answers to.
     await expect(page.getByRole("heading", { name: "What the Council appropriated" })).toBeVisible()
     const article = page.getByRole("article")
     await expect(article).not.toContainText("be appropriated to operate the Water Department")
@@ -1109,7 +1107,7 @@ test.describe("budget pages", () => {
     await expect(article).not.toContainText("$15, 967,043")
     await expect(article).not.toContainText("$ 274,750,725")
     await expect(article).not.toContainText("Taxation and Other Receipts")
-    await expect(article).toContainText("snow and ice deficit")
+    await expect(article).not.toContainText("$2,770,000")
 
     // Why the two enterprise totals are missing.
     await expect(article).toContainText("enterprise funds")
@@ -1125,6 +1123,21 @@ test.describe("budget pages", () => {
     await expect(
       page.getByRole("banner").getByRole("link", { name: /^City Council Order/ }),
     ).toHaveCount(0)
+  })
+
+  test("transfers free cash against the snow and ice deficit, moved onto Reserves", async ({
+    page,
+  }) => {
+    await page.goto(`/budget/${books[0]}/reserves`)
+
+    // Order 13.4, quoted beside Policy #3's own "Results" paragraph, which
+    // already describes the same deficit in the book's own words.
+    const article = page.getByRole("article")
+    await article.locator("details").nth(2).locator("summary").click()
+    await expect(article).toContainText("exceptionally high snow removal costs")
+    await expect(article).toContainText(
+      "$2,770,000 will be transferred from fiscal 2025- certified free cash",
+    )
   })
 
   test("raises the general fund on the revenue page, moved off Council Orders", async ({

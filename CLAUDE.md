@@ -131,12 +131,13 @@ which the orders' reimbursement differs from the book's May projection of it.
 That gap is why they are columns on one scale rather than two pies -- spending
 $316,044,835 against revenue $310,893,296.
 `fy2027/council-orders.ts` transcribes the orders from the agenda of 2 June 2026
--- a document the calendar half already carries. Only one is quoted on
-`spending` now, the snow-and-ice transfer; the enterprise orders' own totals
-are segments of the spending bar and rows on the Departments tab instead of
-quoted text, and the general fund's own order -- the explanation for the gap
-against the book's total -- is quoted on `revenue`, since it is that figure's
-revenue side. The front page just draws the budget.
+-- a document the calendar half already carries. None of its four orders are
+quoted on `spending` any more: the enterprise orders' own totals are segments
+of the spending bar and rows on the Departments tab instead of quoted text,
+the general fund's own order -- the explanation for the gap against the
+book's total -- is quoted on `revenue`, since it is that figure's revenue
+side, and the snow-and-ice transfer is quoted on `reserves`, beside the free
+cash policy it answers to. The front page just draws the budget.
 
 **The budget is the same idea one level deeper, and shares nothing with the
 calendar.** The bar's menu lists every fiscal year the city publishes — a book
