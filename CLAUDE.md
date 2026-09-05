@@ -243,15 +243,16 @@ Notable pieces:
   than pies because two circles cannot be compared by eye, and whether the two
   sides are the same size is the first thing to know about a budget.
   `spending` reuses the same component for its own left-column bar, one row
-  rather than two; `budget-in-brief` reuses it twice more, one 2027-only bar
-  apiece where six years of departments and appropriations used to run --
-  see that page's own entry for `minHeight`, the prop a chart sitting above a
-  page of reading needs. The component draws whatever `rows` it gets, so
-  none of them is a special case of it. `order`, a fixed category sequence
-  for stacking and colouring several same-shaped bars alike, is still there
-  for a chart that reads one category across several years -- nothing on the
-  site charts more than a single year any more, so nothing currently passes
-  it. A category
+  rather than two. The component draws whatever `rows` it gets, so neither
+  is a special case of it. Two props neither current chart passes any more:
+  `order`, a fixed category sequence for stacking and colouring several
+  same-shaped bars alike, for a chart that reads one category across
+  several years -- nothing on the site charts more than a single year any
+  more -- and `minHeight`, which overrides the height a full-height column
+  fixes unconditionally, for a chart sitting above a page of reading rather
+  than filling its own column -- "Budget in Brief" was the one page that
+  needed it, until its own two charts were cut once the spending bar itself
+  started drawing the department table they read from. A category
   page ends with **`src/lib/BookReferences.svelte`**, headed `References`: the
   pages of the book it was built out of, and then the parts it belongs with and
   does not carry, each linking to our page where one exists and to the city's
@@ -313,41 +314,32 @@ Notable pieces:
   depends on, the way `reserves.spec.ts` does for the dials.
 - **`spending`** is `wide: true` too, for its left-column chart rather than a
   policy to keep or fail -- there is no accordion here the way `reserves` and
-  `debt` each open with one. The reading itself is seven routes now, not
+  `debt` each open with one. The reading itself is six routes now, not
   five tabs a script switched: Goals & Recommendations, Capital Planning,
-  Requests, Challenges, Budget in Brief, Council Orders, References, the
+  Requests, Challenges, Council Orders, References, the
   book's own topics (References excepted -- it is ours) kept apart on
   screen, each its own directory under a `(tabs)` route group so a reader
   can link or bookmark straight into "Council Orders" the way every other
   write-up on the site is linked -- the reason for the change, and the reason
   it is a group rather than plain directories: `spending/(tabs)/+layout.ts`
   and `+layout.svelte` carry the title, width and the chart and nav that are
-  common to all seven, and a route group is what lets `spending` itself sit
-  outside that layout, since a bare visit there is not an eighth topic.
+  common to all six, and a route group is what lets `spending` itself sit
+  outside that layout, since a bare visit there is not a seventh topic.
   Requests and Challenges were one tab, "Requests & Challenges", until pages
   72 and 73 -- two different accounts, not two halves of one -- were split.
   Neither keeps the book's own top heading now, or Challenges' "Budgetary
   Challenges" / "Budgetary Challenges Continued": each tab already says what
   its page is, and repeating that in a heading under it said nothing new.
   "Major Budget Driver - Group Health Insurance" stays, since it names a
-  topic the tab label does not. Budget in Brief's own two `BudgetTable`s
-  (pages 76-77's forty-four departments, page 78's fourteen categories) are
-  `BudgetColumns` now, a single 2027 bar apiece rather than the six years
-  each table gave, cut along with the rest of the site's history, and each
-  bar's total the book's own stated "Grand Total" row rather than summed. The
-  five other columns the book gives each department beyond 2027 -- five other
-  years, two percent changes, the request kept apart from the recommendation,
-  and the recommendation's own percent and dollar change -- are dropped
-  rather than kept in a second table, since only the department's name and
-  its 2027 dollars remain, on the chart's one segment for it. Forty-four
-  departments cycle the
-  fourteen-colour palette more than three times over, accepted the way the
-  front page's own Spending column already is -- forty-two segments now
-  that it reads the same department table rather than page 78's fourteen
-  categories, for the granularity a reader comparing two departments wants
-  rather than the two folded into one category band -- on the same
-  reasoning: a segment's name is never colour alone, it is on every one as
-  its own accessible name on hover or focus. References was pulled out of the shared
+  topic the tab label does not. "Budget in Brief" was a seventh topic,
+  Budget-in-Brief's own two `BudgetTable`s (pages 76-77's forty-four
+  departments, page 78's fourteen categories) as two `BudgetColumns`
+  bars -- cut once the shared spending bar itself moved from page 78's
+  fourteen categories to the same forty-four-department table, and drew
+  the identical breakdown one route over. `DEPARTMENTS` and `APPROPRIATIONS`
+  stay in `spending/tables.ts`, still read for `SPENDING` and
+  `SPENDING_TOTAL`; neither is rendered as its own table or chart any more.
+  References was pulled out of the shared
   layout into its own tab the same way: `BookReferences` used to render
   unconditionally after
   `{@render children()}`, under whichever of the (then five) topics was
@@ -359,7 +351,7 @@ Notable pieces:
   more, not even a forward: the one link to it, the front page's own chart
   heading, now goes straight to `spending/goals-recommendations`,
   `Router.spendingTab(id, slug)`, and nothing else pointed at the old bare
-  URL. The nav between the seven is a plain `<nav>` of links,
+  URL. The nav between the six is a plain `<nav>` of links,
   `aria-current="page"` marking the open one -- matched on whether
   `page.route.id` carries the slug as one of its own segments, never on the
   URL against a `Router`-built href, and never a plain substring either,
@@ -379,7 +371,7 @@ Notable pieces:
   one copy, so the front page's column and this page's bar cannot disagree --
   and carrying no `href`, since a bar linking to the page it is already on is
   that page offered twice; it sits in the shared layout, the same on every
-  one of the seven routes, and answers to none of them. "Capital Planning"
+  one of the six routes, and answers to none of them. "Capital Planning"
   used to open with a second `BudgetColumns` in place of page 29's own table,
   "5-Year Capital Requests by Category" -- five columns, one per year, plus a
   second bar for two 2028 projects ($90,000,000 for JGW/Tilton and

@@ -10,13 +10,25 @@
   let { data, children } = $props()
 
   /**
-   * The reading splits into seven topics now, in the book's own order where
+   * The reading splits into six topics now, in the book's own order where
    * it has one -- the goals (15-16), capital planning (28-45), the year's
-   * requests (72), its challenges (73), "2027 Budget in Brief" (76-78), and
-   * the Council's own orders, which are ours rather than the book's -- each
-   * its own route directory under this one, rather than a panel a script
-   * showed and hid, so a reader can link straight into "Council Orders" the
-   * way every other write-up on the site is linked.
+   * requests (72), its challenges (73), and the Council's own orders, which
+   * are ours rather than the book's -- each its own route directory under
+   * this one, rather than a panel a script showed and hid, so a reader can
+   * link straight into "Council Orders" the way every other write-up on the
+   * site is linked.
+   *
+   * "2027 Budget in Brief" (76-78) was a seventh, "Budget in Brief" -- pages
+   * 76 and 77's forty-four departments and page 78's fourteen categories, as
+   * two stacked-bar charts -- until the bar in the left column of this page
+   * started drawing the same department table itself. A reader already sees
+   * every department's 2027 figure there, on every one of these routes and
+   * on the front page besides; a second chart repeating the same breakdown,
+   * one route over, said nothing the shared bar had not already said. The
+   * category rollup went with it -- `DEPARTMENTS` and `APPROPRIATIONS`
+   * themselves are untouched, in tables.ts, still read for the figures the
+   * shared bar and `SPENDING_TOTAL` need, but neither is drawn as a table
+   * or a chart of its own any more.
    *
    * "Goals & Recommendations" carries more than page 15-16's own goals now:
    * "Preliminary Budget Goals for Fiscal 2027" and "Final Recommendations"
@@ -39,16 +51,15 @@
    * every other topic on this page was built out of, and the parts of the
    * book they sit beside. It used to sit outside the tabs entirely, under
    * whichever one was open, on the theory that a reader never has to go
-   * looking for it -- true, but it meant six topics' worth of references
-   * arrived whether the reader had asked a question yet or not. Its own tab
-   * is exactly as reachable and answers only when opened.
+   * looking for it -- true, but it meant every other topic's worth of
+   * references arrived whether the reader had asked a question yet or not.
+   * Its own tab is exactly as reachable and answers only when opened.
    */
   const TABS = [
     { slug: "goals-recommendations", label: "Goals & Recommendations" },
     { slug: "capital-planning", label: "Capital Planning" },
     { slug: "requests", label: "Requests" },
     { slug: "challenges", label: "Challenges" },
-    { slug: "budget-in-brief", label: "Budget in Brief" },
     { slug: "council-orders", label: "Council Orders" },
     { slug: "references", label: "References" },
   ]
@@ -84,7 +95,7 @@
 
 <!--
   Laid out as `debt` and `reserves` are along the left: a chart fixed in its
-  own column and the rest of the page beside it. The rest is seven routes now
+  own column and the rest of the page beside it. The rest is six routes now
   rather than one long scroll or a script-driven set of panels -- this page
   has no single chart or policy the whole reading answers to the way debt and
   reserves each have one, and a plain nav of links needs no script at all to

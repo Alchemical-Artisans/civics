@@ -285,13 +285,16 @@ them: it is the rules the year's spending is made under, and it pairs with the
 reserve policies on `reserves`. They are a different kind of thing
 from the four sections above them: those are accounts _of_ the year's spending,
 and these are parts _of_ it, each a line in the page-78 table the pie is drawn
-from. Page 78, which both pies are drawn from, is split the same way: "2027
-Budget in Brief" is three tables and no prose, so its two spending tables are
-two stacked-bar charts now, on `spending`'s own "Budget in Brief" tab (more
-on those below, in the `spending` section), and its revenue table stays a
-table, at the foot of `revenue`. The book prints the two sides facing each
-other to show that they balance; the front page makes that point instead,
-with two pies carrying the same total.
+from. Page 78, which both pies are drawn from, is split the same way as the
+book's own "2027 Budget in Brief" — three tables and no prose — splits it:
+the revenue table stays a table, at the foot of `revenue`, and the two
+spending tables no longer have a page of their own at all. They used to,
+as two stacked-bar charts on `spending`'s own "Budget in Brief" tab, until
+the spending pie itself moved to department granularity and started
+drawing the same forty-four rows one of those two charts did; see
+"Budget in Brief is gone" below, in the `spending` section. The book prints
+the two sides facing each other to show that they balance; the front page
+makes that point instead, with two pies carrying the same total.
 
 **The pies are the whole city's budget, not the book's.** The book's page-78
 tables are the general fund, and the front page draws all of it — including
@@ -594,19 +597,20 @@ serviced out of what households are billed rather than by the general fund,
 whose own debt service for 2027 is $8,834,819. A see-also may appear on more than
 one page where more than one page depends on it.
 
-### Five routes on `spending`, and its two charts
+### Six routes on `spending`
 
 `spending` has no policy to keep or fail, so it has no accordion the way
 `reserves` and `debt` each open with one -- it is `wide: true` for the same
 reason theirs are, a chart fixed in the left column, but the reading beside
-it is five routes now rather than one long scroll or a script-driven set of
-tabs: **Goals & Recommendations**, **Capital Planning**, **Requests &
-Challenges**, **Budget in Brief** and **Council Orders**, the book's own
-topics (pages 15-16, 28-45, 72-73, 76-78, and the Council's agenda, which is
-ours rather than the book's) kept apart on screen the way they are apart in
-the book, and now apart in the URL too -- `spending/goals-recommendations`,
+it is six routes now rather than one long scroll or a script-driven set of
+tabs: **Goals & Recommendations**, **Capital Planning**, **Requests**,
+**Challenges** and **Council Orders**, the book's own topics (pages 15-16,
+28-45, 72, 73, and the Council's agenda, which is ours rather than the
+book's) kept apart on screen the way they are apart in the book, and now
+apart in the URL too -- `spending/goals-recommendations`,
 `spending/council-orders`, each linkable and bookmarkable on its own, which
-tabs a script switched never were. Every heading and table this page ever
+tabs a script switched never were -- plus **References**, which is not the
+book's. Every heading and table this page ever
 carried is still exactly the prose and the tables it always was -- nothing
 here paraphrases or retypes a word of it -- just moved into its own route
 directory instead of sitting behind a panel a script showed and hid.
@@ -647,32 +651,29 @@ under a tab of that name said nothing a reader did not already know. Only
 "Major Budget Driver - Group Health Insurance" survives on Challenges,
 since it names a specific topic the tab label does not.
 
-**Budget in Brief holds two stacked-bar charts now, not two tables.** Pages
-76 and 77 ("Summary of All Municipal Departments", split across two pages
-purely for room, one table here) list forty-four departments; page 78 rolls
-the same budget up by fourteen categories. Both used to run as
-[`BudgetTable`s](../src/lib/BudgetTable.svelte); both are
-[`BudgetColumns`](../src/lib/BudgetColumns.svelte) now, a single 2027 bar
-apiece rather than the six years (2022 through 2027) each table used to give
--- cut along with the rest of the site's history, so there is no longer a
-category to keep one colour across several bars for, and neither chart
-passes `order`. Both totals are the book's own stated "Grand Total" row, not
-summed, the same reason `SPENDING_TOTAL` is. The book gives each department
-five columns beyond 2027 -- five other years, two average/annual percent
-changes, the 2027 department request kept apart from what was actually
-recommended, and that request's and the recommendation's own percent and
-dollar change -- all dropped, since only the department's name and its 2027
-dollars remain on the chart's one segment for it. Forty-four departments
-cycles through the fourteen-colour palette more than three times over --
-accepted rather than folded into an invented "Other" bucket the book never
-states, on the same reasoning the front page's own Spending column now
-rests on too: a segment's name is never colour alone, since every one
-carries it as its own accessible name on hover or focus, focusable whatever
-its width. The two charts stack nearly the same number of departments now
--- forty-four here against forty-two there, the front page's own two
-missing only the four with no 2027 figure at all.
+**Budget in Brief is gone.** Pages 76 and 77 ("Summary of All Municipal
+Departments", split across two pages purely for room, one table here) list
+forty-four departments; page 78 rolls the same budget up by fourteen
+categories. Both used to run as
+[`BudgetTable`s](../src/lib/BudgetTable.svelte), then as two
+[`BudgetColumns`](../src/lib/BudgetColumns.svelte) bars, a single 2027 bar
+apiece once the site's history was cut and only 2027 was left to chart. The
+tab itself is what went next: once the spending bar in the left column
+switched from page 78's fourteen categories to the same forty-four-department
+table one of these two charts drew, a reader comparing two departments
+already found them on the chart every route shares -- a second chart, one
+route over, drawing the identical breakdown said nothing the first had not.
+`DEPARTMENTS` and `APPROPRIATIONS` are both still in `spending/tables.ts`,
+read for `SPENDING` and `SPENDING_TOTAL` -- see that file's own notes on
+each -- but neither is rendered as a table or a chart of its own any more.
+The order-13.1 trial that briefly lived on this tab (the Water Department
+order, moved here from Council Orders to see how it read beside the
+departments the book carries) went with it rather than back to Council
+Orders: its $14,805,633 is already a segment of the spending bar, so its
+own text is not quoted anywhere on the site now, the same reasoning that
+retired the tab itself.
 
-**References is the seventh tab and the one topic that is not the book's own:
+**References is the sixth tab and the one topic that is not the book's own:
 what every other topic here was built out of, and the parts of the book they
 sit beside.** It used to render unconditionally in the shared layout, after
 `{@render children()}`, so it sat under whichever of the topics was open --
@@ -713,9 +714,9 @@ front page's column and this page's bar cannot print totals that disagree.
 It carries no `href`: the front page's column links here because it is
 somewhere else, and a bar linking to the page it is already on is the same
 page offered twice. It sits in the shared layout and answers to none of the
-five routes beneath it -- always on screen, whichever one is open.
+six routes beneath it -- always on screen, whichever one is open.
 
-**The nav between the five is a plain `<nav>` of links, not an ARIA
+**The nav between the six is a plain `<nav>` of links, not an ARIA
 tablist.** `aria-current="page"` marks the open one, matched on
 `page.route.id`'s own last path segment -- never on the URL against a
 `Router`-built href, the same reason `SiteHeader`'s own menu avoids that

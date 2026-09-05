@@ -3,11 +3,15 @@
   import GlossaryTerm from "$lib/GlossaryTerm.svelte"
   import { APPROPRIATED, ENTERPRISE, GENERAL_FUND, ORDERS } from "../../../council-orders"
 
-  // 13.1, the Water Department order, is on Budget in Brief now -- a trial
-  // move, to see how folding an order into the spending-side topic it is
-  // about reads before doing the same with the rest. Filtered out here
-  // rather than in `council-orders.ts` itself, since the data is still every
-  // order the agenda carries; only this page's own selection of it changed.
+  // 13.1, the Water Department order, was a trial move onto "Budget in
+  // Brief" -- since dropped along with that page, once the spending bar's
+  // own switch to department granularity meant the chart already carried
+  // the same $14,805,633 as one of its own segments. Left off this page
+  // rather than restored to it: the figure is on the chart, and quoting the
+  // order's own text again here would be the same fact twice. Filtered out
+  // here rather than in `council-orders.ts` itself, since the data is still
+  // every order the agenda carries; only this page's own selection of it
+  // changed.
   const remaining = ORDERS.filter((order) => order.item !== "13.1")
 </script>
 

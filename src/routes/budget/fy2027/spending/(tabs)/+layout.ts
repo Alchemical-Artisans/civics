@@ -62,9 +62,9 @@ export const load: LayoutLoad = async ({ parent }) => {
 
     /**
      * Laid out as `reserves` and `debt` are: charts down the left and the
-     * reading in the only box that scrolls. The spending bar and the
-     * five-year capital chart both want more room than a 48rem strip has to
-     * give.
+     * reading in the only box that scrolls. The spending bar wants more room
+     * than a 48rem strip has to give, and so does Capital Planning's own run
+     * of category tables.
      */
     wide: true,
 

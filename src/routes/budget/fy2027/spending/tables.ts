@@ -1,12 +1,13 @@
 /**
- * The two spending tables of "2027 Budget in Brief", pages 76 to 78.
- *
- * Held as data rather than written out as markup because page 78 is also what
- * the book's front page charts, and a figure transcribed in one place and typed
- * again in another is a figure that will eventually disagree with itself.
- * `BudgetTable` renders these; `$lib/budget-table`'s `column` reads the 2027
- * column out of them for the spending pie. Neither formats anything --
- * the cells are the strings the book prints.
+ * The two spending tables of "2027 Budget in Brief", pages 76 to 78 --
+ * neither drawn as its own table or chart any more, both still read for
+ * their figures: `column` reads the 2027 figures out of `DEPARTMENTS` for
+ * the spending bar, and `cell` reads `APPROPRIATIONS`' own stated total for
+ * `SPENDING_TOTAL`, below. Held as data rather than written out as markup
+ * for the same reason as ever -- a figure transcribed in one place and
+ * typed again in another is a figure that will eventually disagree with
+ * itself -- even though nothing renders either table whole any more.
+ * Neither formats anything -- the cells are the strings the book prints.
  *
  * The section's third table is the revenue behind these, and it lives beside
  * the page that renders it, in `revenue/tables.ts`. The book prints the two
@@ -863,13 +864,20 @@ const NOT_A_CATEGORY = ["Grand Total"]
  * page's column: forty-four departments off pages 76-77, not page 78's
  * fourteen categories -- a reader comparing the fire department against the
  * police wants that on the chart the two already share, rather than folded
- * into one "Public Safety" band they have to open Budget in Brief to take
- * apart -- plus the two enterprise funds, appropriated in orders of their
- * own and printed nowhere in the book. State assessments and the overlay
- * are in the department table too (the latter under "Other", the book's own
- * name for it there), included for the same reason as always: nobody gets a
- * choice about either but both are spent. See `fy2027/+page.ts` and
+ * into one "Public Safety" band they would have to take apart by hand --
+ * plus the two enterprise funds, appropriated in orders of their own and
+ * printed nowhere in the book. State assessments and the overlay are in the
+ * department table too (the latter under "Other", the book's own name for
+ * it there), included for the same reason as always: nobody gets a choice
+ * about either but both are spent. See `fy2027/+page.ts` and
  * `council-orders.ts`.
+ *
+ * `APPROPRIATIONS`' own fourteen categories are no longer drawn anywhere --
+ * "Budget in Brief" used to chart both tables, until this bar itself moved
+ * to department granularity and made its own category chart the same
+ * breakdown one route over. `APPROPRIATIONS` stays, read below for
+ * `SPENDING_TOTAL` and by `overview.spec.ts`'s page-78 checks, but nothing
+ * renders its rows any more.
  *
  * The total below is still read off `APPROPRIATIONS`, not off this table --
  * see `SPENDING_TOTAL`'s own note for why -- so `spending.spec.ts` finds

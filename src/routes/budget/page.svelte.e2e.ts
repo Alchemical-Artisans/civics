@@ -544,12 +544,12 @@ test.describe("budget pages", () => {
   test("splits spending into one route per topic, linked by a plain nav", async ({ page }) => {
     await page.goto(spendingUrl("goals-recommendations"))
 
-    // Seven links, in the book's own order, `aria-current` marking the one
+    // Six links, in the book's own order, `aria-current` marking the one
     // the reader is on -- and only Goals & Recommendations is on the page at
     // all: Capital Planning is not merely hidden, its heading is not in the
     // DOM until its own route is.
     const nav = page.getByRole("navigation", { name: "Spending" })
-    await expect(nav.getByRole("link")).toHaveCount(7)
+    await expect(nav.getByRole("link")).toHaveCount(6)
     await expect(nav.getByRole("link", { name: "Goals & Recommendations" })).toHaveAttribute(
       "aria-current",
       "page",
@@ -576,7 +576,7 @@ test.describe("budget pages", () => {
     await expect(page.getByRole("heading", { name: "Mayor's 2027 Budgetary Goals" })).toHaveCount(0)
 
     // References is not on this page at all any more -- it is its own
-    // topic now, seventh in the nav, not a fixture under every other one.
+    // topic now, last in the nav, not a fixture under every other one.
     await expect(page.getByRole("heading", { name: "References" })).toHaveCount(0)
     await nav.getByRole("link", { name: "References" }).click()
     await expect(page).toHaveURL(new RegExp(`${spendingUrl("references")}$`))
@@ -584,7 +584,7 @@ test.describe("budget pages", () => {
     await expect(page.getByRole("link", { name: "Fiscal Reserves" })).toBeVisible()
 
     // The spending bar in the left column answers to none of this: it is
-    // outside the nav entirely, the same on every one of the seven routes.
+    // outside the nav entirely, the same on every one of the six routes.
     await expect(page.locator(".budget-columns").first()).toContainText("$316,044,835")
   })
 
@@ -603,7 +603,6 @@ test.describe("budget pages", () => {
       ["goals-recommendations", "Mayor's 2027 Budgetary Goals"],
       ["capital-planning", "Capital Planning"],
       ["challenges", "Major Budget Driver - Group Health Insurance"],
-      ["budget-in-brief", "Departments"],
       ["council-orders", "What the Council appropriated"],
       ["references", "References"],
     ] as const) {
@@ -620,46 +619,6 @@ test.describe("budget pages", () => {
     await expect(noscript.getByRole("tab")).toHaveCount(0)
 
     await context.close()
-  })
-
-  test("charts every department and every appropriation category for 2027", async ({ page }) => {
-    await page.goto(spendingUrl("budget-in-brief"))
-
-    // Pages 76 and 77, forty-four departments, one bar for 2027 rather than a
-    // grid running to four hundred-odd cells across six years. `.first()` is
-    // the spending bar in the left column, present on every spending route,
-    // so the page's own two charts are `.nth(1)` and `.nth(2)`.
-    const departments = page.locator(".budget-columns").nth(1)
-    await expect(departments.locator(".budget-column")).toHaveCount(1)
-    await expect(departments).toContainText("2027")
-    await expect(departments).toContainText("$285,272,160")
-
-    const school = departments.getByRole("img", {
-      name: "2027, School Department, $136,998,618, 48.0%",
-    })
-    await school.focus()
-    await expect(departments).toContainText("School Department")
-
-    // The book's other five columns per department -- five other years, both
-    // average percent changes, the request kept apart from the
-    // recommendation, and the recommendation's own percent and dollar change
-    // -- are gone with the table, along with the site's history and
-    // forecasts generally; only the department's name and its 2027 dollars
-    // remain, on the chart's one segment for it.
-    await expect(page.getByRole("article")).not.toContainText("9.4%")
-    await expect(page.getByRole("article")).not.toContainText("2022")
-
-    // Page 78, the fourteen categories the same budget rolls up by --
-    // Education is the largest of them, the same figure the front page's
-    // own column draws.
-    const appropriations = page.locator(".budget-columns").nth(2)
-    await expect(appropriations.locator(".budget-column")).toHaveCount(1)
-    await expect(appropriations).toContainText("$285,272,159")
-    const education = appropriations.getByRole("img", {
-      name: "2027, Education, $147,158,454, 51.6%",
-    })
-    await education.focus()
-    await expect(appropriations).toContainText("Education")
   })
 
   test("links the reserves and the spending it pays for", async ({ page }) => {
@@ -1093,10 +1052,14 @@ test.describe("budget pages", () => {
   test("says on the spending page what the chart leaves out", async ({ page }) => {
     await page.goto(spendingUrl("council-orders"))
 
-    // The orders themselves, quoted as the agenda words them.
+    // The orders themselves, quoted as the agenda words them -- 13.1, the
+    // Water Department order, is not among them any more: its $14,805,633
+    // is already a segment of the spending bar, so its own text is not
+    // quoted a second time here.
     await expect(page.getByRole("heading", { name: "What the Council appropriated" })).toBeVisible()
     const article = page.getByRole("article")
-    await expect(article).toContainText("be appropriated to operate the Water Department")
+    await expect(article).not.toContainText("be appropriated to operate the Water Department")
+    await expect(article).toContainText("be appropriated to operate the Wastewater Department")
     await expect(article).toContainText("$15, 967,043")
     await expect(article).toContainText("$ 274,750,725")
     await expect(article).toContainText("Taxation and Other Receipts")
