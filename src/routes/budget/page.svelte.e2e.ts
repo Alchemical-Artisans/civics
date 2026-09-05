@@ -544,12 +544,12 @@ test.describe("budget pages", () => {
   test("splits spending into one route per topic, linked by a plain nav", async ({ page }) => {
     await page.goto(spendingUrl("goals-recommendations"))
 
-    // Six links, in the book's own order, `aria-current` marking the one
+    // Seven links, in the book's own order, `aria-current` marking the one
     // the reader is on -- and only Goals & Recommendations is on the page at
     // all: Capital Planning is not merely hidden, its heading is not in the
     // DOM until its own route is.
     const nav = page.getByRole("navigation", { name: "Spending" })
-    await expect(nav.getByRole("link")).toHaveCount(6)
+    await expect(nav.getByRole("link")).toHaveCount(7)
     await expect(nav.getByRole("link", { name: "Goals & Recommendations" })).toHaveAttribute(
       "aria-current",
       "page",
@@ -584,7 +584,7 @@ test.describe("budget pages", () => {
     await expect(page.getByRole("link", { name: "Fiscal Reserves" })).toBeVisible()
 
     // The spending bar in the left column answers to none of this: it is
-    // outside the nav entirely, the same on every one of the six routes.
+    // outside the nav entirely, the same on every one of the seven routes.
     await expect(page.locator(".budget-columns").first()).toContainText("$316,044,835")
   })
 
@@ -603,6 +603,7 @@ test.describe("budget pages", () => {
       ["goals-recommendations", "Mayor's 2027 Budgetary Goals"],
       ["capital-planning", "Capital Planning"],
       ["challenges", "Major Budget Driver - Group Health Insurance"],
+      ["departments", "Departments"],
       ["council-orders", "What the Council appropriated"],
       ["references", "References"],
     ] as const) {
@@ -619,6 +620,41 @@ test.describe("budget pages", () => {
     await expect(noscript.getByRole("tab")).toHaveCount(0)
 
     await context.close()
+  })
+
+  test("tables the same departments the spending bar charts, for the segments too small to read", async ({
+    page,
+  }) => {
+    await page.goto(spendingUrl("departments"))
+
+    // The same forty-two rows the bar draws, largest first -- a reader who
+    // wants Senior Center's $14,500 without hunting for the sliver that
+    // carries it on the chart gets it read off a row instead.
+    const rows = page.getByRole("row")
+    await expect(rows).toHaveCount(44) // header row, 42 departments, Total.
+    const first = rows.nth(1)
+    await expect(first).toContainText("School Department")
+    await expect(first).toContainText("$136,998,618")
+
+    // Water and Wastewater are on it too -- the same two enterprise funds
+    // the bar carries and the book does not -- and the overlay is "Other",
+    // the department table's own name for it, not "Overlay".
+    await expect(
+      page.getByRole("rowheader", { name: "Water Department", exact: true }),
+    ).toBeVisible()
+    await expect(page.getByRole("rowheader", { name: "Wastewater Department" })).toBeVisible()
+    await expect(page.getByRole("rowheader", { name: "Other", exact: true })).toBeVisible()
+    await expect(page.getByRole("rowheader", { name: "Overlay" })).toHaveCount(0)
+
+    // The smallest figure on the chart, spelled out rather than hovered or
+    // focused for.
+    const senior = page.getByRole("row", { name: /Senior Center/ })
+    await expect(senior).toContainText("$14,500")
+
+    // The same total the bar states, not the sum of the rows above it -- a
+    // dollar apart, the same dollar the bar and the book's own department
+    // table disagree by.
+    await expect(page.getByRole("row", { name: /^Total/ })).toContainText("$316,044,835")
   })
 
   test("links the reserves and the spending it pays for", async ({ page }) => {

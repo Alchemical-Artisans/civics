@@ -860,16 +860,17 @@ const RECOMMENDED = "2027 Recommended"
 const NOT_A_CATEGORY = ["Grand Total"]
 
 /**
- * What the city spends, as parts for this page's own bar and the front
- * page's column: forty-four departments off pages 76-77, not page 78's
- * fourteen categories -- a reader comparing the fire department against the
- * police wants that on the chart the two already share, rather than folded
- * into one "Public Safety" band they would have to take apart by hand --
- * plus the two enterprise funds, appropriated in orders of their own and
- * printed nowhere in the book. State assessments and the overlay are in the
- * department table too (the latter under "Other", the book's own name for
- * it there), included for the same reason as always: nobody gets a choice
- * about either but both are spent. See `fy2027/+page.ts` and
+ * What the city spends, as parts for this page's own bar, the front page's
+ * column, and the "Departments" tab's table: forty-four departments off
+ * pages 76-77, not page 78's fourteen categories -- a reader comparing the
+ * fire department against the police wants that on the chart the two
+ * already share, rather than folded into one "Public Safety" band they
+ * would have to take apart by hand -- plus the two enterprise funds,
+ * appropriated in orders of their own and printed nowhere in the book.
+ * State assessments and the overlay are in the department table too (the
+ * latter under "Other", the book's own name for it there), included for
+ * the same reason as always: nobody gets a choice about either but both
+ * are spent. See `fy2027/+page.ts`, `departments/+page.svelte` and
  * `council-orders.ts`.
  *
  * `APPROPRIATIONS`' own fourteen categories are no longer drawn anywhere --

@@ -288,13 +288,14 @@ and these are parts _of_ it, each a line in the page-78 table the pie is drawn
 from. Page 78, which both pies are drawn from, is split the same way as the
 book's own "2027 Budget in Brief" — three tables and no prose — splits it:
 the revenue table stays a table, at the foot of `revenue`, and the two
-spending tables no longer have a page of their own at all. They used to,
-as two stacked-bar charts on `spending`'s own "Budget in Brief" tab, until
-the spending pie itself moved to department granularity and started
-drawing the same forty-four rows one of those two charts did; see
-"Budget in Brief is gone" below, in the `spending` section. The book prints
-the two sides facing each other to show that they balance; the front page
-makes that point instead, with two pies carrying the same total.
+spending tables are down to one, a table again rather than a chart, on
+`spending`'s own "Departments" tab. Both used to be "Budget in Brief"'s two
+stacked-bar charts, until the spending pie itself moved to department
+granularity and started drawing the same forty-four rows one of them did;
+see "Budget in Brief is gone" below, in the `spending` section, for that
+and for why the department table came back as a table on its own tab. The
+book prints the two sides facing each other to show that they balance; the
+front page makes that point instead, with two pies carrying the same total.
 
 **The pies are the whole city's budget, not the book's.** The book's page-78
 tables are the general fund, and the front page draws all of it — including
@@ -597,20 +598,21 @@ serviced out of what households are billed rather than by the general fund,
 whose own debt service for 2027 is $8,834,819. A see-also may appear on more than
 one page where more than one page depends on it.
 
-### Six routes on `spending`
+### Seven routes on `spending`
 
 `spending` has no policy to keep or fail, so it has no accordion the way
 `reserves` and `debt` each open with one -- it is `wide: true` for the same
 reason theirs are, a chart fixed in the left column, but the reading beside
-it is six routes now rather than one long scroll or a script-driven set of
+it is seven routes now rather than one long scroll or a script-driven set of
 tabs: **Goals & Recommendations**, **Capital Planning**, **Requests**,
 **Challenges** and **Council Orders**, the book's own topics (pages 15-16,
 28-45, 72, 73, and the Council's agenda, which is ours rather than the
 book's) kept apart on screen the way they are apart in the book, and now
 apart in the URL too -- `spending/goals-recommendations`,
 `spending/council-orders`, each linkable and bookmarkable on its own, which
-tabs a script switched never were -- plus **References**, which is not the
-book's. Every heading and table this page ever
+tabs a script switched never were -- plus **Departments** and
+**References**, neither of which is the book's. Every heading and table
+this page ever
 carried is still exactly the prose and the tables it always was -- nothing
 here paraphrases or retypes a word of it -- just moved into its own route
 directory instead of sitting behind a panel a script showed and hid.
@@ -651,7 +653,8 @@ under a tab of that name said nothing a reader did not already know. Only
 "Major Budget Driver - Group Health Insurance" survives on Challenges,
 since it names a specific topic the tab label does not.
 
-**Budget in Brief is gone.** Pages 76 and 77 ("Summary of All Municipal
+**Budget in Brief is gone, and "Departments" is what took its slot.** Pages
+76 and 77 ("Summary of All Municipal
 Departments", split across two pages purely for room, one table here) list
 forty-four departments; page 78 rolls the same budget up by fourteen
 categories. Both used to run as
@@ -673,7 +676,23 @@ Orders: its $14,805,633 is already a segment of the spending bar, so its
 own text is not quoted anywhere on the site now, the same reasoning that
 retired the tab itself.
 
-**References is the sixth tab and the one topic that is not the book's own:
+**The bar itself turned out to have the readability problem the tab it
+replaced did not, and "Departments" is the answer.** Forty-two segments on
+one scale means Senior Center's $14,500 draws a fraction of a pixel wide --
+named and priced on hover or focus, the same as every chart on the site,
+but too short a shape to land a mouse on and easy to miss even by keyboard.
+[`departments/+page.svelte`](<../src/routes/budget/fy2027/spending/(tabs)/departments/+page.svelte>)
+draws `SPENDING` again, sorted the same way the bar draws it, largest
+first, as a plain two-column table -- one row per department, `Amount`
+its only heading, `Total` at the foot reading `SPENDING_TOTAL` the same
+figure the bar states. Not `BudgetTable`, since `SPENDING` is not a
+`BudgetTableData` -- it is departments and the two enterprise funds
+already merged into one array of `{label, amount}` pairs, built once in
+`tables.ts` for the bar to draw and read again here to list. One table
+where "Budget in Brief" had two charts, because there is only the one bar
+left needing a reader-legible twin.
+
+**References is the seventh tab and the one topic that is not the book's own:
 what every other topic here was built out of, and the parts of the book they
 sit beside.** It used to render unconditionally in the shared layout, after
 `{@render children()}`, so it sat under whichever of the topics was open --
@@ -714,9 +733,9 @@ front page's column and this page's bar cannot print totals that disagree.
 It carries no `href`: the front page's column links here because it is
 somewhere else, and a bar linking to the page it is already on is the same
 page offered twice. It sits in the shared layout and answers to none of the
-six routes beneath it -- always on screen, whichever one is open.
+seven routes beneath it -- always on screen, whichever one is open.
 
-**The nav between the six is a plain `<nav>` of links, not an ARIA
+**The nav between the seven is a plain `<nav>` of links, not an ARIA
 tablist.** `aria-current="page"` marks the open one, matched on
 `page.route.id`'s own last path segment -- never on the URL against a
 `Router`-built href, the same reason `SiteHeader`'s own menu avoids that

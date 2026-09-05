@@ -10,7 +10,7 @@
   let { data, children } = $props()
 
   /**
-   * The reading splits into six topics now, in the book's own order where
+   * The reading splits into seven topics now, in the book's own order where
    * it has one -- the goals (15-16), capital planning (28-45), the year's
    * requests (72), its challenges (73), and the Council's own orders, which
    * are ours rather than the book's -- each its own route directory under
@@ -18,17 +18,28 @@
    * link straight into "Council Orders" the way every other write-up on the
    * site is linked.
    *
-   * "2027 Budget in Brief" (76-78) was a seventh, "Budget in Brief" -- pages
-   * 76 and 77's forty-four departments and page 78's fourteen categories, as
-   * two stacked-bar charts -- until the bar in the left column of this page
-   * started drawing the same department table itself. A reader already sees
-   * every department's 2027 figure there, on every one of these routes and
-   * on the front page besides; a second chart repeating the same breakdown,
-   * one route over, said nothing the shared bar had not already said. The
-   * category rollup went with it -- `DEPARTMENTS` and `APPROPRIATIONS`
-   * themselves are untouched, in tables.ts, still read for the figures the
-   * shared bar and `SPENDING_TOTAL` need, but neither is drawn as a table
-   * or a chart of its own any more.
+   * "2027 Budget in Brief" (76-78) used to be one of them, "Budget in
+   * Brief" -- pages 76 and 77's forty-four departments and page 78's
+   * fourteen categories, as two stacked-bar charts -- until the bar in the
+   * left column of this page started drawing the same department table
+   * itself: a reader already saw every department's 2027 figure there, on
+   * every one of these routes and on the front page besides, so a second
+   * chart repeating the same breakdown, one route over, said nothing the
+   * shared bar had not already said. The category rollup went with it --
+   * `DEPARTMENTS` and `APPROPRIATIONS` themselves are untouched, in
+   * tables.ts, still read for the figures the shared bar and
+   * `SPENDING_TOTAL` need, but neither is drawn as a table or a chart of
+   * its own any more.
+   *
+   * "Departments" is what replaced it, once the bar itself turned out to
+   * have the readability problem the chart it replaced did not: forty-two
+   * segments on one scale puts Senior Center's $14,500 at a fraction of a
+   * pixel wide, a shape nobody reads and only a keyboard, patiently, can
+   * even reach. `departments/+page.svelte` draws `SPENDING` again as a
+   * plain table -- same rows, same order, largest first -- so every figure
+   * the bar carries is also somewhere a reader can just read it, no hover
+   * or focus required. One table rather than two charts, because there is
+   * only one bar to explain now.
    *
    * "Goals & Recommendations" carries more than page 15-16's own goals now:
    * "Preliminary Budget Goals for Fiscal 2027" and "Final Recommendations"
@@ -60,6 +71,7 @@
     { slug: "capital-planning", label: "Capital Planning" },
     { slug: "requests", label: "Requests" },
     { slug: "challenges", label: "Challenges" },
+    { slug: "departments", label: "Departments" },
     { slug: "council-orders", label: "Council Orders" },
     { slug: "references", label: "References" },
   ]
@@ -95,7 +107,7 @@
 
 <!--
   Laid out as `debt` and `reserves` are along the left: a chart fixed in its
-  own column and the rest of the page beside it. The rest is six routes now
+  own column and the rest of the page beside it. The rest is seven routes now
   rather than one long scroll or a script-driven set of panels -- this page
   has no single chart or policy the whole reading answers to the way debt and
   reserves each have one, and a plain nav of links needs no script at all to
