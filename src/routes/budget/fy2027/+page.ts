@@ -1,11 +1,10 @@
 import type { PageLoad } from "./$types"
 import { contents, type BookSection } from "$lib/budget"
-import { amount, cell, column, sum, type BudgetTableData } from "$lib/budget-table"
+import { amount, cell, column, type BudgetTableData } from "$lib/budget-table"
 import { DEPARTMENTS, SPENDING, SPENDING_TOTAL } from "./spending/tables"
 import { FUND_BALANCE, FREE_CASH, STABILIZATION } from "./reserves/tables"
 import { LONG_TERM_DEBT } from "./debt/tables"
-import { ENTERPRISE_REVENUE } from "./council-orders"
-import { OTHER_AVAILABLE, REVENUE } from "./revenue/tables"
+import { REVENUE_DETAIL, REVENUE_TOTAL } from "./revenue/tables"
 import type { Part } from "$lib/BudgetStack.svelte"
 
 /**
@@ -27,15 +26,6 @@ import type { Part } from "$lib/BudgetStack.svelte"
  * inventing text, and it would stop a reader matching a wedge to its row at a
  * glance.
  */
-const CHARTED = "2027 Proposed"
-
-/**
- * Rows that are not categories: the table's own total, which would draw a bar
- * as long as all the others put together, and the memo line under the revenue
- * table. Named rather than guessed at, so a row added to the table cannot
- * quietly become a bar that double-counts everything above it.
- */
-const NOT_A_CATEGORY = ["Grand Total", "Budget Surplus (Deficit)"]
 
 /**
  * What the city spends: the book's own table, and the two departments it does
@@ -49,53 +39,14 @@ const NOT_A_CATEGORY = ["Grand Total", "Budget Surplus (Deficit)"]
 const spending = SPENDING
 
 /**
- * Where that money comes from -- and only what actually comes from somewhere.
- *
- * The book's revenue table has one line that is not this year's income: "OTHER
- * AVAILABLE REVENUE SOURCES", which page 63 breaks into free cash ($5,150,000),
- * an administrative overhead reimbursement from the enterprise funds
- * ($935,304), and money from the Hospital Trust that subsidises Public Health
- * ($125,000) -- about half that department's own budget of $261,291.
- *
- * Free cash is left out: it is last year's surplus, and counting it would make
- * the chart balance by hiding what the chart is for -- the year does not pay
- * for itself, and $5,150,000 of last year's money closes the gap. The Mayor's
- * own third goal is to stop doing this.
- *
- * The enterprise reimbursement is left out too, for a different reason: the two
- * departments are charted at what they are actually billed -- $15,040,417 and
- * $16,666,024, the orders' own figures -- and that money is inside those, on
- * its way to the general fund. A slice reading "Transfer From Enterprise" says
- * less than the water bill it is a part of.
- *
- * The book projected the reimbursement at $935,304 in May and the orders set it
- * at $933,765 in June, so taking the orders' figures for both departments moves
- * the total by $1,539. That is the whole of the difference between the columns
- * beyond the free cash.
+ * Where that money comes from, department by department the same way the
+ * spending side is -- read from `revenue/tables.ts`, which is also what the
+ * revenue page's own bar and "Revenue Sources" tab draw, rather than built
+ * again here. See `REVENUE_DETAIL`'s own note there for what it leaves out
+ * and why (free cash, and the book's own projection of the enterprise
+ * reimbursement in place of what the orders actually billed).
  */
-const NOT_THIS_YEAR = "OTHER AVAILABLE REVENUE SOURCES"
-
-const billed = column(ENTERPRISE_REVENUE, "Amount")
-
-/**
- * The one thing left in that line, under the book's own name for it.
- *
- * Page 63's table heads the row "Transfer from Trust & Agency", which named a
- * bucket when the bucket held more than one thing. The prose beside it says
- * what this is: "funding from the Hospital Trust fund, which subsidizes the
- * Public Health department". Both are the book's words; the chart takes the one
- * that names the money rather than the ledger it sat in, and the transcription
- * on the revenue page keeps the table exactly as printed.
- */
-const trust = column(OTHER_AVAILABLE, CHARTED, {
-  exclude: ["Grand Total", "Free Cash (Budget Only)", "Transfer From Enterprise"],
-}).map((row) => ({ ...row, label: "Hospital Trust" }))
-
-const revenue = [
-  ...column(REVENUE, CHARTED, { exclude: [...NOT_A_CATEGORY, NOT_THIS_YEAR] }),
-  ...trust,
-  ...billed,
-]
+const revenue = REVENUE_DETAIL
 
 /**
  * What the two columns come to, and the gap between them.
@@ -110,7 +61,7 @@ const revenue = [
  * reimbursement differs from the book's May projection of it.
  */
 const spendingTotal = SPENDING_TOTAL
-const revenueTotal = sum(revenue)
+const revenueTotal = REVENUE_TOTAL
 
 /**
  * The reserve dials of "Fiscal Reserves" (page 17) and the debt of what the

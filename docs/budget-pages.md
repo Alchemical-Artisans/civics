@@ -245,13 +245,15 @@ A line in the contents as well would offer the same page twice on one screen.
 The revenue section is routed at `revenue` and titled **Revenue** rather than by
 the book's own name for it — a chart headed "Revenue" that opens
 "2027 Revenue Estimates" reads as two different things, and the year is in the
-bar above every page of the book anyway. It carries "2027 Revenue Summary"
-(64), "10-Year Revenue Forecast" (67), page 78's revenue table and "2027
-Estimated Tax Bill Impact" (79) as well — where the money comes from, rolled up,
-carried out to 2036, and what it comes to for one household. The book prints the three across twenty
-pages with other things between them, and a reader who wants to know about
-revenue wants all three. Its page number is 48, the first of them, so the bar's
-source link opens where the run begins.
+bar above every page of the book anyway. It carries "2027 Revenue Estimates"
+(48), "2027 Revenue Summary" (64), "10-Year Revenue Forecast" (67), page 78's
+revenue table and "2027 Estimated Tax Bill Impact" (79) — where the money
+comes from, rolled up, carried out to 2036, and what it comes to for one
+household. The book prints these across thirty-two pages with other things
+between them, and a reader who wants to know about revenue wants all of them,
+each its own route now the same way `spending` split first — see "Eight
+routes on `revenue`" below. Page 48 is the first of them, so the bar's source
+link opens where the run begins.
 
 **`spending` is the same idea on the other side**, opened from the other pie's
 heading, and holds the two sets of goals (15 and 16), "Capital Planning" (28),
@@ -287,9 +289,9 @@ from the four sections above them: those are accounts _of_ the year's spending,
 and these are parts _of_ it, each a line in the page-78 table the pie is drawn
 from. Page 78, which both pies are drawn from, is split the same way as the
 book's own "2027 Budget in Brief" — three tables and no prose — splits it:
-the revenue table stays a table, at the foot of `revenue`, and the two
-spending tables are down to one, a table again rather than a chart, on
-`spending`'s own "Departments" tab. Both used to be "Budget in Brief"'s two
+the revenue table stays a table, on `revenue`'s own "Budget in Brief" tab,
+and the two spending tables are down to one, a table again rather than a
+chart, on `spending`'s own "Departments" tab. Both used to be "Budget in Brief"'s two
 stacked-bar charts, until the spending pie itself moved to department
 granularity and started drawing the same forty-four rows one of them did;
 see "Budget in Brief is gone" below, in the `spending` section, for that
@@ -411,14 +413,15 @@ Agency" line exactly (charted as "Hospital Trust"), and only Free Cash
 income) and Taxation and Other Receipts ($268,541,960, which nothing
 currently states directly) are not already a segment somewhere. Put
 plainly, 13.3 is closer to revenue than to spending, so it moved to
-`revenue/+page.svelte` as "What the Council Raised" -- its own text, the
-`GENERAL_FUND` table, and the reconciliation paragraph explaining the
-$10,521,435 gap against the book's $285,272,159, all appended at the foot
-of that page rather than folded into one of the book's own sections above
-it. Where it belongs among those is a question for `revenue`'s own
-eventual revamp; for now it stands on its own, the same way it stood alone
-as the last order quoted on the "Council Orders" tab before that tab was
-retired too (see below).
+`revenue`'s own "Budget in Brief" tab as "What the Council Raised" -- its
+own text, the `GENERAL_FUND` table, and the reconciliation paragraph
+explaining the $10,521,435 gap against the book's $285,272,159, appended
+at the foot of that tab rather than folded into the page-78 table above
+it. It sits there, and not on any of the seven other tabs, because it
+reconciles against the exact $285,272,159 that tab's own "2027 Budget in
+Brief" table states -- the same reason it stood alone as the last order
+quoted on the "Council Orders" tab, before that tab was retired too (see
+below).
 
 **13.4 left for `reserves`, the last of the four.** It transfers $2,770,000
 out of fiscal 2025's certified free cash to cover the same snow-and-ice
@@ -1046,6 +1049,104 @@ for a section, which is prose, and gives the book page `max-w-none`: from `lg`
 the two pies sit in a narrow left column with the table of contents beside them,
 which is what most readers came for and would otherwise start below the fold.
 Below `lg` it stacks, charts first.
+
+### Eight routes on `revenue`
+
+`revenue` got the same split `spending` got first, and for the same reason:
+a reader wants to link or bookmark straight into "Tax Levy" rather than
+scroll a single long page to it, and `revenue`'s own chart and nav are
+common to every topic beneath it rather than particular to one -- so
+[`revenue/(tabs)/+layout.ts`](<../src/routes/budget/fy2027/revenue/(tabs)/+layout.ts>)
+and
+[`+layout.svelte`](<../src/routes/budget/fy2027/revenue/(tabs)/+layout.svelte>)
+carry the title, the width and the chart and nav shared by all eight, the
+same route-group mechanics `spending` established (a route group's own name
+sits in `route.id` without ever reaching the URL, so `revenue/(tabs)/sources`
+is still `/revenue/sources`, and there is no bare `/revenue` page any more --
+the front page's own "Revenue" chart heading goes straight to
+`revenue/revenue-projection`, `Router.revenueTab(id, "revenue-projection")`).
+
+**Four of the eight are one page-48 document, split the way page 73 split
+into Requests and Challenges.** "2027 Revenue Projection" (the book's own
+first heading, and this tab's name, so it carries no heading of its own),
+"State Aid", "Tax Levy" and "Local Receipts" are the narrative, the Cherry
+Sheet, Prop 2½ and the run of local-receipts tables that the book prints one
+after another across fifteen pages with nothing else between them. Each of
+the other three keeps the book's own headings unchanged -- none of them is
+literally the tab's own label, so none loses one.
+
+**"Summary" is page 64's rollup with page 67's ten-year forecast behind it,
+and "Budget in Brief" is page 78's revenue table, page 79's tax bill, and
+order 13.3.** "What the Council Raised" sits at the foot of "Budget in
+Brief" rather than any of the other seven tabs because it reconciles against
+the exact $285,272,159 that tab's own table states -- see "13.3 left too,
+but for `revenue` rather than nowhere" above.
+
+**"Revenue Sources" is the same answer "Departments" is on `spending`, to
+the same problem.** Charting the coarse page-78 categories draws fourteen
+segments, few enough to read; charting the book's own finer source
+tables -- state aid's six Cherry Sheet lines instead of two rolled-up rows,
+excise's six instead of two, and so on through fees, department revenue,
+license & permits and fines & investments -- draws fifty-four, and
+Constable License Fee has nothing to chart at all this year while Farm
+Animal Excise's $1,500 is a sliver of Tax Levy's $146,107,374. Granularity
+was still worth having, the same call `spending` made for its own
+forty-two departments, so `sources/+page.svelte` draws the same
+`REVENUE_DETAIL` array the bar draws, sorted the same way, as a plain
+two-column table -- `Amount` its only heading, `Total` at the foot reading
+`REVENUE_TOTAL`. It sits second, right after the opening narrative, the
+same slot "Departments" took on `spending`.
+
+`REVENUE_DETAIL` and `REVENUE_TOTAL` live in
+[`revenue/tables.ts`](../src/routes/budget/fy2027/revenue/tables.ts), built
+from seven new `BudgetTableData` tables transcribed off the book's own
+source pages (`STATE_AID`, `EXCISE`, `OTHER_LOCAL_RECEIPTS`, `FEES`,
+`DEPARTMENT_REVENUE`, `LICENSE_PERMITS`, `FINES_INVESTMENTS`), each opening
+one or two of page 78's coarse rows into the finer table the book gives for
+it a few pages earlier. One copy, read by this page's own bar, the front
+page's revenue column and the "Revenue Sources" table alike, the same
+reason `SPENDING` and `SPENDING_TOTAL` sit in `spending/tables.ts` rather
+than being assembled three times over. `revenue.spec.ts` proves each source
+table's own Grand Total against the coarse row or rows it replaces, the way
+`spending.spec.ts` proves `DEPARTMENTS` against `APPROPRIATIONS`.
+
+The tax levy is the one page-78 row with no finer table behind it -- Prop
+2½'s levy-limit table is a ceiling on the levy, not a breakdown of where it
+comes from -- so it stays one line, read straight off `REVENUE`'s own "TAX
+LEVY" row the way `SPENDING` still reads a department's total straight off
+`DEPARTMENTS` when the book gives it nothing finer.
+
+**"Fire" collides, and `REVENUE_DETAIL` renames it.** Both the `FEES` and
+`LICENSE_PERMITS` tables have a row simply called "Fire" -- a fee for a
+detail and a fee for a license, nothing alike but the department -- so a
+chart segment named "Fire" would tell a reader nothing about which. Renamed
+to "Fire Fee" and "Fire License" for the chart and the table, the way every
+other row in each source table is already named for what it is a fee or a
+license _for_; the `<BudgetTable>`s the "Local Receipts" tab renders keep
+the book's own unrenamed "Fire" in both, since those are transcription and
+not the chart.
+
+**Six of the seven local-receipts tables are new `<BudgetTable>`s in place
+of markup that used to be typed out by hand.** Local Excise Taxes, Other
+Local Receipts, Fees, Department Revenue, License & Permits and Fines &
+Investments were plain HTML tables before the bar needed a column out of
+each of them -- the same reason page 78's own two tables became
+`BudgetTable`s rather than staying markup, long before this page had any
+tabs at all. The two small percentage tables under "Historical Comparison
+of State Aid" are not: nothing charts a value out of either, so they stay
+exactly the markup they always were, the same reason the front page's own
+pie-label tables do.
+
+**References is last, and lists the other two buckets.** The same
+tab-of-its-own device `spending` uses, `heading={false}` for the same
+reason -- but its own two entries are "Spending" and "Fiscal Reserves"
+rather than the untranscribed appropriation lines `spending`'s own
+References carries, since `revenue` has no page range left over the way
+`spending`'s three appropriation lines (Debt Service, State Assessments,
+Employee Benefits) were. The two it lists are what this page's own prose
+discusses without being its subject: the free-cash paragraphs under "2027
+Revenue Projection", and the general-fund reconciliation under "Budget in
+Brief".
 
 ## The calendar at the foot of a book page
 

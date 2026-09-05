@@ -464,6 +464,49 @@ Notable pieces:
   wherever the book happened to print them. That is also why the tab itself
   is renamed **Goals & Recommendations** (`goals-recommendations`, from
   `Goals`): "goals" alone no longer says what its last two sections are.
+- **`revenue`** is `wide: true` and eight routes under its own `(tabs)` group,
+  the same split `spending` got first and for the same reason: a reader wants
+  to link or bookmark straight into "Tax Levy" the way every other write-up on
+  the site is linked, and the shared layout's chart and nav are common to all
+  eight rather than particular to one. "2027 Revenue Projection" (the book's
+  own first heading on page 48) opens it and carries no heading of its own,
+  the same no-repeated-heading rule `spending` established; "State Aid", "Tax
+  Levy" and "Local Receipts" are that same page-48 document split into its own
+  sub-topics, each keeping its own book headings since none of them repeats
+  its tab label; "Summary" is page 64 with the 10-year forecast of page 67
+  behind it; "Budget in Brief" is page 78's revenue table, page 79's tax bill,
+  and order 13.3 ("What the Council Raised"), which sits here rather than
+  anywhere else on the page because it reconciles against the same
+  $285,272,159 this tab's own table states. "Revenue Sources" is ours, the
+  same reason "Departments" is on `spending`: the revenue bar has fifty-four
+  segments once every source table the book gives (state aid's six Cherry
+  Sheet lines, excise, fees, department revenue, license & permits, fines &
+  investments, each opened out of the finer table pages 48 to 63 give it
+  rather than left at page 78's fourteen coarse rows) is charted, and
+  Constable License Fee has nothing to chart at all this year while Farm
+  Animal Excise's $1,500 is a sliver of Tax Levy's $146,107,374 -- too short a
+  segment to read or land a mouse on. `sources/+page.svelte` draws
+  `REVENUE_DETAIL` again as a plain table, largest first, the same rows and
+  order as the bar, and sits second, right after the opening narrative, the
+  same slot "Departments" took on `spending`. `REVENUE_DETAIL` and
+  `REVENUE_TOTAL` live in `revenue/tables.ts` next to the seven new source
+  tables (`STATE_AID`, `EXCISE`, `OTHER_LOCAL_RECEIPTS`, `FEES`,
+  `DEPARTMENT_REVENUE`, `LICENSE_PERMITS`, `FINES_INVESTMENTS`) it is built
+  from, read by this page's own bar, the front page's revenue column, and the
+  "Revenue Sources" table alike -- one copy, the same reason `SPENDING` and
+  `SPENDING_TOTAL` sit in `spending/tables.ts` rather than being assembled
+  separately by each of their own three consumers. "Fire" names a row in both
+  `FEES` and `LICENSE_PERMITS` -- a fee for a detail and a fee for a license --
+  so `REVENUE_DETAIL` renames each to "Fire Fee" and "Fire License" for the
+  chart; the tables `<BudgetTable>` still renders on the page keep the book's
+  own unrenamed "Fire" in both. `revenue.spec.ts` proves every source table's
+  Grand Total against the coarse page-78 row or rows it replaces, the same
+  check `spending.spec.ts` runs for `DEPARTMENTS` against `APPROPRIATIONS`.
+  References is last, the same tab-of-its-own `spending` uses, listing
+  "Spending" and "Fiscal Reserves" -- the other two buckets this page's own
+  prose discusses (the free-cash paragraphs under "2027 Revenue Projection",
+  the general-fund reconciliation under "Budget in Brief") without being this
+  page's own subject.
 - **`src/lib/BudgetTimeline.svelte`** draws page 13, the budget calendar, as the
   footer of _every_ page of a book, fixed to the bottom of the window: a row of
   twelve boxes

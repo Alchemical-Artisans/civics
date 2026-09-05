@@ -127,7 +127,7 @@
           },
           {
             label: "Revenue",
-            href: Router.budgetSection(book.id, "revenue"),
+            href: Router.revenueTab(book.id, "revenue-projection"),
             parts: overview.revenue,
           },
         ]}

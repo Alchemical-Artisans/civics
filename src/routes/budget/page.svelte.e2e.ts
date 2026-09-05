@@ -49,12 +49,15 @@ const bookPdf = (page: import("@playwright/test").Page) =>
   page.locator(".budget-timeline li").filter({ hasText: "Final review" }).getByRole("link")
 
 /**
- * `spending`'s seven topics, each its own route now rather than a tab a
+ * `spending`'s six topics, each its own route now rather than a tab a
  * script switched -- content elsewhere in the suite goes straight to one
- * rather than opening it first. `BookReferences` is one of the seven now,
+ * rather than opening it first. `BookReferences` is one of the six now,
  * `references`, rather than sitting in the shared layout under all of them.
  */
 const spendingUrl = (slug: string) => `/budget/${books[0]}/spending/${slug}`
+
+/** The same split, for `revenue`'s eight topics. */
+const revenueUrl = (slug: string) => `/budget/${books[0]}/revenue/${slug}`
 
 test.describe("budget pages", () => {
   test("the book opens on the budget at a glance, before its contents", async ({ page }) => {
@@ -80,7 +83,10 @@ test.describe("budget pages", () => {
       "href",
       /\/spending\/goals-recommendations$/,
     )
-    await expect(chart.getByRole("link", { name: "Revenue" })).toHaveAttribute("href", /\/revenue$/)
+    await expect(chart.getByRole("link", { name: "Revenue" })).toHaveAttribute(
+      "href",
+      /\/revenue\/revenue-projection$/,
+    )
 
     // Every segment says what it is and what it costs as its accessible name.
     const spending = columns.first().getByRole("img")
@@ -226,34 +232,130 @@ test.describe("budget pages", () => {
       await expect(funded.filter({ hasText: gone })).toHaveCount(0)
     }
   })
-  test("gathers the revenue sections on one page", async ({ page }) => {
-    await page.goto(`/budget/${books[0]}/revenue`)
+  test("splits revenue into one route per topic, linked by a plain nav", async ({ page }) => {
+    await page.goto(revenueUrl("revenue-projection"))
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("Revenue")
 
-    // Page 48, the estimates, and page 64, the summary of the same year, which
-    // the book prints sixteen pages apart with the forecasts in between.
-    await expect(page.getByRole("heading", { name: "2027 Revenue Projection" })).toBeVisible()
+    // Eight links, in the book's own order where it has one -- and only
+    // this topic is on the page at all: it carries no heading of its own,
+    // the nav link already says "2027 Revenue Projection", so its own
+    // prose (page 48's free-cash paragraphs) stands in for one here.
+    const nav = page.getByRole("navigation", { name: "Revenue" })
+    await expect(nav.getByRole("link")).toHaveCount(8)
+    await expect(nav.getByRole("link", { name: "2027 Revenue Projection" })).toHaveAttribute(
+      "aria-current",
+      "page",
+    )
+    await expect(page.getByRole("article")).toContainText("Decline in 2027 Revenue")
+    await expect(page.getByRole("heading", { name: "2027 Revenue Projection" })).toHaveCount(0)
+
+    // Following the link is what puts each topic on the page, an ordinary
+    // navigation rather than a script swapping panels -- page 48's estimates
+    // (state aid, the tax levy, local receipts) and page 64's summary,
+    // sixteen book pages apart with the forecast in between.
+    await nav.getByRole("link", { name: "State Aid" }).click()
+    await expect(page).toHaveURL(new RegExp(`${revenueUrl("state-aid")}$`))
+    await expect(
+      page.getByRole("heading", { name: "Historical State Aid & State Assessments" }),
+    ).toBeVisible()
+
+    await nav.getByRole("link", { name: "Tax Levy" }).click()
+    await expect(
+      page.getByRole("heading", { name: "What is the Tax Levy & Prop 2½" }),
+    ).toBeVisible()
+
+    await nav.getByRole("link", { name: "Local Receipts" }).click()
+    await expect(page.getByRole("heading", { name: "Local Revenue Receipts" })).toBeVisible()
+    await expect(page.getByRole("heading", { name: "License & Permits" })).toBeVisible()
+
+    await nav.getByRole("link", { name: "Summary" }).click()
     await expect(
       page.getByRole("heading", { name: /^Summary of General Fund Revenue/ }),
     ).toBeVisible()
-    await expect(page.getByRole("heading", { name: "Revenue Forecast" })).toBeVisible()
-
-    // Page 67, the ten years after it, and page 79, what it comes to for one
-    // household.
     await expect(page.getByRole("heading", { name: "10-Year Revenue Projection" })).toBeVisible()
+
+    await nav.getByRole("link", { name: "Budget in Brief" }).click()
+    await expect(page.getByRole("heading", { name: "2027 Budget in Brief" })).toBeVisible()
     await expect(
       page.getByRole("heading", { name: "$245 Estimated Tax Bill Increase" }),
     ).toBeVisible()
 
+    // References is its own topic, last in the nav, carrying no heading of
+    // its own for the same reason spending's does not.
+    await expect(page.getByRole("link", { name: "Fiscal Reserves" })).toHaveCount(0)
+    await nav.getByRole("link", { name: "References", exact: true }).click()
+    await expect(page).toHaveURL(new RegExp(`${revenueUrl("references")}$`))
+    await expect(page.getByRole("link", { name: "Fiscal Reserves" })).toBeVisible()
+    await expect(page.getByRole("link", { name: "Spending" })).toBeVisible()
+
+    // The revenue bar in the left column answers to none of this: outside
+    // the nav entirely, the same on every one of the eight routes.
+    await expect(page.locator(".budget-columns").first()).toContainText("$310,893,296")
+
     // The calendar's own link to the book opens it where the run begins.
     expect(await bookPdf(page).getAttribute("href")).toMatch(/#page=48$/)
 
-    // Neither section has a line in the contents: the pie's heading is the way
-    // to both.
+    // Neither section has a line in the contents: the pie's heading is the
+    // way to both.
     await page.goto(`/budget/${books[0]}`)
     const every = page.locator("article > div ol li")
     await expect(every.filter({ hasText: "Revenue Summary" })).toHaveCount(0)
     await expect(every.filter({ hasText: "Revenue Estimates" })).toHaveCount(0)
+  })
+
+  test("stands each revenue topic on its own page, reachable without script", async ({
+    browser,
+  }) => {
+    const context = await browser.newContext({ javaScriptEnabled: false })
+    const noscript = await context.newPage()
+
+    for (const [slug, heading] of [
+      ["state-aid", "Historical State Aid & State Assessments"],
+      ["tax-levy", "What is the Tax Levy & Prop 2½"],
+      ["local-receipts", "Local Revenue Receipts"],
+      ["summary", "Revenue Forecast"],
+      ["budget-in-brief", "What the Council Raised"],
+    ] as const) {
+      await noscript.goto(revenueUrl(slug))
+      await expect(noscript.getByRole("heading", { name: heading })).toBeVisible()
+    }
+
+    // "2027 Revenue Projection", "Revenue Sources" and References carry no
+    // heading of their own -- redundant with the tab each is already on --
+    // so each is checked by its own content instead.
+    for (const [slug, text] of [
+      ["revenue-projection", "Decline in 2027 Revenue"],
+      ["sources", "Tax Levy"],
+      ["references", "Fiscal Reserves"],
+    ] as const) {
+      await noscript.goto(revenueUrl(slug))
+      await expect(noscript.getByRole("article")).toContainText(text)
+    }
+
+    await context.close()
+  })
+
+  test("tables the same sources the revenue bar charts, for the segments too small to read", async ({
+    page,
+  }) => {
+    await page.goto(revenueUrl("sources"))
+
+    // The same fifty-four rows the bar draws, largest first -- a reader who
+    // wants Farm Animal Excise's $1,500 without hunting for the sliver that
+    // carries it on the chart gets it read off a row instead.
+    const rows = page.getByRole("row")
+    await expect(rows).toHaveCount(56) // header row, 54 sources, Total.
+    const first = rows.nth(1)
+    await expect(first).toContainText("Tax Levy")
+    await expect(first).toContainText("$146,107,374")
+    await expect(rows.last()).toContainText("Total")
+    await expect(rows.last()).toContainText("$310,893,296")
+
+    // "Fire" names a row in both the Fees and the License & Permits tables
+    // this page transcribes; the table renames each so a reader scanning
+    // this list is not left wondering which "Fire" a figure belongs to.
+    await expect(page.getByRole("rowheader", { name: "Fire Fee" })).toBeVisible()
+    await expect(page.getByRole("rowheader", { name: "Fire License" })).toBeVisible()
   })
 
   test("opens the spending side from its own chart", async ({ page }) => {
@@ -1081,8 +1183,8 @@ test.describe("budget pages", () => {
     // its own.
     const sources = page.locator(".budget-column").last().getByRole("img")
     const income = await sources.evaluateAll((w) => w.map((el) => el.getAttribute("aria-label")))
-    expect(income.some((l) => l?.includes("TAX LEVY, $146,107,374"))).toBe(true)
-    expect(income.some((l) => l?.includes("CH 70 STATE AID, $96,427,042"))).toBe(true)
+    expect(income.some((l) => l?.includes("Tax Levy, $146,107,374"))).toBe(true)
+    expect(income.some((l) => l?.includes("Chapter 70, $96,427,042"))).toBe(true)
     expect(income.some((l) => l?.includes("Wastewater Revenue, $16,666,024"))).toBe(true)
     expect(income.some((l) => l?.includes("Water Revenue, $15,040,417"))).toBe(true)
 
@@ -1106,10 +1208,10 @@ test.describe("budget pages", () => {
     )
   })
 
-  test("raises the general fund on the revenue page, moved off Council Orders", async ({
+  test("raises the general fund on the revenue page's Budget in Brief tab, moved off Council Orders", async ({
     page,
   }) => {
-    await page.goto(`/budget/${books[0]}/revenue`)
+    await page.goto(revenueUrl("budget-in-brief"))
 
     // Order 13.3, quoted the same way it was on Council Orders -- the
     // agenda's own words, spacing and all.

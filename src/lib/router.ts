@@ -99,6 +99,18 @@ export class Router {
   }
 
   /**
+   * One topic of the revenue section -- Revenue Sources, State Aid and the
+   * rest, the same split as `spendingTab` for the same reason: each its own
+   * route under `revenue/` rather than a tab a script switched, so one can be
+   * linked or bookmarked on its own. `slug` is the topic's directory name;
+   * there is no bare `/revenue` page, since nothing but this method's own
+   * callers ever pointed at it.
+   */
+  static revenueTab(id: string, slug: string): string {
+    return path(`/budget/${id}/revenue/${slug}`)
+  }
+
+  /**
    * One capital project's own request -- its case, urgency and dollar
    * figure from pages 36 to 45, on a page of its own beneath Capital
    * Planning rather than run together with the seven category tables above
