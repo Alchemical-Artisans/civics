@@ -260,9 +260,11 @@ test.describe("budget pages", () => {
     ).toBeVisible()
 
     await nav.getByRole("link", { name: "Tax Levy" }).click()
-    await expect(
-      page.getByRole("heading", { name: "What is the Tax Levy & Prop 2½" }),
-    ).toBeVisible()
+    // No heading, and no lead-in prose either: the tab is cut to its one
+    // table, the levy-limit calculation worked through with the city's own
+    // figures.
+    await expect(page.getByRole("heading", { name: "What is the Tax Levy" })).toHaveCount(0)
+    await expect(page.getByRole("cell", { name: "$146,107,374" })).toBeVisible()
 
     await nav.getByRole("link", { name: "Local Receipts" }).click()
     await expect(page.getByRole("heading", { name: "Local Revenue Receipts" })).toBeVisible()
@@ -311,7 +313,6 @@ test.describe("budget pages", () => {
 
     for (const [slug, heading] of [
       ["state-aid", "Historical State Aid & State Assessments"],
-      ["tax-levy", "What is the Tax Levy & Prop 2½"],
       ["local-receipts", "Local Revenue Receipts"],
       ["summary", "Revenue Forecast"],
       ["budget-in-brief", "What the Council Raised"],
@@ -322,10 +323,13 @@ test.describe("budget pages", () => {
 
     // "2027 Revenue Projection", "Revenue Sources" and References carry no
     // heading of their own -- redundant with the tab each is already on --
-    // so each is checked by its own content instead.
+    // so each is checked by its own content instead. "Tax Levy" lost its
+    // heading along with its lead-in prose: only the levy-limit table is
+    // left, so it is checked here too, by its own figure.
     for (const [slug, text] of [
       ["revenue-projection", "Decline in 2027 Revenue"],
       ["sources", "Tax Levy"],
+      ["tax-levy", "$146,107,374"],
       ["references", "Fiscal Reserves"],
     ] as const) {
       await noscript.goto(revenueUrl(slug))

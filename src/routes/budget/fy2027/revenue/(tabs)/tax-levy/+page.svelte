@@ -1,116 +1,24 @@
-<script lang="ts">
-  import GlossaryTerm from "$lib/GlossaryTerm.svelte"
-</script>
+<!-- No heading -- "Tax Levy" is already this tab's own name in the nav
+     above it, the same reason "Capital Planning" and "Departments" carry
+     none on `spending`.
 
-<h2>What is the Tax Levy &amp; Prop 2&frac12;</h2>
+     The book's own lead-in here (what a levy is, what Prop 2 1/2 limits,
+     how inflation strains it) was general DOR/MMA background, the same for
+     any city's book in any year -- none of it named Haverhill's own
+     numbers. The one thing on this page that does is this table: it works
+     the calculation through with the city's own figures (5a even names
+     "Consentino", a specific local borrowing), and its 2027 column is
+     where $146,107,374 -- this book's own Tax Levy line, charted on the
+     front page, the revenue bar, and the Summary tab -- comes from. Kept
+     alone, without the prose that read as generic, it stands as
+     Haverhill's own math rather than a textbook illustration.
 
-<p>
-  The property tax <GlossaryTerm term="Levy">levy</GlossaryTerm> is the revenue a community can raise
-  through real and personal property taxes. In Massachusetts, municipal <GlossaryTerm
-    term="Revenues">revenues</GlossaryTerm
-  > support local spending for schools, public safety, and other public services, which are raised through
-  the property tax <GlossaryTerm term="Levy">levy</GlossaryTerm>, state aid, local receipts, and
-  other sources. The property tax <GlossaryTerm term="Levy">levy</GlossaryTerm> is the largest source
-  of revenue for most cities and towns.
-</p>
-
-<p>
-  Proposition 2 &frac12; places constraints on the amount of <GlossaryTerm term="Levy"
-    >levy</GlossaryTerm
-  > a city or town can raise and on how much the <GlossaryTerm term="Levy">levy</GlossaryTerm> can be
-  increased from year to year. A community cannot <GlossaryTerm term="Levy">levy</GlossaryTerm> more than
-  2.5 percent of the total full and fair cash value of all taxable real and personal property in the community.
-  This is known as the <GlossaryTerm term="Levy Ceiling">levy ceiling</GlossaryTerm>. A community's <GlossaryTerm
-    term="Levy">levy</GlossaryTerm
-  > is also constrained in that it can only increase by a certain amount from year to year. This is known
-  as the <GlossaryTerm term="Levy Limit">levy limit</GlossaryTerm>. The levy limit will always be
-  below, or at most, equal to the <GlossaryTerm term="Levy Ceiling">levy ceiling</GlossaryTerm>. The
-  levy limit may not exceed the <GlossaryTerm term="Levy Ceiling">levy ceiling</GlossaryTerm>.
-</p>
-
-<h3>Increases in the levy limit may result from the following:</h3>
-
-<ul>
-  <li>
-    Each year, a community's <GlossaryTerm term="Levy Limit">levy limit</GlossaryTerm> automatically increases
-    by 2.5 percent over the previous year's <GlossaryTerm term="Levy Limit">levy limit</GlossaryTerm
-    >. This does not require any action from local officials; the Department of Revenue calculates
-    this increase automatically.
-  </li>
-  <li>
-    A community can increase its <GlossaryTerm term="Levy Limit">levy limit</GlossaryTerm> each year to
-    reflect <GlossaryTerm term="New Growth">new growth</GlossaryTerm> in the tax base. Assessors must
-    submit information on growth in the tax base for approval by the Department of Revenue as part of
-    the <GlossaryTerm term="Tax Rate">tax rate</GlossaryTerm>-setting process.
-  </li>
-  <li>
-    A community can increase its <GlossaryTerm term="Levy Limit">levy limit</GlossaryTerm> by successfully
-    voting an <GlossaryTerm term="Override">override</GlossaryTerm>. The amount of the <GlossaryTerm
-      term="Override">override</GlossaryTerm
-    > becomes part of the <GlossaryTerm term="Levy Limit">levy limit</GlossaryTerm> base.
-  </li>
-</ul>
-
-<p>
-  <em>
-    Debt exclusions and capital outlay exclusions enable a community to permanently or temporarily
-    increase its <GlossaryTerm term="Levy Limit">levy limit</GlossaryTerm> or <GlossaryTerm
-      term="Levy Ceiling">levy ceiling</GlossaryTerm
-    >. A 2/3 vote of the city council is needed to place an exclusion question on the ballot for
-    community vote. A majority vote is then needed for the exclusion to pass.
-  </em>
-</p>
-
-<h2>Challenges of Prop 2 &frac12; with High Inflation</h2>
-
-<p>
-  The 2.5 percent cap on annual property tax increases doesn't include any kind of adjustment for
-  inflation. A 2.5 percent increase in tax receipts is a lot more manageable in a low-inflation
-  environment, when costs are growing 1-2 percent per year, as they did through the 2010s. When
-  costs grow over 3 percent per year, as they have since COVID, cities and towns are effectively
-  obligated to cut real spending every year.
-</p>
-
-<p>
-  Proposition 2&frac12; was intended to limit local spending, but real spending growth of 0.6
-  percent per year suggests the constraints may be too restrictive. This austere growth in spending
-  has made it extremely difficult for cities and towns to attract staff, repair roads, and generally
-  <GlossaryTerm term="Fund">fund</GlossaryTerm> the essential services their residents demand.
-</p>
-
-<h2>Prop 2 &frac12; Calculation</h2>
-
-<ul>
-  <li>
-    The calculation for the Prop. 2&frac12; <GlossaryTerm term="Levy Limit">Levy Limit</GlossaryTerm
-    > begins by taking the previous <GlossaryTerm term="Fiscal Year">fiscal year</GlossaryTerm>'s <GlossaryTerm
-      term="Levy Limit">levy limit</GlossaryTerm
-    > and applying a 2.5% increase. This amount serves as the Levy Base for the current
-    <GlossaryTerm term="Fiscal Year">fiscal year</GlossaryTerm>.
-  </li>
-  <li>
-    Next, "<GlossaryTerm term="New Growth">New Growth</GlossaryTerm>" is incorporated into the <GlossaryTerm
-      term="Levy">levy</GlossaryTerm
-    > base. "<GlossaryTerm term="New Growth">New Growth</GlossaryTerm>" refers to the increase in
-    property tax revenue due to new construction, subdivisions, renovations, or previously exempt
-    properties returning to the tax rolls. This allows municipalities to raise their <GlossaryTerm
-      term="Levy Limit">levy limit</GlossaryTerm
-    >
-    beyond the standard 2.5%. It represents the additional tax capacity resulting from physical growth,
-    separate from market-value increases from revaluations.
-  </li>
-  <li>
-    Lastly, Debt Exclusions are added, and the total of the <GlossaryTerm term="Levy"
-      >levy</GlossaryTerm
-    > base, <GlossaryTerm term="New Growth">New Growth</GlossaryTerm>, and Debt Exclusion(s)
-    establishes the Total Available Levy Limit that a city or town can tax up to in any given <GlossaryTerm
-      term="Fiscal Year">fiscal year</GlossaryTerm
-    >.
-  </li>
-</ul>
+     The caption is also gone, for the same reason: the book's own title
+     for this table, "Illustration of Levy Limit Calculation and Usage",
+     is the phrase that read as a stock example rather than the city's own
+     figures. -->
 
 <table>
-  <caption>Illustration of Levy Limit Calculation and Usage</caption>
   <thead>
     <tr>
       <th scope="col">Tax Levy Calculation</th>

@@ -1071,9 +1071,24 @@ into Requests and Challenges.** "2027 Revenue Projection" (the book's own
 first heading, and this tab's name, so it carries no heading of its own),
 "State Aid", "Tax Levy" and "Local Receipts" are the narrative, the Cherry
 Sheet, Prop 2½ and the run of local-receipts tables that the book prints one
-after another across fifteen pages with nothing else between them. Each of
-the other three keeps the book's own headings unchanged -- none of them is
-literally the tab's own label, so none loses one.
+after another across fifteen pages with nothing else between them. "State
+Aid" and "Local Receipts" keep the book's own headings unchanged -- neither
+is literally the tab's own label, so neither loses one.
+
+**"Tax Levy" lost its prose, not just its heading.** The book's own lead-in
+here -- what a levy is, what Prop 2½ limits, how inflation strains it -- is
+general DOR/MMA background, true of any city's book in any year, and reads
+as a stock example rather than Haverhill's own budget: on a first read it
+was mistaken for exactly that. The one thing on the page that _is_
+Haverhill's own math is the levy-limit table itself, which works the
+calculation through with the city's own figures -- its 2027 column is where
+$146,107,374, the same figure page 78 prints as this book's own Tax Levy and
+the front page, the revenue bar and the Summary tab all chart, comes from,
+and row 5a even names a specific local borrowing, "Consentino". The tab is
+cut to that one table now, and the table's own caption, "Illustration of
+Levy Limit Calculation and Usage", is gone with the prose -- "Illustration
+of..." was the phrase that read as a template rather than the city's own
+numbers.
 
 **"Summary" is page 64's rollup with page 67's ten-year forecast behind it,
 and "Budget in Brief" is page 78's revenue table, page 79's tax bill, and

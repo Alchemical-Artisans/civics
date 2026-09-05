@@ -472,8 +472,18 @@ Notable pieces:
   own first heading on page 48) opens it and carries no heading of its own,
   the same no-repeated-heading rule `spending` established; "State Aid", "Tax
   Levy" and "Local Receipts" are that same page-48 document split into its own
-  sub-topics, each keeping its own book headings since none of them repeats
-  its tab label; "Summary" is page 64 with the 10-year forecast of page 67
+  sub-topics. "State Aid" and "Local Receipts" keep their own book headings,
+  since neither repeats its tab label; "Tax Levy" is cut down to its one
+  table, "Illustration of Levy Limit Calculation and Usage" -- the book's own
+  lead-in (what a levy is, what Prop 2 1/2 limits, inflation's strain on it)
+  read as generic DOR/MMA background on a first read, true of any city's book
+  in any year, while the table is Haverhill's own math: its 2027 column is
+  where $146,107,374 -- the same figure page 78 prints as this book's own Tax
+  Levy, charted on the front page, the revenue bar, and the Summary tab --
+  comes from, and 5a even names a specific local borrowing, "Consentino". The
+  table's own caption went with the prose, for the same reason: "Illustration
+  of..." was the phrase reading as a stock example rather than the city's own
+  figures. "Summary" is page 64 with the 10-year forecast of page 67
   behind it; "Budget in Brief" is page 78's revenue table, page 79's tax bill,
   and order 13.3 ("What the Council Raised"), which sits here rather than
   anywhere else on the page because it reconciles against the same
