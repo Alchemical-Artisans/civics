@@ -360,7 +360,8 @@ this down.
 None of that is on the front page. A pie is a shape for one question, and the
 explanation belongs where a reader who wants it goes: the orders are quoted on
 `spending`, in the agenda's own words, with what they leave out and why --
-13.3 and 13.4 of them, now; see below for the two that are not.
+only 13.4 of them, now; see below for the three that are not, one of which
+moved to `revenue` rather than dropping off the site.
 
 **The book is not the whole city, and the orders are how we know.** Water and wastewater
 are enterprise funds — self-supporting, paid for out of what households are
@@ -398,10 +399,31 @@ that page was cut for the same reason; 13.2 followed it off the page
 rather than staying, once the same reasoning plainly applied to it too.
 The `ENTERPRISE` table that used to sit beside 13.2 -- both departments'
 totals, side by side, in one small table -- went with it: it duplicated
-the exact two rows the Departments tab already lists. Both orders stay in
-`ORDERS`, filtered out in `council-orders/+page.svelte` rather than in
-`council-orders.ts` itself, since the data is still every order the agenda
-carries and only this one page's selection of it changed.
+the exact two rows the Departments tab already lists.
+
+**13.3 left too, but for `revenue` rather than nowhere.** It raises and
+appropriates the general fund, which most of its own five funding sources
+already answer to a figure somewhere else on the site: Water and
+Wastewater Receipts ($234,784 and $698,981) are folded into "Water
+Revenue" and "Wastewater Revenue" on the front page's own revenue column,
+the $125,000 transfer matches the book's own "Transfer from Trust &
+Agency" line exactly (charted as "Hospital Trust"), and only Free Cash
+($5,150,000, deliberately excluded -- it is last year's surplus, not 2027
+income) and Taxation and Other Receipts ($268,541,960, which nothing
+currently states directly) are not already a segment somewhere. Put
+plainly, 13.3 is closer to revenue than to spending, so it moved to
+`revenue/+page.svelte` as "What the Council Raised" -- its own text, the
+`GENERAL_FUND` table, and the reconciliation paragraph explaining the
+$10,521,435 gap against the book's $285,272,159, all appended at the foot
+of that page rather than folded into one of the book's own sections above
+it. Where it belongs among those is a question for `revenue`'s own
+eventual revamp; for now it stands on its own, the same way it stood alone
+as the last order quoted on `council-orders`.
+
+All three retired orders stay in `ORDERS`, filtered out in
+`council-orders/+page.svelte` rather than in `council-orders.ts` itself,
+since the data is still every order the agenda carries and only this one
+page's selection of it changed.
 
 **The agenda is on the budget calendar in the footer**, on the run of public
 hearings its meeting of 2 June falls inside, the same way the book hangs off the

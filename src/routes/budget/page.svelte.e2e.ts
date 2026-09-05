@@ -1099,18 +1099,20 @@ test.describe("budget pages", () => {
     // 13.2, the Water and Wastewater Department orders, are not among them
     // any more: both totals ($14,805,633 and $15,967,043) are already
     // segments of the spending bar, so neither order's own text is quoted
-    // a second time here.
+    // a second time here. 13.3 is gone too, moved to Revenue since it is
+    // that figure's revenue side; only 13.4 -- the snow and ice transfer --
+    // is still quoted on this page.
     await expect(page.getByRole("heading", { name: "What the Council appropriated" })).toBeVisible()
     const article = page.getByRole("article")
     await expect(article).not.toContainText("be appropriated to operate the Water Department")
     await expect(article).not.toContainText("be appropriated to operate the Wastewater Department")
     await expect(article).not.toContainText("$15, 967,043")
-    await expect(article).toContainText("$ 274,750,725")
-    await expect(article).toContainText("Taxation and Other Receipts")
+    await expect(article).not.toContainText("$ 274,750,725")
+    await expect(article).not.toContainText("Taxation and Other Receipts")
+    await expect(article).toContainText("snow and ice deficit")
 
-    // And why the two totals differ.
-    await expect(article).toContainText("state assessments")
-    await expect(article).toContainText("tax rate recapitulation sheet")
+    // Why the two enterprise totals are missing.
+    await expect(article).toContainText("enterprise funds")
 
     // The agenda those orders are on is on the calendar under this page, on the
     // hearings it falls inside -- not in the bar, which carries no document
@@ -1123,6 +1125,27 @@ test.describe("budget pages", () => {
     await expect(
       page.getByRole("banner").getByRole("link", { name: /^City Council Order/ }),
     ).toHaveCount(0)
+  })
+
+  test("raises the general fund on the revenue page, moved off Council Orders", async ({
+    page,
+  }) => {
+    await page.goto(`/budget/${books[0]}/revenue`)
+
+    // Order 13.3, quoted the same way it was on Council Orders -- the
+    // agenda's own words, spacing and all.
+    const article = page.getByRole("article")
+    await expect(page.getByRole("heading", { name: "What the Council Raised" })).toBeVisible()
+    await expect(article).toContainText(
+      "be and hereby raised and appropriated designated as appropriation",
+    )
+    await expect(article).toContainText("Taxation and Other Receipts")
+    await expect(article).toContainText("$268,541,960")
+
+    // And why the Council's own total differs from the book's.
+    await expect(article).toContainText("$ 274,750,725")
+    await expect(article).toContainText("state assessments")
+    await expect(article).toContainText("tax rate recapitulation sheet")
   })
   test("draws both bars to one scale", async ({ page }) => {
     // The point of the chart: $22 million against $176 million, so the

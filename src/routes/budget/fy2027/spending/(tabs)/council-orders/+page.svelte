@@ -1,7 +1,6 @@
 <script lang="ts">
-  import BudgetTable from "$lib/BudgetTable.svelte"
   import GlossaryTerm from "$lib/GlossaryTerm.svelte"
-  import { APPROPRIATED, GENERAL_FUND, ORDERS } from "../../../council-orders"
+  import { ORDERS } from "../../../council-orders"
 
   // 13.1 and 13.2, the Water and Wastewater Department orders, are not
   // quoted here: both totals ($14,805,633 and $15,967,043) are already
@@ -13,11 +12,19 @@
   // here would be a fact this page already states once, stated again.
   // The `ENTERPRISE` table that used to sit beside 13.2, naming both
   // departments in one place, went for the same reason: it duplicated the
-  // same two rows the Departments tab already lists. Filtered out here
-  // rather than in `council-orders.ts` itself, since the data is still
-  // every order the agenda carries; only this page's own selection of it
-  // changed.
-  const remaining = ORDERS.filter((order) => order.item !== "13.1" && order.item !== "13.2")
+  // same two rows the Departments tab already lists.
+  //
+  // 13.3 left too, but for revenue rather than spending: it raises and
+  // appropriates the general fund, which reads oddly on a page titled
+  // "What the Council appropriated" once it is the revenue side of that
+  // figure being discussed. It sits on `revenue` now, for as long as that
+  // page's own layout stands -- see the note there.
+  //
+  // All three stay in `ORDERS`; only this page's own selection of it
+  // changed, since the data is still every order the agenda carries.
+  const remaining = ORDERS.filter(
+    (order) => order.item !== "13.1" && order.item !== "13.2" && order.item !== "13.3",
+  )
 </script>
 
 <!-- Ours, not the book's: the book is the Mayor's proposal, and what follows is
@@ -28,9 +35,20 @@ orders are quoted as the agenda words them, spacing and all. -->
 <p>
   The book is the Mayor's proposal for the <GlossaryTerm term="General Fund"
     >general fund</GlossaryTerm
-  >. These are the orders the City Council voted on it. Two of the four -- the Water and Wastewater
-  Department orders -- are not quoted here: their totals are already on the spending bar and the
-  Departments tab.
+  >. These are the orders the City Council voted on it. Three of the four are not quoted here: the
+  Water and Wastewater Department orders, whose totals are already on the spending bar and the
+  Departments tab, and the <GlossaryTerm term="General Fund">general fund</GlossaryTerm>'s own
+  order, which is the revenue side of that same figure and sits on Revenue instead.
+</p>
+
+<p>
+  The water and wastewater departments are appropriated in orders of their own because they are
+  <GlossaryTerm term="Enterprise Funds">enterprise funds</GlossaryTerm>, paid for out of what
+  households are billed rather than out of the tax <GlossaryTerm term="Levy">levy</GlossaryTerm>,
+  and they appear nowhere in the book at all. Each order also appropriates an amount inside the <GlossaryTerm
+    term="General Fund">general fund</GlossaryTerm
+  >, funded from that <GlossaryTerm term="Department">department</GlossaryTerm>'s receipts, which is
+  why the front page counts those transfers once.
 </p>
 
 {#each remaining as order (order.item)}
@@ -43,32 +61,4 @@ orders are quoted as the agenda words them, spacing and all. -->
       {/each}
     </ul>
   {/if}
-
-  {#if order.item === "13.3"}
-    <BudgetTable table={GENERAL_FUND} />
-  {/if}
 {/each}
-
-<p>
-  <strong>{APPROPRIATED}</strong> is what the Council raised and appropriated for the <GlossaryTerm
-    term="General Fund">general fund</GlossaryTerm
-  >. The book prints $285,272,159 for the same year. The difference, $10,521,435, is the state
-  assessments and the <GlossaryTerm term="Overlay">overlay</GlossaryTerm>: the Commonwealth's
-  charges for charter school tuition, school choice, the MBTA and the rest, and the assessors'
-  reserve for the property tax abatements the year will <GlossaryTerm term="Grant"
-    >grant</GlossaryTerm
-  >. Both are raised on the <GlossaryTerm term="Tax Rate Recapitulation Sheet"
-    >tax rate recapitulation sheet</GlossaryTerm
-  > rather than appropriated, so they are spent without the Council voting them, and the front page's
-  spending chart carries them with everything else the city spends.
-</p>
-
-<p>
-  The water and wastewater departments are appropriated in orders of their own because they are
-  <GlossaryTerm term="Enterprise Funds">enterprise funds</GlossaryTerm>, paid for out of what
-  households are billed rather than out of the tax <GlossaryTerm term="Levy">levy</GlossaryTerm>,
-  and they appear nowhere in the book at all. Each order also appropriates an amount inside the <GlossaryTerm
-    term="General Fund">general fund</GlossaryTerm
-  >, funded from that <GlossaryTerm term="Department">department</GlossaryTerm>'s receipts, which is
-  why the front page counts those transfers once.
-</p>

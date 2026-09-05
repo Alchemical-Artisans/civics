@@ -5,6 +5,14 @@
   import BudgetTable from "$lib/BudgetTable.svelte"
   import { OTHER_AVAILABLE, REVENUE } from "./tables"
   import GlossaryTerm from "$lib/GlossaryTerm.svelte"
+  import { APPROPRIATED, GENERAL_FUND, ORDERS } from "../council-orders"
+
+  // Order 13.3, moved here from Council Orders: it raises and appropriates
+  // the general fund, which is a revenue-side fact more than a spending
+  // one, so it reads oddly on a page titled "What the Council
+  // appropriated". Read out of `council-orders.ts` rather than retyped, so
+  // this and the agenda transcription it comes from cannot drift apart.
+  const order = ORDERS.find((o) => o.item === "13.3")!
 </script>
 
 <!-- The page's own printed heading. The page is called "Revenue", which is
@@ -1341,4 +1349,32 @@
 <p>
   This is an estimate based on 2026 valuations. This amount may increase or decrease based on
   <strong>2027 valuations</strong> to be certified by the Department of Revenue in September 2026.
+</p>
+
+<!-- Ours, not the book's, and appended rather than folded into a section
+above: order 13.3 of the Council's agenda of 2 June 2026, raising and
+appropriating the general fund on the revenue side the way the two
+enterprise orders do on the spending side (see Council Orders, which is
+where this used to sit). Where it belongs among the book's own sections
+above is a question for this page's own revamp -- for now it stands on its
+own at the foot, the same way it stood alone as the last of the orders
+quoted on Council Orders. -->
+<h2>What the Council Raised</h2>
+
+<p><strong>{order.item}</strong> {order.text}</p>
+
+<BudgetTable table={GENERAL_FUND} />
+
+<p>
+  <strong>{APPROPRIATED}</strong> is what the Council raised and appropriated for the <GlossaryTerm
+    term="General Fund">general fund</GlossaryTerm
+  >. The book prints $285,272,159 for the same year. The difference, $10,521,435, is the state
+  assessments and the <GlossaryTerm term="Overlay">overlay</GlossaryTerm>: the Commonwealth's
+  charges for charter school tuition, school choice, the MBTA and the rest, and the assessors'
+  reserve for the property tax abatements the year will <GlossaryTerm term="Grant"
+    >grant</GlossaryTerm
+  >. Both are raised on the <GlossaryTerm term="Tax Rate Recapitulation Sheet"
+    >tax rate recapitulation sheet</GlossaryTerm
+  > rather than appropriated, so they are spent without the Council voting them, and the front page's
+  spending chart carries them with everything else the city spends.
 </p>
