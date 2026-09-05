@@ -6,33 +6,6 @@
      the nav above it, the same reason "Capital Planning" and "Departments"
      carry none on `spending`. -->
 
-<p>
-  <em>
-    The city's practice, which is in accordance with the Massachusetts Department of Revenue (DOR)
-    and the Government Finance Officers Association (GFOA), is to estimate revenue conservatively.
-    This practice accomplishes three critical objectives as follows:
-  </em>
-</p>
-
-<ul>
-  <li>
-    It safeguards the budget against not meeting overly optimistic revenue estimates, which, if not
-    achieved, would result in mid-year budget cuts and/or layoffs.
-  </li>
-  <li>
-    It generates <GlossaryTerm term="Free Cash">free cash</GlossaryTerm>, which the city has
-    historically used as a source of reserves, to <GlossaryTerm term="Fund">fund</GlossaryTerm> capital,
-    to <GlossaryTerm term="Fund">fund</GlossaryTerm> snow and ice removal expenses, to <GlossaryTerm
-      term="Fund">fund</GlossaryTerm
-    > unforeseen emergency uses such as natural disasters (floods, storms, large snow events), and to
-    partially subsidize the <GlossaryTerm term="Operating Budget">operating budget</GlossaryTerm>.
-  </li>
-  <li>
-    It helps build a sustainable budget that has more resilience during periods of economic
-    downturn.
-  </li>
-</ul>
-
 <h2>Decline in 2027 Revenue</h2>
 
 <p>
