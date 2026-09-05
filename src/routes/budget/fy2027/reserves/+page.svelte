@@ -295,9 +295,13 @@
               > 2025, which was $2,578,279, reflecting a decline of 1.51%.
             </p>
 
-            <!-- Ours, not the book's: the Council's own order against the
-            same deficit the "Results" paragraph above describes. -->
-            <p><strong>{order.item}</strong> {order.text}</p>
+            <!-- Ours, not the book's: 13.4 is the Council's own order
+            against the same deficit "Results" describes, folded in as a
+            further sentence of it rather than set apart under its own
+            label -- the book's "Results" is itself already a sentence-or-two
+            wrapping a fact from elsewhere in the book (the free-cash
+            balance), and this is one fact more of the same kind. -->
+            <p>{order.text}</p>
           </div>
         </details>
 

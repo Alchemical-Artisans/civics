@@ -1310,7 +1310,8 @@ test.describe("budget pages", () => {
   }) => {
     await page.goto(`/budget/${books[0]}/reserves`)
 
-    // Order 13.4, quoted beside Policy #3's own "Results" paragraph, which
+    // Order 13.4, folded in as a further paragraph of Policy #3's own
+    // "Results" answer rather than set apart under its own label -- which
     // already describes the same deficit in the book's own words.
     const article = page.getByRole("article")
     await article.locator("details").nth(2).locator("summary").click()

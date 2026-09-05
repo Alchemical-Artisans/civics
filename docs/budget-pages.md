@@ -426,9 +426,11 @@ below).
 **13.4 left for `reserves`, the last of the four.** It transfers $2,770,000
 out of fiscal 2025's certified free cash to cover the same snow-and-ice
 deficit Policy #3's own "Results" paragraph already describes in the
-book's words -- moved onto that policy's own collapsed section, right
-after the "Results" paragraph it confirms, since it is what the Council
-did about free cash rather than an appropriation.
+book's words -- a further paragraph of that same "Results" answer, not a
+different kind of thing set apart under its own label, since it is what
+the Council did about free cash rather than an appropriation, and
+"Results" is already the book's own sentence or two gathering a fact from
+elsewhere in the book; this is one fact more of the same kind.
 
 **"Council Orders" is retired.** Once none of the four orders had anything
 left to quote -- each moved to the figure it belongs beside -- the tab
@@ -556,13 +558,13 @@ band it never reaches. The page says why in the city's own words — a winter of
 $4.6 million in snow removal — and the chart says nothing the prose does not; it
 just says it first, and next to the two funds that are inside their bands.
 
-**Order 13.4, moved here from Council Orders, sits right after that
-paragraph.** It transfers $2,770,000 out of fiscal 2025's certified free
-cash for the same snow-and-ice deficit the "Results" paragraph describes —
-ours, not the book's, so it is quoted rather than folded into the book's
-own words, the same way every Council order on the site is.
-
-**Stabilization's band has no closing edge**, because policy #4 sets a floor and
+**Order 13.4, moved here from Council Orders, reads as a further paragraph
+of that same "Results" answer, not as a quoted order set apart from it.**
+It transfers $2,770,000 out of fiscal 2025's certified free cash for the
+same snow-and-ice deficit "Results" describes — ours, not the book's, but
+folded in as one fact more of the kind "Results" already gathers, rather
+than labeled with the order's own number the way a quoted order elsewhere
+on the site is.
 
 **Stabilization's band has no closing edge**, because policy #4 sets a floor and
 no ceiling. The band runs to the top of the rail and the column prints no maximum:
