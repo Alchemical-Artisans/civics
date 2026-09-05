@@ -44,8 +44,14 @@
   <!-- The transcription is the child route: an ordinary Svelte component,
 	     checked and formatted like the rest of the source. Same arrangement as a
 	     meeting write-up; see docs/document-pages.md. -->
+  <!-- prose-h3 is shrunk the same way prose-h2 is, and for the same reason --
+       Typography's own scale sizes h3 at 1.25em against h2's default 1.5em, so
+       shrinking only h2 to text-base (1rem) leaves h3 at 1.25rem, larger than
+       the heading above it. A handful of sections nest an h3 under an h2 (the
+       revenue tabs, Challenges), so the mismatch was there before anyone
+       noticed it. -->
   <article
-    class="budget-prose prose max-w-none break-words prose-slate prose-headings:font-semibold prose-h2:mt-6 prose-h2:mb-2 prose-h2:text-base"
+    class="budget-prose prose max-w-none break-words prose-slate prose-headings:font-semibold prose-h2:mt-6 prose-h2:mb-2 prose-h2:text-base prose-h3:mt-4 prose-h3:mb-2 prose-h3:text-sm"
   >
     {@render children()}
   </article>
