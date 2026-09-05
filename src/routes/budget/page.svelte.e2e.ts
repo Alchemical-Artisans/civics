@@ -605,8 +605,15 @@ test.describe("budget pages", () => {
     await expect(
       tables.getByRole("tab", { name: "Buildings & Building Improvements" }),
     ).toHaveAttribute("aria-selected", "true")
-    await expect(tables.getByRole("heading", { name: "Vehicles", exact: true })).toHaveCount(0)
     await expect(tables.getByRole("row", { name: /^Trash Truck - Highway/ })).toHaveCount(0)
+
+    // No panel heading either, not even the open one's own -- each repeats
+    // its tab's label exactly, redundant once the tab bar is there to say
+    // it, the same no-repeated-heading rule the route-level nav follows.
+    await expect(
+      tables.getByRole("heading", { name: "Buildings & Building Improvements" }),
+    ).toHaveCount(0)
+    await expect(tables.getByRole("heading", { name: "Vehicles", exact: true })).toHaveCount(0)
 
     // Left/Right move between tabs and select the one moved to, Home/End
     // jump to the ends -- the same keyboard pattern the five routes above
@@ -641,8 +648,8 @@ test.describe("budget pages", () => {
     await expect(
       tables.getByRole("tab", { name: "Buildings & Building Improvements" }),
     ).toHaveAttribute("aria-selected", "false")
-    await expect(tables.getByRole("heading", { name: "Vehicles", exact: true })).toBeVisible()
     await expect(tables.getByRole("row", { name: /^Trash Truck - Highway/ })).toBeVisible()
+    await expect(tables.getByRole("heading", { name: "Vehicles", exact: true })).toHaveCount(0)
     await expect(
       tables.getByRole("heading", { name: "Buildings & Building Improvements" }),
     ).toHaveCount(0)

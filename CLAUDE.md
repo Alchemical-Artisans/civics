@@ -418,7 +418,14 @@ Notable pieces:
   are tabbed in place below the prose -- the `live`/hidden-markup mechanism
   `spending`'s own topics used before they became routes, one level deeper:
   seven tables of one shape are facets of a single dataset rather than seven
-  topics worth a route and a bookmark each. Each keeps only its 2027 column
+  topics worth a route and a bookmark each. Each panel's own heading repeats
+  its tab's label exactly ("Vehicles" over a tab already reading
+  "Vehicles"), so it is hidden once `tablesLive`, the same no-repeated-
+  heading rule the route-level nav follows, reached a level deeper --
+  `display: none` rather than deleting the element, since the un-hydrated
+  view this same markup renders has no tab bar at all, and the heading is
+  what tells a reader stacked past six other tables which one they are on.
+  Each keeps only its 2027 column
   now, and only the rows with a figure in it -- the book's other four years
   and the rows that belong to them alone, dropped with the rest of the site's
   history. The book gives eight of these tables, not seven: "Planning &
@@ -495,10 +502,9 @@ Notable pieces:
   `display: none`, not deleted, so the un-hydrated view still has it and a
   reader stacked past six other categories can tell which one they are
   reading -- the same no-repeated-heading rule the route-level nav follows,
-  reached a level deeper. Capital Planning's own seven panels carry the
-  identical redundancy ("Vehicles" over "Vehicles") and are not hidden this
-  way yet -- not fixed here, since the request that prompted this was
-  `revenue`'s own tab, not `spending`'s. "Summary" is page 64 with
+  reached a level deeper, and the same fix Capital Planning's own seven
+  tables got on `spending` for the identical redundancy. "Summary" is page
+  64 with
   the 10-year forecast of page 67
   behind it; "Budget in Brief" is page 78's revenue table, page 79's tax bill,
   and order 13.3 ("What the Council Raised"), which sits here rather than

@@ -881,6 +881,18 @@ foot of the last table because that is where the book's own page run
 happens to end, not because it belongs to Vehicles specifically; it is left
 there rather than pulled into its own table.
 
+**Each panel's own heading -- "Vehicles" over a tab already reading
+"Vehicles" -- is hidden once the tab bar is there to say it,** the same
+no-repeated-heading rule the route-level nav follows, reached a level
+deeper: the tab is `aria-selected` and the panel is already
+`aria-labelledby` it, so the heading told a screen reader nothing the tab
+had not just said. `display: none` on the heading, scoped to `.tables.live`,
+rather than deleting it outright -- the un-hydrated view this same markup
+serves has no tab bar at all, so the heading is what tells a reader stacked
+past six other tables which one they are on. `revenue`'s own "Local
+Receipts" tab picked up the identical fix for its own seven category
+tables, which is what surfaced the redundancy here first.
+
 **Pages 36 to 45 -- the same requests again, but only the roughly forty the
 city actually asked for in 2027, each with the department's own case and the
 urgency it was given -- used to run as one long "2027 Capital Requests"
@@ -1185,9 +1197,9 @@ scoped under `.tables.live`, rather than deleting the element: the
 un-hydrated view this same markup serves has no tab bar at all, so the
 heading is what a reader stacked past six other categories reads to know
 which one they are on, and stays exactly where it always was there.
-Capital Planning's own seven panels carry the identical redundancy
-("Vehicles" over "Vehicles") and are not hidden this way -- out of scope
-for the request that prompted this fix, which was `revenue`'s own tab.
+Capital Planning's own seven panels on `spending` carried the identical
+redundancy ("Vehicles" over "Vehicles") and got the same fix, once this
+one made the pattern obvious there too.
 
 **References is last, and lists the other two buckets.** The same
 tab-of-its-own device `spending` uses, `heading={false}` for the same
