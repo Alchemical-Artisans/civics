@@ -14,6 +14,13 @@
   contents page follows: a section written up here opens on this site, and one
   that is not opens the city's own file at the page the book gives it, so the
   reader lands on the section either way.
+
+  `heading` defaults to shown, since on `debt`, `reserves` and `education` this
+  is a subsection of a page titled something else and needs its own name. The
+  spending page's own "References" tab is the exception: there the tab's name
+  in the nav above already says "References", so passing `heading={false}`
+  drops the one that would only repeat it -- the same rule that leaves
+  "Capital Planning" and "Departments" without a heading of their own.
 -->
 <script lang="ts">
   import { Router } from "$lib/router"
@@ -27,12 +34,18 @@
     href?: string
   }
 
-  let { items, book }: { items: Reference[]; book: { id: string } } = $props()
+  let {
+    items,
+    book,
+    heading = true,
+  }: { items: Reference[]; book: { id: string }; heading?: boolean } = $props()
 
   const away = (item: Reference) => !item.section
 </script>
 
-<h2>References</h2>
+{#if heading}
+  <h2>References</h2>
+{/if}
 
 <ul>
   {#each items as item (item.title)}

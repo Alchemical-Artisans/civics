@@ -610,12 +610,19 @@ tabs: **Goals & Recommendations**, **Capital Planning**, **Requests**,
 book's) kept apart on screen the way they are apart in the book, and now
 apart in the URL too -- `spending/goals-recommendations`,
 `spending/council-orders`, each linkable and bookmarkable on its own, which
-tabs a script switched never were -- plus **Departments** and
-**References**, neither of which is the book's. Every heading and table
-this page ever
+tabs a script switched never were -- plus **Departments**, second, right
+after the goals, and **References**, last, neither of which is the book's.
+Every heading and table this page ever
 carried is still exactly the prose and the tables it always was -- nothing
 here paraphrases or retypes a word of it -- just moved into its own route
 directory instead of sitting behind a panel a script showed and hid.
+
+**A tab carries no heading of its own where one would only repeat the tab's
+own name in the nav above it.** Requests was the first: nothing on the page
+is called "Requests" any more, checked by its own content in the e2e suite
+instead. Capital Planning, Departments and References all read the same
+way now -- see each of their own entries below for why each in turn lost
+its heading.
 
 **Two exceptions to grouping by page range, both on Goals & Recommendations
 rather than Requests or Challenges, even though both are page 73's own
@@ -690,7 +697,12 @@ figure the bar states. Not `BudgetTable`, since `SPENDING` is not a
 already merged into one array of `{label, amount}` pairs, built once in
 `tables.ts` for the bar to draw and read again here to list. One table
 where "Budget in Brief" had two charts, because there is only the one bar
-left needing a reader-legible twin.
+left needing a reader-legible twin. It sits second in the nav, right after
+the goals, rather than back in Budget in Brief's old slot next to
+Challenges: it is the same figure the bar draws on every one of the seven
+routes, not a topic with a page range of the book's own to be ordered by.
+It carries no heading either, the same rule that already left Capital
+Planning without one -- the nav link is already "Departments".
 
 **References is the seventh tab and the one topic that is not the book's own:
 what every other topic here was built out of, and the parts of the book they
@@ -704,6 +716,15 @@ content whether a reader had a question yet or not. Its own route now,
 `+layout.ts` load the same as any other route beneath it) -- exactly as
 reachable, one click from any of the other six, and present only when
 asked for.
+
+**`heading={false}` is the fourth prop, and only this tab passes it.**
+`BookReferences` prints its own "References" heading by default, which is
+right everywhere else it appears -- `debt`, `reserves` and `education` are
+each titled something other than "References", so the heading is the only
+thing on the page naming that section. Here the tab's own name in the nav
+above already says "References", so the default heading would only repeat
+it; the prop exists so this one call site can say so without every other
+one having to opt in.
 
 **The seven sit in a `(tabs)` route group,
 [`spending/(tabs)/+layout.ts`](<../src/routes/budget/fy2027/spending/(tabs)/+layout.ts>)
@@ -751,6 +772,11 @@ flag and no hidden-markup fallback for a reader who has not hydrated, the
 way the old script-switched tabs did, and Left/Right/Home/End is gone with
 them -- Tab and Enter are what a browser already gives a list of links, and
 a custom keydown handler would only be reimplementing that.
+
+**"Capital Planning" carries no heading of its own -- the nav link above it
+already says "Capital Planning", and a heading repeating that said nothing
+new, the same reasoning that has left Requests without one since before
+this page had routes at all.**
 
 **"Capital Planning" used to chart page 29, "5-Year Capital Requests by
 Category", as one stacked bar per year -- five columns, one per year, each

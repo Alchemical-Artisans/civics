@@ -39,7 +39,21 @@
    * plain table -- same rows, same order, largest first -- so every figure
    * the bar carries is also somewhere a reader can just read it, no hover
    * or focus required. One table rather than two charts, because there is
-   * only one bar to explain now.
+   * only one bar to explain now. It sits second, right after the goals,
+   * rather than back in Budget in Brief's old slot next to Challenges: it
+   * is a table of the same figure the bar draws for every route on this
+   * page, not a topic in the book's own order, so there is no page range
+   * to slot it into by.
+   *
+   * **A tab whose own heading would only repeat its label carries none.**
+   * "Capital Planning" and "Departments" print nothing that is not already
+   * this tab's name in the nav above them, the same reason "Requests" has
+   * carried no heading of its own since before either existed. `references`
+   * is the same rule reaching one component deeper: `BookReferences` prints
+   * its own "References" heading everywhere else it is used (`debt`,
+   * `reserves`, `education`, each titled something other than
+   * "References"), so its `heading` prop defaults to showing it and this
+   * tab alone passes `heading={false}`.
    *
    * "Goals & Recommendations" carries more than page 15-16's own goals now:
    * "Preliminary Budget Goals for Fiscal 2027" and "Final Recommendations"
@@ -68,10 +82,10 @@
    */
   const TABS = [
     { slug: "goals-recommendations", label: "Goals & Recommendations" },
+    { slug: "departments", label: "Departments" },
     { slug: "capital-planning", label: "Capital Planning" },
     { slug: "requests", label: "Requests" },
     { slug: "challenges", label: "Challenges" },
-    { slug: "departments", label: "Departments" },
     { slug: "council-orders", label: "Council Orders" },
     { slug: "references", label: "References" },
   ]

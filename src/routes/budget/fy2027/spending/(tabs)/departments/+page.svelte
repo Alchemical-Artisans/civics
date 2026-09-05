@@ -19,9 +19,10 @@ reader who wants the figure without hunting for the segment that carries it
 wants a table instead. Same forty-two rows as `SPENDING`, same order, no book
 page behind either -- the book gives departments and enterprise funds no
 table of their own together, only apart, on pages 76-77 and the Council's
-agenda. -->
-<h2>Departments</h2>
+agenda.
 
+No heading -- "Departments" is already this tab's own name in the nav
+above it, the same reason "Capital Planning" and "Requests" carry none. -->
 <table>
   <thead>
     <tr>

@@ -51,9 +51,11 @@
 book, but note that almost none of them are in this year's appropriation:
 the page-78 table's "Capital - Pay as you go" line is empty for 2027 and
 the funding decision was postponed. What capital costs this year is the
-debt service on what was borrowed for it in years past. -->
-<h2>Capital Planning</h2>
+debt service on what was borrowed for it in years past.
 
+No heading here -- "Capital Planning" is already this tab's own name in
+the nav above it, and a heading saying it again is redundant with the tab,
+the same reason "Requests" carries none. -->
 <p>
   The city's current five-year capital requests exceed $173 million, primarily focusing on building
   maintenance and construction projects, including JG Whittier Middle School and a new fire station.

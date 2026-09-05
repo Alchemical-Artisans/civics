@@ -253,7 +253,9 @@ Notable pieces:
   than filling its own column -- "Budget in Brief" was the one page that
   needed it, until its own two charts were cut once the spending bar itself
   started drawing the department table they read from. A category
-  page ends with **`src/lib/BookReferences.svelte`**, headed `References`: the
+  page ends with **`src/lib/BookReferences.svelte`**, headed `References`
+  (a `heading` prop turns that off, for the one page where the tab above it
+  already says so -- see `spending`'s own entry): the
   pages of the book it was built out of, and then the parts it belongs with and
   does not carry, each linking to our page where one exists and to the city's
   PDF where it does not. It was "Elsewhere in the book", which named only the
@@ -315,8 +317,8 @@ Notable pieces:
 - **`spending`** is `wide: true` too, for its left-column chart rather than a
   policy to keep or fail -- there is no accordion here the way `reserves` and
   `debt` each open with one. The reading itself is seven routes now, not
-  five tabs a script switched: Goals & Recommendations, Capital Planning,
-  Requests, Challenges, Departments, Council Orders, References, the
+  five tabs a script switched: Goals & Recommendations, Departments,
+  Capital Planning, Requests, Challenges, Council Orders, References, the
   book's own topics (Departments and References excepted -- both are ours)
   kept apart on
   screen, each its own directory under a `(tabs)` route group so a reader
@@ -347,15 +349,28 @@ Notable pieces:
   plain table rather than a chart -- one column of figures, largest first,
   same rows and same order as the bar -- so every department the bar
   carries is also somewhere a reader can just read it. One table now, not
-  two charts, since there is only the one bar left to explain. References was pulled out of the shared
+  two charts, since there is only the one bar left to explain, and it sits
+  second, right after the goals, rather than back in Budget in Brief's old
+  slot next to Challenges -- it is a figure the bar already draws on every
+  route, not a topic with a page range of its own to sit in order by.
+  Neither Capital Planning nor Departments carries a heading any more,
+  for the same reason Requests does not: each is already this tab's own
+  name in the nav above it, so a heading repeating it said nothing new.
+  References was pulled out of the shared
   layout into its own tab the same way: `BookReferences` used to render
   unconditionally after
   `{@render children()}`, under whichever of the (then five) topics was
   open, so six topics' worth of references arrived whether asked for or
   not; its own tab now answers only when opened, `spending/references`,
-  `<BookReferences items={data.references} book={data.book} />` and nothing
+  `<BookReferences items={data.references} book={data.book} heading={false} />`
+  and nothing
   else on the page, `data` read off `+layout.ts`'s load the same as any
-  other route beneath it. There is no bare `/spending` page any
+  other route beneath it. `heading` is new on `BookReferences` itself,
+  defaulting to shown -- `debt`, `reserves` and `education` each title the
+  whole page something other than "References", so the heading there is
+  not the redundant one -- and false only on this one tab, the same
+  no-repeated-heading rule reaching one component deeper. There is no bare
+  `/spending` page any
   more, not even a forward: the one link to it, the front page's own chart
   heading, now goes straight to `spending/goals-recommendations`,
   `Router.spendingTab(id, slug)`, and nothing else pointed at the old bare

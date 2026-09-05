@@ -280,7 +280,7 @@ test.describe("budget pages", () => {
     // this page is about 2027. Each topic is its own route now, so going to it
     // is what puts it on the page at all, rather than merely visible.
     await page.goto(spendingUrl("capital-planning"))
-    await expect(page.getByRole("heading", { name: "Capital Planning" })).toBeVisible()
+    await expect(page.getByRole("article")).toContainText("five-year capital requests exceed")
     await expect(
       page.getByRole("heading", { name: /^10-Year Appropriation Projection/ }),
     ).toHaveCount(0)
@@ -546,8 +546,10 @@ test.describe("budget pages", () => {
 
     // Seven links, in the book's own order, `aria-current` marking the one
     // the reader is on -- and only Goals & Recommendations is on the page at
-    // all: Capital Planning is not merely hidden, its heading is not in the
-    // DOM until its own route is.
+    // all: Capital Planning is not merely hidden, its content is not in the
+    // DOM until its own route is. It carries no heading of its own -- the
+    // nav link already says "Capital Planning" -- so its own prose is what
+    // stands in for one here.
     const nav = page.getByRole("navigation", { name: "Spending" })
     await expect(nav.getByRole("link")).toHaveCount(7)
     await expect(nav.getByRole("link", { name: "Goals & Recommendations" })).toHaveAttribute(
@@ -558,7 +560,7 @@ test.describe("budget pages", () => {
       "aria-current",
     )
     await expect(page.getByRole("heading", { name: "Mayor's 2027 Budgetary Goals" })).toBeVisible()
-    await expect(page.getByRole("heading", { name: "Capital Planning" })).toHaveCount(0)
+    await expect(page.getByRole("article")).not.toContainText("five-year capital requests exceed")
 
     // Following the link is what puts Capital Planning on the page, and
     // Goals & Recommendations off it -- an ordinary navigation, not a
@@ -572,15 +574,16 @@ test.describe("budget pages", () => {
     await expect(nav.getByRole("link", { name: "Goals & Recommendations" })).not.toHaveAttribute(
       "aria-current",
     )
-    await expect(page.getByRole("heading", { name: "Capital Planning" })).toBeVisible()
+    await expect(page.getByRole("article")).toContainText("five-year capital requests exceed")
     await expect(page.getByRole("heading", { name: "Mayor's 2027 Budgetary Goals" })).toHaveCount(0)
 
     // References is not on this page at all any more -- it is its own
-    // topic now, last in the nav, not a fixture under every other one.
-    await expect(page.getByRole("heading", { name: "References" })).toHaveCount(0)
+    // topic now, last in the nav, not a fixture under every other one. It
+    // carries no heading either, for the same reason Capital Planning does
+    // not: the nav link already says "References".
+    await expect(page.getByRole("link", { name: "Fiscal Reserves" })).toHaveCount(0)
     await nav.getByRole("link", { name: "References" }).click()
     await expect(page).toHaveURL(new RegExp(`${spendingUrl("references")}$`))
-    await expect(page.getByRole("heading", { name: "References" })).toBeVisible()
     await expect(page.getByRole("link", { name: "Fiscal Reserves" })).toBeVisible()
 
     // The spending bar in the left column answers to none of this: it is
@@ -601,23 +604,27 @@ test.describe("budget pages", () => {
     // do anything.
     for (const [slug, heading] of [
       ["goals-recommendations", "Mayor's 2027 Budgetary Goals"],
-      ["capital-planning", "Capital Planning"],
       ["challenges", "Major Budget Driver - Group Health Insurance"],
-      ["departments", "Departments"],
       ["council-orders", "What the Council appropriated"],
-      ["references", "References"],
     ] as const) {
       await noscript.goto(spendingUrl(slug))
       await expect(noscript.getByRole("heading", { name: heading })).toBeVisible()
       await expect(noscript.getByRole("tab")).toHaveCount(0)
     }
 
-    // Requests carries no heading of its own at all now -- redundant with
-    // the tab it is already on -- so it is checked by its own content
-    // instead.
-    await noscript.goto(spendingUrl("requests"))
-    await expect(noscript.getByRole("article")).toContainText("Non-Union Step Increase")
-    await expect(noscript.getByRole("tab")).toHaveCount(0)
+    // Requests, Capital Planning, Departments and References carry no
+    // heading of their own at all -- redundant with the tab each is already
+    // on -- so each is checked by its own content instead.
+    for (const [slug, text] of [
+      ["requests", "Non-Union Step Increase"],
+      ["capital-planning", "five-year capital requests exceed"],
+      ["departments", "School Department"],
+      ["references", "Fiscal Reserves"],
+    ] as const) {
+      await noscript.goto(spendingUrl(slug))
+      await expect(noscript.getByRole("article")).toContainText(text)
+      await expect(noscript.getByRole("tab")).toHaveCount(0)
+    }
 
     await context.close()
   })
