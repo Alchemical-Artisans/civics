@@ -388,17 +388,17 @@ Each order also appropriates an amount _inside_ the general fund funded from
 that department's receipts — $234,784 and $698,981 — and those are rows of order
 13.3, so the two bars count them once.
 
-**13.1 and 13.2 are transcribed in `council-orders.ts` but not quoted on
-`council-orders` any more.** Both totals -- $14,805,633 and $15,967,043 --
-are already segments of the spending bar and rows on the Departments tab,
-once the bar itself moved to department granularity; quoting either
-order's own text on this page too would be the same fact stated twice.
-13.1 went first, briefly relocated to "Budget in Brief" as a trial before
-that page was cut for the same reason; 13.2 followed it off the page
-rather than staying, once the same reasoning plainly applied to it too.
-The `ENTERPRISE` table that used to sit beside 13.2 -- both departments'
-totals, side by side, in one small table -- went with it: it duplicated
-the exact two rows the Departments tab already lists.
+**13.1 and 13.2 are transcribed in `council-orders.ts` but quoted nowhere
+now.** Both totals -- $14,805,633 and $15,967,043 -- are already segments
+of the spending bar and rows on the Departments tab, once the bar itself
+moved to department granularity; quoting either order's own text as well
+would be the same fact stated twice. 13.1 went first, briefly relocated to
+"Budget in Brief" as a trial before that page was cut for the same reason;
+13.2 followed it off "Council Orders" rather than staying, once the same
+reasoning plainly applied to it too. The `ENTERPRISE` table that used to
+sit beside 13.2 -- both departments' totals, side by side, in one small
+table -- went with it: it duplicated the exact two rows the Departments
+tab already lists.
 
 **13.3 left too, but for `revenue` rather than nowhere.** It raises and
 appropriates the general fund, which most of its own five funding sources
@@ -417,22 +417,28 @@ $10,521,435 gap against the book's $285,272,159, all appended at the foot
 of that page rather than folded into one of the book's own sections above
 it. Where it belongs among those is a question for `revenue`'s own
 eventual revamp; for now it stands on its own, the same way it stood alone
-as the last order quoted on `council-orders`.
+as the last order quoted on the "Council Orders" tab before that tab was
+retired too (see below).
 
 **13.4 left for `reserves`, the last of the four.** It transfers $2,770,000
 out of fiscal 2025's certified free cash to cover the same snow-and-ice
 deficit Policy #3's own "Results" paragraph already describes in the
 book's words -- moved onto that policy's own collapsed section, right
 after the "Results" paragraph it confirms, since it is what the Council
-did about free cash rather than an appropriation. `council-orders` no
-longer quotes any order at all: what remains is two paragraphs of
-explanation, naming where each of the four actually is.
+did about free cash rather than an appropriation.
+
+**"Council Orders" is retired.** Once none of the four orders had anything
+left to quote -- each moved to the figure it belongs beside -- the tab
+that once quoted all four in the agenda's own words was down to two
+paragraphs explaining where they went and none of the Council's own
+words. That was worth a page while it stood between a reader and content
+they could not otherwise find; once every order's content had a better
+home, it was not.
 
 All four retired orders stay in `ORDERS` -- the agenda's own transcription
-is untouched -- filtered out (or, for 13.4, simply not read) in each
-page's own script rather than in `council-orders.ts` itself, since the
-data is still every order the agenda carries and only which page renders
-which order changed.
+is untouched -- read directly by each of the three pages that now quotes
+one, since the data is still every order the agenda carries and only which
+page renders which order changed.
 
 **The agenda is on the budget calendar in the footer**, on the run of public
 hearings its meeting of 2 June falls inside, the same way the book hangs off the
@@ -653,24 +659,27 @@ serviced out of what households are billed rather than by the general fund,
 whose own debt service for 2027 is $8,834,819. A see-also may appear on more than
 one page where more than one page depends on it.
 
-### Seven routes on `spending`
+### Six routes on `spending`
 
 `spending` has no policy to keep or fail, so it has no accordion the way
 `reserves` and `debt` each open with one -- it is `wide: true` for the same
 reason theirs are, a chart fixed in the left column, but the reading beside
-it is seven routes now rather than one long scroll or a script-driven set of
-tabs: **Goals & Recommendations**, **Capital Planning**, **Requests**,
-**Challenges** and **Council Orders**, the book's own topics (pages 15-16,
-28-45, 72, 73, and the Council's agenda, which is ours rather than the
-book's) kept apart on screen the way they are apart in the book, and now
+it is six routes now rather than one long scroll or a script-driven set of
+tabs: **Goals & Recommendations**, **Capital Planning**, **Requests** and
+**Challenges**, the book's own topics (pages 15-16,
+28-45, 72, 73) kept apart on screen the way they are apart in the book, and
 apart in the URL too -- `spending/goals-recommendations`,
-`spending/council-orders`, each linkable and bookmarkable on its own, which
+`spending/challenges`, each linkable and bookmarkable on its own, which
 tabs a script switched never were -- plus **Departments**, second, right
 after the goals, and **References**, last, neither of which is the book's.
 Every heading and table this page ever
 carried is still exactly the prose and the tables it always was -- nothing
 here paraphrases or retypes a word of it -- just moved into its own route
 directory instead of sitting behind a panel a script showed and hid.
+
+**"Council Orders" was a seventh route, ours rather than the book's, quoting
+the four orders of the Council's agenda of 2 June 2026 in the agenda's own
+words -- it is retired now; see "Council Orders is retired" below.**
 
 **A tab carries no heading of its own where one would only repeat the tab's
 own name in the nav above it.** Requests was the first: nothing on the page
@@ -1073,7 +1082,8 @@ the file from the book page — which is the deep link the bar carried as
 "Original Source" until this took it over. A step's `document` key is
 ours; everything else in `budget-calendar.ts` is the book's, and the files
 themselves come from the page's `+page.ts` — the book from `budget.json`, the
-agenda from the same `council-orders.ts` the spending page quotes.
+agenda from the same `council-orders.ts` that supplies the orders quoted on
+`revenue` and `reserves`.
 
 **One box is highlighted: the stage the process has reached.** That is the last
 entry that has begun — the entry itself while it is happening, and the one

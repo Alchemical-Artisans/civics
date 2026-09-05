@@ -12,7 +12,7 @@
    * nothing on it but one table. Tabbed in place instead, the same
    * `live`/hidden-markup mechanism `spending`'s own topics used before they
    * became routes -- right again here, since nothing here needs linking to
-   * on its own the way "Council Orders" did.
+   * on its own the way "Requests" or "Challenges" does.
    *
    * The book gives eight of these, but "Planning & Design" carries only two
    * line items and both are 2029 requests -- nothing for 2027, not even a

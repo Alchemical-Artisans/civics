@@ -1353,12 +1353,12 @@
 
 <!-- Ours, not the book's, and appended rather than folded into a section
 above: order 13.3 of the Council's agenda of 2 June 2026, raising and
-appropriating the general fund on the revenue side the way the two
-enterprise orders do on the spending side (see Council Orders, which is
-where this used to sit). Where it belongs among the book's own sections
-above is a question for this page's own revamp -- for now it stands on its
-own at the foot, the same way it stood alone as the last of the orders
-quoted on Council Orders. -->
+appropriating the general fund on the revenue side the way the enterprise
+orders do on the spending side (the spending bar and the Departments tab).
+This used to be one of four orders quoted on a "Council Orders" tab, since
+retired once all four had moved to the figure each belongs beside. Where
+13.3 belongs among the book's own sections above is a question for this
+page's own revamp -- for now it stands on its own at the foot. -->
 <h2>What the Council Raised</h2>
 
 <p><strong>{order.item}</strong> {order.text}</p>

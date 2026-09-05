@@ -321,18 +321,24 @@ Notable pieces:
   depends on, the way `reserves.spec.ts` does for the dials.
 - **`spending`** is `wide: true` too, for its left-column chart rather than a
   policy to keep or fail -- there is no accordion here the way `reserves` and
-  `debt` each open with one. The reading itself is seven routes now, not
+  `debt` each open with one. The reading itself is six routes now, not
   five tabs a script switched: Goals & Recommendations, Departments,
-  Capital Planning, Requests, Challenges, Council Orders, References, the
+  Capital Planning, Requests, Challenges, References, the
   book's own topics (Departments and References excepted -- both are ours)
   kept apart on
   screen, each its own directory under a `(tabs)` route group so a reader
-  can link or bookmark straight into "Council Orders" the way every other
+  can link or bookmark straight into "Challenges" the way every other
   write-up on the site is linked -- the reason for the change, and the reason
   it is a group rather than plain directories: `spending/(tabs)/+layout.ts`
   and `+layout.svelte` carry the title, width and the chart and nav that are
-  common to all seven, and a route group is what lets `spending` itself sit
-  outside that layout, since a bare visit there is not an eighth topic.
+  common to all six, and a route group is what lets `spending` itself sit
+  outside that layout, since a bare visit there is not a seventh topic.
+  "Council Orders" was a seventh topic too, ours, quoting the four orders
+  of the Council's agenda of 2 June 2026 -- retired once all four had moved
+  to the figure each belongs beside: the enterprise pair to the spending
+  bar and Departments tab, the general fund's own order to `revenue`, and
+  the free-cash transfer to `reserves`. `council-orders.ts` itself is
+  untouched; only the tab that once quoted all four directly is gone.
   Requests and Challenges were one tab, "Requests & Challenges", until pages
   72 and 73 -- two different accounts, not two halves of one -- were split.
   Neither keeps the book's own top heading now, or Challenges' "Budgetary
@@ -379,7 +385,7 @@ Notable pieces:
   more, not even a forward: the one link to it, the front page's own chart
   heading, now goes straight to `spending/goals-recommendations`,
   `Router.spendingTab(id, slug)`, and nothing else pointed at the old bare
-  URL. The nav between the seven is a plain `<nav>` of links,
+  URL. The nav between the six is a plain `<nav>` of links,
   `aria-current="page"` marking the open one -- matched on whether
   `page.route.id` carries the slug as one of its own segments, never on the
   URL against a `Router`-built href, and never a plain substring either,
@@ -399,7 +405,7 @@ Notable pieces:
   one copy, so the front page's column and this page's bar cannot disagree --
   and carrying no `href`, since a bar linking to the page it is already on is
   that page offered twice; it sits in the shared layout, the same on every
-  one of the seven routes, and answers to none of them. "Capital Planning"
+  one of the six routes, and answers to none of them. "Capital Planning"
   used to open with a second `BudgetColumns` in place of page 29's own table,
   "5-Year Capital Requests by Category" -- five columns, one per year, plus a
   second bar for two 2028 projects ($90,000,000 for JGW/Tilton and

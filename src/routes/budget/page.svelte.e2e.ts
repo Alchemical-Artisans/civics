@@ -544,14 +544,14 @@ test.describe("budget pages", () => {
   test("splits spending into one route per topic, linked by a plain nav", async ({ page }) => {
     await page.goto(spendingUrl("goals-recommendations"))
 
-    // Seven links, in the book's own order, `aria-current` marking the one
+    // Six links, in the book's own order, `aria-current` marking the one
     // the reader is on -- and only Goals & Recommendations is on the page at
     // all: Capital Planning is not merely hidden, its content is not in the
     // DOM until its own route is. It carries no heading of its own -- the
     // nav link already says "Capital Planning" -- so its own prose is what
     // stands in for one here.
     const nav = page.getByRole("navigation", { name: "Spending" })
-    await expect(nav.getByRole("link")).toHaveCount(7)
+    await expect(nav.getByRole("link")).toHaveCount(6)
     await expect(nav.getByRole("link", { name: "Goals & Recommendations" })).toHaveAttribute(
       "aria-current",
       "page",
@@ -587,7 +587,7 @@ test.describe("budget pages", () => {
     await expect(page.getByRole("link", { name: "Fiscal Reserves" })).toBeVisible()
 
     // The spending bar in the left column answers to none of this: it is
-    // outside the nav entirely, the same on every one of the seven routes.
+    // outside the nav entirely, the same on every one of the six routes.
     await expect(page.locator(".budget-columns").first()).toContainText("$316,044,835")
   })
 
@@ -605,7 +605,6 @@ test.describe("budget pages", () => {
     for (const [slug, heading] of [
       ["goals-recommendations", "Mayor's 2027 Budgetary Goals"],
       ["challenges", "Major Budget Driver - Group Health Insurance"],
-      ["council-orders", "What the Council appropriated"],
     ] as const) {
       await noscript.goto(spendingUrl(slug))
       await expect(noscript.getByRole("heading", { name: heading })).toBeVisible()
@@ -1090,39 +1089,6 @@ test.describe("budget pages", () => {
     // And the high-level view says none of that: the spending page does, in
     // the city's own words.
     await expect(page.getByRole("heading", { name: /^Appropriated by the Council/ })).toHaveCount(0)
-  })
-
-  test("says on the spending page what the chart leaves out", async ({ page }) => {
-    await page.goto(spendingUrl("council-orders"))
-
-    // None of the four orders are quoted here any more -- each reads better
-    // beside the figure it already belongs to. 13.1 and 13.2's totals
-    // ($14,805,633 and $15,967,043) are segments of the spending bar; 13.3
-    // is on Revenue, since it is that figure's revenue side; 13.4 is on
-    // Reserves, beside the free cash policy it answers to.
-    await expect(page.getByRole("heading", { name: "What the Council appropriated" })).toBeVisible()
-    const article = page.getByRole("article")
-    await expect(article).not.toContainText("be appropriated to operate the Water Department")
-    await expect(article).not.toContainText("be appropriated to operate the Wastewater Department")
-    await expect(article).not.toContainText("$15, 967,043")
-    await expect(article).not.toContainText("$ 274,750,725")
-    await expect(article).not.toContainText("Taxation and Other Receipts")
-    await expect(article).not.toContainText("$2,770,000")
-
-    // Why the two enterprise totals are missing.
-    await expect(article).toContainText("enterprise funds")
-
-    // The agenda those orders are on is on the calendar under this page, on the
-    // hearings it falls inside -- not in the bar, which carries no document
-    // link on any page now.
-    const agenda = page
-      .locator(".budget-timeline li")
-      .filter({ hasText: "Public hearings" })
-      .getByRole("link")
-    expect(await agenda.getAttribute("href")).toMatch(/full-agenda-6226\.pdf$/)
-    await expect(
-      page.getByRole("banner").getByRole("link", { name: /^City Council Order/ }),
-    ).toHaveCount(0)
   })
 
   test("transfers free cash against the snow and ice deficit, moved onto Reserves", async ({
