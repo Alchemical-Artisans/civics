@@ -342,7 +342,10 @@ Notable pieces:
   its 2027 dollars remain, on the chart's one segment for it. Forty-four
   departments cycle the
   fourteen-colour palette more than three times over, accepted the way the
-  front page's own fifteen-category Spending column already is, on the same
+  front page's own Spending column already is -- forty-two segments now
+  that it reads the same department table rather than page 78's fourteen
+  categories, for the granularity a reader comparing two departments wants
+  rather than the two folded into one category band -- on the same
   reasoning: a segment's name is never colour alone, it is on every one as
   its own accessible name on hover or focus. References was pulled out of the shared
   layout into its own tab the same way: `BookReferences` used to render

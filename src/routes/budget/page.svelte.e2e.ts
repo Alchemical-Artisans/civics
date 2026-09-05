@@ -87,7 +87,7 @@ test.describe("budget pages", () => {
     expect(await spending.count()).toBeGreaterThan(5)
     await expect(spending.first()).toHaveAttribute(
       "aria-label",
-      "Spending, Education, $147,158,454, 46.6%",
+      "Spending, School Department, $136,998,618, 43.3%",
     )
     for (const segment of await spending.all()) {
       expect(await segment.getAttribute("aria-label")).toMatch(/\$[\d,]+/)
@@ -367,7 +367,7 @@ test.describe("budget pages", () => {
 
     const segment = bar.getByRole("img").first()
     await segment.focus()
-    await expect(bar).toContainText("Education")
+    await expect(bar).toContainText("School Department")
 
     // Page 29's own 5-year chart is gone with the rest of the site's
     // forecasts, along with the two projects it left out of 2028 -- only the
@@ -1055,8 +1055,9 @@ test.describe("budget pages", () => {
     await page.goto(`/budget/${books[0]}`)
 
     // The book's $285,272,159 is the Mayor's proposal for the general fund.
-    // What the city spends is the eleven functions the Council voted, plus the
-    // two enterprise departments the book does not carry at all.
+    // What the city spends is the forty-two departments with a 2027 figure
+    // the Council voted, plus the two enterprise departments the book does
+    // not carry at all.
     await expect(page.locator(".budget-columns")).toContainText("$316,044,835")
 
     const wedges = page.locator(".budget-column").first().getByRole("img")
@@ -1067,9 +1068,11 @@ test.describe("budget pages", () => {
     // Charged to the city rather than chosen by it -- the Commonwealth's bill
     // for charter school tuition, the MBTA and the rest, and the assessors'
     // overlay for the abatements the year will grant -- but spent either way,
-    // so the chart carries them.
+    // so the chart carries them. The department table has no row called
+    // "Overlay": it is "Other" there, the book's own name for the same
+    // $250,000 on pages 76-77.
     expect(labels.some((l) => l?.includes("State Assessments, $10,271,435"))).toBe(true)
-    expect(labels.some((l) => l?.includes("Overlay, $250,000"))).toBe(true)
+    expect(labels.some((l) => l?.includes("Other, $250,000"))).toBe(true)
 
     // The other side of the same budget: the book's sources, with what the two
     // departments are billed beside them -- whole, because the reimbursement
@@ -1185,18 +1188,18 @@ test.describe("budget pages", () => {
     await chart.locator(".budget-column").first().getByRole("img").first().hover()
 
     const tooltip = chart.locator(".budget-tooltip")
-    await expect(tooltip).toContainText("Education")
-    await expect(tooltip).toContainText("$147,158,454")
-    await expect(tooltip).toContainText("46.6%")
+    await expect(tooltip).toContainText("School Department")
+    await expect(tooltip).toContainText("$136,998,618")
+    await expect(tooltip).toContainText("43.3%")
   })
   test("reaches the segment no mouse can hit with the keyboard", async ({ page }) => {
-    // The overlay is $250,000 of $316 million, a couple of pixels tall. Focus
-    // is the only way to it, which is why every segment takes focus.
+    // Senior Center is $14,500 of $316 million, a fraction of a pixel tall.
+    // Focus is the only way to it, which is why every segment takes focus.
     await page.goto(`/budget/${books[0]}`)
     const chart = page.locator(".budget-columns")
     await chart.locator(".budget-column").first().getByRole("img").last().focus()
-    await expect(chart.locator(".budget-tooltip")).toContainText("Overlay")
-    await expect(chart.locator(".budget-tooltip")).toContainText("$250,000")
+    await expect(chart.locator(".budget-tooltip")).toContainText("Senior Center")
+    await expect(chart.locator(".budget-tooltip")).toContainText("$14,500")
   })
   test("draws the budget calendar as the page's footer", async ({ page }) => {
     await page.goto(`/budget/${books[0]}`)

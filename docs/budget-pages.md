@@ -157,8 +157,9 @@ the whole feature. Nothing is lost without it: every wedge carries its label,
 its dollars and its share as its accessible name, so a screen reader gets all
 fourteen by walking them, and the transcription the contents links has every
 figure as text. Every wedge is focusable, which is also the only way to reach the ones
-drawn as a hairline — Overlay is 1/589th of Education, about a third of a
-degree, and no mouse will land on it.
+drawn as a hairline — Senior Center's $14,500 is a fraction of a percent of
+School Department's $136,998,618, too short a segment for a mouse to land
+on.
 
 **Colour is the category**, from a fixed order in the component, assigned
 largest first. The order was checked with a palette validator rather than by
@@ -293,13 +294,16 @@ other to show that they balance; the front page makes that point instead,
 with two pies carrying the same total.
 
 **The pies are the whole city's budget, not the book's.** The book's page-78
-tables are the general fund, and the front page draws both of them entire —
-including the state assessments ($10,271,435) and the overlay ($250,000), which
+tables are the general fund, and the front page draws all of it — including
+the state assessments ($10,271,435) and the overlay ($250,000), which
 the Council never votes because nobody gets a choice about them: the
 Commonwealth bills the city for charter school tuition, school choice, the MBTA
 and the rest, and the assessors raise the overlay to cover the property tax
 abatements the year will grant. Charged rather than chosen, but spent, which is
-what a chart headed "Spending" is about.
+what a chart headed "Spending" is about. The spending pie draws it at
+department granularity now, off pages 76-77 rather than page 78's own
+category rollup, so the overlay is not a segment called "Overlay" at all —
+it is "Other", the department table's own name for the same $250,000.
 
 What the book leaves out is water and wastewater, and those come from the
 Council's orders: **$14,805,633** and **$15,967,043** on the spending side,
@@ -339,10 +343,15 @@ the book's "OTHER AVAILABLE REVENUE SOURCES", the line the Council's own four
 small sources add up to. Counting them twice is the one way these two circles
 stop balancing.
 
-The spending total is **stated rather than summed**: the book's appropriations
-column adds to $285,272,160, a dollar over the total printed under it, so the
-pie's slices come to a dollar more than its heading. The book prints both and
-the site shows the one it states. `overview.spec.ts` holds all of this down.
+The spending total is **stated rather than summed, and not read off the same
+table the segments are**. `APPROPRIATIONS` and the revenue table both state
+$285,272,159 for the general fund; the department table states $285,272,160
+for the same money, a dollar over the figure the other two agree on. The
+site takes the segments from the department table, for the granularity, and
+the total from `APPROPRIATIONS`, for the agreement, so the pie's slices come
+to a dollar more than its own heading — the same dollar the book's own
+department table is over the rest of it. `overview.spec.ts` holds all of
+this down.
 
 None of that is on the front page. A pie is a shape for one question, and the
 explanation belongs where a reader who wants it goes: the orders are quoted on
@@ -653,14 +662,15 @@ five columns beyond 2027 -- five other years, two average/annual percent
 changes, the 2027 department request kept apart from what was actually
 recommended, and that request's and the recommendation's own percent and
 dollar change -- all dropped, since only the department's name and its 2027
-dollars remain on the chart's one segment for it. Forty-four departments is
-three times the categories any other chart on the site stacks in one bar,
-cycling through the fourteen-colour palette more than three times over --
+dollars remain on the chart's one segment for it. Forty-four departments
+cycles through the fourteen-colour palette more than three times over --
 accepted rather than folded into an invented "Other" bucket the book never
-states, on the same reasoning the front page's own fifteen-category Spending
-column already rests on: a segment's name is never colour alone, since every
-one carries it as its own accessible name on hover or focus, focusable
-whatever its width.
+states, on the same reasoning the front page's own Spending column now
+rests on too: a segment's name is never colour alone, since every one
+carries it as its own accessible name on hover or focus, focusable whatever
+its width. The two charts stack nearly the same number of departments now
+-- forty-four here against forty-two there, the front page's own two
+missing only the four with no 2027 figure at all.
 
 **References is the seventh tab and the one topic that is not the book's own:
 what every other topic here was built out of, and the parts of the book they

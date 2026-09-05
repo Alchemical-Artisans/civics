@@ -853,28 +853,42 @@ export const APPROPRIATIONS: BudgetTableData = {
 }
 
 const CHARTED = "2027 Proposed"
+const RECOMMENDED = "2027 Recommended"
 
-/** The only row of `APPROPRIATIONS` that is not a category. */
+/** The only row of either table that is not a department or a category. */
 const NOT_A_CATEGORY = ["Grand Total"]
 
 /**
  * What the city spends, as parts for this page's own bar and the front
- * page's column: the general fund's page-78 categories -- state assessments
- * and the overlay included, since nobody gets a choice about either but both
- * are spent -- plus the two enterprise funds, appropriated in orders of
- * their own and printed nowhere in the book. See `fy2027/+page.ts` and
- * `council-orders.ts`. One copy, read by both charts, so neither can print a
- * total the other disagrees with.
+ * page's column: forty-four departments off pages 76-77, not page 78's
+ * fourteen categories -- a reader comparing the fire department against the
+ * police wants that on the chart the two already share, rather than folded
+ * into one "Public Safety" band they have to open Budget in Brief to take
+ * apart -- plus the two enterprise funds, appropriated in orders of their
+ * own and printed nowhere in the book. State assessments and the overlay
+ * are in the department table too (the latter under "Other", the book's own
+ * name for it there), included for the same reason as always: nobody gets a
+ * choice about either but both are spent. See `fy2027/+page.ts` and
+ * `council-orders.ts`.
+ *
+ * The total below is still read off `APPROPRIATIONS`, not off this table --
+ * see `SPENDING_TOTAL`'s own note for why -- so `spending.spec.ts` finds
+ * these parts summing to a dollar more than it, the same dollar
+ * `overview.spec.ts`'s "the department table" test pins.
  */
 export const SPENDING = [
-  ...column(APPROPRIATIONS, CHARTED, { exclude: NOT_A_CATEGORY }),
+  ...column(DEPARTMENTS, RECOMMENDED, { exclude: NOT_A_CATEGORY }),
   ...column(ENTERPRISE, "Amount"),
 ]
 
 /**
- * The book's own stated total, not summed: the appropriations column adds to
- * a dollar over the total it prints, and the site shows the one the book
- * states.
+ * The book's own stated total, not summed, and not read off the table
+ * `SPENDING`'s own parts come from. Both `APPROPRIATIONS` and the revenue
+ * table state $285,272,159 for the same general fund; the department
+ * table's own Grand Total does not, printing a dollar over it instead.
+ * Two tables agreeing is what makes $285,272,159 the figure to show, so the
+ * total here still comes from `APPROPRIATIONS` even though the segments
+ * above no longer do.
  */
 export const SPENDING_TOTAL =
   amount(cell(APPROPRIATIONS, "Grand Total", CHARTED))! + sum(column(ENTERPRISE, "Amount"))

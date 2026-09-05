@@ -13,15 +13,21 @@ describe("the spending bar", () => {
     expect(SPENDING_TOTAL).toBe(316044835)
   })
 
-  it("draws one segment per category, general fund and enterprise both", () => {
-    // The page-78 categories less "Grand Total", plus Water and Wastewater.
-    expect(SPENDING).toHaveLength(15)
+  it("draws one segment per department with a 2027 figure, plus the two enterprise funds", () => {
+    // Forty-four departments less the four with nothing recommended for
+    // 2027 (Building Inspections, Crossing Guards, Other Education Funding,
+    // Pay As You Go Capital -- all already accounted for elsewhere, per
+    // `overview.spec.ts`'s "the department table"), plus Water and
+    // Wastewater.
+    expect(SPENDING).toHaveLength(42)
   })
 
-  // The book's appropriations column adds to a dollar over the total it
-  // prints -- see `fy2027/+page.ts` -- so the bar states the book's own
-  // figure rather than the sum of its parts, and this is the dollar between
-  // them rather than a mistake in either.
+  // The department table's own Grand Total is a dollar over the total
+  // `APPROPRIATIONS` and the revenue table both state -- see `tables.ts`'s
+  // own note on `SPENDING_TOTAL` -- so building the bar's segments from the
+  // department table draws a dollar more than the total it is shown beside,
+  // the same dollar as before the segments moved from categories to
+  // departments, for a different reason.
   it("comes within a dollar of what the book states, and no more", () => {
     expect(sum(SPENDING) - SPENDING_TOTAL).toBe(1)
   })

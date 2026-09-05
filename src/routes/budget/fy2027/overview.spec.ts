@@ -157,7 +157,7 @@ describe("the two columns", () => {
   const NOT_A_CATEGORY = ["Grand Total", "Budget Surplus (Deficit)"]
 
   const spending = [
-    ...column(APPROPRIATIONS, CHARTED, { exclude: NOT_A_CATEGORY }),
+    ...column(DEPARTMENTS, RECOMMENDED, { exclude: ["Grand Total"] }),
     ...column(ENTERPRISE, "Amount"),
   ]
 
@@ -219,8 +219,10 @@ describe("the two columns", () => {
     expect(revenue.map((r) => r.label)).not.toContain("Free Cash (Budget Only)")
   })
 
-  // The book's appropriations column is a dollar over the total printed under
-  // it. The site shows the stated total, so the slices come to a dollar more.
+  // The department table's own Grand Total is a dollar over the total
+  // `APPROPRIATIONS` and the revenue table both state (see "the department
+  // table" above), so building the bar from its rows draws a dollar over the
+  // stated total the bar is shown beside.
   it("draws a dollar more than the book states", () => {
     expect(sum(spending)).toBe(316044836)
   })
@@ -234,10 +236,12 @@ describe("the two columns", () => {
 
   // Charged rather than chosen, but spent: the Commonwealth bills the city and
   // the assessors raise the overlay, and both are in what the city spends.
+  // The department table has no row called "Overlay" -- it is "Other" there,
+  // the book's own name for the same $250,000 on pages 76-77.
   it("keeps the assessments and the overlay in what the city spends", () => {
     const labels = spending.map((r) => r.label)
     expect(labels).toContain("State Assessments")
-    expect(labels).toContain("Overlay")
+    expect(labels).toContain("Other")
     expect(labels).toContain("Water Department")
     expect(labels).toContain("Wastewater Department")
   })
