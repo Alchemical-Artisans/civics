@@ -1,18 +1,23 @@
 <script lang="ts">
   import BudgetTable from "$lib/BudgetTable.svelte"
   import GlossaryTerm from "$lib/GlossaryTerm.svelte"
-  import { APPROPRIATED, ENTERPRISE, GENERAL_FUND, ORDERS } from "../../../council-orders"
+  import { APPROPRIATED, GENERAL_FUND, ORDERS } from "../../../council-orders"
 
-  // 13.1, the Water Department order, was a trial move onto "Budget in
-  // Brief" -- since dropped along with that page, once the spending bar's
-  // own switch to department granularity meant the chart already carried
-  // the same $14,805,633 as one of its own segments. Left off this page
-  // rather than restored to it: the figure is on the chart, and quoting the
-  // order's own text again here would be the same fact twice. Filtered out
-  // here rather than in `council-orders.ts` itself, since the data is still
+  // 13.1 and 13.2, the Water and Wastewater Department orders, are not
+  // quoted here: both totals ($14,805,633 and $15,967,043) are already
+  // segments of the spending bar and rows on the Departments tab, once the
+  // bar's own switch to department granularity put them there. 13.1 went
+  // first, as a trial, when "Budget in Brief" (since cut) still needed
+  // somewhere to hold it; 13.2 follows it off this page for the same
+  // reason rather than a different one -- quoting either order's own text
+  // here would be a fact this page already states once, stated again.
+  // The `ENTERPRISE` table that used to sit beside 13.2, naming both
+  // departments in one place, went for the same reason: it duplicated the
+  // same two rows the Departments tab already lists. Filtered out here
+  // rather than in `council-orders.ts` itself, since the data is still
   // every order the agenda carries; only this page's own selection of it
   // changed.
-  const remaining = ORDERS.filter((order) => order.item !== "13.1")
+  const remaining = ORDERS.filter((order) => order.item !== "13.1" && order.item !== "13.2")
 </script>
 
 <!-- Ours, not the book's: the book is the Mayor's proposal, and what follows is
@@ -23,8 +28,9 @@ orders are quoted as the agenda words them, spacing and all. -->
 <p>
   The book is the Mayor's proposal for the <GlossaryTerm term="General Fund"
     >general fund</GlossaryTerm
-  >. These are the orders the City Council voted on it, and the two departments the book does not
-  carry.
+  >. These are the orders the City Council voted on it. Two of the four -- the Water and Wastewater
+  Department orders -- are not quoted here: their totals are already on the spending bar and the
+  Departments tab.
 </p>
 
 {#each remaining as order (order.item)}
@@ -36,10 +42,6 @@ orders are quoted as the agenda words them, spacing and all. -->
         <li>{part}</li>
       {/each}
     </ul>
-  {/if}
-
-  {#if order.item === "13.2"}
-    <BudgetTable table={ENTERPRISE} />
   {/if}
 
   {#if order.item === "13.3"}

@@ -1095,15 +1095,16 @@ test.describe("budget pages", () => {
   test("says on the spending page what the chart leaves out", async ({ page }) => {
     await page.goto(spendingUrl("council-orders"))
 
-    // The orders themselves, quoted as the agenda words them -- 13.1, the
-    // Water Department order, is not among them any more: its $14,805,633
-    // is already a segment of the spending bar, so its own text is not
-    // quoted a second time here.
+    // The orders themselves, quoted as the agenda words them -- 13.1 and
+    // 13.2, the Water and Wastewater Department orders, are not among them
+    // any more: both totals ($14,805,633 and $15,967,043) are already
+    // segments of the spending bar, so neither order's own text is quoted
+    // a second time here.
     await expect(page.getByRole("heading", { name: "What the Council appropriated" })).toBeVisible()
     const article = page.getByRole("article")
     await expect(article).not.toContainText("be appropriated to operate the Water Department")
-    await expect(article).toContainText("be appropriated to operate the Wastewater Department")
-    await expect(article).toContainText("$15, 967,043")
+    await expect(article).not.toContainText("be appropriated to operate the Wastewater Department")
+    await expect(article).not.toContainText("$15, 967,043")
     await expect(article).toContainText("$ 274,750,725")
     await expect(article).toContainText("Taxation and Other Receipts")
 

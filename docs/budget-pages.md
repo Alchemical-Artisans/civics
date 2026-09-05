@@ -359,7 +359,8 @@ this down.
 
 None of that is on the front page. A pie is a shape for one question, and the
 explanation belongs where a reader who wants it goes: the orders are quoted on
-`spending`, in the agenda's own words, with what they leave out and why.
+`spending`, in the agenda's own words, with what they leave out and why --
+13.3 and 13.4 of them, now; see below for the two that are not.
 
 **The book is not the whole city, and the orders are how we know.** Water and wastewater
 are enterprise funds — self-supporting, paid for out of what households are
@@ -386,6 +387,21 @@ that remain come to the order exactly.
 Each order also appropriates an amount _inside_ the general fund funded from
 that department's receipts — $234,784 and $698,981 — and those are rows of order
 13.3, so the two bars count them once.
+
+**13.1 and 13.2 are transcribed in `council-orders.ts` but not quoted on
+`council-orders` any more.** Both totals -- $14,805,633 and $15,967,043 --
+are already segments of the spending bar and rows on the Departments tab,
+once the bar itself moved to department granularity; quoting either
+order's own text on this page too would be the same fact stated twice.
+13.1 went first, briefly relocated to "Budget in Brief" as a trial before
+that page was cut for the same reason; 13.2 followed it off the page
+rather than staying, once the same reasoning plainly applied to it too.
+The `ENTERPRISE` table that used to sit beside 13.2 -- both departments'
+totals, side by side, in one small table -- went with it: it duplicated
+the exact two rows the Departments tab already lists. Both orders stay in
+`ORDERS`, filtered out in `council-orders/+page.svelte` rather than in
+`council-orders.ts` itself, since the data is still every order the agenda
+carries and only this one page's selection of it changed.
 
 **The agenda is on the budget calendar in the footer**, on the run of public
 hearings its meeting of 2 June falls inside, the same way the book hangs off the
