@@ -490,7 +490,15 @@ Notable pieces:
   Planning tab uses for its own seven category tables -- each keeps its own
   book heading and prose, unlike Capital Planning's bare tables, but the
   reason is the same: seven facets of one page's worth of receipts, not
-  seven topics worth a route and a bookmark each. "Summary" is page 64 with
+  seven topics worth a route and a bookmark each. Each panel's own heading
+  repeats its tab's label exactly, so it is hidden once `tablesLive` --
+  `display: none`, not deleted, so the un-hydrated view still has it and a
+  reader stacked past six other categories can tell which one they are
+  reading -- the same no-repeated-heading rule the route-level nav follows,
+  reached a level deeper. Capital Planning's own seven panels carry the
+  identical redundancy ("Vehicles" over "Vehicles") and are not hidden this
+  way yet -- not fixed here, since the request that prompted this was
+  `revenue`'s own tab, not `spending`'s. "Summary" is page 64 with
   the 10-year forecast of page 67
   behind it; "Budget in Brief" is page 78's revenue table, page 79's tax bill,
   and order 13.3 ("What the Council Raised"), which sits here rather than

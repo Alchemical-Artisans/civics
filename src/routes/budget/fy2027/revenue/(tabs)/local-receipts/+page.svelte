@@ -334,4 +334,21 @@
   .tables.live .table-tab-panel.active {
     display: block;
   }
+
+  /*
+    Each panel's own heading repeats its tab's label exactly -- "Fees" over
+    "Fees", "License & Permits" over "License & Permits" -- which said
+    nothing new once the tab bar was there to say it, the visible tab
+    already `aria-selected` and the panel already `aria-labelledby` it. Kept
+    in the markup rather than dropped outright, since it is not redundant
+    at all in the un-hydrated view this same markup renders: no tab bar
+    shows there, so the heading is what tells a reader stacked past six
+    other categories which one they are reading. `display: none` rather
+    than deleting the element removes it from the accessibility tree too,
+    so a screen reader on the live page is not told "Fees" twice, by the
+    tab and then again by a heading a beat later.
+  */
+  .tables.live .table-tab-panel > h2 {
+    display: none;
+  }
 </style>

@@ -1175,6 +1175,20 @@ is. The two shared paragraphs above the tab set ("Local revenue receipts
 are funds generated...") stay outside it, common framing rather than any
 one category's own.
 
+**Each panel's own heading repeats its tab's label exactly, so it is
+hidden once the tab bar is there to say it.** "Fees" over a tab already
+reading "Fees" is the same redundancy the route-level nav's own headings
+were cut for, one level deeper: the tab is `aria-selected` and the panel is
+already `aria-labelledby` it, so the heading told a screen reader nothing
+the tab had not just said. `display: none` on `.table-tab-panel > h2`,
+scoped under `.tables.live`, rather than deleting the element: the
+un-hydrated view this same markup serves has no tab bar at all, so the
+heading is what a reader stacked past six other categories reads to know
+which one they are on, and stays exactly where it always was there.
+Capital Planning's own seven panels carry the identical redundancy
+("Vehicles" over "Vehicles") and are not hidden this way -- out of scope
+for the request that prompted this fix, which was `revenue`'s own tab.
+
 **References is last, and lists the other two buckets.** The same
 tab-of-its-own device `spending` uses, `heading={false}` for the same
 reason -- but its own two entries are "Spending" and "Fiscal Reserves"

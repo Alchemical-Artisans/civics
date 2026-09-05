@@ -269,10 +269,15 @@ test.describe("budget pages", () => {
     await nav.getByRole("link", { name: "Local Receipts" }).click()
     await expect(page.getByRole("heading", { name: "Local Revenue Receipts" })).toBeVisible()
     // The seven categories below are tabbed in place now, the same
-    // mechanism Capital Planning's own seven tables use -- only the first
-    // ("Local Excise Taxes") is on the page until another tab is opened, so
-    // this checks the shared intro rather than a category heading.
-    await expect(page.getByRole("heading", { name: "Local Excise Taxes" })).toBeVisible()
+    // mechanism Capital Planning's own seven tables use -- and their own
+    // headings are hidden once live, the same reason `spending`'s six
+    // topics carry none: the tab bar already names the open one. Local
+    // Excise Taxes opens by default.
+    await expect(page.getByRole("tab", { name: "Local Excise Taxes" })).toHaveAttribute(
+      "aria-selected",
+      "true",
+    )
+    await expect(page.getByRole("heading", { name: "Local Excise Taxes" })).toHaveCount(0)
     await expect(page.getByRole("heading", { name: "License & Permits" })).toHaveCount(0)
 
     await nav.getByRole("link", { name: "Summary" }).click()
@@ -384,8 +389,13 @@ test.describe("budget pages", () => {
       "aria-selected",
       "true",
     )
-    await expect(tables.getByRole("heading", { name: "Fines & Investments" })).toHaveCount(0)
     await expect(tables.getByRole("row", { name: /^Parking Fines/ })).toHaveCount(0)
+
+    // No panel heading either, not even the open one's own -- each repeats
+    // its tab's label exactly, redundant once the tab bar is there to say
+    // it, the same no-repeated-heading rule the route-level nav follows.
+    await expect(tables.getByRole("heading", { name: "Local Excise Taxes" })).toHaveCount(0)
+    await expect(tables.getByRole("heading", { name: "Fines & Investments" })).toHaveCount(0)
 
     // Left/Right move between tabs and select the one moved to, Home/End
     // jump to the ends -- the same keyboard pattern Capital Planning uses.
@@ -418,8 +428,13 @@ test.describe("budget pages", () => {
       "aria-selected",
       "false",
     )
-    await expect(tables.getByRole("heading", { name: "Fines & Investments" })).toBeVisible()
     await expect(tables.getByRole("row", { name: /^Parking Fines/ })).toBeVisible()
+
+    // Every panel's own heading repeats its tab's label exactly, so once
+    // the tab bar is there to say it, neither heading is on the page --
+    // not just the closed one, the open one too, unlike Capital Planning's
+    // own tables, which carry no prose of their own to need a heading for.
+    await expect(tables.getByRole("heading", { name: "Fines & Investments" })).toHaveCount(0)
     await expect(tables.getByRole("heading", { name: "Local Excise Taxes" })).toHaveCount(0)
   })
 
