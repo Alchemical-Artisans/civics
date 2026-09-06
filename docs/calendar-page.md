@@ -211,43 +211,28 @@ See [deployment.md](./deployment.md#base-path).
 
 ## The site root
 
-`/` forwards to the most recent budget book. It is not a page to read: an index
-costs every visitor a hop to reach what they came for, which is the objection
-that turned the meeting page into the write-up rather than a stop on the way to
-it, and a page whose whole content is links onward is that same stop under
-another name.
+`/` is a landing page:
+[`src/routes/+page.svelte`](../src/routes/+page.svelte) names the site and gives
+a card for each half — the meeting calendar and the current budget book. It
+prerenders to static HTML like the rest of the site.
 
-The destination is resolved, not written out.
+It forwarded straight to the budget book for a while, on the reasoning that an
+index costs every visitor a hop — the same objection that turned the meeting
+page into the write-up rather than a stop on the way to it. That held while the
+budget was the whole point and the calendar a side door; it stopped holding once
+the two grew into separate things a reader arrives wanting one or the other of,
+and being dropped into the wrong one is worse than the hop. The old forward was
+a meta refresh (never a 301, which browsers cache indefinitely, and never
+SvelteKit's `redirect()`, which pushes a history entry the back button falls
+back into) — gone now, along with the e2e tests that pinned its behaviour.
+
+The budget card's destination is resolved, not written out.
 [`src/routes/+layout.ts`](../src/routes/+layout.ts) takes the first fiscal year
-`fiscalYears()` reports as written, and that list comes back newest first with
-`written` derived from the route directory existing — so creating
-`src/routes/budget/fy2028/` is the whole act of moving the front door. If no
-book is written up at all there is no budget page to open — the years the city
-publishes are links to its own PDFs, in the menu at the top — so the forward
-falls back to the calendar rather than sending a visitor off-site.
-
-Two things about the mechanism are deliberate, and both have outlived one change
-of destination already.
-
-**It is not a 301.** GitHub Pages serves static files and cannot send a redirect
-status anyway, but a permanent one would be the wrong choice even where it could:
-browsers cache 301s, sometimes for as long as the profile lives, and would keep
-opening FY2027 long after FY2028 replaced it. Nothing about a meta refresh is
-cached that way, which is why the destination is free to move every year — and
-why moving it from `/calendar` to the budget was a one-file change rather than a
-problem for everyone who had already visited.
-
-**It is not SvelteKit's `redirect()`.** Thrown from a `+page.ts`, that prerenders
-to the same meta refresh preceded by `location.href = ...`, which pushes a
-history entry — the back button would land on `/` and be thrown forward again,
-trapping the visitor on the site. A meta refresh that fires while the page is
-still loading replaces its history entry instead.
-[`page.svelte.e2e.ts`](../src/routes/page.svelte.e2e.ts) asserts that back from
-the budget leaves.
-
-The markup under the refresh is a plain link to the budget book _and_ to the
-calendar, which is what a crawler reading the page without following the refresh
-will see. The calendar has no other entry point from `/`, so it has to be there.
+`fiscalYears()` reports as written, newest first, with `written` derived from
+the route directory existing — so creating `src/routes/budget/fy2028/` is the
+whole act of moving it. If no book is written up at all the card is dropped
+entirely; the header's menu of years, which links the city's own PDFs, is then
+the only way into the budget.
 
 ### Getting between the two halves
 
@@ -255,10 +240,10 @@ will see. The calendar has no other entry point from `/`, so it has to be there.
 page: the mark, which goes to `/`, the page's own name where the page does not
 head itself (see [budget-pages.md](budget-pages.md)), and each half of the site
 at the right. The calendar is a link. So is the budget — it goes to this year's
-book, the same place `/` forwards to — with a menu of every fiscal year the
-city publishes under it, because that list used to be a page, `/budget`, and
-reaching a book through it cost a hop. The menu is also why no budget page
-carries a way back up any more.
+book, the same place the front page's budget card points — with a menu of every
+fiscal year the city publishes under it, because that list used to be a page,
+`/budget`, and reaching a book through it cost a hop. The menu is also why no
+budget page carries a way back up any more.
 
 **The word and the caret beside it are two controls.** A word that navigates
 cannot also be the thing you press to see a list, so the word is the link and
@@ -407,8 +392,8 @@ its meeting and returns to it, the back link reaches the calendar, and an
 unknown id returns a 404.
 
 [`src/routes/page.svelte.e2e.ts`](../src/routes/page.svelte.e2e.ts) covers the
-root: `/` lands on the calendar, and going back from there leaves the site
-rather than bouncing forward again.
+root and the header: `/` is a landing page the reader stays on, with a card to
+each half, and the mark leads back to it from anywhere.
 
 The calendar suites assert on link attributes rather than following outbound
 links, so the suite never fetches anything from the city's CDN.

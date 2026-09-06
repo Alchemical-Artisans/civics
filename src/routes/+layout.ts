@@ -11,9 +11,9 @@ export const prerender = true
  * It is twenty-odd rows of two URLs, small enough that the alternative (a
  * fetch, on a site that never talks to a server) would cost more than it saves.
  *
- * `budgetBook` is the newest year with a page here: the site's front door, and
- * the first thing the menu offers. `/` forwards there, which is why it is
- * resolved once, here, rather than in both places.
+ * `budgetBook` is the newest year with a page here: the first thing the header
+ * menu offers, and where the front page's budget card points. Resolved once,
+ * here, rather than in both places.
  *
  * `written` is a glob over route directories, so this follows the books as
  * they are written: adding `src/routes/budget/fy2028/` moves both.

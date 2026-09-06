@@ -106,14 +106,16 @@ refresh cannot contradict any of it.
 `docs/document-pages.md` calls these document pages; they are meeting pages now,
 and an agenda's transcription is what a meeting page shows.
 
-**`/` forwards to the most recent budget book and is not a page to read.** The
-budget is the front door; an index would cost every visitor a hop to reach it.
-The destination comes from `fiscalYears().find((y) => y.written)`, so creating
-`src/routes/budget/fy2028/` moves it. The forward is a meta refresh, never a 301
-or SvelteKit's `redirect()` — see
-[docs/calendar-page.md](docs/calendar-page.md#the-site-root) for why both would
-break, in ways the e2e suite now pins. The header carries the link to
-each half, so no page needs its own sideways link.
+**`/` is the landing page** (`src/routes/+page.svelte`): the site's name and a
+card for each half — the meeting calendar and the current budget book. It
+forwarded straight to the budget for a while (an index costs a hop), which
+stopped making sense once the two halves became separate things a reader arrives
+wanting one or the other of; the old meta refresh and its e2e tests are gone.
+The budget card's year comes from `fiscalYears().find((y) => y.written)`, so
+creating `src/routes/budget/fy2028/` moves it; with no book written the card is
+dropped. The header carries a link to each half from every page, so no page
+needs its own sideways link. See
+[docs/calendar-page.md](docs/calendar-page.md#the-site-root).
 
 **The two columns are the whole city's budget, not the book's.** Page 78's two
 tables are the general fund; the front page draws both entire, state assessments

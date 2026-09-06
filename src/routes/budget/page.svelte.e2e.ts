@@ -1592,8 +1592,12 @@ test.describe("budget pages", () => {
     expect(response?.status()).toBe(404)
   })
 
-  test("is where the site root lands", async ({ page }) => {
+  test("is where the front page's budget card points", async ({ page }) => {
     await page.goto("/")
+    await page
+      .getByRole("navigation", { name: "The two halves" })
+      .getByRole("link", { name: /Budget/ })
+      .click()
     await expect(page).toHaveURL(new RegExp(`/budget/${books[0]}$`))
   })
 })

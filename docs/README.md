@@ -114,7 +114,7 @@ src/lib/
   data/reviews.json        human corrections, overlaid onto the meetings
 
 src/routes/
-  +page.svelte             `/`, which forwards to the newest budget book
+  +page.svelte             `/`, the landing page: a card to each half
   +layout.ts               resolves which book that is, and every year for the bar
   +layout.svelte           the bar, on every page
   page.svelte.e2e.ts       end-to-end tests for the forward and the bar

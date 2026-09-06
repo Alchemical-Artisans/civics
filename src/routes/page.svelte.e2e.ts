@@ -24,36 +24,35 @@ const newest = written(budget).at(-1)!
 const section = written(join(budget, newest))[0]
 
 test.describe("the site root", () => {
-  test("opens the most recent budget book", async ({ page }) => {
-    await page.goto("/")
-    await expect(page).toHaveURL(`/budget/${newest}`)
-    await expect(page.getByRole("heading", { name: "Reserves and Debt" })).toBeVisible()
-  })
-
-  test("leaves the site when the back button is pressed", async ({ page }) => {
-    // The forward must replace `/` in history, not push onto it, or back from
-    // the budget returns to `/` and is thrown forward again -- a trap the
-    // visitor cannot get out of.
-    await page.goto("/demo")
-    await page.goto("/")
-    await expect(page).toHaveURL(`/budget/${newest}`)
-    await page.goBack()
-    await expect(page).toHaveURL("/demo")
-  })
-
-  test("does not send a cacheable redirect status", async ({ page }) => {
-    // A 301 would be cached by the browser, sometimes indefinitely, and would
-    // keep opening this year's book long after next year's replaced it.
+  test("is a landing page, not a forward", async ({ page }) => {
     const response = await page.goto("/")
+    // `/` used to forward straight to the budget book; it is a page in its own
+    // right now, and the reader stays on it.
     expect(response?.status()).toBe(200)
+    await expect(page).toHaveURL("/")
+    await expect(page.getByRole("heading", { level: 1, name: "Meetinghouse" })).toBeVisible()
   })
 
-  test("names both halves for a reader who does not follow the refresh", async ({ page }) => {
-    // What a crawler reading the markup sees. The calendar has no other entry
-    // point from here, so it has to be one of them.
-    const html = await (await page.request.get("/")).text()
-    expect(html).toContain(`/budget/${newest}`)
-    expect(html).toMatch(/href="[^"]*\/calendar"/)
+  test("points at both halves", async ({ page }) => {
+    await page.goto("/")
+    const main = page.getByRole("navigation", { name: "The two halves" })
+    await expect(main.getByRole("link", { name: /Meeting calendar/ })).toHaveAttribute(
+      "href",
+      /\/calendar$/,
+    )
+    await expect(main.getByRole("link", { name: /Budget/ })).toHaveAttribute(
+      "href",
+      new RegExp(`/budget/${newest}$`),
+    )
+  })
+
+  test("its calendar card opens the calendar", async ({ page }) => {
+    await page.goto("/")
+    await page
+      .getByRole("navigation", { name: "The two halves" })
+      .getByRole("link", { name: /Meeting calendar/ })
+      .click()
+    await expect(page).toHaveURL("/calendar")
   })
 })
 
@@ -142,11 +141,11 @@ test.describe("the site header", () => {
     await expect(page).toHaveURL("/calendar")
   })
 
-  test("the mark goes to the front door", async ({ page }) => {
+  test("the mark goes to the front page", async ({ page }) => {
     await page.goto("/calendar")
     await page.getByRole("link", { name: "Meetinghouse" }).click()
-    // `/` forwards, so the mark lands where the front door lands.
-    await expect(page).toHaveURL(`/budget/${newest}`)
+    await expect(page).toHaveURL("/")
+    await expect(page.getByRole("heading", { level: 1, name: "Meetinghouse" })).toBeVisible()
   })
 
   // Asserted on the served HTML rather than the live DOM. The first spelling of
@@ -170,7 +169,7 @@ test.describe("the site header", () => {
     // Three levels down still marks its half of the site.
     expect(await marked(`/budget/${newest}/${section}`)).toBe("Budget")
 
-    // `/` is in neither section; it only forwards.
+    // The front page is in neither half, so it marks neither.
     expect(await marked("/")).toBeNull()
   })
 
