@@ -58,10 +58,10 @@
    * this tab's name in the nav above them, the same reason "Requests" has
    * carried no heading of its own since before either existed. `references`
    * is the same rule reaching one component deeper: `BookReferences` prints
-   * its own "References" heading everywhere else it is used (`debt`,
-   * `reserves`, `education`, each titled something other than
-   * "References"), so its `heading` prop defaults to showing it and this
-   * tab alone passes `heading={false}`.
+   * its own "References" heading everywhere else it is used (`debt` and
+   * `reserves`, each titled something other than "References"), so its
+   * `heading` prop defaults to showing it and this tab alone passes
+   * `heading={false}`.
    *
    * "Goals & Recommendations" carries more than page 15-16's own goals now:
    * "Preliminary Budget Goals for Fiscal 2027" and "Final Recommendations"

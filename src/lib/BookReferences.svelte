@@ -15,8 +15,8 @@
   that is not opens the city's own file at the page the book gives it, so the
   reader lands on the section either way.
 
-  `heading` defaults to shown, since on `debt`, `reserves` and `education` this
-  is a subsection of a page titled something else and needs its own name. The
+  `heading` defaults to shown, since on `debt` and `reserves` this is a
+  subsection of a page titled something else and needs its own name. The
   spending page's own "References" tab is the exception: there the tab's name
   in the nav above already says "References", so passing `heading={false}`
   drops the one that would only repeat it -- the same rule that leaves

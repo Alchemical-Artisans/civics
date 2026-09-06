@@ -195,9 +195,9 @@ test.describe("budget pages", () => {
     // `toContainText`, because a line with no page here carries an `sr-only`
     // note saying it opens the city's PDF.
     const funded = lists.locator("li")
-    await expect(funded).toHaveCount(33)
-    await expect(funded.first()).toContainText("Education")
-    await expect(funded.first()).toContainText("$147,158,454")
+    await expect(funded).toHaveCount(34)
+    await expect(funded.first()).toContainText("School Department")
+    await expect(funded.first()).toContainText("$136,998,618")
     await expect(funded.last()).toContainText("Senior Center")
     await expect(funded.last()).toContainText("$14,500")
 
@@ -205,7 +205,7 @@ test.describe("budget pages", () => {
     const priced = await funded.evaluateAll((lines) =>
       lines.map((line) => Number(line.textContent?.match(/\$([\d,]+)/)?.[1].replace(/,/g, ""))),
     )
-    expect(priced).toHaveLength(33)
+    expect(priced).toHaveLength(34)
     expect(priced.every((money) => money > 0)).toBe(true)
     expect(priced).toEqual([...priced].sort((a, b) => b - a))
 
@@ -217,9 +217,11 @@ test.describe("budget pages", () => {
       await expect(funded.filter({ hasText: office })).toHaveCount(1)
     }
 
-    // Education is page 26, printed a hundred pages before the rest of these,
-    // and filed here because this is where a reader looks for it.
-    await expect(funded.filter({ hasText: "Education" })).toHaveCount(1)
+    // "School Department" and "Regional Schools" price separately now, no
+    // longer combined into one "Education" line -- and "Education" itself
+    // carries no line here any more at all.
+    await expect(funded.filter({ hasText: "Regional Schools" })).toHaveCount(1)
+    await expect(funded.filter({ hasText: "Education" })).toHaveCount(0)
 
     // Nothing the book says about the year itself is in this list any more.
     for (const gone of [
@@ -1244,18 +1246,13 @@ test.describe("budget pages", () => {
     expect(await bookPdf(page).getAttribute("href")).toMatch(/#page=232$/)
   })
 
-  test("puts the three school sections on one page", async ({ page }) => {
-    await page.goto(`/budget/${books[0]}/education`)
+  test("prices the two school lines separately, straight into the city's PDF", async ({ page }) => {
+    await page.goto(`/budget/${books[0]}`)
 
-    // The one that is transcribed, under the heading the book prints over it.
-    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Education")
-    await expect(
-      page.getByRole("heading", { name: "Net School Spending", exact: true }),
-    ).toBeVisible()
-    await expect(page.getByRole("article")).toContainText("$167,320,644")
-
-    // The two that are not: the city's own file, opened at the page the book
-    // gives them, which is what a contents line does for any unwritten section.
+    // "Education" (26, "Net School Spending" on the page itself) used to
+    // gather these two behind a write-up of its own; that page is gone, and
+    // each line here opens the city's file at its own page instead, the same
+    // as any other line in this list with no write-up.
     for (const [title, at] of [
       ["Regional Schools", 150],
       ["School Department", 152],
@@ -1264,6 +1261,9 @@ test.describe("budget pages", () => {
       expect(await link.getAttribute("href")).toMatch(new RegExp(`#page=${at}$`))
       await expect(link).toHaveAttribute("target", "_blank")
     }
+
+    const response = await page.goto(`/budget/${books[0]}/education`)
+    expect(response?.status()).toBe(404)
   })
 
   test("charts the budget the Council adopted, not the book's proposal", async ({ page }) => {

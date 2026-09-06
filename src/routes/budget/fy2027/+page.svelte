@@ -21,7 +21,7 @@
     s.written ? Router.budgetSection(book.id, s.slug) : Router.pdfPage(book.budget!, s.page)
 
   // Whole dollars, as the book prints them: this is a figure to compare against
-  // the one under it, and a list of thirty-three of them rounded to millions
+  // the one under it, and a list of thirty-four of them rounded to millions
   // would put the senior center and the stadium at $0.
   const money = new Intl.NumberFormat("en-US", {
     style: "currency",

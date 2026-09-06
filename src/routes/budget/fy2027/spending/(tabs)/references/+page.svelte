@@ -7,7 +7,7 @@
   // other route under it does, since the layout's own load still carries
   // them. `heading={false}` because this tab's own name in the nav above
   // it already says "References" -- the component's default heading is for
-  // `debt`, `reserves` and `education`, each titled something else.
+  // `debt` and `reserves`, each titled something else.
   import BookReferences from "$lib/BookReferences.svelte"
 
   let { data } = $props()

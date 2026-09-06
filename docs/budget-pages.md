@@ -788,9 +788,9 @@ asked for.
 
 **`heading={false}` is the fourth prop, and only this tab passes it.**
 `BookReferences` prints its own "References" heading by default, which is
-right everywhere else it appears -- `debt`, `reserves` and `education` are
-each titled something other than "References", so the heading is the only
-thing on the page naming that section. Here the tab's own name in the nav
+right everywhere else it appears -- `debt` and `reserves` are each titled
+something other than "References", so the heading is the only thing on
+the page naming that section. Here the tab's own name in the nav
 above already says "References", so the default heading would only repeat
 it; the prop exists so this one call site can say so without every other
 one having to opt in.
@@ -944,8 +944,8 @@ names it in full ("Other Post-Employment Benefits (OPEB)"), so the
 definition beside it was answering a question the page had already
 answered, and nothing else on this page or `debt` depends on it.
 
-**"References"** is the device for that, shared by `education`, `spending`,
-`debt` and `reserves` as
+**"References"** is the device for that, shared by `spending`, `debt` and
+`reserves` as
 [`BookReferences`](../src/lib/BookReferences.svelte). Its items follow the rule
 the contents page follows — a section written up here opens on this site, one
 that is not opens the city's file at its own page — so one list carries both.
@@ -1003,18 +1003,31 @@ The figures are pages 76 and 77, the book's own department table, read out of
 here is typed twice. The book's contents and that table name the same
 departments differently ("Legal" against "Legal Department", "Inspectional
 Services" against "Health & Inspections"), so `BUDGET_LINE` in `fy2027/+page.ts`
-pairs them by hand. It is a pairing rather than a guess: set aside the twelve
-rows that are not a department — debt, benefits, assessments, the two school
-lines, and the two the city no longer funds — and thirty-two rows stand against
-thirty-two lines with one candidate each. `costOf` throws when a line finds no
-row, so renaming a department in one place and not the other fails the build
-rather than printing a blank.
+pairs them by hand. It is a pairing rather than a guess: set aside the eleven
+rows that are not a department — debt, benefits, assessments, and the two the
+city no longer funds — and thirty-four rows stand against thirty-four lines
+with one candidate each, "School Department" and "Regional Schools" among
+them, needing no pairing at all since the table already spells both the way
+the contents does. `costOf` throws when a line finds no row, so renaming a
+department in one place and not the other fails the build rather than
+printing a blank.
 
-**Education is the one line with no row of its own.** The book budgets the
-schools in two pieces, "School Department" and "Regional Schools", and the page
-here carries both, so the line is priced at the two added together —
-$147,158,454, which is exactly what page 78's own "Education" category prints.
-`overview.spec.ts` holds those two against each other.
+**"School Department" and "Regional Schools" used to be one line, "Education",
+priced at the two added together.** They are two lines now, each at its own
+page (152 and 150) inside the normal run of departments, rather than at page
+26 where the book's own contents sends a reader instead. Page 26 is "Net
+School Spending", an overview of the same two figures rather than either
+department's own page, and it used to be what "Education" opened -- a section
+transcribing that overview and then linking out to the two department pages
+the book's contents does not mention on its own. That section, `education`,
+is retired along with its own contents line: splitting the one line into two,
+each at its own real page, removed the reason to visit page 26 on the way to
+either, and the overview it transcribed did not owe a reader anything the two
+figures themselves do not already say -- so nothing replaces the line, rather
+than a lone entry sitting alone in the left-hand list for a page nothing else
+sends a reader to any more. Page 78's own "Education" category still prints
+$147,158,454, the two department figures added together, which
+`overview.spec.ts` holds against both of them.
 
 **"Finance Division" is not in the list.** Page 91 is a divider: the names of
 the three offices under it and the division's staff, and no budget of its own.
@@ -1023,17 +1036,15 @@ nothing to cost, and a line with no figure in a list of figures reads as one
 that went missing.
 
 That list has no title because no short one is true of it: "Departments" would
-be wrong about Education, Outdoor Lighting, Refuse and Snow & Ice Removal, which
-are things the city funds rather than offices it staffs. `ALSO_A_BUDGET` in
-`fy2027/+page.ts` is how a page printed elsewhere in the book joins that list
-anyway — Education is page 26, and a reader looking for what the schools cost
-looks where the fire department is. It stops at Library
-rather than at the end of "General Fund Budgets", because Debt Service, State
-Assessments, Employee Benefits and Liability, Overlay & Reserves are money the
-city owes rather than departments that spend it. Sixty lines under one heading
-is a list nobody reads to the end of; two headed lists are two questions, and a
-reader arrives with one of them. `fy2027/+page.ts` splits the transcribed
-contents on those two named entries, and throws if it cannot find them.
+be wrong about Regional Schools, Outdoor Lighting, Refuse and Snow & Ice
+Removal, which are things the city funds rather than offices it staffs. It
+stops at Library rather than at the end of "General Fund Budgets", because
+Debt Service, State Assessments, Employee Benefits and Liability, Overlay &
+Reserves are money the city owes rather than departments that spend it. Sixty
+lines under one heading is a list nobody reads to the end of; two headed lists
+are two questions, and a reader arrives with one of them. `fy2027/+page.ts`
+splits the transcribed contents on those two named entries, and throws if it
+cannot find them.
 
 **The contents lists titles and nothing else.** The book prints a page number
 beside each of its own contents lines because paper is the only way through it;
@@ -1426,16 +1437,17 @@ before matching, since a cell is a figure rather than a sentence.
    they are transcribed. The contents line is the category's name, where it has
    one at all; those two are opened from their charts instead.
 
-   The sections it covers need not all be transcribed. `education` is "Net
-   School Spending" (26), "Regional Schools" (150) and "School Department"
-   (152); only the first has been read off the page, and the other two are links
-   into the city's file at the page the book gives them, under a heading of ours
-   — "References", the one line on any of these pages that is not the
-   book's (see [`BookReferences`](../src/lib/BookReferences.svelte)). That is the same thing a contents line does for a section nobody has
-   written up, so covering them loses nothing; when either is transcribed it
-   becomes an `<h2>` and drops off the list. Its `+page.ts` builds those links
-   from the book URL on the layout above it, which is why that one takes
-   `parent()`.
+   The sections it covers need not all be transcribed. A page grouping more
+   than one book section under a single contents line can transcribe some of
+   them and simply link the rest into the city's file at the page the book
+   gives them, under a heading of ours — "References", the one line on any
+   of these pages that is not the book's (see
+   [`BookReferences`](../src/lib/BookReferences.svelte)). That is the same
+   thing a contents line does for a section nobody has written up, so
+   covering an untranscribed one this way loses nothing; when it is written
+   up it becomes an `<h2>` and drops off the list instead. Building those
+   links takes the book URL, read off the layout above the page in `parent()`,
+   since a section's own `+page.ts` otherwise has no reason to.
 
 ## A section whose tables are charted
 

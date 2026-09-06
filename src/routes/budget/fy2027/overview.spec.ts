@@ -59,12 +59,12 @@ describe("the department table", () => {
     expect(amount(cell(DEPARTMENTS, "Grand Total", "2027 Recommended"))).toBe(TOTAL + 1)
   })
 
-  // The front page's list of what the city funds prices each line from this
-  // table. Education is the one line with no row of its own: the book budgets
-  // the schools in two pieces, and page 78's category for them is those two
-  // pieces added up, which is what makes the list's figure the book's and not
-  // an invention of ours.
-  it("budgets the schools in the two pieces page 78 adds together", () => {
+  // Page 78's own "Education" category is the two school lines added
+  // together -- not read by the front page's list any more, which prices
+  // "School Department" and "Regional Schools" separately off their own
+  // rows, but still the book's own check that the two pieces are the whole
+  // of what page 78 calls "Education".
+  it("still adds the two school lines to page 78's own Education category", () => {
     const schools =
       amount(cell(DEPARTMENTS, "School Department", RECOMMENDED))! +
       amount(cell(DEPARTMENTS, "Regional Schools", RECOMMENDED))!
@@ -77,7 +77,7 @@ describe("the department table", () => {
   // is written out in `+page.ts` because the two pages of the book disagree
   // about what a department is called; what makes it a pairing rather than a
   // guess is that nothing is left over on either side.
-  it("has one row per thing the city funds, and twelve rows that are not", () => {
+  it("has one row per thing the city funds, and eleven rows that are not", () => {
     const NOT_A_DEPARTMENT = [
       // Money the city owes or is charged rather than a thing it runs. Each has
       // its own line elsewhere on the front page, or none.
@@ -88,10 +88,7 @@ describe("the department table", () => {
       "Reserves",
       "Other",
       "Pay As You Go Capital",
-      // The two school lines, which the list carries as one "Education", and
-      // the third the book zeroed out this year.
-      "School Department",
-      "Regional Schools",
+      // The book zeroed this one out this year.
       "Other Education Funding",
       // Departments the book still prints a history for and no longer funds:
       // building inspections folded into Health & Inspections, and the crossing
@@ -105,9 +102,11 @@ describe("the department table", () => {
       .map((row) => row.label)
       .filter((label) => !NOT_A_DEPARTMENT.includes(label))
 
-    expect(departments).toHaveLength(32)
-    // Thirty-three lines in the list: these thirty-two, plus Education.
-    expect(new Set(departments).size).toBe(32)
+    expect(departments).toHaveLength(34)
+    // Thirty-four lines in the list, School Department and Regional Schools
+    // among them now: each finds this same row, rather than the two being
+    // added into one line the way "Education" used to combine them.
+    expect(new Set(departments).size).toBe(34)
   })
 })
 

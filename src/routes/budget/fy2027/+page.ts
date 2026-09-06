@@ -111,14 +111,10 @@ const debt = column(LONG_TERM_DEBT, "Amount")
  * Reserves -- is money the city owes rather than something that spends it, and
  * those stay with the rest of the year's account.
  *
- * `ALSO_A_BUDGET` is for a page that belongs in that list but is printed
- * somewhere else in the book: Education is page 26, and a reader looking for
- * what the schools cost looks where the fire department is.
- *
- * Neither list carries a heading. These are not all departments -- Education,
- * Outdoor Lighting, Refuse and Snow & Ice Removal are things the city funds
- * rather than offices it staffs -- and a column headed "Departments" would be
- * wrong about part of what is under it.
+ * Neither list carries a heading. These are not all departments -- Regional
+ * Schools, Outdoor Lighting, Refuse and Snow & Ice Removal are things the city
+ * funds rather than offices it staffs -- and a column headed "Departments"
+ * would be wrong about part of what is under it.
  *
  * Sixty lines in one list is a list nobody reads to the end of. Two are two
  * questions -- how the year works, and what a thing costs -- and a reader
@@ -126,23 +122,23 @@ const debt = column(LONG_TERM_DEBT, "Amount")
  */
 const FIRST_BUDGET = "City Council"
 const LAST_BUDGET = "Library"
-const ALSO_A_BUDGET = ["Education"]
 
 /**
  * What each of those lines costs, from pages 76 and 77.
  *
- * The book's contents and the book's department table name the same thirty-two
- * departments differently -- the contents has "Legal" and "Inspectional
- * Services" where the table has "Legal Department" and "Health & Inspections"
- * -- so the pairing is written out rather than matched on the strings. It is a
- * pairing and not a guess: once the twelve rows that are not a department
- * (Debt Services, Employee Benefits, State Assessments, the two school lines
- * and the rest) are set aside, thirty-two rows are left against thirty-two
- * lines, and every one of them has exactly one name it could be.
+ * The book's contents and the book's department table name the same
+ * thirty-four departments differently -- the contents has "Legal" and
+ * "Inspectional Services" where the table has "Legal Department" and "Health
+ * & Inspections" -- so the pairing is written out rather than matched on the
+ * strings. It is a pairing and not a guess: once the eleven rows that are not
+ * a department (Debt Services, Employee Benefits, State Assessments and the
+ * rest) are set aside, thirty-four rows are left against thirty-four lines,
+ * and every one of them has exactly one name it could be.
  *
  * Only the titles that differ are here; a title the table prints the same way
- * finds its own row. `departments` throws when a line finds nothing, so a
- * renamed department is a build failure rather than a blank.
+ * finds its own row -- School Department and Regional Schools among them,
+ * which is why neither needs an entry. `departments` throws when a line finds
+ * nothing, so a renamed department is a build failure rather than a blank.
  */
 const BUDGET_LINE: Record<string, string> = {
   "Auditor's Office": "City Auditor's Office",
@@ -158,29 +154,16 @@ const BUDGET_LINE: Record<string, string> = {
   "Recreation Department": "Recreation",
 }
 
-/**
- * Education is the one line the table has no row for.
- *
- * The book files what the city spends on schools under two headings -- the
- * assessment the regional vocational schools send it and the appropriation the
- * school department gets -- and the page here carries both. Page 78's own
- * "Education" category is these two added together, which is the check
- * `overview.spec.ts` makes.
- */
-const SCHOOLS = ["School Department", "Regional Schools"]
-
 const RECOMMENDED = "2027 Recommended"
 
 /** One contents line, with what the book recommends spending on it. */
 export type FundedSection = BookSection & { amount: number }
 
 const costOf = (title: string): number => {
-  const rows = title === "Education" ? SCHOOLS : [BUDGET_LINE[title] ?? title]
-  return rows.reduce((total, row) => {
-    const figure = amount(cell(DEPARTMENTS, row, RECOMMENDED))
-    if (figure === null) throw new Error(`No 2027 figure for ${row} on pages 76-77`)
-    return total + figure
-  }, 0)
+  const row = BUDGET_LINE[title] ?? title
+  const figure = amount(cell(DEPARTMENTS, row, RECOMMENDED))
+  if (figure === null) throw new Error(`No 2027 figure for ${row} on pages 76-77`)
+  return figure
 }
 
 const split = (lines: BookSection[]) => {
@@ -188,8 +171,7 @@ const split = (lines: BookSection[]) => {
   const to = lines.findIndex((line) => line.title === LAST_BUDGET)
   if (from < 0 || to < from) throw new Error("The budget-page range is not in the contents")
 
-  const funded = (line: BookSection, at: number) =>
-    (at >= from && at <= to) || ALSO_A_BUDGET.includes(line.title)
+  const funded = (line: BookSection, at: number) => at >= from && at <= to
 
   return {
     contents: lines.filter((line, at) => !funded(line, at)),
@@ -278,11 +260,12 @@ export const load: PageLoad = () => ({
       // One line for the book's two, "2027 Budget Goals" (15) and "Long-Term
       // Strategic Goals" (16): they are four bullets and five on one subject,
       // and the page here carries both under the headings the book prints.
-      // "Net School Spending" (26), with "Regional Schools" (150) and "School
-      // Department" (152) under it: one page for what the city spends on
-      // schools, filed with the budget pages rather than here in the book's
-      // order, since that is where a reader looks for a thing the city runs.
-      ["Education", 26],
+      // "Education" (26, "Net School Spending" on the page itself) is gone
+      // rather than kept as its own line: it grouped "Regional Schools"
+      // (150) and "School Department" (152) as links under an overview of
+      // the same two figures, and splitting those two out below, each at its
+      // own page in the normal run of things the city funds, left the
+      // overview with nothing to justify a stop on the way to either.
       ["City Council", 81],
       ["Mayor's Office", 84],
       ["Constituent Services", 87],
@@ -304,6 +287,8 @@ export const load: PageLoad = () => ({
       ["Economic Development & Planning", 131],
       ["Police Department", 135],
       ["Fire Department", 143],
+      ["Regional Schools", 150],
+      ["School Department", 152],
       ["Highway Department", 153],
       ["Outdoor Lighting", 159],
       ["Parking", 160],

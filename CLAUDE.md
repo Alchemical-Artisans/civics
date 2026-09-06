@@ -146,9 +146,9 @@ audit report beside it, which is the only place those are linked. `/budget`
 itself is not a page: it was one, and reaching a book through it cost a hop.
 `/budget/<year>` is a budget book's own table of contents -- two unheaded
 lists, the year's own account in the book's order and a priced column of
-everything the city funds, from the book's run of City Council to Library plus
-anything `ALSO_A_BUDGET` names, each line carrying what the book recommends
-spending on it and the list running largest first -- and
+everything the city funds, from the book's run of City Council to Library,
+each line carrying what the book recommends spending on it and the list
+running largest first -- and
 `/budget/<year>/<section>` is one section of it transcribed. None of it is
 scraped: the city's page is 22 rows that change twice a year, so the list lives
 in `src/lib/data/budget.json`, scraped by `budget:update`. Every route is static and each contents line links to a
@@ -377,9 +377,9 @@ Notable pieces:
   and nothing
   else on the page, `data` read off `+layout.ts`'s load the same as any
   other route beneath it. `heading` is new on `BookReferences` itself,
-  defaulting to shown -- `debt`, `reserves` and `education` each title the
-  whole page something other than "References", so the heading there is
-  not the redundant one -- and false only on this one tab, the same
+  defaulting to shown -- `debt` and `reserves` each title the whole page
+  something other than "References", so the heading there is not the
+  redundant one -- and false only on this one tab, the same
   no-repeated-heading rule reaching one component deeper. There is no bare
   `/spending` page any
   more, not even a forward: the one link to it, the front page's own chart
