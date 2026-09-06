@@ -559,19 +559,15 @@ Notable pieces:
   right so each box paints over the tip of the one before it and its own
   notch reveals exactly that tip, so the two shapes share one diagonal edge
   rather than drawing two. The first box has no notch and the last no point.
-  A same-state run of boxes tessellating into one unbroken band read as one
-  box rather than several that happen to agree, so each `<li>` is now two
-  layers: the list item itself is a seam colour cut to the full arrow, and
-  the state's own fill sits on a second, smaller arrow -- `shape(i)` walked
-  out again at the size a couple of pixels of margin leave inside it -- so a
-  thin line of the seam colour shows all the way around every box, the point
-  and the notch included, the same way it shows along the flat top and
-  bottom. A `box-shadow` ring could not do this (a rectangle around a shape
-  `clip-path` already cut into an arrow) and neither could a plain border
-  (straight through the point and notch rather than following them).
-  `isolate` on the component's own root keeps the per-box `z-index` numbers
-  climbing left to right from ever being compared against the rest of the
-  page's stacking (the header's own year menu, say) by accident. Two
+  There is no ring or border any more either, since a `box-shadow` ring is a
+  rectangle around a shape `clip-path` has already cut into an arrow, and a
+  same-state run of boxes tessellates into one unbroken band rather than a
+  seam at every pair — the three states (ahead, current, done) are a fill
+  apart and nothing else now, which reads correctly since a run of steps not
+  yet reached, or already behind, is one thing rather than several boxes
+  that happen to agree. `isolate` on the component's own root keeps those
+  per-box `z-index` numbers from ever being compared against the rest of
+  the page's stacking (the header's own year menu, say) by accident. Two
   boxes carry a `PDF` link: a step that produced a document the city published
   hangs it there, so the budget book comes off "Final review" and the Council's
   appropriation orders off "Public hearings", the run of hearings the agenda of
