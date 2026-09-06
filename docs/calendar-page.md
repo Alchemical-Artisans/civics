@@ -303,9 +303,20 @@ hydration; the e2e suite asserts on the served bytes for exactly that reason.
 wraps every document page: a back link, the title, then a header, then the page
 itself in a `prose` container. The header runs the title, with an information
 icon beside it where the document carries standing boilerplate; then board, kind
-and date; then where the meeting is held, linked to a map, and `Remote Access`,
-linked to the join URL — with the meeting ID and passcode beside it where the
-document prints them; then the links to the city's own copy.
+and date, with an **Add to calendar** control beside the date; then where the
+meeting is held, linked to a map, and `Remote Access`, linked to the join URL —
+with the meeting ID and passcode beside it where the document prints them; then
+the links to the city's own copy.
+
+[`AddToCalendar.svelte`](../src/lib/AddToCalendar.svelte) offers the sitting two
+ways, because no one format reaches every reader: a Google Calendar link, which
+is a plain `<a>` and needs no script, and a `.ics` download for Apple Calendar
+and Outlook, built in the browser on click. Both describe the one
+`CalendarEvent` that [`ics.ts`](../src/lib/ics.ts) derives from the meeting and
+its `MeetingDetails`, so they cannot drift apart. When the agenda states a start
+time the event is pinned to it in `America/New_York` (the `.ics` carries the
+matching `VTIMEZONE`) and runs two hours — a default, not a figure from the
+document; when it states none, the event is all-day on the meeting date.
 
 [`Note.svelte`](../src/lib/Note.svelte) is that icon. It pops the text over the
 page rather than expanding, so opening it never moves the agenda underneath, and

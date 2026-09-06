@@ -50,4 +50,41 @@ describe("Router", () => {
       "https://cdn.example/budget.pdf#page=17",
     )
   })
+
+  it("builds a full URL on the canonical domain", () => {
+    expect(Router.absolute("/calendar/meetings/city-council-2026-08-25")).toBe(
+      "https://haverhill.alchemicalartisans.com/calendar/meetings/city-council-2026-08-25",
+    )
+  })
+
+  it("prefills a Google Calendar event, with the city's timezone for a timed one", () => {
+    const url = new URL(
+      Router.googleCalendar({
+        title: "Haverhill Conservation Commission",
+        start: "20260917T191500",
+        end: "20260917T211500",
+        details: "Agenda: https://haverhill.alchemicalartisans.com/calendar/meetings/x",
+        location: "4 Summer Street, Haverhill, MA 01830",
+        allDay: false,
+      }),
+    )
+    expect(url.origin + url.pathname).toBe("https://calendar.google.com/calendar/render")
+    expect(url.searchParams.get("action")).toBe("TEMPLATE")
+    expect(url.searchParams.get("dates")).toBe("20260917T191500/20260917T211500")
+    expect(url.searchParams.get("ctz")).toBe("America/New_York")
+  })
+
+  it("leaves the timezone off an all-day Google Calendar event", () => {
+    const url = new URL(
+      Router.googleCalendar({
+        title: "Haverhill Conservation Commission",
+        start: "20260917",
+        end: "20260918",
+        details: "",
+        allDay: true,
+      }),
+    )
+    expect(url.searchParams.get("dates")).toBe("20260917/20260918")
+    expect(url.searchParams.has("ctz")).toBe(false)
+  })
 })

@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test"
-import { existsSync, readdirSync } from "node:fs"
+import { existsSync, readdirSync, readFileSync } from "node:fs"
 import { join } from "node:path"
 import { fileURLToPath } from "node:url"
 
@@ -43,11 +43,11 @@ test.describe("meeting pages", () => {
   test("names the board and the date, and lists the city's files", async ({ page }) => {
     await page.goto(`/calendar/meetings/${written[0]}`)
     await expect(page.getByRole("heading", { level: 1 })).not.toBeEmpty()
-    // A direct child: the notice popover also renders paragraphs, and they sit
-    // inside the header too.
-    await expect(page.locator("header > p").first()).toContainText(
-      /^[A-Z][a-z]+day, [A-Z][a-z]+ \d{1,2}, \d{4}/,
-    )
+    // Visible text, so the notice popover's own paragraphs -- hidden until
+    // opened -- do not count.
+    await expect(
+      page.locator("header").getByText(/^[A-Z][a-z]+day, [A-Z][a-z]+ \d{1,2}, \d{4}/),
+    ).toBeVisible()
 
     // Asserted on attributes rather than by following them, so the suite never
     // reaches out to the city's CDN.
@@ -76,6 +76,29 @@ test.describe("meeting pages", () => {
     // on every page now, and this is the only link that points at the meeting.
     await page.locator(`a[href$="/calendar/meetings/${written[0]}"]`).first().click()
     await expect(page).toHaveURL(new RegExp(`/calendar/meetings/${written[0]}$`))
+  })
+
+  test("offers to add the sitting to a calendar", async ({ page }) => {
+    await page.goto(`/calendar/meetings/${written[0]}`)
+    await page.getByRole("button", { name: "Add to calendar" }).click()
+
+    // Google Calendar is a plain prefilled link -- it works with no script.
+    const google = page.getByRole("link", { name: /Google Calendar/ })
+    const href = new URL((await google.getAttribute("href"))!)
+    expect(href.host).toBe("calendar.google.com")
+    expect(href.searchParams.get("text")).toMatch(/^Haverhill /)
+    expect(href.searchParams.get("dates")).toMatch(/^\d{8}(T\d{6})?\/\d{8}(T\d{6})?$/)
+
+    // The .ics is built in the browser and handed over as a download.
+    const [download] = await Promise.all([
+      page.waitForEvent("download"),
+      page.getByRole("button", { name: /Download/ }).click(),
+    ])
+    expect(download.suggestedFilename()).toBe(`${written[0]}.ics`)
+    const ics = readFileSync((await download.path())!, "utf8")
+    expect(ics).toContain("BEGIN:VEVENT")
+    expect(ics).toContain("SUMMARY:Haverhill ")
+    expect(ics).toContain(`UID:${written[0]}@`)
   })
 
   test("returns to the calendar", async ({ page }) => {

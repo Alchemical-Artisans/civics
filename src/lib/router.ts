@@ -131,6 +131,42 @@ export class Router {
     return path(`/budget/${id}/glossary#${slug}`)
   }
 
+  /**
+   * A route on this site as a full URL on the canonical domain, for the few
+   * places that need one a reader can carry elsewhere -- the `URL` and body of
+   * an "add to calendar" event, say. `base` is deliberately not applied: this
+   * is the public address, and the production deploy serves from the domain
+   * root (`static/CNAME`), so a base path would only ever be a local build's.
+   */
+  static absolute(route: `/${string}`): string {
+    return `${SITE}${route}`
+  }
+
+  /**
+   * Google Calendar's "create event" screen, prefilled. Not a route here; it
+   * sits with the other outbound URL builders for the same reason `map` does.
+   * Times are floating `YYYYMMDDTHHMMSS` with `ctz` naming the zone, or bare
+   * `YYYYMMDD/YYYYMMDD` for an all-day sitting.
+   */
+  static googleCalendar(event: {
+    title: string
+    start: string
+    end: string
+    details: string
+    location?: string
+    allDay: boolean
+  }): string {
+    const params = new URLSearchParams({
+      action: "TEMPLATE",
+      text: event.title,
+      dates: `${event.start}/${event.end}`,
+      details: event.details,
+    })
+    if (event.location) params.set("location", event.location)
+    if (!event.allDay) params.set("ctz", TIMEZONE)
+    return `https://calendar.google.com/calendar/render?${params}`
+  }
+
   /** Scaffolding from `sv create`, kept because the e2e suite drives it. */
   static demo(): string {
     return path("/demo")
@@ -180,3 +216,9 @@ export class Router {
 
 /** Origin of the City of Haverhill's site, where every source document lives. */
 const CITY = "https://www.haverhillma.gov"
+
+/** This site's own canonical origin -- the custom domain in `static/CNAME`. */
+const SITE = "https://haverhill.alchemicalartisans.com"
+
+/** The city's timezone, for the one feature that pins an event to a clock. */
+const TIMEZONE = "America/New_York"

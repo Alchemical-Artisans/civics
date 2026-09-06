@@ -1,6 +1,7 @@
 <script lang="ts">
   import { page } from "$app/state"
   import Note from "$lib/Note.svelte"
+  import AddToCalendar from "$lib/AddToCalendar.svelte"
   import { Router } from "$lib/router"
   import { formatLongDate, type MeetingDocument } from "$lib/calendar"
 
@@ -76,7 +77,17 @@
       {/if}
     </div>
 
-    <p class="mt-2 text-sm text-slate-600">{when}</p>
+    <!-- The date, and beside it the way to put it on the reader's own
+	     calendar -- an item page is one entry on the agenda, not the sitting a
+	     calendar event stands for, so it carries the date without the button.
+	     The two-hour length the event assumes when the agenda states a time is
+	     explained in $lib/ics. -->
+    <div class="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
+      <p class="text-sm text-slate-600">{when}</p>
+      {#if !data.isItem}
+        <AddToCalendar {meeting} {details} />
+      {/if}
+    </div>
 
     <!-- How to attend, rather than how to read the document -- so it sits
 	     above the source links, not among them. -->
