@@ -32,9 +32,12 @@ jobs:
       - name: Install dependencies
         run: npm ci
         env:
-          # `npm ci` runs the prepare script, which installs Playwright's
-          # browsers. This workflow never runs a test, and they are a few
-          # hundred megabytes.
+          # This workflow never runs a test, and Playwright's browsers are a few
+          # hundred megabytes. The prepare script skips `playwright install`
+          # whenever $CI is set (GitHub Actions sets it), and this covers the
+          # @playwright/test package's own postinstall as a backstop -- so
+          # nothing here downloads a browser or runs its host-requirements
+          # check, which is what printed a wall of "missing libraries".
           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
 
       # BASE_PATH is deliberately not set: static/CNAME points the site at
