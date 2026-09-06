@@ -146,9 +146,9 @@
   <!-- The write-up is the child route: an ordinary Svelte component, checked
 	     and formatted like the rest of the source, rather than a string of
 	     markup dropped in with {@html}. See docs/document-pages.md. -->
-  <article
-    class="prose max-w-none break-words prose-slate prose-headings:font-semibold prose-h2:mt-6 prose-h2:mb-2 prose-h2:text-base"
-  >
+  <!-- The heading scale is in layout.css, one rule for every `prose` container
+       on the site; see there for why h2 and h3 are both shrunk. -->
+  <article class="prose max-w-none break-words prose-slate">
     {@render children()}
   </article>
 

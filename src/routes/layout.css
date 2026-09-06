@@ -1,3 +1,39 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/forms";
 @plugin "@tailwindcss/typography";
+
+/*
+ * One heading scale for every `prose` container on the site -- meeting
+ * write-ups and budget sections both.
+ *
+ * Typography's own scale sizes h2 at 1.5em and h3 at 1.25em, but nothing
+ * transcribed here is a page title: the page's <h1> is drawn by the layout
+ * above the `prose` article, and a document's own numbered headings start at
+ * h2. Every `prose` container used to shrink h2 to 1rem with a `prose-h2:*`
+ * utility of its own -- which left h3 at 1.25rem, *larger* than the heading
+ * above it, wherever a section nests one (a Conservation Commission agenda's
+ * items under its hearing groups, the revenue tabs). This brings the whole run
+ * onto one descending scale, once, so no container has to touch it again.
+ *
+ * Left unlayered on purpose. The typography plugin's `.prose` rules land in
+ * `@layer utilities`, which beats `@layer components` whatever the specificity,
+ * so an override there has to sit outside the layers to win. The `not-prose`
+ * exclusion is the plugin's own, kept so a heading given explicit classes
+ * inside a `not-prose` island -- the reserves policy accordions -- is left
+ * alone; a page that wants a heading a different size sets it there, directly
+ * on the element.
+ */
+.prose :is(h2, h3, h4):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.prose h2:not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+  font-size: 1rem;
+}
+
+.prose :is(h3, h4):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+  margin-top: 1rem;
+  font-size: 0.875rem;
+}
