@@ -29,16 +29,21 @@
   green, against the pale blue of the entries behind it and the white of the
   ones ahead. Pale because the box sits under two charts and a table of
   contents and is not what the page is about, so it wants the weight of a
-  highlighter and not of a warning. The three states are a fill apart and
-  nothing more now -- there is no outline left to be heavy or faint, since a
-  ring drawn with `box-shadow` is a rectangle around a box `clip-path` has
-  already cut into an arrow, and a border drawn on the box itself would run
-  straight through the point and notch rather than following them. Adjacent
-  boxes in the same state tessellate into one unbroken band rather than a
-  border between every pair, which is the correct reading of a run of steps
-  not yet reached, or already behind: no state is left to colour alone
-  either way, since each box says which of the three it is in its own
-  screen-reader text.
+  highlighter and not of a warning. A run of boxes in the same state
+  tessellating into one unbroken shape is the correct reading of a run of
+  steps not yet reached, or already behind, but it also read as one box:
+  a reader could no longer tell where one ended and the next began. So each
+  `<li>` is now two layers rather than one -- the list item itself is the
+  seam colour, cut to the box's own full arrow, and the fill sits on a
+  second, smaller arrow inset a couple of pixels inside it, `shape(i)`
+  walked out again at the smaller size. What shows in the gap between the
+  two is a thin line of the seam colour, following the point and the notch
+  the same way it follows the flat top and bottom, since it is the same
+  shape at both sizes -- a `box-shadow` ring or a plain border would not:
+  the one is a rectangle around a shape `clip-path` has already cut into an
+  arrow, and the other runs straight through the point and notch rather
+  than following them. No state is left to colour alone either way, since
+  each box says which of the three it is in its own screen-reader text.
 
   It is a footer, so it is built to be short: the boxes and the mark, and
   nothing else. There was a line above them naming the calendar and printing
@@ -190,6 +195,21 @@
     return `polygon(${points.join(", ")})`
   }
 
+  /**
+   * The seam between two boxes: each box's own fill sits inset from its own
+   * outline by this much, on a `<li>` whose own background is the seam
+   * colour showing through the gap that leaves. Two same-coloured arrows in
+   * a row were reading as one undivided shape -- correct tessellation, but a
+   * reader could no longer tell one box from the next -- so this draws the
+   * line tessellation itself does not.
+   *
+   * The inset shape reuses `shape(i)`, unwidened: it is walked out relative
+   * to the smaller, inset box, and a 10px point or notch stays a 10px point
+   * or notch on a box a few pixels narrower, close enough not to read as a
+   * different depth.
+   */
+  const SEAM = 2
+
   /** True while an entry's own day, or its own run of days, is today. */
   const underWay = (step: Step) => today >= step.on && today <= ends(step)
 
@@ -293,15 +313,15 @@
                pointer would be a static element with a handler, and the entry is
                one thing either way. `z-index` climbs with `i` and `clip-path`
                is inline rather than a class -- both are per-box numbers, not
-               a fixed set Tailwind has a utility for. -->
+               a fixed set Tailwind has a utility for.
+
+               The `<li>` itself is the seam colour, cut to the full arrow;
+               the fill sits on a second, inset layer inside it, cut to the
+               same arrow a few pixels smaller, so a ring of the seam colour
+               shows all the way around every box, point and notch included. -->
             <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
             <li
-              class="relative m-0 flex-1 px-3 py-1.5 text-center transition-[filter] outline-none {status ===
-              'ahead'
-                ? 'bg-white'
-                : status === 'current'
-                  ? 'bg-green-200'
-                  : 'bg-sky-50'} {active === i ? 'drop-shadow-md' : ''}"
+              class="relative m-0 flex-1 bg-slate-300 outline-none"
               style="clip-path: {shape(i)}; z-index: {i}; margin-left: {i === 0
                 ? '0'
                 : `-${DEPTH}px`}"
@@ -311,56 +331,66 @@
               onfocus={(event) => show(i, event.currentTarget)}
               onblur={() => (active = null)}
             >
-              <span
-                class="block text-xs font-medium {status === 'ahead'
-                  ? 'text-slate-400'
-                  : 'text-slate-900'}"
+              <div
+                class="px-3 py-1.5 text-center transition-[filter] {status === 'ahead'
+                  ? 'bg-white'
+                  : status === 'current'
+                    ? 'bg-green-200'
+                    : 'bg-sky-50'} {active === i ? 'drop-shadow-md' : ''}"
+                style="clip-path: {shape(i)}; margin: {SEAM}px"
               >
-                {step.date}
-              </span>
-              <!-- `break-normal` because the page's prose wrapper breaks long
-                 words, and a box this narrow would hyphenate a summary rather
-                 than wrap it. -->
-              <span
-                class="mt-0.5 block text-xs leading-snug break-normal {status === 'current'
-                  ? 'text-slate-800'
-                  : status === 'ahead'
+                <span
+                  class="block text-xs font-medium {status === 'ahead'
                     ? 'text-slate-400'
-                    : 'text-slate-600'}"
-              >
-                {step.summary}
-              </span>
-
-              {#if step.document && documents[step.document]}
-                <!-- The file this step produced. Named for what it is rather
-                     than for what it contains: the box around it says which
-                     step, which is the more useful half. -->
-                <a
-                  class="mt-1 block text-[11px] text-slate-600 underline decoration-slate-400 hover:text-slate-900"
-                  href={documents[step.document]}
-                  target="_blank"
-                  rel="external noopener noreferrer"
+                    : 'text-slate-900'}"
                 >
-                  PDF<span class="sr-only">
-                    {step.document === "book" ? ", the budget book" : ", the City Council agenda"},
-                    opens the city's file in a new tab</span
-                  >
-                </a>
-              {/if}
+                  {step.date}
+                </span>
+                <!-- `break-normal` because the page's prose wrapper breaks long
+                   words, and a box this narrow would hyphenate a summary rather
+                   than wrap it. -->
+                <span
+                  class="mt-0.5 block text-xs leading-snug break-normal {status === 'current'
+                    ? 'text-slate-800'
+                    : status === 'ahead'
+                      ? 'text-slate-400'
+                      : 'text-slate-600'}"
+                >
+                  {step.summary}
+                </span>
 
-              <!-- The book's own sentence, and where the budget has got to: both
-                 are in the box for a reader who cannot hover it or see which
-                 side of the mark it is on. -->
-              <span class="sr-only">
-                {step.step}
-                {status === "ahead"
-                  ? "Ahead."
-                  : status === "done"
-                    ? "Done."
-                    : underWay(step)
-                      ? "Happening now."
-                      : "Done. This is where the budget is."}
-              </span>
+                {#if step.document && documents[step.document]}
+                  <!-- The file this step produced. Named for what it is rather
+                       than for what it contains: the box around it says which
+                       step, which is the more useful half. -->
+                  <a
+                    class="mt-1 block text-[11px] text-slate-600 underline decoration-slate-400 hover:text-slate-900"
+                    href={documents[step.document]}
+                    target="_blank"
+                    rel="external noopener noreferrer"
+                  >
+                    PDF<span class="sr-only">
+                      {step.document === "book"
+                        ? ", the budget book"
+                        : ", the City Council agenda"}, opens the city's file in a new tab</span
+                    >
+                  </a>
+                {/if}
+
+                <!-- The book's own sentence, and where the budget has got to: both
+                   are in the box for a reader who cannot hover it or see which
+                   side of the mark it is on. -->
+                <span class="sr-only">
+                  {step.step}
+                  {status === "ahead"
+                    ? "Ahead."
+                    : status === "done"
+                      ? "Done."
+                      : underWay(step)
+                        ? "Happening now."
+                        : "Done. This is where the budget is."}
+                </span>
+              </div>
             </li>
           {/each}
         </ol>
