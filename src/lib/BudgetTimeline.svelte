@@ -12,33 +12,14 @@
   thing with a beginning and an end, twelve of them fill the width evenly, and a
   box is somewhere for words to live.
 
-  Each box is an arrow rather than a rectangle -- a point nesting into the
-  notch of the one after it, tessellated edge to edge with no gap between
-  them, the way a process reads as a sequence of steps rather than a row of
-  cards. The point and the notch are the same 10px depth wherever a box sits,
-  so the two edges meet exactly regardless of how wide the boxes themselves
-  are; the first box has no notch (nothing comes before it) and the last has
-  no point (nothing after it to nest into). `clip-path` draws the shape and
-  a negative `margin-left` pulls each box left by that same 10px so the
-  notch lands on the point behind it; `z-index` climbs left to right so each
-  box paints over the tip of the one before it, and what shows through its
-  own notch is exactly that tip -- the two shapes share one diagonal edge
-  rather than drawing two.
-
   The stage the budget has reached is the one box in another colour: a pale
   green, against the pale blue of the entries behind it and the white of the
   ones ahead. Pale because the box sits under two charts and a table of
   contents and is not what the page is about, so it wants the weight of a
-  highlighter and not of a warning. The three states are a fill apart and
-  nothing more now -- there is no outline left to be heavy or faint, since a
-  ring drawn with `box-shadow` is a rectangle around a box `clip-path` has
-  already cut into an arrow, and a border drawn on the box itself would run
-  straight through the point and notch rather than following them. Adjacent
-  boxes in the same state tessellate into one unbroken band rather than a
-  border between every pair, which is the correct reading of a run of steps
-  not yet reached, or already behind: no state is left to colour alone
-  either way, since each box says which of the three it is in its own
-  screen-reader text.
+  highlighter and not of a warning. The three states are a fill apart rather
+  than an outline apart -- an outline heavy enough to see across a page of
+  twelve boxes reads as a box drawn twice -- and no state is left to colour
+  alone: each box says which of the three it is in its own screen-reader text.
 
   It is a footer, so it is built to be short: the boxes and the mark, and
   nothing else. There was a line above them naming the calendar and printing
@@ -164,32 +145,6 @@
   /** Where an entry stands against that: behind it, it, or ahead of it. */
   const standing = (i: number) => (i === reached ? "current" : i < reached ? "done" : "ahead")
 
-  /** How deep the point and the notch cut, in pixels either side of a box --
-      fixed rather than a share of the box's own width, so a point always
-      meets the notch after it exactly regardless of how wide either box is. */
-  const DEPTH = 10
-
-  /**
-   * The polygon a box is clipped to: a point on the right for every box but
-   * the last, a matching notch on the left for every box but the first.
-   * Walked clockwise from the top-left corner -- the point (or the plain
-   * top-right and bottom-right corners, lacking one) reached before the
-   * notch (or the plain top-left corner, lacking one) closes the shape.
-   */
-  const shape = (i: number) => {
-    const point = i < steps.length - 1
-    const notch = i > 0
-    const points = [
-      "0% 0%",
-      ...(point
-        ? [`calc(100% - ${DEPTH}px) 0%`, "100% 50%", `calc(100% - ${DEPTH}px) 100%`]
-        : ["100% 0%", "100% 100%"]),
-      "0% 100%",
-      ...(notch ? [`${DEPTH}px 50%`] : []),
-    ]
-    return `polygon(${points.join(", ")})`
-  }
-
   /** True while an entry's own day, or its own run of days, is today. */
   const underWay = (step: Step) => today >= step.on && today <= ends(step)
 
@@ -247,14 +202,8 @@
   }
 </script>
 
-<div class="budget-timeline not-prose relative isolate" bind:this={root}>
+<div class="budget-timeline not-prose relative" bind:this={root}>
   <!--
-    `isolate` because the boxes below now each carry their own `z-index`, one
-    per box, to make the tessellation work -- a stacking context of its own
-    keeps that comparison local to this component, rather than putting a
-    twelve-box row into the same stack as the rest of the page (the header's
-    own year menu, say) by numeric accident.
-
     The book's own sentence for the box under the pointer, over the page rather
     than in a lane of its own: a footer costs the window whatever it is tall,
     and this is wanted about a second in every hundred.
@@ -265,8 +214,8 @@
   -->
   {#if shown}
     <p
-      class="budget-detail pointer-events-none absolute bottom-full m-0 mb-2 w-64 max-w-[80vw] -translate-x-1/2 rounded-md border border-slate-200 bg-white px-3 py-2 text-xs leading-snug text-slate-700 shadow-lg"
-      style="left: {spot}px; z-index: {steps.length + 1}"
+      class="budget-detail pointer-events-none absolute bottom-full z-10 m-0 mb-2 w-64 max-w-[80vw] -translate-x-1/2 rounded-md border border-slate-200 bg-white px-3 py-2 text-xs leading-snug text-slate-700 shadow-lg"
+      style="left: {spot}px"
       aria-hidden="true"
     >
       <span class="font-medium text-slate-900">{shown.date}</span>
@@ -286,25 +235,20 @@
       <div class="relative pb-1">
         <!-- Named here rather than in a line above the boxes: the row is what
              the name belonged to, and this way it costs no height. -->
-        <ol class="m-0 flex list-none p-0" aria-label="Budget calendar">
+        <ol class="m-0 grid list-none grid-cols-12 gap-1.5 p-0" aria-label="Budget calendar">
           {#each steps as step, i (step.date)}
             {@const status = standing(i)}
             <!-- The box is the list item itself: a `<div>` inside it taking the
                pointer would be a static element with a handler, and the entry is
-               one thing either way. `z-index` climbs with `i` and `clip-path`
-               is inline rather than a class -- both are per-box numbers, not
-               a fixed set Tailwind has a utility for. -->
+               one thing either way. -->
             <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
             <li
-              class="relative m-0 flex-1 px-3 py-1.5 text-center transition-[filter] outline-none {status ===
+              class="m-0 rounded-md px-2 py-1.5 text-center transition-shadow outline-none {status ===
               'ahead'
-                ? 'bg-white'
+                ? 'bg-white ring-1 ring-slate-200'
                 : status === 'current'
-                  ? 'bg-green-200'
-                  : 'bg-sky-50'} {active === i ? 'drop-shadow-md' : ''}"
-              style="clip-path: {shape(i)}; z-index: {i}; margin-left: {i === 0
-                ? '0'
-                : `-${DEPTH}px`}"
+                  ? 'bg-green-200 ring-1 ring-green-400'
+                  : 'bg-sky-50 ring-1 ring-sky-200'} {active === i ? 'shadow-md' : ''}"
               tabindex="0"
               onpointerenter={(event) => show(i, event.currentTarget)}
               onpointerleave={() => (active = null)}
@@ -368,15 +312,10 @@
         <!-- Today, over the boxes. Dashed and pale: where an entry is happening it
            crosses that entry's own box, and a solid rule through it is harder to
            read than a dashed one behind. It is the only thing here that says
-           what day it is, which is all the date was ever for.
-
-           Its own `z-index` because the boxes now climb their own stack, one
-           per box, to make the tessellation work -- `steps.length` is above
-           the highest of those (0 through `steps.length - 1`) whatever that
-           count is. -->
+           what day it is, which is all the date was ever for. -->
         <div
           class="budget-today absolute top-0 bottom-1 -translate-x-1/2 border-l border-dashed border-slate-400"
-          style="left: {now}%; z-index: {steps.length}"
+          style="left: {now}%"
         ></div>
       </div>
     </div>

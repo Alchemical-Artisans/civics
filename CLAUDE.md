@@ -552,22 +552,7 @@ Notable pieces:
   book's — and the book's own sentence comes up as a tooltip over the box on
   hover or focus, drawn outside the scrolling strip because `overflow-x` clips
   vertically too, and sits hidden in the box for a screen reader. Nothing else
-  is in the footer: no label, no today's date, only the boxes and the mark.
-  Each box is an arrow rather than a rectangle now, tessellated edge to edge:
-  a `clip-path` point on the right nesting into the matching notch a
-  negative `margin-left` pulls the next box onto, `z-index` climbing left to
-  right so each box paints over the tip of the one before it and its own
-  notch reveals exactly that tip, so the two shapes share one diagonal edge
-  rather than drawing two. The first box has no notch and the last no point.
-  There is no ring or border any more either, since a `box-shadow` ring is a
-  rectangle around a shape `clip-path` has already cut into an arrow, and a
-  same-state run of boxes tessellates into one unbroken band rather than a
-  seam at every pair — the three states (ahead, current, done) are a fill
-  apart and nothing else now, which reads correctly since a run of steps not
-  yet reached, or already behind, is one thing rather than several boxes
-  that happen to agree. `isolate` on the component's own root keeps those
-  per-box `z-index` numbers from ever being compared against the rest of
-  the page's stacking (the header's own year menu, say) by accident. Two
+  is in the footer: no label, no today's date, only the boxes and the mark. Two
   boxes carry a `PDF` link: a step that produced a document the city published
   hangs it there, so the budget book comes off "Final review" and the Council's
   appropriation orders off "Public hearings", the run of hearings the agenda of
