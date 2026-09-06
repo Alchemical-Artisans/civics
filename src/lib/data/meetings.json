@@ -1,8 +1,25 @@
 {
-  "generatedAt": "2026-09-01T16:58:51.089Z",
+  "generatedAt": "2026-09-05T18:37:08.164Z",
   "source": "https://www.haverhillma.gov/government/agendas-and-minutes/",
-  "count": 284,
+  "count": 287,
   "meetings": [
+    {
+      "title": "2026-09-17 Conservation Commission Agenda",
+      "pageUrl": "/document-manager/media-pages/agenda-and-minutes/2026-09-17-conservation-commission-agenda/",
+      "fileUrl": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/231exdmn/20260917_hccagenda.pdf",
+      "category": "Conservation Commission Agendas",
+      "description": "",
+      "board": "Conservation Commission",
+      "kind": "agenda",
+      "date": "2026-09-17",
+      "dateSource": "meeting-date",
+      "rawMeetingDate": "09/17/2026 07:15 PM",
+      "dateAdjusted": false,
+      "dateConflict": false,
+      "filenameDate": null,
+      "needsReview": false,
+      "docId": "2026-09-17-conservation-commission-agenda-26935e52"
+    },
     {
       "title": "September 3, 2026 License Commission Agenda",
       "pageUrl": "/document-manager/media-pages/agenda-and-minutes/september-3-2026-license-commission-agenda/",
@@ -123,6 +140,23 @@
       "docId": "citycouncil-81126-minutes-780c6100"
     },
     {
+      "title": "CityCouncil_8.11.26_minutes (1)",
+      "pageUrl": "/document-manager/media-pages/agenda-and-minutes/citycouncil_81126_minutes-1/",
+      "fileUrl": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/a3abuvy4/citycouncil_81126_minutes.pdf",
+      "category": "City Council Minutes",
+      "description": "",
+      "board": "City Council",
+      "kind": "minutes",
+      "date": "2026-08-11",
+      "dateSource": "meeting-date",
+      "rawMeetingDate": "08/11/2026 12:00 PM",
+      "dateAdjusted": false,
+      "dateConflict": false,
+      "filenameDate": "2026-08-11",
+      "needsReview": false,
+      "docId": "citycouncil-81126-minutes-1-16a17d3e"
+    },
+    {
       "title": "2026-08-06 Conservation Commission Agenda",
       "pageUrl": "/document-manager/media-pages/agenda-and-minutes/2026-08-06-conservation-commission-agenda/",
       "fileUrl": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/gkfnzj4d/20260806_hccagenda-revised.pdf",
@@ -172,6 +206,23 @@
       "filenameDate": null,
       "needsReview": false,
       "docId": "august-6-2026-license-commission-agenda-8e6e9f71"
+    },
+    {
+      "title": "License Commission - August 6, 2026",
+      "pageUrl": "/document-manager/media-pages/agenda-and-minutes/license-commission-august-6-2026/",
+      "fileUrl": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/nx0gggwv/august-6-2026.pdf",
+      "category": "License Commission Minutes",
+      "description": "",
+      "board": "License Commission",
+      "kind": "minutes",
+      "date": "2026-08-06",
+      "dateSource": "meeting-date",
+      "rawMeetingDate": "08/06/2026 06:00 PM",
+      "dateAdjusted": false,
+      "dateConflict": false,
+      "filenameDate": null,
+      "needsReview": false,
+      "docId": "license-commission-august-6-2026-095363e5"
     },
     {
       "title": "CityCouncil_publicsafety_7.29.26_minutes",
