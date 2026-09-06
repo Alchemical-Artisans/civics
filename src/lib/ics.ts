@@ -152,7 +152,7 @@ export function toIcs(event: CalendarEvent, stamp: string): string {
   const lines = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
-    "PRODID:-//Haverhill Public Documents//Meeting Calendar//EN",
+    "PRODID:-//Meetinghouse//Meeting Calendar//EN",
     "CALSCALE:GREGORIAN",
     ...(event.allDay ? [] : VTIMEZONE),
     "BEGIN:VEVENT",

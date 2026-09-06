@@ -1528,16 +1528,16 @@ test.describe("budget pages", () => {
     await page.goto(`/budget/${books[0]}/${sections[0]}`)
     await expect(page.getByRole("heading", { level: 1 })).not.toBeEmpty()
 
-    // The bar reads "Haverhill Public Documents / 2027 Budget / Reserves": a
-    // section used to take it over, which named the page and lost the year it
-    // belonged to. The middle of it is the way back to the book.
+    // The bar reads "Meetinghouse / 2027 Budget / Reserves": a section used to
+    // take it over, which named the page and lost the year it belonged to. The
+    // middle of it is the way back to the book.
     const bar = page.getByRole("banner")
     const book = bar.getByRole("link", { name: "2027 Budget", exact: true })
     expect(await book.getAttribute("href")).toMatch(new RegExp(`/budget/${books[0]}$`))
 
     const crumb = (await book.boundingBox())!
     const name = (await page.getByRole("heading", { level: 1 }).boundingBox())!
-    const mark = (await bar.getByRole("link", { name: /Haverhill Public/ }).boundingBox())!
+    const mark = (await bar.getByRole("link", { name: "Meetinghouse" }).boundingBox())!
     expect(crumb.x).toBeGreaterThan(mark.x)
     expect(crumb.x).toBeLessThan(name.x)
 

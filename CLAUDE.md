@@ -169,7 +169,7 @@ Notable pieces:
   carries what the page used to head itself with — the name (its only `<h1>`)
   and the fiscal year the book covers, from `src/lib/heading.ts`, which
   reads `page.data`. A section names the book before itself, as a link:
-  `Haverhill Public Documents / 2027 Budget / Reserves`, which is `barOf`'s
+  `Meetinghouse / 2027 Budget / Reserves`, which is `barOf`'s
   `trail` -- a section used to take the bar over, which named the page and lost
   the year it belonged to. Plain links rather than a second `<nav>`, since the
   bar already has one. a budget book is called `2027 Budget`, never "FY2027

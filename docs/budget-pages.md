@@ -83,10 +83,10 @@ A book page was spending four lines on a heading, a date line and a link above
 the two charts anyone came for, and the bar was already there saying where the
 reader was.
 
-**A section names the book before it names itself.** The bar reads "Haverhill
-Public Documents / 2027 Budget / Reserves", and the middle of it is a link to
-the book. A section used to take the bar over entirely — "Haverhill Public
-Documents / Reserves" — which named the page and lost the thing it was part of:
+**A section names the book before it names itself.** The bar reads "Meetinghouse
+/ 2027 Budget / Reserves", and the middle of it is a link to the book. A section
+used to take the bar over entirely — "Meetinghouse / Reserves" — which named the
+page and lost the thing it was part of:
 nothing said which year's reserves those were, and the only way back to the book
 was the bar's own menu of years. `barOf` returns that as `trail`, outermost
 first; a book's own page has none, being the thing. They are plain links rather

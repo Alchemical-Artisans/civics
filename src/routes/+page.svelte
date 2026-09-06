@@ -40,7 +40,7 @@
 </script>
 
 <svelte:head>
-  <title>Haverhill Public Documents</title>
+  <title>Meetinghouse</title>
   <meta http-equiv="refresh" content="0;url={destination}" />
 </svelte:head>
 

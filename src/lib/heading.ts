@@ -56,10 +56,10 @@ export function barOf(data: PageNaming): PageBar {
     name: section ? section.title : book ? bookName(book.year) : null,
 
     // The book, on a section of it. A section used to take the bar over
-    // entirely -- "Haverhill Public Documents / Reserves" -- which named the
-    // page and lost the thing it is part of: there was nothing to say which
-    // year's reserves those were, and no way back to the book but the menu.
-    // The book's own page has no trail, because it is the thing.
+    // entirely -- "Meetinghouse / Reserves" -- which named the page and lost
+    // the thing it is part of: there was nothing to say which year's reserves
+    // those were, and no way back to the book but the menu. The book's own
+    // page has no trail, because it is the thing.
     trail: book && section ? [{ name: bookName(book.year), href: Router.budgetBook(book.id) }] : [],
 
     // A fiscal year is named for the year it ends in, which is worth saying

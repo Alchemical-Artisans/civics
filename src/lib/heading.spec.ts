@@ -24,9 +24,9 @@ describe("barOf", () => {
     expect(bar.dates).toBe("July 1, 2026 to June 30, 2027")
   })
 
-  // A section used to take the bar over -- "Haverhill Public Documents /
-  // Reserves" -- which named the page and lost the year it belonged to. The
-  // book goes before it, and is the way back to it.
+  // A section used to take the bar over -- "Meetinghouse / Reserves" -- which
+  // named the page and lost the year it belonged to. The book goes before it,
+  // and is the way back to it.
   it("puts the book before a section of it, as a link to the book", () => {
     const bar = barOf({ book: BOOK, section: { title: "Fiscal Reserves", page: 17 } })
     expect(bar.trail).toEqual([{ name: "2027 Budget", href: "/budget/fy2027" }])

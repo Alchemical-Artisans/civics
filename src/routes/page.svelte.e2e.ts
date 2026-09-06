@@ -66,7 +66,7 @@ test.describe("the site header", () => {
       // because the site name sits right beside it, and a decorative image has
       // no img role to find it by.
       await expect(header.locator("img")).toBeVisible()
-      await expect(header.getByRole("link", { name: "Haverhill Public Documents" })).toBeVisible()
+      await expect(header.getByRole("link", { name: "Meetinghouse" })).toBeVisible()
       await expect(header.getByRole("link", { name: "Budget", exact: true })).toBeVisible()
       await expect(header.getByRole("link", { name: "Calendar", exact: true })).toBeVisible()
     }
@@ -144,7 +144,7 @@ test.describe("the site header", () => {
 
   test("the mark goes to the front door", async ({ page }) => {
     await page.goto("/calendar")
-    await page.getByRole("link", { name: "Haverhill Public Documents" }).click()
+    await page.getByRole("link", { name: "Meetinghouse" }).click()
     // `/` forwards, so the mark lands where the front door lands.
     await expect(page).toHaveURL(`/budget/${newest}`)
   })

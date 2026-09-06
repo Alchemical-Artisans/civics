@@ -125,14 +125,14 @@
       <!-- Decorative: the name sits right beside it, so a screen reader
            announcing the mark as well would only say the same thing twice. -->
       <img class="h-7 w-7" src={mark} alt="" />
-      <span class="font-semibold tracking-tight">Haverhill Public Documents</span>
+      <span class="font-semibold tracking-tight">Meetinghouse</span>
     </a>
 
     <!-- What the page sits inside, before the page's own name: on a section of
-         a budget book that is the book, so the bar reads "Haverhill Public
-         Documents / 2027 Budget / Reserves" and the middle of it is the way
-         back. A section used to take the bar over, which named the page and
-         lost the year it belonged to.
+         a budget book that is the book, so the bar reads "Meetinghouse / 2027
+         Budget / Reserves" and the middle of it is the way back. A section used
+         to take the bar over, which named the page and lost the year it
+         belonged to.
 
          Plain links rather than a `<nav>` and a list. The bar already carries
          one navigation landmark, for the two halves of the site, and a second
