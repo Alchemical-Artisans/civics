@@ -54,7 +54,7 @@ city's file.
      meeting: {
        time: "7:00 PM",
        location: { name: "…, 4 Summer St, Room 202", mapQuery: "4 Summer Street, Haverhill, MA" },
-       remote: "https://meet.google.com/…",
+       remote: { url: "https://meet.google.com/…", meetingId: "…", passcode: "…" },
        notice: ["The meeting is held in person as its official location under…"],
      },
    })
@@ -63,7 +63,9 @@ city's file.
    Every field is optional, and the file itself is optional — skip it for a set
    of minutes that states none of this. `name` is shown and should be verbatim;
    `mapQuery` is what gets handed to the map, so drop the room number and add
-   the city. `notice` is the standing boilerplate an agenda opens with — Open
+   the city. `remote.meetingId` and `remote.passcode` are optional and shown
+   beside the join link when the document prints them. `notice` is the standing
+   boilerplate an agenda opens with — Open
    Meeting Law status, recording notices — one string per paragraph; it goes
    behind an information icon next to the title rather than into the write-up,
    where it would push the agenda below the fold. See `MeetingDetails` in

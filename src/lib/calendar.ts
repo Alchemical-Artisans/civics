@@ -122,8 +122,17 @@ export interface MeetingDetails {
      */
     mapQuery: string
   }
-  /** Join URL for the remote option, when the document gives one. */
-  remote?: string
+  /**
+   * The remote option, when the document gives one. `url` is the join link;
+   * `meetingId` and `passcode` are shown beside it when the document prints
+   * them, since a reader dialling in from a phone needs them and should not
+   * have to dig them out of the notice.
+   */
+  remote?: {
+    url: string
+    meetingId?: string
+    passcode?: string
+  }
   /**
    * Standing boilerplate from the head of the document -- Open Meeting Law
    * status, recording notices -- one string per paragraph. It is about the

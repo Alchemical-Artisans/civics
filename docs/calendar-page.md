@@ -304,7 +304,8 @@ wraps every document page: a back link, the title, then a header, then the page
 itself in a `prose` container. The header runs the title, with an information
 icon beside it where the document carries standing boilerplate; then board, kind
 and date; then where the meeting is held, linked to a map, and `Remote Access`,
-linked to the join URL; then the links to the city's own copy.
+linked to the join URL — with the meeting ID and passcode beside it where the
+document prints them; then the links to the city's own copy.
 
 [`Note.svelte`](../src/lib/Note.svelte) is that icon. It pops the text over the
 page rather than expanding, so opening it never moves the agenda underneath, and

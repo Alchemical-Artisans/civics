@@ -93,14 +93,22 @@
           </a>
         {/if}
         {#if details.remote}
-          <a
-            class="underline hover:text-slate-900"
-            href={details.remote}
-            target="_blank"
-            rel="external noopener noreferrer"
-          >
-            Remote Access<span class="sr-only">, joins the meeting in a new tab</span>
-          </a>
+          <span class="inline-flex flex-wrap items-center gap-x-3 gap-y-1">
+            <a
+              class="underline hover:text-slate-900"
+              href={details.remote.url}
+              target="_blank"
+              rel="external noopener noreferrer"
+            >
+              Remote Access<span class="sr-only">, joins the meeting in a new tab</span>
+            </a>
+            {#if details.remote.meetingId}
+              <span class="text-slate-500">Meeting ID: {details.remote.meetingId}</span>
+            {/if}
+            {#if details.remote.passcode}
+              <span class="text-slate-500">Passcode: {details.remote.passcode}</span>
+            {/if}
+          </span>
         {/if}
       </p>
     {/if}
