@@ -1454,8 +1454,11 @@ test.describe("budget pages", () => {
     await expect(entries.last()).toContainText("This is where the budget is.")
 
     // Which is also where the mark sits: at the end of the row, and the mark is
-    // now the only thing here that says what day it is.
-    await expect(page.locator(".budget-today")).toHaveAttribute("style", "left: 100%")
+    // now the only thing here that says what day it is. Its own z-index --
+    // 12, one past the highest of the boxes' own -- is there beside it, so
+    // the mark still crosses them rather than sitting behind the tessellated
+    // ones' stack.
+    await expect(page.locator(".budget-today")).toHaveAttribute("style", "left: 100%; z-index: 12")
   })
 
   test("gives the book's own wording for the step under the pointer", async ({ page }) => {
