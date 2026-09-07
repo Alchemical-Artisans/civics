@@ -1,6 +1,7 @@
 <script lang="ts">
   import { page } from "$app/state"
   import { headingOf } from "$lib/heading"
+  import SiteFooter from "$lib/SiteFooter.svelte"
 
   let { data, children } = $props()
 
@@ -15,7 +16,11 @@
   // clear of it: 7rem against a footer that is 84px at its shortest and 101 at
   // its tallest, which is clearance rather than a margin. It was 8rem, and that
   // extra half-inch read as a gap between the chart's figures and the calendar.
-  // Both kinds of page carry it, now that both carry the calendar.
+  // Both kinds of page carry it, now that both carry the calendar. The site's
+  // attribution footer sits in that clearance too -- rendered below the article
+  // here rather than by the root layout, which puts it at the foot of the flow
+  // where the fixed calendar would cover it -- so the 7rem now holds it, rather
+  // than the last line of the transcription, off the calendar.
   // A section can ask for the book page's treatment instead, by returning
   // `wide` from its own load: `reserves` is two charts and a column of prose
   // laid out as one screen, and a 48rem strip has nowhere to put the charts.
@@ -49,6 +54,13 @@
   <article class="budget-prose prose max-w-none break-words prose-slate">
     {@render children()}
   </article>
+
+  <!-- The site's attribution line. The calendar half puts it at the foot of the
+       flow; here it sits inside the same `pb-28` that clears the fixed budget
+       calendar, so the clearance now holds the last line of the page off the
+       calendar rather than the last line of the transcription. The single-screen
+       sections subtract its height in their own `calc(100vh - ...)`. -->
+  <SiteFooter />
 </div>
 
 <style>

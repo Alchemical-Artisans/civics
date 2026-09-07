@@ -134,7 +134,7 @@
   reserves each have one, and a plain nav of links needs no script at all to
   work, on or off.
 -->
-<div class="lg:grid lg:h-[calc(100vh-181px)] lg:grid-cols-[max-content_minmax(0,1fr)] lg:gap-x-10">
+<div class="lg:grid lg:h-[calc(100vh-221px)] lg:grid-cols-[max-content_minmax(0,1fr)] lg:gap-x-10">
   <!-- The same bar the front page draws for "Spending", one column of it --
        see the script for why it carries no link back to this page. -->
   <div class="lg:h-full">

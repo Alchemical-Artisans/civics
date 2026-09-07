@@ -125,7 +125,7 @@
   chart. Three policies, not four -- the book states Policy #1, #2a and #2b,
   and there is no #2 of its own the way reserves' #2 is a use for the label.
 -->
-<div class="lg:grid lg:h-[calc(100vh-181px)] lg:grid-cols-[max-content_minmax(0,1fr)] lg:gap-x-10">
+<div class="lg:grid lg:h-[calc(100vh-221px)] lg:grid-cols-[max-content_minmax(0,1fr)] lg:gap-x-10">
   <!--
     What the debt is made of, standing on end in the narrow column
     `BudgetBands` occupies on `reserves` -- a composition rather than a

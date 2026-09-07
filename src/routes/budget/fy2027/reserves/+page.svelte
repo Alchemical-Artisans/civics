@@ -115,13 +115,14 @@
   fund where it is supposed to be -- and a reader working down four sections of
   the city's prose is exactly the reader who wants that answer still in view.
 
-  So the page is one screen on a wide window: 181px of it is spoken for -- the
-  bar at the top (53), the padding the layout puts above the page (16) and the
-  padding it puts below to clear the fixed calendar (112) -- and the grid takes
-  the rest. Below `lg` it is a single column and scrolls as a page, charts
-  first, because a column narrower than these has nowhere to put them.
+  So the page is one screen on a wide window: 221px of it is spoken for -- the
+  bar at the top (53), the padding the layout puts above the page (16), the
+  site's attribution footer (40) and the padding that clears the fixed calendar
+  below it (112) -- and the grid takes the rest. Below `lg` it is a single
+  column and scrolls as a page, charts first, because a column narrower than
+  these has nowhere to put them.
 -->
-<div class="lg:grid lg:h-[calc(100vh-181px)] lg:grid-cols-[max-content_minmax(0,1fr)] lg:gap-x-10">
+<div class="lg:grid lg:h-[calc(100vh-221px)] lg:grid-cols-[max-content_minmax(0,1fr)] lg:gap-x-10">
   <!--
     The three policies as three columns, down the left where the book's front
     page keeps its two: the page's whole question is whether each fund is where
