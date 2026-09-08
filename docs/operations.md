@@ -6,7 +6,7 @@
 npm run metadata:update    # refresh everything the site takes from the city
 ```
 
-That is the command to run. It drives the three scrapers in sequence and prints
+That is the command to run. It drives the four scrapers in sequence and prints
 each one's summary under a heading, then says whether anything failed.
 
 A failing step does not stop the ones after it, and the exit status is non-zero
@@ -25,6 +25,7 @@ them.
 ```sh
 npm run calendar:update    # add documents published since the last run
 npm run calendar:rebuild   # re-scrape everything from scratch
+npm run planning-board:update  # re-scrape that board's own agendas and minutes
 npm run budget:update      # re-scrape the budget and audit listing
 npm run schedule:update    # re-read the boards' meeting rules and calendars
 ```
@@ -41,6 +42,14 @@ one page and a table of dates on each of two others, so the distinction between
 a cheap refresh and an expensive full rebuild has no meaning for either — every
 run replaces the file.
 
+**`planning-board:update` runs after the calendar, and replaces only its own
+records.** That board publishes its agendas and minutes on its own page rather
+than in the city's listing, so its records are in `meetings.json` beside the
+listing's but are scraped from somewhere else. Each record carries a `source`
+saying which scrape owns it, and `calendar:update --prune` skips the ones it
+does not — without that it would delete all 163 on its next run. See
+[data-format.md](./data-format.md#where-a-record-came-from).
+
 **`schedule:update` shouts when the Council's wording changes.** That rule is
 prose, and `src/lib/schedule.ts` reads it into dates — a reading only valid for
 the sentences it was made about. So the script prints a warning when the words
@@ -50,9 +59,15 @@ calendar the Council never meant to hold. The two boards that print their own
 dates need no such care — the dates are the dates. See
 [calendar-page.md](./calendar-page.md#sittings-the-city-has-said-it-will-hold).
 
-Either half coming back empty is a hard failure rather than a written file: it
+Any half coming back empty is a hard failure rather than a written file: it
 means a page's markup moved, and a file written from it would empty the calendar
-of every upcoming sitting.
+of every upcoming sitting. `planning-board:update` fails the same way and for
+the same reason.
+
+**Reading a schedule PDF needs poppler.** The Planning Board's dates are inside
+a PDF rather than on its page, so `schedule:update` shells out to `pdftotext`.
+It says so plainly if the binary is missing rather than reporting an empty
+parse, which would look like the city having moved the schedule.
 
 None of them touches the hand-written pages. Those live in
 `src/routes/calendar/meetings/` and `src/routes/budget/<year>/`; the scripts

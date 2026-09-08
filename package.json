@@ -18,6 +18,7 @@
     "metadata:update": "node scripts/update-metadata.mjs",
     "calendar:rebuild": "node scripts/rebuild-calendar.mjs",
     "calendar:update": "node scripts/update-calendar.mjs",
+    "planning-board:update": "node scripts/update-planning-board.mjs",
     "budget:update": "node scripts/update-budget.mjs",
     "schedule:update": "node scripts/update-schedule.mjs",
     "storybook": "storybook dev -p 6006",

@@ -53,13 +53,23 @@ if (fresh.length) {
   console.log("No new documents in the listing.")
 }
 
-let meetings = [...store.meetings, ...added]
+// Everything stored, with its provenance filled in where a record predates the
+// field: until the Planning Board's own page was scraped, the listing was the
+// only source there was.
+let meetings = [
+  ...store.meetings.map((m) => ({ ...m, source: m.source ?? LISTING_URL })),
+  ...added.map((m) => ({ ...m, source: LISTING_URL })),
+]
 
 let removed = 0
 if (prune) {
   const live = new Set(docs.map(documentKey))
   const before = meetings.length
-  meetings = meetings.filter((m) => live.has(documentKey(m)))
+  // Only records this scrape owns. The Planning Board publishes its agendas
+  // and minutes on its own page rather than in this listing, so every one of
+  // them is absent from `live` -- pruning against it blindly would delete the
+  // lot. See scripts/update-planning-board.mjs.
+  meetings = meetings.filter((m) => m.source !== LISTING_URL || live.has(documentKey(m)))
   removed = before - meetings.length
 }
 

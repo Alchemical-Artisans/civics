@@ -48,5 +48,14 @@
   "february-18-2025-administration-finance-minutes::adminfin_21825_minutes.pdf": {
     "needsReview": false,
     "date": "2025-02-18"
+  },
+  "planning-board::doc020625-agenda-2025.pdf": {
+    "needsReview": true
+  },
+  "planning-board::doc052226.pdf": {
+    "needsReview": true
+  },
+  "planning-board::pbmnt81124.pdf": {
+    "needsReview": true
   }
 }

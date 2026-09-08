@@ -65,6 +65,19 @@ npx playwright test src/routes/calendar/page.svelte.e2e.ts
 
 Two halves joined by one committed data file and nothing else.
 
+**Not every board's documents are in the listing.** The Planning Board keeps its
+agendas and minutes on its own page as plain CDN links, 163 of them back to
+November 2017, and the listing holds one -- so without
+`scripts/update-planning-board.mjs` (`npm run planning-board:update`) the
+calendar showed a board that meets monthly as having met once. There are no
+media pages there, so the date comes from the link's own label and the rest is
+the ordinary pipeline (`resolveDocument` with `fetchPage: false`, then
+`assignIds`). **Every record now carries a `source`** naming the scrape that
+produced it, and each scrape replaces only its own: `calendar:update --prune`
+drops stored records missing from the listing, which would delete all 163 of
+these, so it skips records whose source is not the listing. Its schedule is a
+PDF the page links rather than markup on the page, read with `pdftotext`.
+
 **Scrapers (`scripts/`)** run by hand, never in CI. `lib/haverhill.mjs` replays
 the AJAX POST the city's listing page makes to an Umbraco surface controller
 (three hardcoded content keys plus an antiforgery token/cookie handshake), parses
@@ -97,9 +110,16 @@ Thursday, in the _middle column_ of a table whose other two are the filing
 deadline and the date a postponed meeting moves to -- taking the whole table
 would treble that board's calendar, but a sitting keeps its row's other columns
 as `related`, labelled by the board's own headers, and its meeting page states
-them -- with the hour, 7:15 PM, in the paragraph above it. Nothing is interpreted and nothing can be misread; this is by far the
-better evidence, every past date on both carrying documents, and the sittings in
-the data that are not on them are special meetings and postponements. **The City Council prints a rule** above the document table:
+them -- with the hour, 7:15 PM, in the paragraph above it. The Planning Board's are not on its page at all but inside a
+PDF it links, one per year, as labelled blocks -- only the `Meeting Date` line
+is read, since that board's own escrow and cut-off lines are full of slips
+("December 17 , 2026" against a January 2026 meeting, "2/18/226", "7/1//26"),
+and a block saying "NO MEETING VETERANS DAY!" drops the date rather than
+advertising a sitting already called off, recording it in `cancelled` so the
+exclusion is auditable. Nothing is interpreted and nothing can be misread; this
+is by far the better evidence, every past date carrying documents, and the
+sittings in the data that are not on them are special meetings and
+postponements. **The City Council prints a rule** above the document table:
 every Tuesday at 7:00 PM, with exceptions for June, the summer, and the return
 to weekly meetings in September -- which has to be read into dates.
 `scripts/update-schedule.mjs` (`npm run schedule:update`, and a step of

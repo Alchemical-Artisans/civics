@@ -2,7 +2,7 @@
 /**
  * Refresh everything this site derives from the City of Haverhill.
  *
- * Two halves, three listings, one command. They stay separate scripts because
+ * Two halves, four scrapes, one command. They stay separate scripts because
  * they are genuinely different jobs -- the calendar diffs a listing and then
  * resolves a media page per new document, the budget replaces twenty-two rows
  * in a single request, the schedule re-reads three sentences of prose off the
@@ -20,14 +20,16 @@
  * status is non-zero if any step failed.
  *
  * Arguments are forwarded to every step, so `npm run metadata:update -- --prune`
- * reaches the calendar. The budget and schedule scripts take no flags and
- * ignore them.
+ * reaches the calendar. The other three take no flags and ignore them.
  */
 import { spawnSync } from "node:child_process"
 import path from "node:path"
 
 const STEPS = [
   { name: "calendar", script: "update-calendar.mjs" },
+  // After the calendar: it replaces this board's records in the same file, and
+  // running it second means a `--prune` pass has already settled the listing's.
+  { name: "planning board", script: "update-planning-board.mjs" },
   { name: "budget", script: "update-budget.mjs" },
   { name: "schedule", script: "update-schedule.mjs" },
 ]
