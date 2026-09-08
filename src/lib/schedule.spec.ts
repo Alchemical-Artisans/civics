@@ -1,5 +1,11 @@
 import { describe, it, expect } from "vitest"
-import { RULE_AS_READ, expectedSittings, meetingRules, sittingsIn } from "./schedule"
+import {
+  RULE_AS_READ,
+  expectedSittings,
+  meetingCalendars,
+  meetingRules,
+  sittingsIn,
+} from "./schedule"
 
 describe("the scraped rule", () => {
   it("still says what the date logic was written against", () => {
@@ -12,6 +18,20 @@ describe("the scraped rule", () => {
     expect(council).toBeDefined()
     expect(council!.intro).toBe(RULE_AS_READ.intro)
     expect(council!.exceptions).toEqual([...RULE_AS_READ.exceptions])
+  })
+})
+
+describe("the scraped calendars", () => {
+  it("gives the License Commission a date a month", () => {
+    // Twelve dates, one per month, is the shape the Commission has published
+    // every year. A parse that half-worked -- one column of the two-column
+    // table, say -- would show up here as six.
+    const commission = meetingCalendars().find((c) => c.board === "License Commission")
+    expect(commission).toBeDefined()
+    expect(commission!.dates).toHaveLength(12)
+    expect(new Set(commission!.dates.map((d) => d.slice(0, 7))).size).toBe(12)
+    for (const date of commission!.dates)
+      expect(date.startsWith(String(commission!.year))).toBe(true)
   })
 })
 
@@ -108,18 +128,44 @@ describe("expectedSittings", () => {
     expect(dates.every((d) => d >= "2026-09-08")).toBe(true)
   })
 
-  it("carries the rule itself onto every sitting", () => {
-    // The rule is the evidence for the entry, so the meeting page can quote it
+  it("carries the evidence itself onto every sitting", () => {
+    // The source is the evidence for the entry, so the meeting page can show it
     // rather than paraphrasing why the sitting is there.
     for (const sitting of expectedSittings("2026-09-08")) {
-      expect(sitting.board).toBe("City Council")
-      expect(sitting.time).toBe("7:00 PM")
-      expect(sitting.rule.intro).toBe(RULE_AS_READ.intro)
-      expect(sitting.rule.url).toMatch(/^https:\/\/www\.haverhillma\.gov\//)
+      expect(sitting.source.url).toMatch(/^https:\/\/www\.haverhillma\.gov\//)
+      if (sitting.source.kind === "rule") {
+        expect(sitting.board).toBe("City Council")
+        expect(sitting.time).toBe("7:00 PM")
+        expect(sitting.source.intro).toBe(RULE_AS_READ.intro)
+      } else {
+        expect(sitting.source.heading).toMatch(/^CALENDAR OF MEETINGS FOR \d{4}$/)
+        // The Commission prints dates and not an hour, and the hour on its last
+        // agenda is not evidence about a sitting that has not happened.
+        expect(sitting.time).toBeUndefined()
+      }
     }
   })
 
-  it("is empty once the year is out", () => {
+  it("takes a printed calendar's dates exactly as printed", () => {
+    // Nothing is interpreted for a board that prints its dates, so the only
+    // thing to check is that every date it prints and nothing else comes back.
+    const commission = meetingCalendars().find((c) => c.board === "License Commission")!
+    const mine = expectedSittings("2026-09-08")
+      .filter((s) => s.board === "License Commission")
+      .map((s) => s.date)
+    expect(mine).toEqual(commission.dates.filter((d) => d >= "2026-09-08"))
+    expect(mine).toEqual(["2026-10-01", "2026-11-05", "2026-12-03"])
+  })
+
+  it("puts both boards' sittings in one list, in date order", () => {
+    const dates = expectedSittings("2026-09-08").map((s) => s.date)
+    expect(dates).toEqual([...dates].sort())
+    expect(new Set(expectedSittings("2026-09-08").map((s) => s.board))).toEqual(
+      new Set(["City Council", "License Commission"]),
+    )
+  })
+
+  it("is empty once every published date is behind us", () => {
     expect(expectedSittings("2026-12-30")).toEqual([])
   })
 })

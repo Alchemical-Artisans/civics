@@ -198,35 +198,46 @@ run summary and from the warning count in the page footer.
 editing it. To give a document a page, add the HTML file rather than changing
 anything here.
 
-## `schedule.json`, the meeting rules
+## `schedule.json`, what the city says about when boards sit
 
 Location: [`src/lib/data/schedule.json`](../src/lib/data/schedule.json), written
 by [`update-schedule.mjs`](../scripts/update-schedule.mjs).
 
-The city's meeting schedule is not a document in the listing. It is prose on the
-listing page itself, in the ordinary HTML of the section above the document
-table: a heading naming the board, a sentence saying when it sits, and a list of
-exceptions. That is why the calendar could not see it while it read only the
-listing — the scraper fetched that very page for its antiforgery token and threw
-the rest away.
+Neither board's schedule is a document in the listing. Both are ordinary HTML on
+a page — which is why the calendar could not see either while it read only the
+listing; the scraper fetched one of those very pages for its antiforgery token
+and threw the rest away. They are kept apart in this file because they are
+different kinds of thing.
 
 ```json
 {
-  "generatedAt": "2026-09-08T09:17:41.853Z",
-  "source": "https://www.haverhillma.gov/government/agendas-and-minutes/",
+  "generatedAt": "2026-09-08T14:33:02.118Z",
   "rules": [
     {
       "board": "City Council",
+      "source": "https://www.haverhillma.gov/government/agendas-and-minutes/",
       "intro": "Regular meetings of the City Council shall be held every Tuesday at 7:00 o'clock P.M. except in:",
       "exceptions": ["June there shall be …", "From July until …", "In September, starting with …"]
+    }
+  ],
+  "calendars": [
+    {
+      "board": "License Commission",
+      "source": "https://www.haverhillma.gov/government/boards-committees-and-commissions/license-commission/",
+      "year": 2026,
+      "heading": "CALENDAR OF MEETINGS FOR 2026",
+      "dates": ["2026-01-08", "2026-02-05", "…"]
     }
   ]
 }
 ```
 
+### `rules` — a standing statement, which has to be read
+
 | Field        | Meaning                                                                     |
 | ------------ | --------------------------------------------------------------------------- |
 | `board`      | The `<h2>` over the rule. Matched against `meetings.json`'s `board`.        |
+| `source`     | The page it is printed on.                                                  |
 | `intro`      | The sentence before the list, verbatim.                                     |
 | `exceptions` | One string per `<li>`, verbatim, entities decoded and whitespace collapsed. |
 
@@ -236,11 +247,32 @@ are kept honest by `RULE_AS_READ` — a copy of the exact wording the date logic
 was written against, which `schedule.spec.ts` compares this file to. A reworded
 rule fails the build instead of being silently reinterpreted.
 
-Every run replaces the file; there is no incremental mode. An empty parse is
-treated as a failure rather than written, because it means the page's markup has
-changed shape.
+### `calendars` — the dates themselves
+
+| Field     | Meaning                                                                                                                                |
+| --------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `board`   | Named beside the URL in the scraper: the page is the board, and its heading names only the year. Must match `meetings.json`'s `board`. |
+| `source`  | The board's own page.                                                                                                                  |
+| `year`    | From the heading.                                                                                                                      |
+| `heading` | As printed, e.g. `CALENDAR OF MEETINGS FOR 2026`. A meeting page cites it.                                                             |
+| `dates`   | `YYYY-MM-DD`, ascending — the table runs in two columns, so they are sorted rather than read in document order.                        |
+
+Nothing is interpreted, so nothing can be misread. `parseLongDate` refuses a day
+that does not exist in its month rather than letting `new Date` roll it over
+into a plausible-looking wrong date.
+
+To add a board that prints its dates, add it to `CALENDAR_PAGES` in
+[`scripts/lib/schedule.mjs`](../scripts/lib/schedule.mjs) — the parser looks for
+a `CALENDAR OF MEETINGS FOR <year>` heading and the table under it. A board that
+prints a rule instead needs its wording read into dates by hand in
+`schedule.ts`; there is no guessing at one.
+
+Every run replaces the file; there is no incremental mode. An empty parse of
+either half is treated as a failure rather than written, because it means a
+page's markup has changed shape — and a file written from it would empty the
+calendar of every upcoming sitting.
 
 See
-[calendar-page.md](./calendar-page.md#sittings-the-rule-expects)
-for what the calendar does with it, and in particular why the projection runs
+[calendar-page.md](./calendar-page.md#sittings-the-city-has-said-it-will-hold)
+for what the calendar does with it, and in particular why both are projected
 forward only.

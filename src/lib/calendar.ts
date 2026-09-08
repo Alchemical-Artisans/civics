@@ -20,34 +20,45 @@ export interface MeetingDocument {
 }
 
 /**
- * One sitting the Council's own standing rule names, ahead of any document.
+ * What the city has published saying a sitting will be held, where that is not
+ * a document about the sitting itself.
  *
- * The "Agendas and Minutes" page prints a rule above its listing -- the Council
- * sits every Tuesday at 7:00 PM, with exceptions for June and the summer. It is
- * not a document and no PDF states it; it is prose on the page, which is why
- * the calendar could not see it while it read only the listing.
+ * Two boards say so, in two different ways, and the difference is worth keeping
+ * rather than flattening -- one is far better evidence than the other.
  *
- * Read into dates it shows sittings the documents cannot: **a sitting that has
- * not happened yet has no agenda**, so a calendar built only from what the city
- * has published is blank from today forward, which is precisely the part a
- * reader wanting to attend one needs.
+ * A `calendar` is a list of dates the board printed: the License Commission's
+ * own page carries a table of the twelve for this year. Nothing is interpreted
+ * and nothing can be misread. Every one of this year's past dates on it carries
+ * documents.
  *
- * Scraped by `scripts/update-schedule.mjs` and read into dates by
+ * A `rule` is a standing statement about which days a board sits, printed above
+ * the document listing: the Council sits every Tuesday, with exceptions. It has
+ * to be read into dates, and it over-generates against the schedule the Council
+ * actually adopts -- see `$lib/schedule`.
+ */
+export type SittingSource =
+  | { kind: "calendar"; url: string; heading: string }
+  | { kind: "rule"; url: string; intro: string; exceptions: string[] }
+
+/**
+ * One sitting the city has said will be held, ahead of any document about it.
+ *
+ * Read off a board's published dates or its standing rule, these show sittings
+ * the documents cannot: **a sitting that has not happened yet has no agenda**,
+ * so a calendar built only from what the city has published is blank from today
+ * forward, which is precisely the part a reader wanting to attend one needs.
+ *
+ * Scraped by `scripts/update-schedule.mjs` and turned into dates by
  * `$lib/schedule`, which projects forward only and explains at length why.
  */
 export interface ScheduledSitting {
   board: string
-  /** `YYYY-MM-DD`, a Tuesday the rule names. */
+  /** `YYYY-MM-DD`, a day the board's own calendar or rule names. */
   date: string
-  /** Start time as the rule states it, e.g. `"7:00 PM"`. */
+  /** Start time where the source states one, e.g. `"7:00 PM"`. */
   time?: string
-  /** The rule itself, so a sitting off it can show what it rests on. */
-  rule: {
-    /** The page the rule is printed on. */
-    url: string
-    intro: string
-    exceptions: string[]
-  }
+  /** What the city published that puts this sitting on the calendar. */
+  source: SittingSource
 }
 
 /**
@@ -78,16 +89,16 @@ export interface Meeting {
    */
   documents: MeetingDocument[]
   /**
-   * The rule that put this sitting on the calendar, set only where the city has
-   * published no document for it at all.
+   * What the city published saying this sitting would be held, set only where
+   * it has published no document for it at all.
    *
-   * A sitting here is **expected, not announced**: the Council has said which
-   * Tuesdays it means to sit on, and this is that statement applied to a date.
+   * A sitting here is **expected, not announced**: the board has said which
+   * days it means to sit on, and this is that statement applied to a date.
    * Whether it sits, and what it takes up, is what the agenda will say when the
    * city publishes one -- at which point this stops being an expected sitting
    * and becomes an ordinary meeting with documents under it.
    *
-   * Only ever a future date. See `$lib/schedule` for why the same rule is not
+   * Only ever a future date. See `$lib/schedule` for why neither source is
    * trusted backwards.
    */
   scheduled?: ScheduledSitting
@@ -146,14 +157,16 @@ export function groupIntoMeetings(
 }
 
 /**
- * Add the sittings a board's rule names and no document covers.
+ * Add the sittings a board has said it will hold and no document covers.
  *
  * Board and date are the identity here exactly as they are for a document, so
  * an expected date the city has since published an agenda for is already on the
- * calendar and is left alone -- the rule is only ever consulted for dates
- * nothing else accounts for. That also means an agenda for a date the rule
- * never named (a special meeting, a continued sitting) is unaffected: the
- * documents are the record, and this only fills what they leave empty.
+ * calendar and is left alone -- these are only ever consulted for dates nothing
+ * else accounts for. That also means an agenda for a date no calendar or rule
+ * named is unaffected: the License Commission's special meetings of 20 May and
+ * 18 June are on the calendar from their documents and are none the worse for
+ * being absent from the Commission's published dates. The documents are the
+ * record; this only fills what they leave empty.
  *
  * Pure, and takes its sittings as an argument rather than reading the JSON, for
  * the same reason the rest of this file does: it tests without a fixture file
@@ -168,9 +181,9 @@ export function withScheduled(
   const out = [...meetings]
   for (const sitting of sittings) {
     const id = meetingId(sitting.board, sitting.date)
-    // Two boards' rules cannot collide, but a rule read across a year's edge
-    // could name one date twice, so this guards against duplicates within the
-    // projection as much as against the documents.
+    // Two boards cannot collide, but a board with both a rule and a published
+    // calendar could name one date twice, so this guards against duplicates
+    // within the projection as much as against the documents.
     if (known.has(id)) continue
     known.add(id)
     out.push({

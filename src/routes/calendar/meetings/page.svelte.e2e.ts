@@ -16,7 +16,7 @@ const documented = new Set(
 )
 const expected = expectedSittings(easternDate())
   .filter((s) => !documented.has(`${s.board}::${s.date}`))
-  .map((s) => ({ id: meetingId(s.board, s.date), rule: s.rule }))
+  .map((s) => ({ id: meetingId(s.board, s.date), source: s.source }))
 
 /**
  * The meetings somebody has written up: one route directory each, named for
@@ -132,38 +132,59 @@ test.describe("meeting pages", () => {
   test.describe(() => {
     test.skip(expected.length === 0, "no expected sittings left in the year")
 
-    test("an expected sitting quotes the rule it rests on", async ({ page }) => {
-      const { id, rule } = expected[0]
-      await page.goto(`/calendar/meetings/${id}`)
+    test("an expected sitting shows the evidence it rests on", async ({ page }) => {
+      // Both kinds, since they do not say the same thing: a board that prints
+      // its dates has stated this one, where a rule states a pattern the day
+      // falls under. One of each is on the calendar today.
+      for (const kind of ["calendar", "rule"] as const) {
+        const sitting = expected.find((s) => s.source.kind === kind)
+        if (!sitting) continue
+        await page.goto(`/calendar/meetings/${sitting.id}`)
 
-      // The rule is the evidence, so the page quotes it rather than
-      // paraphrasing why the sitting is there -- and every clause of it.
-      const article = page.getByRole("article")
-      await expect(article).toContainText("published no agenda for this sitting yet")
-      await expect(article).toContainText(rule.intro)
-      for (const clause of rule.exceptions) await expect(article).toContainText(clause)
+        const article = page.getByRole("article")
+        await expect(article).toContainText("published no agenda for this sitting yet")
+        if (sitting.source.kind === "rule") {
+          // Quoted, not paraphrased -- and every clause of it.
+          await expect(article).toContainText(sitting.source.intro)
+          for (const clause of sitting.source.exceptions)
+            await expect(article).toContainText(clause)
+        } else {
+          await expect(article).toContainText(sitting.source.heading)
+        }
 
-      // It stands where the agenda would, linked to the page it is printed on.
-      // The last `header` on the page: the site banner is the first.
-      const header = page.locator("header").last()
-      const source = header.locator(`a[href="${rule.url}"]`)
-      await expect(source).toHaveCount(1)
-      await expect(source).toHaveAttribute("target", "_blank")
-      await expect(header).toContainText("Expected")
+        // It stands where the agenda would, linked to the page it is printed
+        // on. The last `header` on the page: the site banner is the first.
+        const header = page.locator("header").last()
+        const source = header.locator(`a[href="${sitting.source.url}"]`)
+        await expect(source).toHaveCount(1)
+        await expect(source).toHaveAttribute("target", "_blank")
+        await expect(header).toContainText("Expected")
+      }
     })
 
-    test("an expected sitting states its hour and can be added to a calendar", async ({ page }) => {
-      // The point of showing a sitting before its agenda exists: the rule gives
-      // the hour, so a reader can put it in their own calendar off the rule.
-      await page.goto(`/calendar/meetings/${expected[0].id}`)
-      await expect(
-        page.locator("header").getByText(/^[A-Z][a-z]+day, [A-Z][a-z]+ \d{1,2}, \d{4} at 7:00 PM/),
-      ).toBeVisible()
+    test("an expected sitting can be added to a reader's own calendar", async ({ page }) => {
+      // The point of showing a sitting before its agenda exists. A source that
+      // states the hour pins the event to it; one that prints only dates gets
+      // an all-day event rather than an invented time.
+      for (const kind of ["calendar", "rule"] as const) {
+        const sitting = expected.find((s) => s.source.kind === kind)
+        if (!sitting) continue
+        await page.goto(`/calendar/meetings/${sitting.id}`)
 
-      await page.getByRole("button", { name: "Add to calendar" }).click()
-      const google = page.getByRole("link", { name: /Google Calendar/ })
-      const href = new URL((await google.getAttribute("href"))!)
-      expect(href.searchParams.get("dates")).toMatch(/^\d{8}T\d{6}\/\d{8}T\d{6}$/)
+        const when = page
+          .locator("header")
+          .last()
+          .getByText(/^[A-Z][a-z]+day, [A-Z][a-z]+ \d/)
+        await expect(when).toContainText(kind === "rule" ? "at 7:00 PM" : /\d{4}$/)
+
+        await page.getByRole("button", { name: "Add to calendar" }).click()
+        const href = new URL(
+          (await page.getByRole("link", { name: /Google Calendar/ }).getAttribute("href"))!,
+        )
+        expect(href.searchParams.get("dates")).toMatch(
+          kind === "rule" ? /^\d{8}T\d{6}\/\d{8}T\d{6}$/ : /^\d{8}\/\d{8}$/,
+        )
+      }
     })
   })
 })

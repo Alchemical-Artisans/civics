@@ -34,10 +34,24 @@ generated from data rather than written, so there is nothing to hand-write, and
 if the data and the links ever disagree, where relying on SvelteKit's crawler
 would quietly emit fewer pages.
 
-## Sittings the rule expects
+## Sittings the city has said it will hold
 
-The city's schedule is not a document. It is prose on the listing page itself,
-in the section directly above the document listing:
+**Neither board's schedule is a document.** Both are ordinary HTML on a page,
+which is why the calendar could not see either while it read only the listing —
+and the two say it in quite different ways.
+
+**The License Commission prints the dates.** Its own
+[page](https://www.haverhillma.gov/government/boards-committees-and-commissions/license-commission/)
+carries a table headed `CALENDAR OF MEETINGS FOR 2026` with all twelve in it,
+laid out in two columns — January beside July. Nothing needs interpreting and
+nothing can be misread: the dates are the dates. It is by far the better
+evidence of the two. Every one of this year's past dates on it carries
+documents, and the two Commission sittings in the data that are _not_ on it —
+20 May and 18 June — are special meetings, which is exactly what one would
+expect.
+
+**The City Council prints a rule.** The listing page carries it in the section
+directly above the document table:
 
 > Regular meetings of the City Council shall be held every Tuesday at 7:00
 > o'clock P.M. except in:
@@ -49,21 +63,31 @@ in the section directly above the document listing:
 > - In September, starting with the second Tuesday after Labor Day, the Council
 >   shall return to its regular weekly schedule.
 
-Read into dates it shows sittings the documents cannot: **a sitting that has not
+Either way, these show sittings the documents cannot: **a sitting that has not
 happened yet has no agenda**, so a calendar built only from what the city has
 published is blank from today forward — which is precisely the part a reader
-wanting to attend one needs. It is also the only part of this data that is not
+wanting to attend one needs. It is the only part of this data that is not
 retrospective.
 
-`scripts/update-schedule.mjs` scrapes the wording into
-[`schedule.json`](../src/lib/data/schedule.json);
-[`schedule.ts`](../src/lib/schedule.ts) reads it into Tuesdays; `withScheduled()`
+`scripts/update-schedule.mjs` scrapes both pages into
+[`schedule.json`](../src/lib/data/schedule.json) — `rules` and `calendars`, kept
+apart because they are different kinds of thing;
+[`schedule.ts`](../src/lib/schedule.ts) turns both into dates; `withScheduled()`
 in `calendar.ts` adds a `Meeting` with `documents: []` for every one no document
 covers. Board and date are the identity, exactly as for a document, so a date
 the city has since published an agenda for is an ordinary meeting and is left
-alone.
+alone — and a document for a date no calendar or rule named, like those two
+special meetings, is unaffected.
+
+A `ScheduledSitting` carries its evidence as a discriminated `source`, `calendar`
+or `rule`, and the meeting page shows the two differently: a board that prints
+its dates has stated _this_ one, where a rule states a pattern the day falls
+under. Flattening that into one sentence would overstate the Council or
+understate the Commission.
 
 ### Forward only, and why
+
+This applies to both sources, though it is the rule that needs it.
 
 **The rule is not the schedule the Council actually adopts.** Checked against the
 Council's own published 2025 schedule, the rule yields 45 sittings where the
@@ -86,7 +110,7 @@ That is also why these entries are called **expected** rather than scheduled.
 The city has announced nothing about a particular Tuesday. The Council has said
 which Tuesdays it means to sit on, and this is that statement applied to a date.
 
-### Two places the wording has to be read against the evidence
+### Two clauses of the rule have to be read against the evidence
 
 The rule is prose, and twice it does not mean quite what it says. The Council's
 own published 2025 schedule is what settles both.
@@ -128,13 +152,19 @@ It has its own filter beside Agendas and Minutes rather than joining them: the
 kind toggles hide documents, and a sitting with no documents has no kind to
 filter on.
 
-On the meeting page the rule takes the row the agenda would occupy, linked to
-the page it is printed on, and the page below quotes the rule in full — it is
-the evidence for the entry, and it is the city's own wording, so quoting beats
-paraphrasing. The hour the rule states becomes the header's `MeetingDetails`,
-which is what lets a reader add the sitting to their own calendar before an
-agenda exists. No room: the rule names none, and the last agenda's room is not
-evidence about a Tuesday that has not happened.
+On the meeting page the evidence takes the row the agenda would occupy, linked
+to the page it is printed on and named for what it is — the board's own heading
+for its list of dates, or "the ⟨board⟩'s meeting rule". The page below shows it:
+a rule is quoted in full, clause by clause, since it is the city's own wording
+and quoting beats paraphrasing; a printed calendar is cited by its heading,
+because there is nothing to quote beyond the date itself.
+
+An hour the source states becomes the header's `MeetingDetails`, which is what
+lets a reader add the sitting to their own calendar before an agenda exists. The
+Council's rule gives one; the Commission's table gives only dates, so those get
+an all-day event rather than an invented time. Neither gives a room, and the
+room on a board's last agenda is not evidence about a sitting that has not
+happened.
 
 The footer says how many are shown and what the number does and does not mean.
 

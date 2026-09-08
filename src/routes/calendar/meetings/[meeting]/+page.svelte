@@ -16,29 +16,45 @@
 
 {#if data.meeting.scheduled}
   <!-- Not "nobody has transcribed this yet": there is nothing to transcribe.
-       This Tuesday has not happened, so the city has published nothing for it,
-       and the sitting is here because the Council's own standing rule names the
-       day. Quoting that rule is the whole content of the page -- it is the
-       evidence, and it is the city's own wording. -->
-  <p>
-    The city has published no agenda for this sitting yet. It is on the calendar because the
-    <a href={data.meeting.scheduled.rule.url} target="_blank" rel="external noopener noreferrer"
-      >City Council's own meeting rule</a
-    >
-    expects it:
-  </p>
-  <blockquote>
-    <p>{data.meeting.scheduled.rule.intro}</p>
-    <ul>
-      {#each data.meeting.scheduled.rule.exceptions as clause (clause)}
-        <li>{clause}</li>
-      {/each}
-    </ul>
-  </blockquote>
-  <p>
-    The Council does not sit on every Tuesday the rule names, and it publishes an agenda a few days
-    beforehand. Check the calendar again nearer the day.
-  </p>
+       The day has not happened, so the city has published nothing for it, and
+       the sitting is here because the board itself said it would sit. Showing
+       what it said is the whole content of the page -- it is the evidence, and
+       it is the city's own wording, so it is quoted rather than paraphrased.
+
+       Which evidence it is matters. A board that prints its dates has stated
+       this one; a board that prints a rule has stated a pattern this day falls
+       under, which is a good deal weaker -- so the two do not say the same
+       thing here. -->
+  {@const source = data.meeting.scheduled.source}
+  {#if source.kind === "calendar"}
+    <p>
+      The city has published no agenda for this sitting yet. It is on the calendar because the
+      {data.meeting.board}'s own
+      <a href={source.url} target="_blank" rel="external noopener noreferrer">{source.heading}</a>
+      lists the date.
+    </p>
+    <p>An agenda is usually published a few days beforehand. Check again nearer the day.</p>
+  {:else}
+    <p>
+      The city has published no agenda for this sitting yet. It is on the calendar because the
+      <a href={source.url} target="_blank" rel="external noopener noreferrer"
+        >{data.meeting.board}'s own meeting rule</a
+      >
+      expects it:
+    </p>
+    <blockquote>
+      <p>{source.intro}</p>
+      <ul>
+        {#each source.exceptions as clause (clause)}
+          <li>{clause}</li>
+        {/each}
+      </ul>
+    </blockquote>
+    <p>
+      The Council does not sit on every Tuesday the rule names, and it publishes an agenda a few
+      days beforehand. Check the calendar again nearer the day.
+    </p>
+  {/if}
 {:else}
   <p>Nobody has transcribed this meeting yet. The city's own files are linked above.</p>
 {/if}

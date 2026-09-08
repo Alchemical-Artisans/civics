@@ -1,6 +1,5 @@
 {
-  "generatedAt": "2026-09-08T09:17:41.853Z",
-  "source": "https://www.haverhillma.gov/government/agendas-and-minutes/",
+  "generatedAt": "2026-09-08T14:34:12.368Z",
   "rules": [
     {
       "board": "City Council",
@@ -9,6 +8,29 @@
         "June there shall be a meeting on the first, third and fourth Tuesday --- except when June has five Tuesdays then it will be first, third and fifth.",
         "From July until the second Tuesday after Labor Day, the Council shall meet every other week beginning with the second Tuesday of July.",
         "In September, starting with the second Tuesday after Labor Day, the Council shall return to its regular weekly schedule."
+      ],
+      "source": "https://www.haverhillma.gov/government/agendas-and-minutes/"
+    }
+  ],
+  "calendars": [
+    {
+      "board": "License Commission",
+      "source": "https://www.haverhillma.gov/government/boards-committees-and-commissions/license-commission/",
+      "year": 2026,
+      "heading": "CALENDAR OF MEETINGS FOR 2026",
+      "dates": [
+        "2026-01-08",
+        "2026-02-05",
+        "2026-03-05",
+        "2026-04-02",
+        "2026-05-07",
+        "2026-06-04",
+        "2026-07-02",
+        "2026-08-06",
+        "2026-09-03",
+        "2026-10-01",
+        "2026-11-05",
+        "2026-12-03"
       ]
     }
   ]

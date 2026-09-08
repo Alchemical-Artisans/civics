@@ -85,18 +85,32 @@ build-time load. `src/lib/meetings.ts` turns `meetings.json` into what the site
 shows: it drops undated records, collapses PDFs published under two media pages,
 trims to the fields the UI needs, and groups the documents into meetings.
 
-**The meeting schedule is prose on the listing page, not a document.** Above the
-document table, `agendas-and-minutes/` prints the Council's standing rule in
-ordinary HTML: every Tuesday at 7:00 PM, with exceptions for June, the summer,
-and the return to weekly meetings in September. The scraper already fetched that
-page for its antiforgery token and threw the rest away.
+**No board's meeting schedule is a document.** Both are ordinary HTML on a page,
+which is why the calendar could not see either while it read only the listing --
+the scraper already fetched one of those very pages for its antiforgery token
+and threw the rest away. The two differ in kind, and `schedule.json` keeps them
+apart as `rules` and `calendars`. **The License Commission prints the dates**: a
+table on its own page headed `CALENDAR OF MEETINGS FOR 2026` with all twelve in
+it, two columns, January beside July. Nothing is interpreted and nothing can be
+misread; it is by far the better evidence, every past date on it carrying
+documents, and the two Commission sittings in the data that are not on it are
+special meetings. **The City Council prints a rule** above the document table:
+every Tuesday at 7:00 PM, with exceptions for June, the summer, and the return
+to weekly meetings in September -- which has to be read into dates.
 `scripts/update-schedule.mjs` (`npm run schedule:update`, and a step of
-`metadata:update`) scrapes the wording into `src/lib/data/schedule.json`;
-`src/lib/schedule.ts` reads it into Tuesdays; `withScheduled()` in `calendar.ts`
-adds a `Meeting` with `documents: []` for each one no document covers, on the
-same board-and-date identity, so a date the city has since published an agenda
-for is an ordinary meeting. This is what shows a sitting **before** an agenda
-exists -- the only part of the site's data that is not retrospective.
+`metadata:update`) scrapes both; `src/lib/schedule.ts` turns both into dates;
+`withScheduled()` in `calendar.ts` adds a `Meeting` with `documents: []` for
+each one no document covers, on the same board-and-date identity, so a date the
+city has since published an agenda for is an ordinary meeting. This is what
+shows a sitting **before** an agenda exists -- the only part of the site's data
+that is not retrospective. A `ScheduledSitting` carries its evidence as a
+discriminated `source`, `calendar` or `rule`, and the meeting page shows the two
+differently: a board that prints its dates has stated _this_ one, where a rule
+states a pattern the day falls under. An hour the source states pins the "add to
+calendar" event; the Commission prints only dates, so those are all-day rather
+than given an invented time. To add another board that prints its dates, add it
+to `CALENDAR_PAGES` in `scripts/lib/schedule.mjs`; one that prints a rule needs
+its wording read by hand in `schedule.ts`, never guessed at.
 
 **Two clauses do not mean quite what they say, and the Council's published 2025
 schedule settles both.** "The second Tuesday after Labor Day" counts the Labor
@@ -113,7 +127,8 @@ Tuesday after Labor Day, so nothing precedes them.
 is not the schedule the Council adopts: against the Council's own published 2025
 schedule it yields 45 sittings to that schedule's 35 (it says "every Tuesday",
 but the Council skips roughly one a month), and it wrongly drops 10 June 2025,
-which the Council held. So sittings are projected from the build date to the end
+which the Council held. The Commission's printed dates need none of this defence
+and get the same treatment for consistency. So sittings are projected from the build date to the end
 of that year and never backwards -- for a day already past the documents are the
 better authority, and a rule-Tuesday with nothing on it is far more likely to be
 a Tuesday the Council never sat. Ahead of today there are no documents at all,
@@ -125,7 +140,7 @@ never meant to hold. An expected sitting is a dashed outline with no `A`/`M`
 letters and its own filter; the meeting page quotes the rule in full where the
 agenda would be, and the hour it states lets a reader add the sitting to their
 own calendar. See
-[docs/calendar-page.md](docs/calendar-page.md#sittings-the-rule-expects).
+[docs/calendar-page.md](docs/calendar-page.md#sittings-the-city-has-said-it-will-hold).
 
 **The calendar opens on the month we are in, and every "today" is a date in
 Haverhill.** `easternDate()` in `calendar.ts` is the only way one is computed:

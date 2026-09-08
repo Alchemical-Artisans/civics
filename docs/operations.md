@@ -26,7 +26,7 @@ them.
 npm run calendar:update    # add documents published since the last run
 npm run calendar:rebuild   # re-scrape everything from scratch
 npm run budget:update      # re-scrape the budget and audit listing
-npm run schedule:update    # re-read the meeting rules off the listing page
+npm run schedule:update    # re-read the boards' meeting rules and calendars
 ```
 
 Worth running alone while working on one of them, or when only one half needs
@@ -37,16 +37,22 @@ only when the scraping or date logic itself has changed.
 
 There is no `budget:rebuild` or `schedule:rebuild`. The whole budget listing is
 one request and twenty-two rows, and the schedule is three sentences of prose on
-one page, so the distinction between a cheap refresh and an expensive full
-rebuild has no meaning for either — every run replaces the file.
+one page and a table of dates on another, so the distinction between a cheap
+refresh and an expensive full rebuild has no meaning for either — every run
+replaces the file.
 
-**`schedule:update` shouts when the wording changes.** The rule it scrapes is
-prose, and `src/lib/schedule.ts` reads that prose into dates — a reading that is
-only valid for the sentences it was made about. So the script prints a warning
-when the words move, and `schedule.spec.ts` fails outright. Re-read the rule and
-check the date logic against it before committing; a silently misread rule puts
-meetings on the calendar the Council never meant to hold. See
-[calendar-page.md](./calendar-page.md#sittings-the-rule-expects).
+**`schedule:update` shouts when the Council's wording changes.** That rule is
+prose, and `src/lib/schedule.ts` reads it into dates — a reading only valid for
+the sentences it was made about. So the script prints a warning when the words
+move, and `schedule.spec.ts` fails outright. Re-read the rule and check the date
+logic against it before committing; a silently misread rule puts meetings on the
+calendar the Council never meant to hold. The License Commission's own table of
+dates needs no such care — the dates are the dates. See
+[calendar-page.md](./calendar-page.md#sittings-the-city-has-said-it-will-hold).
+
+Either half coming back empty is a hard failure rather than a written file: it
+means a page's markup moved, and a file written from it would empty the calendar
+of every upcoming sitting.
 
 None of them touches the hand-written pages. Those live in
 `src/routes/calendar/meetings/` and `src/routes/budget/<year>/`; the scripts

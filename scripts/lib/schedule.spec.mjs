@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest"
-import { parseMeetingRules } from "./schedule.mjs"
+import { parseLongDate, parseMeetingCalendars, parseMeetingRules } from "./schedule.mjs"
 
 /** The shape the page actually serves, trimmed to what the parser looks at. */
 const page = `
@@ -57,5 +57,72 @@ describe("parseMeetingRules", () => {
     expect(parseMeetingRules("<div><h2>City Council</h2><ul><li>Tuesdays</li></ul></div>")).toEqual(
       [],
     )
+  })
+})
+
+/** The Commission's own table, in the two columns the page lays it out in. */
+const commissionPage = `
+<h2>CALENDAR OF MEETINGS FOR 2026</h2>
+<table border="1">
+<tbody>
+<tr><td>January 8, 2026</td><td>July 2, 2026</td></tr>
+<tr><td>February 5, 2026</td><td>August 6, 2026</td></tr>
+<tr><td>March 5, 2026</td><td>September 3, 2026</td></tr>
+</tbody>
+</table>
+<h2>ABCC Advisory</h2>
+<p>Not a calendar.</p>
+`
+
+describe("parseLongDate", () => {
+  it("reads the form the page prints", () => {
+    expect(parseLongDate("January 8, 2026")).toBe("2026-01-08")
+    expect(parseLongDate("  December 3, 2026 ")).toBe("2026-12-03")
+  })
+
+  it("refuses a day that does not exist in its month", () => {
+    // A round trip catches the rollover `new Date` would otherwise perform
+    // silently, turning a misread into a plausible-looking date.
+    expect(parseLongDate("September 31, 2026")).toBeNull()
+    expect(parseLongDate("February 30, 2026")).toBeNull()
+  })
+
+  it("refuses anything that is not a date at all", () => {
+    expect(parseLongDate("")).toBeNull()
+    expect(parseLongDate("Hours")).toBeNull()
+    expect(parseLongDate("Smarch 4, 2026")).toBeNull()
+    expect(parseLongDate("8 January 2026")).toBeNull()
+  })
+})
+
+describe("parseMeetingCalendars", () => {
+  it("reads the whole table, both columns, in date order", () => {
+    // The page runs January beside July, so document order is not date order.
+    const [calendar] = parseMeetingCalendars(commissionPage)
+    expect(calendar.year).toBe(2026)
+    expect(calendar.heading).toBe("CALENDAR OF MEETINGS FOR 2026")
+    expect(calendar.dates).toEqual([
+      "2026-01-08",
+      "2026-02-05",
+      "2026-03-05",
+      "2026-07-02",
+      "2026-08-06",
+      "2026-09-03",
+    ])
+  })
+
+  it("takes only the table under its own heading", () => {
+    // The page carries other tables -- hours, phone, the clerk's name -- and a
+    // second heading after this one. Only the calendar's own table is read.
+    expect(parseMeetingCalendars(commissionPage)).toHaveLength(1)
+    expect(parseMeetingCalendars(`<table><tr><td>January 8, 2026</td></tr></table>`)).toEqual([])
+  })
+
+  it("returns nothing when the heading moves", () => {
+    // The update script treats an empty result as a failure rather than writing
+    // a file that would empty the calendar of every upcoming sitting.
+    expect(
+      parseMeetingCalendars(commissionPage.replace("CALENDAR OF MEETINGS FOR", "Meetings in")),
+    ).toEqual([])
   })
 })

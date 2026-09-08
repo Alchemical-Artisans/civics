@@ -52,7 +52,7 @@
   <meta
     name="description"
     content="{meeting.board}, {formatLongDate(meeting.date)}: {expected
-      ? `a sitting expected under the Council's own meeting rule; no agenda published yet.`
+      ? `a sitting the board itself has said it will hold; no agenda published yet.`
       : `the documents the City of Haverhill published for the meeting.`}"
   />
 </svelte:head>
@@ -161,10 +161,12 @@
             </a>
           </li>
         {/each}
-        <!-- The rule takes the place of the documents on a sitting that has
-             none: it is the only thing the city has published bearing on this
-             Tuesday at all, so it belongs in the row the agenda would occupy,
-             linked to the page it is printed on. -->
+        <!-- What the city published saying this sitting would be held takes the
+             place of the documents when there are none: it is the only thing
+             bearing on the day at all, so it belongs in the row the agenda
+             would occupy, linked to the page it is printed on. The board's own
+             heading for its list of dates where it prints one; otherwise the
+             rule, named for what it is. -->
         {#if expected}
           <li class="flex flex-wrap items-center gap-2">
             <span
@@ -174,11 +176,13 @@
             </span>
             <a
               class="text-slate-600 underline hover:text-slate-900"
-              href={expected.rule.url}
+              href={expected.source.url}
               target="_blank"
               rel="external noopener noreferrer"
             >
-              The Council's meeting rule<span class="sr-only">
+              {expected.source.kind === "calendar"
+                ? expected.source.heading
+                : `The ${meeting.board}'s meeting rule`}<span class="sr-only">
                 , opens the city's page in a new tab</span
               >
             </a>
@@ -203,8 +207,8 @@
         Written up by hand from the city's documents. It may summarise, condense or omit &mdash; the
         city's own files, linked above, are the record.
       {:else if expected}
-        Nothing has been published for this sitting. The Council's own rule, linked above, is why it
-        is on the calendar.
+        Nothing has been published for this sitting. What the {meeting.board} itself published about the
+        days it sits, linked above, is why it is on the calendar.
       {:else}
         The city's own files, linked above, are the record.
       {/if}

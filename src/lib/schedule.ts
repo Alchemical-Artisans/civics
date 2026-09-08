@@ -1,11 +1,20 @@
 /**
- * The Council's standing meeting rule, turned into the Tuesdays it names.
+ * What the city publishes about when its boards sit, turned into dates.
  *
- * The "Agendas and Minutes" page prints a short rule above its document
- * listing: the Council sits every Tuesday at 7:00 PM, with three exceptions
- * covering June, the summer, and the return to weekly meetings in September.
- * `scripts/update-schedule.mjs` scrapes those words into `data/schedule.json`;
- * this file is the reading of them.
+ * Two boards say so, and they say it differently.
+ *
+ * **The License Commission prints the dates.** Its own page carries a table
+ * headed "CALENDAR OF MEETINGS FOR 2026" listing all twelve. Nothing is
+ * interpreted here: the dates are used as they are printed. It is by far the
+ * better evidence -- every one of this year's past dates on it carries
+ * documents, and the two Commission sittings in the data that are *not* on it
+ * are special meetings, which is exactly what one would expect.
+ *
+ * **The City Council prints a rule.** The "Agendas and Minutes" page carries a
+ * short standing rule above its document listing: the Council sits every
+ * Tuesday at 7:00 PM, with three exceptions covering June, the summer, and the
+ * return to weekly meetings in September. That has to be read into dates, and
+ * most of this file is that reading.
  *
  * **It projects forward only.** Sittings are generated from the build date to
  * the end of that year and never into the past, because the rule is not the
@@ -20,9 +29,10 @@
  * and a projection understood as one is worth more than an empty calendar.
  *
  * That is also why these entries are called expected rather than scheduled.
- * The city has announced nothing about a particular Tuesday; the Council has
- * said which Tuesdays it means to sit on, and this is that statement applied
- * to a date.
+ * The city has announced nothing about a particular day; a board has said which
+ * days it means to sit on, and this is that statement applied to a date. True
+ * of the Commission's printed dates as well as the Council's rule, though it is
+ * a good deal truer of the rule.
  */
 // The import attribute is redundant under Vite, which resolves JSON itself,
 // but the e2e suite reaches this module through Playwright's plain Node
@@ -33,8 +43,20 @@ import type { ScheduledSitting } from "./calendar"
 /** A board's rule, exactly as `update-schedule.mjs` scraped it. */
 export interface MeetingRule {
   board: string
+  source: string
   intro: string
   exceptions: string[]
+}
+
+/** A board's own printed list of dates, exactly as scraped. */
+export interface MeetingCalendar {
+  board: string
+  source: string
+  year: number
+  /** The board's own heading over the table, e.g. `CALENDAR OF MEETINGS FOR 2026`. */
+  heading: string
+  /** `YYYY-MM-DD`, ascending. */
+  dates: string[]
 }
 
 /**
@@ -144,8 +166,18 @@ export function meetingRules(): MeetingRule[] {
   return raw.rules as MeetingRule[]
 }
 
+/** The printed calendars as scraped, oldest year first. */
+export function meetingCalendars(): MeetingCalendar[] {
+  return raw.calendars as MeetingCalendar[]
+}
+
 /**
- * The sittings the rule names from `today` to the end of that year.
+ * Every sitting a board has said it will hold, from `today` onwards.
+ *
+ * A printed calendar contributes the dates it prints; the Council's rule
+ * contributes the Tuesdays it names in the year `today` falls in, which is as
+ * far as a projection is worth carrying. Both are cut at `today`: nothing here
+ * ever speaks about a day that has already happened.
  *
  * `today` is the build date -- the site is prerendered, so this is resolved
  * once when the calendar is built rather than in the reader's browser. A build
@@ -153,8 +185,25 @@ export function meetingRules(): MeetingRule[] {
  * every push rebuilds, so in practice the horizon moves with the deploy.
  */
 export function expectedSittings(today: string): ScheduledSitting[] {
+  const fromCalendars = meetingCalendars().flatMap((calendar) =>
+    calendar.dates
+      .filter((date) => date >= today)
+      .map((date) => ({
+        board: calendar.board,
+        date,
+        // No time: the Commission prints the dates and not the hour, and the
+        // hour on its last agenda is not evidence about a sitting that has not
+        // happened. An event with no time is an all-day one; see $lib/ics.
+        source: {
+          kind: "calendar" as const,
+          url: calendar.source,
+          heading: calendar.heading,
+        },
+      })),
+  )
+
   const year = Number(today.slice(0, 4))
-  return meetingRules().flatMap((rule) =>
+  const fromRules = meetingRules().flatMap((rule) =>
     rule.board === RULE_AS_READ.board
       ? sittingsIn(year)
           .filter((date) => date >= today)
@@ -162,10 +211,23 @@ export function expectedSittings(today: string): ScheduledSitting[] {
             board: rule.board,
             date,
             time: TIME,
-            rule: { url: raw.source, intro: rule.intro, exceptions: rule.exceptions },
+            source: {
+              kind: "rule" as const,
+              url: rule.source,
+              intro: rule.intro,
+              exceptions: rule.exceptions,
+            },
           }))
       : // A board whose rule nobody has read into dates yet. Adding one means
         // reading its wording and extending `sittingsIn`, not guessing here.
         [],
+  )
+
+  // Printed dates first, so that a board publishing both a calendar and a rule
+  // has the calendar win in `withScheduled`, which keeps the first of any
+  // duplicate. Nothing does today, but the better evidence should be the one
+  // that survives if one ever does.
+  return [...fromCalendars, ...fromRules].sort(
+    (a, b) => a.date.localeCompare(b.date) || a.board.localeCompare(b.board),
   )
 }

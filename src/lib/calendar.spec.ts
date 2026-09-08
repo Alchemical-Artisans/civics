@@ -191,7 +191,8 @@ const sitting = (date: string, board = "City Council"): ScheduledSitting => ({
   board,
   date,
   time: "7:00 PM",
-  rule: {
+  source: {
+    kind: "rule",
     url: "https://example.test/agendas-and-minutes/",
     intro: "Regular meetings shall be held every Tuesday at 7:00 o'clock P.M. except in:",
     exceptions: ["June there shall be a meeting on the first, third and fourth Tuesday."],
@@ -205,6 +206,7 @@ describe("withScheduled", () => {
     expect(meetings[0].id).toBe("city-council-2025-01-28")
     expect(meetings[0].documents).toEqual([])
     expect(meetings[0].scheduled?.time).toBe("7:00 PM")
+    expect(meetings[0].scheduled?.source.kind).toBe("rule")
   })
 
   it("leaves an expected date the city published a document for alone", () => {
