@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-08T20:47:19.824Z",
+  "generatedAt": "2026-09-08T21:59:17.299Z",
   "source": "https://www.haverhillma.gov/government/agendas-and-minutes/",
   "count": 2245,
   "meetings": [
@@ -125,7 +125,7 @@
       "dateAdjusted": false,
       "dateConflict": true,
       "filenameDate": "2026-08-14",
-      "needsReview": true,
+      "needsReview": false,
       "source": "https://www.haverhillma.gov/government/boards-committees-and-commissions/zoning-board-of-appeals/",
       "docId": "zoning-board-of-appeals-3a2bfc46"
     },
@@ -737,7 +737,7 @@
       "dateAdjusted": false,
       "dateConflict": true,
       "filenameDate": "2026-06-10",
-      "needsReview": true,
+      "needsReview": false,
       "source": "https://www.haverhillma.gov/government/boards-committees-and-commissions/zoning-board-of-appeals/",
       "docId": "zoning-board-of-appeals-aeec110a"
     },
@@ -758,6 +758,24 @@
       "needsReview": false,
       "source": "https://www.haverhillma.gov/government/boards-committees-and-commissions/zoning-board-of-appeals/",
       "docId": "zoning-board-of-appeals-0c53b15f"
+    },
+    {
+      "title": "May 20, 2026 Agenda",
+      "pageUrl": "/government/boards-committees-and-commissions/zoning-board-of-appeals/",
+      "fileUrl": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/qfhdzkkz/doc061026.pdf",
+      "category": "Zoning Board of Appeals",
+      "description": "",
+      "board": "Zoning Board of Appeals",
+      "kind": "agenda",
+      "date": "2026-06-17",
+      "dateSource": "title",
+      "rawMeetingDate": null,
+      "dateAdjusted": false,
+      "dateConflict": true,
+      "filenameDate": "2026-06-10",
+      "needsReview": false,
+      "source": "https://www.haverhillma.gov/government/boards-committees-and-commissions/zoning-board-of-appeals/",
+      "docId": "zoning-board-of-appeals-b18b93b0"
     },
     {
       "title": "2026.06.26 Board of Assessor Minutes",
@@ -971,7 +989,7 @@
       "dateAdjusted": false,
       "dateConflict": true,
       "filenameDate": "2026-05-22",
-      "needsReview": true,
+      "needsReview": false,
       "source": "https://www.haverhillma.gov/government/boards-committees-and-commissions/planning-board/",
       "docId": "planning-board-1fa951cb"
     },
@@ -1064,24 +1082,6 @@
       "needsReview": false,
       "docId": "lc-special-meeting-may-20-2026-minutes-f8dc6ad7",
       "source": "https://www.haverhillma.gov/government/agendas-and-minutes/"
-    },
-    {
-      "title": "May 20, 2026 Agenda",
-      "pageUrl": "/government/boards-committees-and-commissions/zoning-board-of-appeals/",
-      "fileUrl": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/qfhdzkkz/doc061026.pdf",
-      "category": "Zoning Board of Appeals",
-      "description": "",
-      "board": "Zoning Board of Appeals",
-      "kind": "agenda",
-      "date": "2026-05-20",
-      "dateSource": "title",
-      "rawMeetingDate": null,
-      "dateAdjusted": false,
-      "dateConflict": true,
-      "filenameDate": "2026-06-10",
-      "needsReview": true,
-      "source": "https://www.haverhillma.gov/government/boards-committees-and-commissions/zoning-board-of-appeals/",
-      "docId": "zoning-board-of-appeals-b18b93b0"
     },
     {
       "title": "May 20, 2026 Minutes",
@@ -1529,7 +1529,7 @@
       "dateAdjusted": false,
       "dateConflict": true,
       "filenameDate": "2026-01-05",
-      "needsReview": true,
+      "needsReview": false,
       "source": "https://www.haverhillma.gov/government/boards-committees-and-commissions/zoning-board-of-appeals/",
       "docId": "zoning-board-of-appeals-fe284448"
     },
@@ -2252,6 +2252,24 @@
       "needsReview": false,
       "docId": "agenda-and-minutes-15-57a381af",
       "source": "https://www.haverhillma.gov/government/agendas-and-minutes/"
+    },
+    {
+      "title": "Planning Board Agenda 2-12-25",
+      "pageUrl": "/government/boards-committees-and-commissions/planning-board/",
+      "fileUrl": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/eqhluqxv/doc020625-agenda-2025.pdf",
+      "category": "Planning Board",
+      "description": "",
+      "board": "Planning Board",
+      "kind": "agenda",
+      "date": "2026-02-12",
+      "dateSource": "title",
+      "rawMeetingDate": null,
+      "dateAdjusted": false,
+      "dateConflict": true,
+      "filenameDate": "2025-02-06",
+      "needsReview": false,
+      "source": "https://www.haverhillma.gov/government/boards-committees-and-commissions/planning-board/",
+      "docId": "planning-board-a75e5d27"
     },
     {
       "title": "Planning Board Agenda 2.11.26",
@@ -4087,7 +4105,8 @@
       "filenameDate": "2025-08-20",
       "needsReview": false,
       "source": "https://www.haverhillma.gov/government/boards-committees-and-commissions/zoning-board-of-appeals/",
-      "docId": "zoning-board-of-appeals-c7cff4cf"
+      "docId": "zoning-board-of-appeals-c7cff4cf",
+      "settled": true
     },
     {
       "title": "August 20, 2025 Minutes",
@@ -4432,24 +4451,6 @@
       "docId": "planning-board-a8018e39"
     },
     {
-      "title": "July 18, 2025 Minutes",
-      "pageUrl": "/government/boards-committees-and-commissions/zoning-board-of-appeals/",
-      "fileUrl": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/kx5gujbd/minutes-july-162025.pdf",
-      "category": "Zoning Board of Appeals",
-      "description": "",
-      "board": "Zoning Board of Appeals",
-      "kind": "minutes",
-      "date": "2025-07-18",
-      "dateSource": "title",
-      "rawMeetingDate": null,
-      "dateAdjusted": false,
-      "dateConflict": true,
-      "filenameDate": "2025-07-16",
-      "needsReview": true,
-      "source": "https://www.haverhillma.gov/government/boards-committees-and-commissions/zoning-board-of-appeals/",
-      "docId": "zoning-board-of-appeals-4cf2c181"
-    },
-    {
       "title": "2025-07-17 Conservation Commission Agenda",
       "pageUrl": "/document-manager/media-pages/agenda-and-minutes/2025-07-17-conservation-commission-agenda/",
       "fileUrl": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/bpdn1n4v/20250717_hccagenda.pdf",
@@ -4502,6 +4503,24 @@
       "needsReview": false,
       "source": "https://www.haverhillma.gov/government/boards-committees-and-commissions/zoning-board-of-appeals/",
       "docId": "zoning-board-of-appeals-80f32b9d"
+    },
+    {
+      "title": "July 18, 2025 Minutes",
+      "pageUrl": "/government/boards-committees-and-commissions/zoning-board-of-appeals/",
+      "fileUrl": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/kx5gujbd/minutes-july-162025.pdf",
+      "category": "Zoning Board of Appeals",
+      "description": "",
+      "board": "Zoning Board of Appeals",
+      "kind": "minutes",
+      "date": "2025-07-16",
+      "dateSource": "title",
+      "rawMeetingDate": null,
+      "dateAdjusted": false,
+      "dateConflict": true,
+      "filenameDate": "2025-07-16",
+      "needsReview": false,
+      "source": "https://www.haverhillma.gov/government/boards-committees-and-commissions/zoning-board-of-appeals/",
+      "docId": "zoning-board-of-appeals-4cf2c181"
     },
     {
       "title": "2025-7-15 Board of Assessors Executive Minutes",
@@ -6067,7 +6086,8 @@
       "dateConflict": false,
       "filenameDate": null,
       "needsReview": false,
-      "docId": "agenda-archive-7d63f198"
+      "docId": "agenda-archive-7d63f198",
+      "settled": true
     },
     {
       "title": "March 14, 2025",
@@ -6175,7 +6195,8 @@
       "dateConflict": false,
       "filenameDate": "2025-03-06",
       "needsReview": false,
-      "docId": "agenda-archive-bc3b9dcb"
+      "docId": "agenda-archive-bc3b9dcb",
+      "settled": true
     },
     {
       "title": "March 6, 2025",
@@ -6247,7 +6268,8 @@
       "dateConflict": false,
       "filenameDate": "2025-03-04",
       "needsReview": false,
-      "docId": "agenda-archive-98558e2c"
+      "docId": "agenda-archive-98558e2c",
+      "settled": true
     },
     {
       "title": "CityCouncil_2.25.25_minutes",
@@ -6283,7 +6305,8 @@
       "dateConflict": false,
       "filenameDate": "2025-02-25",
       "needsReview": false,
-      "docId": "agenda-archive-0549672c"
+      "docId": "agenda-archive-0549672c",
+      "settled": true
     },
     {
       "title": "February 25, 2025",
@@ -6376,24 +6399,6 @@
       "source": "https://www.haverhillma.gov/government/agendas-and-minutes/"
     },
     {
-      "title": "Planning Board Agenda 2-12-25",
-      "pageUrl": "/government/boards-committees-and-commissions/planning-board/",
-      "fileUrl": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/eqhluqxv/doc020625-agenda-2025.pdf",
-      "category": "Planning Board",
-      "description": "",
-      "board": "Planning Board",
-      "kind": "agenda",
-      "date": "2025-02-12",
-      "dateSource": "title",
-      "rawMeetingDate": null,
-      "dateAdjusted": false,
-      "dateConflict": true,
-      "filenameDate": "2025-02-06",
-      "needsReview": true,
-      "source": "https://www.haverhillma.gov/government/boards-committees-and-commissions/planning-board/",
-      "docId": "planning-board-a75e5d27"
-    },
-    {
       "title": "02.11.2025.BOA.Mtg.Min",
       "pageUrl": "/government/agendas-and-minutes/minutes-archive/",
       "fileUrl": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/q25pms00/boa-mtg-min-02112025.pdf",
@@ -6445,7 +6450,8 @@
       "dateConflict": false,
       "filenameDate": "2025-02-11",
       "needsReview": false,
-      "docId": "agenda-archive-ea490630"
+      "docId": "agenda-archive-ea490630",
+      "settled": true
     },
     {
       "title": "February 11, 2025",
@@ -6481,7 +6487,8 @@
       "dateConflict": false,
       "filenameDate": "2025-02-06",
       "needsReview": false,
-      "docId": "agenda-archive-ec79d75a"
+      "docId": "agenda-archive-ec79d75a",
+      "settled": true
     },
     {
       "title": "February 5, 2025 - Cultural Council Minutes",
@@ -6500,24 +6507,6 @@
       "needsReview": false,
       "docId": "february-5-2025-cultural-council-minutes-b0e972fa",
       "source": "https://www.haverhillma.gov/government/agendas-and-minutes/"
-    },
-    {
-      "title": "02.04.2025.BOA.Mtg.Min",
-      "pageUrl": "/government/agendas-and-minutes/minutes-archive/",
-      "fileUrl": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/kswlsavc/inaugural-jan-1-2018.pdf",
-      "category": "Board of Assessors Minutes",
-      "description": "",
-      "source": "https://www.haverhillma.gov/government/agendas-and-minutes/minutes-archive/",
-      "board": "Board of Assessors",
-      "kind": "minutes",
-      "date": "2025-02-04",
-      "dateSource": "title",
-      "rawMeetingDate": null,
-      "dateAdjusted": false,
-      "dateConflict": true,
-      "filenameDate": "2018-01-01",
-      "needsReview": true,
-      "docId": "agenda-archive-f595a85b"
     },
     {
       "title": "CityCouncil_2.4.25_minutes",
@@ -6769,7 +6758,8 @@
       "dateConflict": false,
       "filenameDate": "2025-01-14",
       "needsReview": false,
-      "docId": "agenda-archive-b97995ca"
+      "docId": "agenda-archive-b97995ca",
+      "settled": true
     },
     {
       "title": "January 14, 2025",
@@ -6895,7 +6885,8 @@
       "dateConflict": false,
       "filenameDate": "2025-01-02",
       "needsReview": false,
-      "docId": "agenda-archive-b8aa8334"
+      "docId": "agenda-archive-b8aa8334",
+      "settled": true
     },
     {
       "title": "December 18, 2024 Agenda",
@@ -7038,7 +7029,7 @@
       "dateAdjusted": false,
       "dateConflict": true,
       "filenameDate": "2024-12-07",
-      "needsReview": true,
+      "needsReview": false,
       "docId": "agenda-archive-3528d444"
     },
     {
@@ -7525,7 +7516,8 @@
       "dateConflict": false,
       "filenameDate": null,
       "needsReview": false,
-      "docId": "agenda-archive-6ebd3c92"
+      "docId": "agenda-archive-6ebd3c92",
+      "settled": true
     },
     {
       "title": "October 3, 2024",
@@ -7793,7 +7785,7 @@
       "dateAdjusted": false,
       "dateConflict": true,
       "filenameDate": "2024-08-11",
-      "needsReview": true,
+      "needsReview": false,
       "source": "https://www.haverhillma.gov/government/boards-committees-and-commissions/planning-board/",
       "docId": "planning-board-03740616"
     },
@@ -7813,7 +7805,8 @@
       "dateConflict": false,
       "filenameDate": "2024-09-11",
       "needsReview": false,
-      "docId": "agenda-archive-0cc4c01c"
+      "docId": "agenda-archive-0cc4c01c",
+      "settled": true
     },
     {
       "title": "September 11, 2024",
@@ -7903,7 +7896,8 @@
       "dateConflict": false,
       "filenameDate": null,
       "needsReview": false,
-      "docId": "agenda-archive-7adbcb76"
+      "docId": "agenda-archive-7adbcb76",
+      "settled": true
     },
     {
       "title": "September 5, 2024",
@@ -8173,7 +8167,8 @@
       "dateConflict": false,
       "filenameDate": null,
       "needsReview": false,
-      "docId": "agenda-archive-7f0b367c"
+      "docId": "agenda-archive-7f0b367c",
+      "settled": true
     },
     {
       "title": "August 1, 2024, Part 2",
@@ -8191,7 +8186,8 @@
       "dateConflict": false,
       "filenameDate": null,
       "needsReview": false,
-      "docId": "agenda-archive-c894d263"
+      "docId": "agenda-archive-c894d263",
+      "settled": true
     },
     {
       "title": "07.23.2024.BOA.Mtg.Min",
@@ -8299,7 +8295,8 @@
       "dateConflict": false,
       "filenameDate": "2024-07-11",
       "needsReview": false,
-      "docId": "agenda-archive-2dbad75d"
+      "docId": "agenda-archive-2dbad75d",
+      "settled": true
     },
     {
       "title": "July 11, 2024",
@@ -8587,7 +8584,8 @@
       "dateConflict": false,
       "filenameDate": null,
       "needsReview": false,
-      "docId": "agenda-archive-983b2782"
+      "docId": "agenda-archive-983b2782",
+      "settled": true
     },
     {
       "title": "June 6, 2024",
@@ -8893,7 +8891,8 @@
       "dateConflict": false,
       "filenameDate": null,
       "needsReview": false,
-      "docId": "agenda-archive-56b6714f"
+      "docId": "agenda-archive-56b6714f",
+      "settled": true
     },
     {
       "title": "04.30.2024.BOA.Mtg.Min",
@@ -9127,7 +9126,8 @@
       "dateConflict": false,
       "filenameDate": null,
       "needsReview": false,
-      "docId": "agenda-archive-120002f4"
+      "docId": "agenda-archive-120002f4",
+      "settled": true
     },
     {
       "title": "04.02.2024.BOA.Mtg.Min",
@@ -9379,7 +9379,8 @@
       "dateConflict": false,
       "filenameDate": null,
       "needsReview": false,
-      "docId": "agenda-archive-7dd2ddc5"
+      "docId": "agenda-archive-7dd2ddc5",
+      "settled": true
     },
     {
       "title": "03.05.2024.BOA.Mtg.Min",
@@ -9467,7 +9468,7 @@
       "dateAdjusted": false,
       "dateConflict": true,
       "filenameDate": "2024-02-01",
-      "needsReview": true,
+      "needsReview": false,
       "source": "https://www.haverhillma.gov/government/boards-committees-and-commissions/zoning-board-of-appeals/",
       "docId": "zoning-board-of-appeals-f1b09fd7"
     },
@@ -9649,7 +9650,8 @@
       "dateConflict": false,
       "filenameDate": "2024-02-01",
       "needsReview": false,
-      "docId": "agenda-archive-17fc2573"
+      "docId": "agenda-archive-17fc2573",
+      "settled": true
     },
     {
       "title": "January 30, 2024",
@@ -9865,7 +9867,8 @@
       "dateConflict": false,
       "filenameDate": "2024-01-04",
       "needsReview": false,
-      "docId": "agenda-archive-6cf000b6"
+      "docId": "agenda-archive-6cf000b6",
+      "settled": true
     },
     {
       "title": "January 4, 2024",
@@ -10297,7 +10300,8 @@
       "dateConflict": false,
       "filenameDate": "2023-11-14",
       "needsReview": false,
-      "docId": "minutes-archive-2f317ac4"
+      "docId": "minutes-archive-2f317ac4",
+      "settled": true
     },
     {
       "title": "November 14, 2023",
@@ -11539,7 +11543,8 @@
       "dateConflict": false,
       "filenameDate": "2023-06-13",
       "needsReview": false,
-      "docId": "agenda-archive-df13ecbb"
+      "docId": "agenda-archive-df13ecbb",
+      "settled": true
     },
     {
       "title": "June 13, 2023",
@@ -12349,7 +12354,8 @@
       "dateConflict": false,
       "filenameDate": "2023-03-28",
       "needsReview": false,
-      "docId": "minutes-archive-58d124d7"
+      "docId": "minutes-archive-58d124d7",
+      "settled": true
     },
     {
       "title": "03.28.2023.BOA.Mtg.Min",
@@ -14219,7 +14225,7 @@
       "dateAdjusted": false,
       "dateConflict": true,
       "filenameDate": "2022-02-01",
-      "needsReview": true,
+      "needsReview": false,
       "source": "https://www.haverhillma.gov/government/boards-committees-and-commissions/zoning-board-of-appeals/",
       "docId": "zoning-board-of-appeals-f269ba7a"
     },
@@ -16834,24 +16840,6 @@
       "docId": "minutes-archive-4ec7a1cb"
     },
     {
-      "title": "January 18 2022",
-      "pageUrl": "/government/agendas-and-minutes/agenda-archive/",
-      "fileUrl": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/d3thkztw/comp-agenda-january-11-2022.pdf",
-      "category": "City Council Agendas",
-      "description": "",
-      "source": "https://www.haverhillma.gov/government/agendas-and-minutes/agenda-archive/",
-      "board": "City Council",
-      "kind": "agenda",
-      "date": "2022-01-18",
-      "dateSource": "title",
-      "rawMeetingDate": null,
-      "dateAdjusted": false,
-      "dateConflict": true,
-      "filenameDate": "2022-01-11",
-      "needsReview": true,
-      "docId": "agenda-archive-46128110"
-    },
-    {
       "title": "Planning Board Agenda 1-12-22",
       "pageUrl": "/government/boards-committees-and-commissions/planning-board/",
       "fileUrl": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/ptnmxyp5/pb-agenda-1-12-22.pdf",
@@ -16902,7 +16890,7 @@
       "dateAdjusted": false,
       "dateConflict": false,
       "filenameDate": "2022-01-11",
-      "needsReview": true,
+      "needsReview": false,
       "docId": "agenda-archive-46128110"
     },
     {
@@ -16940,6 +16928,24 @@
       "filenameDate": "2022-01-11",
       "needsReview": false,
       "docId": "minutes-archive-d5adf717"
+    },
+    {
+      "title": "January 18 2022",
+      "pageUrl": "/government/agendas-and-minutes/agenda-archive/",
+      "fileUrl": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/d3thkztw/comp-agenda-january-11-2022.pdf",
+      "category": "City Council Agendas",
+      "description": "",
+      "source": "https://www.haverhillma.gov/government/agendas-and-minutes/agenda-archive/",
+      "board": "City Council",
+      "kind": "agenda",
+      "date": "2022-01-11",
+      "dateSource": "title",
+      "rawMeetingDate": null,
+      "dateAdjusted": false,
+      "dateConflict": true,
+      "filenameDate": "2022-01-11",
+      "needsReview": false,
+      "docId": "agenda-archive-46128110"
     },
     {
       "title": "January 6 2022",
@@ -19120,6 +19126,24 @@
       "docId": "minutes-archive-893767e5"
     },
     {
+      "title": "May 4 2021 - regular - updated",
+      "pageUrl": "/government/agendas-and-minutes/agenda-archive/",
+      "fileUrl": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/0vdjo1m5/may-6-2021-updated.pdf",
+      "category": "License Commission Agendas",
+      "description": "",
+      "source": "https://www.haverhillma.gov/government/agendas-and-minutes/agenda-archive/",
+      "board": "License Commission",
+      "kind": "agenda",
+      "date": "2021-05-06",
+      "dateSource": "title",
+      "rawMeetingDate": null,
+      "dateAdjusted": false,
+      "dateConflict": true,
+      "filenameDate": "2021-05-06",
+      "needsReview": false,
+      "docId": "agenda-archive-320841d4"
+    },
+    {
       "title": "05.04.2021.BOA.Mtg.Mins",
       "pageUrl": "/government/agendas-and-minutes/minutes-archive/",
       "fileUrl": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/aarlj5de/boa-mtg-min-05042021.pdf",
@@ -19172,24 +19196,6 @@
       "filenameDate": "2021-05-04",
       "needsReview": false,
       "docId": "minutes-archive-f9055633"
-    },
-    {
-      "title": "May 4 2021 - regular - updated",
-      "pageUrl": "/government/agendas-and-minutes/agenda-archive/",
-      "fileUrl": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/0vdjo1m5/may-6-2021-updated.pdf",
-      "category": "License Commission Agendas",
-      "description": "",
-      "source": "https://www.haverhillma.gov/government/agendas-and-minutes/agenda-archive/",
-      "board": "License Commission",
-      "kind": "agenda",
-      "date": "2021-05-04",
-      "dateSource": "title",
-      "rawMeetingDate": null,
-      "dateAdjusted": false,
-      "dateConflict": true,
-      "filenameDate": "2021-05-06",
-      "needsReview": true,
-      "docId": "agenda-archive-320841d4"
     },
     {
       "title": "04.27.2021.BOA.Mtg.Mins",
@@ -21305,13 +21311,13 @@
       "description": "",
       "board": "Zoning Board of Appeals",
       "kind": "minutes",
-      "date": "2020-09-19",
+      "date": "2020-09-16",
       "dateSource": "title",
       "rawMeetingDate": null,
       "dateAdjusted": false,
       "dateConflict": true,
       "filenameDate": "2020-01-09",
-      "needsReview": true,
+      "needsReview": false,
       "source": "https://www.haverhillma.gov/government/boards-committees-and-commissions/zoning-board-of-appeals/",
       "docId": "zoning-board-of-appeals-d72f20ed"
     },
@@ -22645,7 +22651,8 @@
       "dateConflict": false,
       "filenameDate": null,
       "needsReview": false,
-      "docId": "minutes-archive-8a6ddeab"
+      "docId": "minutes-archive-8a6ddeab",
+      "settled": true
     },
     {
       "title": "April 15 2020 - virtual",
@@ -23472,7 +23479,7 @@
       "dateAdjusted": false,
       "dateConflict": true,
       "filenameDate": "2029-02-04",
-      "needsReview": true,
+      "needsReview": false,
       "docId": "agenda-archive-f24b1252"
     },
     {
@@ -24174,7 +24181,7 @@
       "dateAdjusted": false,
       "dateConflict": true,
       "filenameDate": "2029-12-03",
-      "needsReview": true,
+      "needsReview": false,
       "docId": "agenda-archive-e6b7a2ea"
     },
     {
@@ -24227,7 +24234,7 @@
       "dateAdjusted": false,
       "dateConflict": true,
       "filenameDate": "2019-01-01",
-      "needsReview": true,
+      "needsReview": false,
       "source": "https://www.haverhillma.gov/government/boards-committees-and-commissions/zoning-board-of-appeals/",
       "docId": "zoning-board-of-appeals-7604a74e"
     },
@@ -24697,7 +24704,8 @@
       "dateConflict": false,
       "filenameDate": "2019-10-08",
       "needsReview": false,
-      "docId": "minutes-archive-2a0e4abd"
+      "docId": "minutes-archive-2a0e4abd",
+      "settled": true
     },
     {
       "title": "October 8 2019",
@@ -25525,7 +25533,8 @@
       "filenameDate": null,
       "needsReview": false,
       "source": "https://www.haverhillma.gov/government/boards-committees-and-commissions/zoning-board-of-appeals/",
-      "docId": "zoning-board-of-appeals-1c20d5cc"
+      "docId": "zoning-board-of-appeals-1c20d5cc",
+      "settled": true
     },
     {
       "title": "July 19, 2019 Agenda",
@@ -26083,7 +26092,8 @@
       "filenameDate": "2019-05-15",
       "needsReview": false,
       "source": "https://www.haverhillma.gov/government/boards-committees-and-commissions/zoning-board-of-appeals/",
-      "docId": "zoning-board-of-appeals-27f86da5"
+      "docId": "zoning-board-of-appeals-27f86da5",
+      "settled": true
     },
     {
       "title": "May 15, 2019 Agenda",
@@ -26555,24 +26565,6 @@
     },
     {
       "title": "April 9 2019",
-      "pageUrl": "/government/agendas-and-minutes/agenda-archive/",
-      "fileUrl": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/a3vdspcr/comp-agenda-april-2-2019-ok.pdf",
-      "category": "City Council Agendas",
-      "description": "",
-      "source": "https://www.haverhillma.gov/government/agendas-and-minutes/agenda-archive/",
-      "board": "City Council",
-      "kind": "agenda",
-      "date": "2019-04-09",
-      "dateSource": "title",
-      "rawMeetingDate": null,
-      "dateAdjusted": false,
-      "dateConflict": true,
-      "filenameDate": "2019-04-02",
-      "needsReview": true,
-      "docId": "agenda-archive-3c5d7278"
-    },
-    {
-      "title": "April 9 2019",
       "pageUrl": "/government/agendas-and-minutes/minutes-archive/",
       "fileUrl": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/ov1dsibr/49-2019.pdf",
       "category": "City Council Minutes",
@@ -26662,6 +26654,24 @@
       "docId": "minutes-archive-f83508c8"
     },
     {
+      "title": "April 2, 2012",
+      "pageUrl": "/government/agendas-and-minutes/agenda-archive/",
+      "fileUrl": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/a3vdspcr/comp-agenda-april-2-2019-ok.pdf",
+      "category": "City Council Agendas",
+      "description": "",
+      "source": "https://www.haverhillma.gov/government/agendas-and-minutes/agenda-archive/",
+      "board": "City Council",
+      "kind": "agenda",
+      "date": "2019-04-02",
+      "dateSource": "title",
+      "rawMeetingDate": null,
+      "dateAdjusted": false,
+      "dateConflict": true,
+      "filenameDate": "2019-04-02",
+      "needsReview": false,
+      "docId": "agenda-archive-3c5d7278"
+    },
+    {
       "title": "April 2, 2019",
       "pageUrl": "/government/agendas-and-minutes/agenda-archive/",
       "fileUrl": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/a3vdspcr/comp-agenda-april-2-2019-ok.pdf",
@@ -26676,7 +26686,25 @@
       "dateAdjusted": false,
       "dateConflict": false,
       "filenameDate": "2019-04-02",
-      "needsReview": true,
+      "needsReview": false,
+      "docId": "agenda-archive-3c5d7278"
+    },
+    {
+      "title": "April 9 2019",
+      "pageUrl": "/government/agendas-and-minutes/agenda-archive/",
+      "fileUrl": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/a3vdspcr/comp-agenda-april-2-2019-ok.pdf",
+      "category": "City Council Agendas",
+      "description": "",
+      "source": "https://www.haverhillma.gov/government/agendas-and-minutes/agenda-archive/",
+      "board": "City Council",
+      "kind": "agenda",
+      "date": "2019-04-02",
+      "dateSource": "title",
+      "rawMeetingDate": null,
+      "dateAdjusted": false,
+      "dateConflict": true,
+      "filenameDate": "2019-04-02",
+      "needsReview": false,
       "docId": "agenda-archive-3c5d7278"
     },
     {
@@ -26950,6 +26978,24 @@
       "docId": "minutes-archive-c77ac3b2"
     },
     {
+      "title": "February 12, 2019 March 12, 2019 (COLA meeting)",
+      "pageUrl": "/government/agendas-and-minutes/minutes-archive/",
+      "fileUrl": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/kroain2v/031219-cola-min-web-signed.pdf",
+      "category": "License Commission Minutes",
+      "description": "",
+      "source": "https://www.haverhillma.gov/government/agendas-and-minutes/minutes-archive/",
+      "board": "License Commission",
+      "kind": "minutes",
+      "date": "2019-03-12",
+      "dateSource": "title",
+      "rawMeetingDate": null,
+      "dateAdjusted": false,
+      "dateConflict": true,
+      "filenameDate": "2019-03-12",
+      "needsReview": false,
+      "docId": "minutes-archive-151b644c"
+    },
+    {
       "title": "March 12 2019",
       "pageUrl": "/government/agendas-and-minutes/minutes-archive/",
       "fileUrl": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/2kzambor/3122019.pdf",
@@ -27163,7 +27209,8 @@
       "dateConflict": false,
       "filenameDate": "2019-02-12",
       "needsReview": false,
-      "docId": "minutes-archive-7eec8fe4"
+      "docId": "minutes-archive-7eec8fe4",
+      "settled": true
     },
     {
       "title": "Feb 12, 2019",
@@ -27182,24 +27229,6 @@
       "filenameDate": "2019-02-12",
       "needsReview": false,
       "docId": "agenda-archive-78fc42de"
-    },
-    {
-      "title": "February 12, 2019 March 12, 2019 (COLA meeting)",
-      "pageUrl": "/government/agendas-and-minutes/minutes-archive/",
-      "fileUrl": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/kroain2v/031219-cola-min-web-signed.pdf",
-      "category": "License Commission Minutes",
-      "description": "",
-      "source": "https://www.haverhillma.gov/government/agendas-and-minutes/minutes-archive/",
-      "board": "License Commission",
-      "kind": "minutes",
-      "date": "2019-02-12",
-      "dateSource": "title",
-      "rawMeetingDate": null,
-      "dateAdjusted": false,
-      "dateConflict": true,
-      "filenameDate": "2019-03-12",
-      "needsReview": true,
-      "docId": "minutes-archive-151b644c"
     },
     {
       "title": "February 7 2019",
@@ -27577,7 +27606,8 @@
       "dateConflict": false,
       "filenameDate": null,
       "needsReview": false,
-      "docId": "agenda-archive-e5174e34"
+      "docId": "agenda-archive-e5174e34",
+      "settled": true
     },
     {
       "title": "December 18 2018",
@@ -27594,7 +27624,7 @@
       "dateAdjusted": false,
       "dateConflict": true,
       "filenameDate": "2018-01-02",
-      "needsReview": true,
+      "needsReview": false,
       "docId": "minutes-archive-e3868027"
     },
     {
@@ -27649,7 +27679,8 @@
       "dateConflict": false,
       "filenameDate": "2018-12-11",
       "needsReview": false,
-      "docId": "agenda-archive-65e7c5aa"
+      "docId": "agenda-archive-65e7c5aa",
+      "settled": true
     },
     {
       "title": "December 11 2018",
@@ -27757,7 +27788,8 @@
       "dateConflict": false,
       "filenameDate": "2018-12-04",
       "needsReview": false,
-      "docId": "agenda-archive-5e4ecc5a"
+      "docId": "agenda-archive-5e4ecc5a",
+      "settled": true
     },
     {
       "title": "December 4 2018",
@@ -27829,7 +27861,8 @@
       "dateConflict": false,
       "filenameDate": "2018-11-27",
       "needsReview": false,
-      "docId": "agenda-archive-52549d9e"
+      "docId": "agenda-archive-52549d9e",
+      "settled": true
     },
     {
       "title": "November 27 2018",
@@ -27846,7 +27879,7 @@
       "dateAdjusted": false,
       "dateConflict": true,
       "filenameDate": "2027-01-01",
-      "needsReview": true,
+      "needsReview": false,
       "docId": "minutes-archive-fc4b7f41"
     },
     {
@@ -27937,7 +27970,8 @@
       "dateConflict": false,
       "filenameDate": "2018-11-13",
       "needsReview": false,
-      "docId": "agenda-archive-d24f7d41"
+      "docId": "agenda-archive-d24f7d41",
+      "settled": true
     },
     {
       "title": "November 13 2018",
@@ -28063,7 +28097,8 @@
       "dateConflict": false,
       "filenameDate": "2018-10-30",
       "needsReview": false,
-      "docId": "agenda-archive-86edf0bf"
+      "docId": "agenda-archive-86edf0bf",
+      "settled": true
     },
     {
       "title": "October 30 2018",
@@ -28117,7 +28152,8 @@
       "dateConflict": false,
       "filenameDate": "2018-10-23",
       "needsReview": false,
-      "docId": "agenda-archive-97e498fb"
+      "docId": "agenda-archive-97e498fb",
+      "settled": true
     },
     {
       "title": "October 23 2018",
@@ -28171,7 +28207,8 @@
       "dateConflict": false,
       "filenameDate": "2018-10-16",
       "needsReview": false,
-      "docId": "agenda-archive-1efe7421"
+      "docId": "agenda-archive-1efe7421",
+      "settled": true
     },
     {
       "title": "October 16 2018",
@@ -28243,7 +28280,8 @@
       "dateConflict": true,
       "filenameDate": "2018-08-07",
       "needsReview": true,
-      "docId": "agenda-archive-1ebc96d5"
+      "docId": "agenda-archive-1ebc96d5",
+      "settled": true
     },
     {
       "title": "October 9, 2018",
@@ -28333,7 +28371,8 @@
       "dateConflict": false,
       "filenameDate": "2018-10-02",
       "needsReview": false,
-      "docId": "agenda-archive-1dd0488a"
+      "docId": "agenda-archive-1dd0488a",
+      "settled": true
     },
     {
       "title": "October 2 2018",
@@ -28387,7 +28426,8 @@
       "dateConflict": false,
       "filenameDate": "2018-09-25",
       "needsReview": false,
-      "docId": "agenda-archive-d2d29397"
+      "docId": "agenda-archive-d2d29397",
+      "settled": true
     },
     {
       "title": "September 25 2018",
@@ -28477,7 +28517,8 @@
       "dateConflict": false,
       "filenameDate": "2018-09-18",
       "needsReview": false,
-      "docId": "agenda-archive-33f5c4ca"
+      "docId": "agenda-archive-33f5c4ca",
+      "settled": true
     },
     {
       "title": "September 18 2018",
@@ -28585,7 +28626,8 @@
       "dateConflict": false,
       "filenameDate": "2018-09-11",
       "needsReview": false,
-      "docId": "agenda-archive-e8ad668a"
+      "docId": "agenda-archive-e8ad668a",
+      "settled": true
     },
     {
       "title": "September 11 2018",
@@ -28711,7 +28753,8 @@
       "dateConflict": false,
       "filenameDate": "2018-08-21",
       "needsReview": false,
-      "docId": "agenda-archive-59a9bf66"
+      "docId": "agenda-archive-59a9bf66",
+      "settled": true
     },
     {
       "title": "August 21 2018",
@@ -28837,7 +28880,8 @@
       "dateConflict": false,
       "filenameDate": "2018-08-07",
       "needsReview": true,
-      "docId": "agenda-archive-1ebc96d5"
+      "docId": "agenda-archive-1ebc96d5",
+      "settled": true
     },
     {
       "title": "August 7 2018",
@@ -28873,7 +28917,8 @@
       "dateConflict": false,
       "filenameDate": "2018-08-07",
       "needsReview": true,
-      "docId": "agenda-archive-1ebc96d5"
+      "docId": "agenda-archive-1ebc96d5",
+      "settled": true
     },
     {
       "title": "comp agenda 2 aug 7 2018",
@@ -28891,7 +28936,8 @@
       "dateConflict": false,
       "filenameDate": "2018-08-07",
       "needsReview": true,
-      "docId": "agenda-archive-1ebc96d5"
+      "docId": "agenda-archive-1ebc96d5",
+      "settled": true
     },
     {
       "title": "comp agenda 2 aug 7 2018",
@@ -28909,7 +28955,8 @@
       "dateConflict": false,
       "filenameDate": "2018-08-07",
       "needsReview": true,
-      "docId": "agenda-archive-1ebc96d5"
+      "docId": "agenda-archive-1ebc96d5",
+      "settled": true
     },
     {
       "title": "comp agenda 2 aug 7 2018",
@@ -28927,7 +28974,8 @@
       "dateConflict": false,
       "filenameDate": "2018-08-07",
       "needsReview": true,
-      "docId": "agenda-archive-1ebc96d5"
+      "docId": "agenda-archive-1ebc96d5",
+      "settled": true
     },
     {
       "title": "comp agenda 2 aug 7 2018",
@@ -28945,7 +28993,8 @@
       "dateConflict": false,
       "filenameDate": "2018-08-07",
       "needsReview": true,
-      "docId": "agenda-archive-1ebc96d5"
+      "docId": "agenda-archive-1ebc96d5",
+      "settled": true
     },
     {
       "title": "comp agenda 2 aug 7 2018",
@@ -28963,7 +29012,8 @@
       "dateConflict": false,
       "filenameDate": "2018-08-07",
       "needsReview": true,
-      "docId": "agenda-archive-1ebc96d5"
+      "docId": "agenda-archive-1ebc96d5",
+      "settled": true
     },
     {
       "title": "comp agenda 2 aug 7 2018",
@@ -28981,7 +29031,8 @@
       "dateConflict": false,
       "filenameDate": "2018-08-07",
       "needsReview": true,
-      "docId": "agenda-archive-1ebc96d5"
+      "docId": "agenda-archive-1ebc96d5",
+      "settled": true
     },
     {
       "title": "comp agenda 2 aug 7 2018",
@@ -28999,7 +29050,8 @@
       "dateConflict": false,
       "filenameDate": "2018-08-07",
       "needsReview": true,
-      "docId": "agenda-archive-1ebc96d5"
+      "docId": "agenda-archive-1ebc96d5",
+      "settled": true
     },
     {
       "title": "comp agenda 2 aug 7 2018",
@@ -29017,7 +29069,8 @@
       "dateConflict": false,
       "filenameDate": "2018-08-07",
       "needsReview": true,
-      "docId": "agenda-archive-1ebc96d5"
+      "docId": "agenda-archive-1ebc96d5",
+      "settled": true
     },
     {
       "title": "comp agenda 2 aug 7 2018",
@@ -29035,7 +29088,8 @@
       "dateConflict": false,
       "filenameDate": "2018-08-07",
       "needsReview": true,
-      "docId": "agenda-archive-1ebc96d5"
+      "docId": "agenda-archive-1ebc96d5",
+      "settled": true
     },
     {
       "title": "comp agenda 2 aug 7 2018",
@@ -29053,7 +29107,8 @@
       "dateConflict": false,
       "filenameDate": "2018-08-07",
       "needsReview": true,
-      "docId": "agenda-archive-1ebc96d5"
+      "docId": "agenda-archive-1ebc96d5",
+      "settled": true
     },
     {
       "title": "August 2 2018",
@@ -29125,7 +29180,8 @@
       "dateConflict": false,
       "filenameDate": "2018-07-24",
       "needsReview": false,
-      "docId": "agenda-archive-611e9eb3"
+      "docId": "agenda-archive-611e9eb3",
+      "settled": true
     },
     {
       "title": "July 24 2018",
@@ -29233,7 +29289,8 @@
       "dateConflict": false,
       "filenameDate": "2018-07-10",
       "needsReview": false,
-      "docId": "agenda-archive-07ae7f99"
+      "docId": "agenda-archive-07ae7f99",
+      "settled": true
     },
     {
       "title": "July 10 2018",
@@ -29287,7 +29344,8 @@
       "dateConflict": false,
       "filenameDate": "2018-06-26",
       "needsReview": false,
-      "docId": "agenda-archive-4ed91945"
+      "docId": "agenda-archive-4ed91945",
+      "settled": true
     },
     {
       "title": "June 26 2018",
@@ -29341,7 +29399,8 @@
       "dateConflict": false,
       "filenameDate": null,
       "needsReview": false,
-      "docId": "agenda-archive-c96b0f22"
+      "docId": "agenda-archive-c96b0f22",
+      "settled": true
     },
     {
       "title": "June 19 2018",
@@ -29449,7 +29508,8 @@
       "dateConflict": false,
       "filenameDate": "2018-06-05",
       "needsReview": false,
-      "docId": "agenda-archive-10c187f8"
+      "docId": "agenda-archive-10c187f8",
+      "settled": true
     },
     {
       "title": "June 5 2018",
@@ -29521,7 +29581,8 @@
       "dateConflict": false,
       "filenameDate": "2018-05-22",
       "needsReview": false,
-      "docId": "agenda-archive-339d7ad7"
+      "docId": "agenda-archive-339d7ad7",
+      "settled": true
     },
     {
       "title": "May 22 2018",
@@ -29557,7 +29618,8 @@
       "dateConflict": false,
       "filenameDate": "2018-05-15",
       "needsReview": false,
-      "docId": "agenda-archive-fd1a70be"
+      "docId": "agenda-archive-fd1a70be",
+      "settled": true
     },
     {
       "title": "May 15 2018",
@@ -29593,7 +29655,8 @@
       "dateConflict": false,
       "filenameDate": "2018-05-08",
       "needsReview": false,
-      "docId": "agenda-archive-f426507e"
+      "docId": "agenda-archive-f426507e",
+      "settled": true
     },
     {
       "title": "May 8 2018",
@@ -29665,7 +29728,8 @@
       "dateConflict": false,
       "filenameDate": "2018-05-01",
       "needsReview": false,
-      "docId": "agenda-archive-beac4750"
+      "docId": "agenda-archive-beac4750",
+      "settled": true
     },
     {
       "title": "May 1 2018",
@@ -29701,7 +29765,8 @@
       "dateConflict": false,
       "filenameDate": "2018-04-24",
       "needsReview": false,
-      "docId": "agenda-archive-2326aa27"
+      "docId": "agenda-archive-2326aa27",
+      "settled": true
     },
     {
       "title": "April 24 2018",
@@ -29773,7 +29838,8 @@
       "dateConflict": false,
       "filenameDate": "2018-04-10",
       "needsReview": false,
-      "docId": "agenda-archive-8265f9ff"
+      "docId": "agenda-archive-8265f9ff",
+      "settled": true
     },
     {
       "title": "April 10 2018",
@@ -29863,7 +29929,8 @@
       "dateConflict": false,
       "filenameDate": "2018-04-03",
       "needsReview": false,
-      "docId": "agenda-archive-ee61fbe4"
+      "docId": "agenda-archive-ee61fbe4",
+      "settled": true
     },
     {
       "title": "April 3 2018",
@@ -29899,7 +29966,8 @@
       "dateConflict": false,
       "filenameDate": "2018-03-27",
       "needsReview": false,
-      "docId": "agenda-archive-5c4018f9"
+      "docId": "agenda-archive-5c4018f9",
+      "settled": true
     },
     {
       "title": "March 27 2018",
@@ -29935,7 +30003,8 @@
       "dateConflict": false,
       "filenameDate": "2018-03-20",
       "needsReview": false,
-      "docId": "agenda-archive-9bed0842"
+      "docId": "agenda-archive-9bed0842",
+      "settled": true
     },
     {
       "title": "March 20 2018",
@@ -30043,7 +30112,8 @@
       "dateConflict": false,
       "filenameDate": "2018-03-06",
       "needsReview": false,
-      "docId": "agenda-archive-deac7eaf"
+      "docId": "agenda-archive-deac7eaf",
+      "settled": true
     },
     {
       "title": "March 6 2018",
@@ -30115,7 +30185,8 @@
       "dateConflict": false,
       "filenameDate": "2018-02-27",
       "needsReview": false,
-      "docId": "agenda-archive-a0f1d859"
+      "docId": "agenda-archive-a0f1d859",
+      "settled": true
     },
     {
       "title": "February 27 2018",
@@ -30187,7 +30258,8 @@
       "dateConflict": false,
       "filenameDate": "2018-02-13",
       "needsReview": false,
-      "docId": "agenda-archive-e46dbd30"
+      "docId": "agenda-archive-e46dbd30",
+      "settled": true
     },
     {
       "title": "February 13 2018",
@@ -30241,7 +30313,8 @@
       "dateConflict": false,
       "filenameDate": "2018-02-06",
       "needsReview": false,
-      "docId": "agenda-archive-ce2b845b"
+      "docId": "agenda-archive-ce2b845b",
+      "settled": true
     },
     {
       "title": "February 6 2018",
@@ -30313,7 +30386,8 @@
       "dateConflict": false,
       "filenameDate": null,
       "needsReview": false,
-      "docId": "agenda-archive-d12cf0a5"
+      "docId": "agenda-archive-d12cf0a5",
+      "settled": true
     },
     {
       "title": "January 30 2018",
@@ -30349,7 +30423,8 @@
       "dateConflict": false,
       "filenameDate": "2018-01-23",
       "needsReview": false,
-      "docId": "agenda-archive-238ebcaf"
+      "docId": "agenda-archive-238ebcaf",
+      "settled": true
     },
     {
       "title": "January 23 2018",
@@ -30439,7 +30514,8 @@
       "dateConflict": false,
       "filenameDate": "2018-01-16",
       "needsReview": false,
-      "docId": "agenda-archive-bdcfb53f"
+      "docId": "agenda-archive-bdcfb53f",
+      "settled": true
     },
     {
       "title": "January 16 2018",
@@ -30511,7 +30587,8 @@
       "dateConflict": false,
       "filenameDate": "2018-01-09",
       "needsReview": false,
-      "docId": "agenda-archive-2ef9f2e7"
+      "docId": "agenda-archive-2ef9f2e7",
+      "settled": true
     },
     {
       "title": "January 9 2018",
@@ -30566,6 +30643,24 @@
       "filenameDate": "2018-01-02",
       "needsReview": false,
       "docId": "minutes-archive-f95dd83a"
+    },
+    {
+      "title": "02.04.2025.BOA.Mtg.Min",
+      "pageUrl": "/government/agendas-and-minutes/minutes-archive/",
+      "fileUrl": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/kswlsavc/inaugural-jan-1-2018.pdf",
+      "category": "Board of Assessors Minutes",
+      "description": "",
+      "source": "https://www.haverhillma.gov/government/agendas-and-minutes/minutes-archive/",
+      "board": "Board of Assessors",
+      "kind": "minutes",
+      "date": "2018-01-01",
+      "dateSource": "title",
+      "rawMeetingDate": null,
+      "dateAdjusted": false,
+      "dateConflict": true,
+      "filenameDate": "2018-01-01",
+      "needsReview": false,
+      "docId": "agenda-archive-f595a85b"
     },
     {
       "title": "January 1 2018 - Inauguration",
@@ -32779,7 +32874,8 @@
       "dateConflict": false,
       "filenameDate": "2017-01-24",
       "needsReview": false,
-      "docId": "agenda-archive-97f03f48"
+      "docId": "agenda-archive-97f03f48",
+      "settled": true
     },
     {
       "title": "January 24, 2017",
@@ -32851,7 +32947,8 @@
       "dateConflict": false,
       "filenameDate": "2017-01-17",
       "needsReview": false,
-      "docId": "agenda-archive-54313aa7"
+      "docId": "agenda-archive-54313aa7",
+      "settled": true
     },
     {
       "title": "January 17, 2017",
@@ -32887,7 +32984,8 @@
       "dateConflict": false,
       "filenameDate": "2017-01-10",
       "needsReview": false,
-      "docId": "agenda-archive-8d21c9a1"
+      "docId": "agenda-archive-8d21c9a1",
+      "settled": true
     },
     {
       "title": "January 10, 2017",
@@ -32995,7 +33093,8 @@
       "dateConflict": false,
       "filenameDate": "2017-01-03",
       "needsReview": false,
-      "docId": "agenda-archive-7f7fca37"
+      "docId": "agenda-archive-7f7fca37",
+      "settled": true
     },
     {
       "title": "January 3, 2017",
@@ -33030,7 +33129,7 @@
       "dateAdjusted": false,
       "dateConflict": true,
       "filenameDate": "2016-01-02",
-      "needsReview": true,
+      "needsReview": false,
       "docId": "agenda-archive-7c46d59e"
     },
     {
@@ -33750,7 +33849,7 @@
       "dateAdjusted": false,
       "dateConflict": true,
       "filenameDate": "2016-08-05",
-      "needsReview": true,
+      "needsReview": false,
       "docId": "agenda-archive-c4af951e"
     },
     {
@@ -34128,7 +34227,7 @@
       "dateAdjusted": false,
       "dateConflict": true,
       "filenameDate": "2016-05-13",
-      "needsReview": true,
+      "needsReview": false,
       "docId": "agenda-archive-e778c3f3"
     },
     {
@@ -34344,7 +34443,7 @@
       "dateAdjusted": false,
       "dateConflict": true,
       "filenameDate": "2015-04-12",
-      "needsReview": true,
+      "needsReview": false,
       "docId": "agenda-archive-69698251"
     },
     {
@@ -34956,7 +35055,7 @@
       "dateAdjusted": false,
       "dateConflict": true,
       "filenameDate": "2016-01-04",
-      "needsReview": true,
+      "needsReview": false,
       "docId": "agenda-archive-512f52d4"
     },
     {
@@ -35082,7 +35181,7 @@
       "dateAdjusted": false,
       "dateConflict": true,
       "filenameDate": "2015-12-04",
-      "needsReview": true,
+      "needsReview": false,
       "docId": "agenda-archive-3307c909"
     },
     {
@@ -35244,7 +35343,7 @@
       "dateAdjusted": false,
       "dateConflict": true,
       "filenameDate": "2015-11-13",
-      "needsReview": true,
+      "needsReview": false,
       "docId": "agenda-archive-52756956"
     },
     {
@@ -35316,7 +35415,7 @@
       "dateAdjusted": false,
       "dateConflict": true,
       "filenameDate": "2015-11-06",
-      "needsReview": true,
+      "needsReview": false,
       "docId": "agenda-archive-474b18a3"
     },
     {
@@ -35352,7 +35451,7 @@
       "dateAdjusted": false,
       "dateConflict": true,
       "filenameDate": "2015-10-23",
-      "needsReview": true,
+      "needsReview": false,
       "docId": "agenda-archive-59b7bc54"
     },
     {
@@ -35424,7 +35523,7 @@
       "dateAdjusted": false,
       "dateConflict": true,
       "filenameDate": "2015-10-08",
-      "needsReview": true,
+      "needsReview": false,
       "docId": "agenda-archive-40c84058"
     },
     {
@@ -35460,7 +35559,7 @@
       "dateAdjusted": false,
       "dateConflict": true,
       "filenameDate": "2015-10-02",
-      "needsReview": true,
+      "needsReview": false,
       "docId": "agenda-archive-6affcbc3"
     },
     {
@@ -35532,7 +35631,7 @@
       "dateAdjusted": false,
       "dateConflict": true,
       "filenameDate": "2015-09-25",
-      "needsReview": true,
+      "needsReview": false,
       "docId": "agenda-archive-c98c5f99"
     },
     {
@@ -35568,7 +35667,7 @@
       "dateAdjusted": false,
       "dateConflict": true,
       "filenameDate": "2015-09-18",
-      "needsReview": true,
+      "needsReview": false,
       "docId": "agenda-archive-7b742f47"
     },
     {
@@ -35622,7 +35721,7 @@
       "dateAdjusted": false,
       "dateConflict": true,
       "filenameDate": "2015-09-11",
-      "needsReview": true,
+      "needsReview": false,
       "docId": "agenda-archive-4575ed46"
     },
     {
@@ -35658,7 +35757,7 @@
       "dateAdjusted": false,
       "dateConflict": true,
       "filenameDate": "2015-09-03",
-      "needsReview": true,
+      "needsReview": false,
       "docId": "agenda-archive-ee5b0ff4"
     },
     {
@@ -35730,7 +35829,7 @@
       "dateAdjusted": false,
       "dateConflict": true,
       "filenameDate": "2015-08-21",
-      "needsReview": true,
+      "needsReview": false,
       "docId": "agenda-archive-18f9c979"
     },
     {
@@ -35766,7 +35865,7 @@
       "dateAdjusted": false,
       "dateConflict": true,
       "filenameDate": "2015-08-07",
-      "needsReview": true,
+      "needsReview": false,
       "docId": "agenda-archive-7f043783"
     },
     {
@@ -35820,7 +35919,7 @@
       "dateAdjusted": false,
       "dateConflict": true,
       "filenameDate": "2015-08-04",
-      "needsReview": true,
+      "needsReview": false,
       "docId": "agenda-archive-720df150"
     },
     {
@@ -36054,7 +36153,7 @@
       "dateAdjusted": false,
       "dateConflict": true,
       "filenameDate": "2015-05-29",
-      "needsReview": true,
+      "needsReview": false,
       "docId": "agenda-archive-35fa2962"
     },
     {
@@ -36162,7 +36261,7 @@
       "dateAdjusted": false,
       "dateConflict": true,
       "filenameDate": "2015-05-15",
-      "needsReview": true,
+      "needsReview": false,
       "docId": "agenda-archive-c08582d8"
     },
     {
@@ -36184,6 +36283,24 @@
       "docId": "minutes-archive-fb23729c"
     },
     {
+      "title": "March 11, 2014",
+      "pageUrl": "/government/agendas-and-minutes/agenda-archive/",
+      "fileUrl": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/azmj5jgz/complete_agnda_5_12_2015_05082015121833.pdf",
+      "category": "City Council Agendas",
+      "description": "",
+      "source": "https://www.haverhillma.gov/government/agendas-and-minutes/agenda-archive/",
+      "board": "City Council",
+      "kind": "agenda",
+      "date": "2015-05-12",
+      "dateSource": "title",
+      "rawMeetingDate": null,
+      "dateAdjusted": false,
+      "dateConflict": true,
+      "filenameDate": "2015-05-08",
+      "needsReview": false,
+      "docId": "agenda-archive-85255aff"
+    },
+    {
       "title": "May 12, 2015",
       "pageUrl": "/government/agendas-and-minutes/agenda-archive/",
       "fileUrl": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/azmj5jgz/complete_agnda_5_12_2015_05082015121833.pdf",
@@ -36198,7 +36315,7 @@
       "dateAdjusted": false,
       "dateConflict": true,
       "filenameDate": "2015-05-08",
-      "needsReview": true,
+      "needsReview": false,
       "docId": "agenda-archive-85255aff"
     },
     {
@@ -36270,7 +36387,7 @@
       "dateAdjusted": false,
       "dateConflict": true,
       "filenameDate": "2015-05-01",
-      "needsReview": true,
+      "needsReview": false,
       "docId": "agenda-archive-ac6f0ac2"
     },
     {
@@ -36306,7 +36423,7 @@
       "dateAdjusted": false,
       "dateConflict": true,
       "filenameDate": "2015-04-24",
-      "needsReview": true,
+      "needsReview": false,
       "docId": "agenda-archive-109150eb"
     },
     {
@@ -36342,7 +36459,7 @@
       "dateAdjusted": false,
       "dateConflict": true,
       "filenameDate": "2015-04-16",
-      "needsReview": true,
+      "needsReview": false,
       "docId": "agenda-archive-f0d2c7c9"
     },
     {
@@ -36414,7 +36531,7 @@
       "dateAdjusted": false,
       "dateConflict": true,
       "filenameDate": "2015-04-03",
-      "needsReview": true,
+      "needsReview": false,
       "docId": "agenda-archive-3076df85"
     },
     {
@@ -36486,7 +36603,7 @@
       "dateAdjusted": false,
       "dateConflict": true,
       "filenameDate": "2015-03-27",
-      "needsReview": true,
+      "needsReview": false,
       "docId": "agenda-archive-8780719c"
     },
     {
@@ -36522,7 +36639,7 @@
       "dateAdjusted": false,
       "dateConflict": true,
       "filenameDate": "2015-03-20",
-      "needsReview": true,
+      "needsReview": false,
       "docId": "agenda-archive-6c8de7d1"
     },
     {
@@ -36558,7 +36675,7 @@
       "dateAdjusted": false,
       "dateConflict": true,
       "filenameDate": "2015-03-13",
-      "needsReview": true,
+      "needsReview": false,
       "docId": "agenda-archive-09836dc0"
     },
     {
@@ -36630,7 +36747,7 @@
       "dateAdjusted": false,
       "dateConflict": true,
       "filenameDate": "2015-03-06",
-      "needsReview": true,
+      "needsReview": false,
       "docId": "agenda-archive-b0ebd72c"
     },
     {
@@ -36720,7 +36837,7 @@
       "dateAdjusted": false,
       "dateConflict": true,
       "filenameDate": "2015-02-20",
-      "needsReview": true,
+      "needsReview": false,
       "docId": "agenda-archive-55c0d314"
     },
     {
@@ -36792,7 +36909,7 @@
       "dateAdjusted": false,
       "dateConflict": true,
       "filenameDate": "2015-02-06",
-      "needsReview": true,
+      "needsReview": false,
       "docId": "agenda-archive-5712f6ac"
     },
     {
@@ -36864,7 +36981,7 @@
       "dateAdjusted": false,
       "dateConflict": true,
       "filenameDate": "2015-01-30",
-      "needsReview": true,
+      "needsReview": false,
       "docId": "agenda-archive-0ee157c8"
     },
     {
@@ -36936,7 +37053,7 @@
       "dateAdjusted": false,
       "dateConflict": true,
       "filenameDate": "2015-01-15",
-      "needsReview": true,
+      "needsReview": false,
       "docId": "agenda-archive-92e940cd"
     },
     {
@@ -36972,7 +37089,7 @@
       "dateAdjusted": false,
       "dateConflict": true,
       "filenameDate": "2015-01-09",
-      "needsReview": true,
+      "needsReview": false,
       "docId": "agenda-archive-aac47fe5"
     },
     {
@@ -37044,7 +37161,7 @@
       "dateAdjusted": false,
       "dateConflict": true,
       "filenameDate": "2015-01-02",
-      "needsReview": true,
+      "needsReview": false,
       "docId": "agenda-archive-285c1dd2"
     },
     {
@@ -37080,7 +37197,7 @@
       "dateAdjusted": false,
       "dateConflict": true,
       "filenameDate": "2025-12-18",
-      "needsReview": true,
+      "needsReview": false,
       "docId": "agenda-archive-b866714f"
     },
     {
@@ -37296,7 +37413,7 @@
       "dateAdjusted": false,
       "dateConflict": true,
       "filenameDate": "2031-08-08",
-      "needsReview": true,
+      "needsReview": false,
       "docId": "agenda-archive-28cfb8d7"
     },
     {
@@ -37513,7 +37630,8 @@
       "dateConflict": false,
       "filenameDate": null,
       "needsReview": false,
-      "docId": "agenda-archive-674c2af3"
+      "docId": "agenda-archive-674c2af3",
+      "settled": true
     },
     {
       "title": "October 7, 2014",
@@ -38484,7 +38602,7 @@
       "dateAdjusted": false,
       "dateConflict": true,
       "filenameDate": "2019-11-16",
-      "needsReview": true,
+      "needsReview": false,
       "docId": "agenda-archive-42272390"
     },
     {
@@ -38575,7 +38693,8 @@
       "dateConflict": false,
       "filenameDate": null,
       "needsReview": false,
-      "docId": "minutes-archive-b755c12e"
+      "docId": "minutes-archive-b755c12e",
+      "settled": true
     },
     {
       "title": "April 22, 2014",
@@ -38813,24 +38932,6 @@
     },
     {
       "title": "March 11, 2014",
-      "pageUrl": "/government/agendas-and-minutes/agenda-archive/",
-      "fileUrl": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/azmj5jgz/complete_agnda_5_12_2015_05082015121833.pdf",
-      "category": "City Council Agendas",
-      "description": "",
-      "source": "https://www.haverhillma.gov/government/agendas-and-minutes/agenda-archive/",
-      "board": "City Council",
-      "kind": "agenda",
-      "date": "2014-03-11",
-      "dateSource": "title",
-      "rawMeetingDate": null,
-      "dateAdjusted": false,
-      "dateConflict": true,
-      "filenameDate": "2015-05-08",
-      "needsReview": true,
-      "docId": "agenda-archive-85255aff"
-    },
-    {
-      "title": "March 11, 2014",
       "pageUrl": "/government/agendas-and-minutes/minutes-archive/",
       "fileUrl": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/vmrdb50b/03_11_20141.pdf",
       "category": "City Council Minutes",
@@ -38899,7 +39000,8 @@
       "dateConflict": false,
       "filenameDate": null,
       "needsReview": false,
-      "docId": "agenda-archive-121f2869"
+      "docId": "agenda-archive-121f2869",
+      "settled": true
     },
     {
       "title": "March 4, 2014",
@@ -40376,24 +40478,6 @@
       "filenameDate": null,
       "needsReview": false,
       "docId": "minutes-archive-1e576272"
-    },
-    {
-      "title": "April 2, 2012",
-      "pageUrl": "/government/agendas-and-minutes/agenda-archive/",
-      "fileUrl": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/a3vdspcr/comp-agenda-april-2-2019-ok.pdf",
-      "category": "City Council Agendas",
-      "description": "",
-      "source": "https://www.haverhillma.gov/government/agendas-and-minutes/agenda-archive/",
-      "board": "City Council",
-      "kind": "agenda",
-      "date": "2012-04-02",
-      "dateSource": "title",
-      "rawMeetingDate": null,
-      "dateAdjusted": false,
-      "dateConflict": true,
-      "filenameDate": "2019-04-02",
-      "needsReview": true,
-      "docId": "agenda-archive-3c5d7278"
     },
     {
       "title": "City Council Amended Schedule 2025",

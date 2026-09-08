@@ -18,139 +18,370 @@
     "date": "2025-09-09"
   },
   "agenda-archive::05062014comp_agenda_05022014111619.pdf": {
-    "needsReview": true
+    "needsReview": false,
+    "date": "2014-05-06"
+  },
+  "agenda-archive::3_4_2014_council_agenda_comp.pdf": {
+    "settled": true
+  },
+  "agenda-archive::Agenda Feb 6 2025.pdf": {
+    "settled": true
+  },
+  "agenda-archive::August 1 LLA Agenda part 1.pdf": {
+    "settled": true
+  },
+  "agenda-archive::August 1 LLA Agenda part 2.pdf": {
+    "settled": true
+  },
+  "agenda-archive::FEBRUARY 1 2024 MINUTES.pdf": {
+    "settled": true
+  },
+  "agenda-archive::JANUARY 4 2024 MINUTES.pdf": {
+    "settled": true
+  },
+  "agenda-archive::Jan 2 2025 LLA Agenda only.pdf": {
+    "settled": true
+  },
+  "agenda-archive::January 14 2025 agenda redacted.pdf": {
+    "settled": true
+  },
+  "agenda-archive::LLA agenda July 11, 2024 Redacted.pdf": {
+    "settled": true
+  },
+  "agenda-archive::March 6 2025 agenda.pdf": {
+    "settled": true
   },
   "agenda-archive::agenda_only_6_2_2015_05292015133507.pdf": {
-    "needsReview": true
+    "needsReview": false,
+    "date": "2015-06-02"
   },
   "agenda-archive::c0mp_agenda_9_22_15_09182015122124.pdf": {
-    "needsReview": true
+    "needsReview": false,
+    "date": "2015-09-22"
   },
   "agenda-archive::c8m9_agenda_11_17_2015_11132015132755.pdf": {
-    "needsReview": true
+    "needsReview": false,
+    "date": "2015-11-17"
   },
   "agenda-archive::city-council-comp-agenda-02-03-2015-01302015130600.pdf": {
-    "needsReview": true
+    "needsReview": false,
+    "date": "2015-02-03"
   },
   "agenda-archive::com-agen-3-122016.pdf": {
-    "needsReview": true
+    "needsReview": false,
+    "date": "2016-12-20"
   },
   "agenda-archive::comp agenda 2 aug 7 2018.pdf": {
-    "needsReview": true
+    "needsReview": true,
+    "settled": true
+  },
+  "agenda-archive::comp agenda 2 may 22 2018.pdf": {
+    "settled": true
+  },
+  "agenda-archive::comp agenda 2 oct 23 2018.pdf": {
+    "settled": true
+  },
+  "agenda-archive::comp agenda april 10 2018.pdf": {
+    "settled": true
+  },
+  "agenda-archive::comp agenda april 24 2018.pdf": {
+    "settled": true
+  },
+  "agenda-archive::comp agenda april 3 2018.pdf": {
+    "settled": true
+  },
+  "agenda-archive::comp agenda aug 21 2018.pdf": {
+    "settled": true
+  },
+  "agenda-archive::comp agenda dec 11 2018.pdf": {
+    "settled": true
+  },
+  "agenda-archive::comp agenda dec 4 2018.pdf": {
+    "settled": true
+  },
+  "agenda-archive::comp agenda feb 11 2025.pdf": {
+    "settled": true
+  },
+  "agenda-archive::comp agenda feb 13 2018.pdf": {
+    "settled": true
+  },
+  "agenda-archive::comp agenda feb 25 2025.pdf": {
+    "settled": true
+  },
+  "agenda-archive::comp agenda feb 6 2018.pdf": {
+    "settled": true
+  },
+  "agenda-archive::comp agenda jan 10 2017.pdf": {
+    "settled": true
+  },
+  "agenda-archive::comp agenda jan 23 2018.pdf": {
+    "settled": true
+  },
+  "agenda-archive::comp agenda jan 24 2017.pdf": {
+    "settled": true
+  },
+  "agenda-archive::comp agenda jan 9 2018.pdf": {
+    "settled": true
+  },
+  "agenda-archive::comp agenda janb30 2018.pdf": {
+    "settled": true
+  },
+  "agenda-archive::comp agenda january 16 2018.pdf": {
+    "settled": true
+  },
+  "agenda-archive::comp agenda january 17 2017.pdf": {
+    "settled": true
+  },
+  "agenda-archive::comp agenda january 3 2017.pdf": {
+    "settled": true
+  },
+  "agenda-archive::comp agenda july 10 2018.pdf": {
+    "settled": true
+  },
+  "agenda-archive::comp agenda july 24 2018.pdf": {
+    "settled": true
+  },
+  "agenda-archive::comp agenda june 26 2018.pdf": {
+    "settled": true
+  },
+  "agenda-archive::comp agenda june 5 2018.pdf": {
+    "settled": true
+  },
+  "agenda-archive::comp agenda march 20 2018.pdf": {
+    "settled": true
+  },
+  "agenda-archive::comp agenda march 4 2025.pdf": {
+    "settled": true
+  },
+  "agenda-archive::comp agenda march 6 2018.pdf": {
+    "settled": true
+  },
+  "agenda-archive::comp agenda may 1 2018.pdf": {
+    "settled": true
+  },
+  "agenda-archive::comp agenda may 15 2018.pdf": {
+    "settled": true
+  },
+  "agenda-archive::comp agenda may 8 2018.pdf": {
+    "settled": true
+  },
+  "agenda-archive::comp agenda nov 13 2018.pdf": {
+    "settled": true
+  },
+  "agenda-archive::comp agenda nov 27 2018.pdf": {
+    "settled": true
+  },
+  "agenda-archive::comp agenda oct 16 2018.pdf": {
+    "settled": true
+  },
+  "agenda-archive::comp agenda oct 2 2018.pdf": {
+    "settled": true
+  },
+  "agenda-archive::comp agenda oct 30 2018.pdf": {
+    "settled": true
+  },
+  "agenda-archive::comp agenda sep 11 2018.pdf": {
+    "settled": true
+  },
+  "agenda-archive::comp agenda sep 18 2018.pdf": {
+    "settled": true
+  },
+  "agenda-archive::comp agenda sep 25 2018.pdf": {
+    "settled": true
+  },
+  "agenda-archive::comp agendabdec 18 2018.pdf": {
+    "settled": true
+  },
+  "agenda-archive::comp-agenda-2-june-13-2023.pdf": {
+    "settled": true
   },
   "agenda-archive::comp-agenda-8-09-2016-08052016135840.pdf": {
-    "needsReview": true
+    "needsReview": false,
+    "date": "2016-08-09"
   },
   "agenda-archive::comp-agenda-april-12-2015-04082016120843.pdf": {
-    "needsReview": true
+    "needsReview": false,
+    "date": "2016-04-12"
   },
   "agenda-archive::comp-agenda-april-2-2019-ok.pdf": {
-    "needsReview": true
+    "needsReview": false,
+    "date": "2019-04-02"
   },
   "agenda-archive::comp-agenda-dec-3-2029.pdf": {
-    "needsReview": true
+    "needsReview": false,
+    "date": "2019-12-03"
   },
   "agenda-archive::comp-agenda-feb-4-2029.pdf": {
-    "needsReview": true
+    "needsReview": false,
+    "date": "2020-02-04"
   },
   "agenda-archive::comp-agenda-january-11-2022.pdf": {
-    "needsReview": true
+    "needsReview": false,
+    "date": "2022-01-11"
   },
   "agenda-archive::comp_agemda_1_06_2015_01022015130651.pdf": {
-    "needsReview": true
+    "needsReview": false,
+    "date": "2015-01-06"
   },
   "agenda-archive::comp_agena_jan_04_2016_12312015114949.pdf": {
-    "needsReview": true
+    "needsReview": false,
+    "date": "2016-01-05"
   },
   "agenda-archive::comp_agenda_10_13_15_10082015150212.pdf": {
-    "needsReview": true
+    "needsReview": false,
+    "date": "2015-10-13"
   },
   "agenda-archive::comp_agenda_10_27_15_10232015122901.pdf": {
-    "needsReview": true
+    "needsReview": false,
+    "date": "2015-10-27"
   },
   "agenda-archive::comp_agenda_10_615_10022015121747.pdf": {
-    "needsReview": true
+    "needsReview": false,
+    "date": "2015-10-06"
   },
   "agenda-archive::comp_agenda_11_10_2015_11062015114919.pdf": {
-    "needsReview": true
+    "needsReview": false,
+    "date": "2015-11-10"
   },
   "agenda-archive::comp_agenda_11_18_2014_11172014080831.pdf": {
-    "needsReview": true
+    "needsReview": false,
+    "date": "2014-11-18"
   },
   "agenda-archive::comp_agenda_12_30_2014_12262014121825.pdf": {
-    "needsReview": true
+    "needsReview": false,
+    "date": "2014-12-30"
   },
   "agenda-archive::comp_agenda_12_8_15_12042015143432.pdf": {
-    "needsReview": true
+    "needsReview": false,
+    "date": "2015-12-08"
   },
   "agenda-archive::comp_agenda_1_13_2015_01092015123701.pdf": {
-    "needsReview": true
+    "needsReview": false,
+    "date": "2015-01-13"
   },
   "agenda-archive::comp_agenda_1_20_2015_01152015122510.pdf": {
-    "needsReview": true
+    "needsReview": false,
+    "date": "2015-01-20"
   },
   "agenda-archive::comp_agenda_2_10_2015_02062015140054.pdf": {
-    "needsReview": true
+    "needsReview": false,
+    "date": "2015-02-10"
   },
   "agenda-archive::comp_agenda_2_24_15_02202015125030.pdf": {
-    "needsReview": true
+    "needsReview": false,
+    "date": "2015-02-24"
   },
   "agenda-archive::comp_agenda_3_10_2015_03062015133848.pdf": {
-    "needsReview": true
+    "needsReview": false,
+    "date": "2015-03-10"
   },
   "agenda-archive::comp_agenda_3_17_2015_03132015143116.pdf": {
-    "needsReview": true
+    "needsReview": false,
+    "date": "2015-03-17"
   },
   "agenda-archive::comp_agenda_3_24_2015_03202015114906.pdf": {
-    "needsReview": true
+    "needsReview": false,
+    "date": "2015-03-24"
   },
   "agenda-archive::comp_agenda_3_31_2015_03272015132140.pdf": {
-    "needsReview": true
+    "needsReview": false,
+    "date": "2015-03-31"
   },
   "agenda-archive::comp_agenda_4_21_15_04162015125352.pdf": {
-    "needsReview": true
+    "needsReview": false,
+    "date": "2015-04-21"
   },
   "agenda-archive::comp_agenda_4_28_2015_04242015113303.pdf": {
-    "needsReview": true
+    "needsReview": false,
+    "date": "2015-04-28"
   },
   "agenda-archive::comp_agenda_4_7_15_04032015133345.pdf": {
-    "needsReview": true
+    "needsReview": false,
+    "date": "2015-04-07"
   },
   "agenda-archive::comp_agenda_5_19_2015_05152015123515.pdf": {
-    "needsReview": true
+    "needsReview": false,
+    "date": "2015-05-19"
   },
   "agenda-archive::comp_agenda_5_5_2015_05012015154453.pdf": {
-    "needsReview": true
+    "needsReview": false,
+    "date": "2015-05-05"
   },
   "agenda-archive::comp_agenda_8_11_2015_08072015132346.pdf": {
-    "needsReview": true
+    "needsReview": false,
+    "date": "2015-08-11"
   },
   "agenda-archive::comp_agenda_8_25_15_08212015135617.pdf": {
-    "needsReview": true
+    "needsReview": false,
+    "date": "2015-08-25"
   },
   "agenda-archive::comp_agenda_9_29_15_09252015122703.pdf": {
-    "needsReview": true
+    "needsReview": false,
+    "date": "2015-09-29"
   },
   "agenda-archive::comp_agenda_9_8_15_09032015150237.pdf": {
-    "needsReview": true
+    "needsReview": false,
+    "date": "2015-09-08"
+  },
+  "agenda-archive::comp_qgenda_10_7v2014_10032014151124.pdf": {
+    "settled": true
+  },
+  "agenda-archive::complete agenda 06 19 2018.pdf": {
+    "settled": true
+  },
+  "agenda-archive::complete agenda feb 27 2018 2nd.pdf": {
+    "settled": true
   },
   "agenda-archive::complete-agenda-5-17-2016-05132016121137.pdf": {
-    "needsReview": true
+    "needsReview": false,
+    "date": "2016-05-17"
   },
   "agenda-archive::complete_agenda_9_15_15_09112015122207.pdf": {
-    "needsReview": true
+    "needsReview": false,
+    "date": "2015-09-15"
   },
   "agenda-archive::complete_agnda_5_12_2015_05082015121833.pdf": {
-    "needsReview": true
+    "needsReview": false,
+    "date": "2015-05-12"
   },
   "agenda-archive::december-7-2024-agenda.pdf": {
-    "needsReview": true
+    "needsReview": false,
+    "date": "2024-12-05"
+  },
+  "agenda-archive::lic com 9.11.24.pdf": {
+    "settled": true
+  },
+  "agenda-archive::lic comm 3.14 comp agenda.pdf": {
+    "settled": true
+  },
+  "agenda-archive::lic comm agenda 9-4-24 final_Redacted.pdf": {
+    "settled": true
   },
   "agenda-archive::lic_comm_8_6_15_08042015174238.pdf": {
-    "needsReview": true
+    "needsReview": false,
+    "date": "2015-08-06"
+  },
+  "agenda-archive::lla agenda 10 3 24.pdf": {
+    "settled": true
+  },
+  "agenda-archive::lla agenda april 4 24.pdf": {
+    "settled": true
+  },
+  "agenda-archive::lla agenda june 6 24.pdf": {
+    "settled": true
+  },
+  "agenda-archive::lla agenda march 7 24.pdf": {
+    "settled": true
+  },
+  "agenda-archive::lla agenda may 2 24.pdf": {
+    "settled": true
+  },
+  "agenda-archive::march 27 2018.pdf": {
+    "settled": true
   },
   "agenda-archive::may-6-2021-updated.pdf": {
-    "needsReview": true
+    "needsReview": false,
+    "date": "2021-05-06"
   },
   "board-of-registrars-meeting-minutes-9162025::09092025-meeting-minutes.pdf": {
     "needsReview": false
@@ -184,49 +415,91 @@
     "needsReview": false,
     "date": "2025-02-18"
   },
+  "minutes-archive::03.28.2023. COLA.min.signed.pdf": {
+    "settled": true
+  },
   "minutes-archive::031219-cola-min-web-signed.pdf": {
-    "needsReview": true
+    "needsReview": false,
+    "date": "2019-03-12"
+  },
+  "minutes-archive::04-15-2020 virtual meeting minutes.pdf": {
+    "settled": true
+  },
+  "minutes-archive::10.8.19. Min signed web.pdf": {
+    "settled": true
   },
   "minutes-archive::1127.pdf": {
-    "needsReview": true
+    "needsReview": false,
+    "date": "2018-11-27"
   },
   "minutes-archive::1218.pdf": {
-    "needsReview": true
+    "needsReview": false,
+    "date": "2018-12-18"
+  },
+  "minutes-archive::2.12.19 Min signed.web.pdf": {
+    "settled": true
+  },
+  "minutes-archive::4_24_2014_minutes.pdf": {
+    "settled": true
+  },
+  "minutes-archive::BOA mtg min 11.14.2023.pdf": {
+    "settled": true
   },
   "minutes-archive::inaugural-jan-1-2018.pdf": {
-    "needsReview": true
+    "needsReview": false,
+    "date": "2018-01-01"
   },
   "planning-board::doc020625-agenda-2025.pdf": {
-    "needsReview": true
+    "needsReview": false,
+    "date": "2026-02-12"
   },
   "planning-board::doc052226.pdf": {
-    "needsReview": true
+    "needsReview": false,
+    "date": "2026-05-27"
   },
   "planning-board::pbmnt81124.pdf": {
-    "needsReview": true
+    "needsReview": false,
+    "date": "2024-09-11"
+  },
+  "zoning-board-of-appeals::07-19-19 Agenda.pdf": {
+    "settled": true
+  },
+  "zoning-board-of-appeals::MAY 15 2019 BOA AGENDA.pdf": {
+    "settled": true
+  },
+  "zoning-board-of-appeals::august-202025-boa-agenda.pdf": {
+    "settled": true
   },
   "zoning-board-of-appeals::boa-agenda-112019.pdf": {
-    "needsReview": true
+    "needsReview": false,
+    "date": "2019-11-20"
   },
   "zoning-board-of-appeals::boa-meeting-minutes-april1526.pdf": {
-    "needsReview": true
+    "needsReview": false,
+    "date": "2026-04-15"
   },
   "zoning-board-of-appeals::boa-minutes-spetember-212022.pdf": {
-    "needsReview": true
+    "needsReview": false,
+    "date": "2022-09-21"
   },
   "zoning-board-of-appeals::doc061026.pdf": {
-    "needsReview": true
+    "needsReview": false,
+    "date": "2026-06-17"
   },
   "zoning-board-of-appeals::doc081426.pdf": {
-    "needsReview": true
+    "needsReview": false,
+    "date": "2026-08-19"
   },
   "zoning-board-of-appeals::februaty-2124-boa-meeting-minutes.pdf": {
-    "needsReview": true
+    "needsReview": false,
+    "date": "2024-02-21"
   },
   "zoning-board-of-appeals::minutes-july-162025.pdf": {
-    "needsReview": true
+    "needsReview": false,
+    "date": "2025-07-16"
   },
   "zoning-board-of-appeals::minutes-spetember-192020-pdf.pdf": {
-    "needsReview": true
+    "needsReview": false,
+    "date": "2020-09-16"
   }
 }
