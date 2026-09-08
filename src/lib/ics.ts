@@ -8,7 +8,7 @@
  * from the same `CalendarEvent`.
  */
 import { Router } from "./router"
-import type { Meeting, MeetingDetails } from "./calendar"
+import { TIMEZONE, type Meeting, type MeetingDetails } from "./calendar"
 
 export interface CalendarEvent {
   /** Stable across regenerations, so re-adding updates rather than duplicates. */
@@ -23,7 +23,8 @@ export interface CalendarEvent {
   url: string
 }
 
-const TZID = "America/New_York"
+/** One copy of the zone, in `calendar.ts`, so these cannot disagree. */
+const TZID = TIMEZONE
 
 /**
  * The standard America/New_York rules -- the same block Apple and Google write

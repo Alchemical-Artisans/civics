@@ -14,6 +14,7 @@
  * every page but the one that populated it.
  */
 import { base } from "$app/paths"
+import { TIMEZONE } from "./calendar"
 
 /** Join the base path to a root-relative path, e.g. `/calendar`. */
 const path = (route: `/${string}`): string => `${base}${route}`
@@ -220,5 +221,5 @@ const CITY = "https://www.haverhillma.gov"
 /** This site's own canonical origin -- the custom domain in `static/CNAME`. */
 const SITE = "https://haverhill.alchemicalartisans.com"
 
-/** The city's timezone, for the one feature that pins an event to a clock. */
-const TIMEZONE = "America/New_York"
+/** The city's timezone lives in `calendar.ts`; re-exported here for `ctz`. */
+export { TIMEZONE }

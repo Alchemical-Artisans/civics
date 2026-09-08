@@ -256,6 +256,38 @@ const MONTH_NAMES = [
   "December",
 ]
 
+/**
+ * The city's timezone, and the one every "today" on this site is a date in.
+ *
+ * Haverhill is on US Eastern time, which is four or five hours behind UTC, so
+ * `new Date().toISOString()` names tomorrow from eight in the evening onwards.
+ * A calendar that opens on the wrong month, or highlights the wrong cell, for
+ * everyone reading it after dinner is a bug in the one thing this site is for.
+ *
+ * Nothing else here converts between zones. Dates are `YYYY-MM-DD` strings and
+ * are parsed with `Date.UTC(...)` throughout, which is what stops a stored date
+ * sliding a day; this is only about which day *now* is.
+ */
+export const TIMEZONE = "America/New_York"
+
+/**
+ * Today's date in the city, as `YYYY-MM-DD`.
+ *
+ * Built from `formatToParts` rather than a locale whose format happens to be
+ * ISO, so it cannot quietly depend on the runtime's locale data being what one
+ * particular tag means this year.
+ */
+export function easternDate(now: Date = new Date()): string {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: TIMEZONE,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(now)
+  const at = (type: string) => parts.find((p) => p.type === type)!.value
+  return `${at("year")}-${at("month")}-${at("day")}`
+}
+
 /** `2026-08-27` -> `2026-08`. */
 export function monthKey(date: string): string {
   return date.slice(0, 7)

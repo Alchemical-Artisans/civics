@@ -9,6 +9,7 @@ import {
   groupIntoMeetings,
   meetingId,
   monthKey,
+  easternDate,
   monthsCovered,
   withScheduled,
   type MeetingDocument,
@@ -242,5 +243,28 @@ describe("withScheduled", () => {
   it("marks an expected sitting written when somebody has written it up", () => {
     const meetings = withScheduled([], [sitting("2025-01-28")], (id) => id.endsWith("2025-01-28"))
     expect(meetings[0].written).toBe(true)
+  })
+})
+
+describe("easternDate", () => {
+  it("names the day it is in Haverhill, not in UTC", () => {
+    // 8pm on 8 September in Haverhill is already the 9th in UTC (EDT is four
+    // hours behind), and a calendar that jumps a month at dinnertime for every
+    // reader is the bug this exists to stop.
+    const evening = new Date("2026-09-09T00:30:00Z")
+    expect(evening.toISOString().slice(0, 10)).toBe("2026-09-09")
+    expect(easternDate(evening)).toBe("2026-09-08")
+  })
+
+  it("follows the zone across the daylight-saving boundary", () => {
+    // EDT is UTC-4, EST is UTC-5, so the hour that is still "yesterday" here
+    // differs either side of the change. 1 December is EST.
+    expect(easternDate(new Date("2026-12-02T04:30:00Z"))).toBe("2026-12-01")
+    expect(easternDate(new Date("2026-12-02T05:30:00Z"))).toBe("2026-12-02")
+  })
+
+  it("zero-pads to the YYYY-MM-DD the rest of the file speaks", () => {
+    expect(easternDate(new Date("2026-01-05T17:00:00Z"))).toBe("2026-01-05")
+    expect(easternDate(new Date("2026-01-05T17:00:00Z"))).toMatch(/^\d{4}-\d{2}-\d{2}$/)
   })
 })

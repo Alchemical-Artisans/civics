@@ -7,6 +7,8 @@
     formatLongDate,
     formatMonth,
     groupByDate,
+    easternDate,
+    monthKey,
     monthsCovered,
     type Meeting,
     type MeetingKind,
@@ -29,19 +31,41 @@
   const months = $derived(monthsCovered(all))
   const boards = $derived(boardsOf(all))
 
-  // Until the reader picks a month, show the most recent one that has a
-  // document. Deliberately not "today" -- that would differ between the
-  // prerender and the browser and cause a hydration mismatch.
-  //
-  // Not simply the last month covered, either: the Council's rule projects
-  // expected sittings to the end of the year, so the newest month covered is
-  // December, and opening there would land every reader in a month of Tuesdays
-  // nothing has been published for. The newest month the city has actually
-  // published something in is the one to open on; the expected sittings sit a
-  // page or two forward from it.
+  /**
+   * Today in Haverhill -- the build's date in the served HTML, the reader's own
+   * once the browser has it.
+   *
+   * Falls back to the load's date rather than to nothing, because the calendar
+   * now opens on the current month and a reader running no script should still
+   * get one. Both renders agree at hydration, since the client's first render
+   * has `inTheBrowser` unset too; `onMount` then fills it in as an ordinary
+   * reactive change rather than a mismatch. A build older than the month it ran
+   * in therefore serves a stale month for one frame and corrects itself -- the
+   * same bargain `BudgetTimeline` makes for its today mark.
+   */
+  let inTheBrowser = $state<string | null>(null)
+  onMount(() => {
+    inTheBrowser = easternDate()
+  })
+  const today = $derived(inTheBrowser ?? data.today)
+
+  /**
+   * Until the reader picks a month, show the one we are in.
+   *
+   * Clamped into the months the calendar actually covers, so `step()` and the
+   * Prev/Next buttons -- which work off `months.indexOf(month)` -- always have
+   * a real index to move from. In practice the current month is always covered:
+   * the Council's rule projects sittings to the end of the year.
+   */
   let chosen = $state<string | null>(null)
-  const documented = $derived(all.filter((m) => m.documents.length > 0))
-  const month = $derived(chosen ?? monthsCovered(documented).at(-1) ?? months.at(-1) ?? "2026-01")
+  const month = $derived(chosen ?? clamp(monthKey(today)))
+
+  function clamp(key: string): string {
+    if (!months.length) return key
+    if (key < months[0]) return months[0]
+    if (key > months.at(-1)!) return months.at(-1)!
+    return key
+  }
 
   const activeBoards = new SvelteSet<string>()
   let showAgendas = $state(true)
@@ -51,13 +75,6 @@
   // a sitting the city has published nothing for has no document kind to filter
   // on.
   let showExpected = $state(true)
-
-  // `today` stays empty during prerender and fills in after mount, so the
-  // highlight never causes a hydration mismatch.
-  let today = $state("")
-  onMount(() => {
-    today = new Date().toISOString().slice(0, 10)
-  })
 
   /**
    * The kind toggles still hide documents, not meetings, so a meeting with an

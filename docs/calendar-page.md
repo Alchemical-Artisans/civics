@@ -115,13 +115,27 @@ evidence about a Tuesday that has not happened.
 
 The footer says how many are shown and what the number does and does not mean.
 
-### The default month moved because of this
+### The month it opens on
 
-The calendar used to open on the newest month it covered. With the rule
-projecting to the end of the year that is December, and opening there would drop
-every reader into a month of Tuesdays nothing has been published for. It now
-opens on the newest month containing a **document**, which is where the record
-actually ends; the expected sittings sit a page or two forward from it.
+**The calendar opens on the month we are in.** It used to open on the newest
+month it covered, on the reasoning that a prerendered page cannot know the
+reader's date without a hydration mismatch. Two things changed that: the rule
+now projects sittings to the end of the year, so the newest month covered is
+December and opening there would land every reader in a month of empty
+Tuesdays; and the mismatch is avoidable.
+
+`calendar()` returns the build's own date as `today`, so the served HTML already
+carries the right month and its today mark — a reader running no script gets the
+current month, not the oldest one. The component holds the reader's date in
+`inTheBrowser`, unset in both the server render and the client's first render,
+so the two agree; `onMount` fills it in, which is an ordinary reactive change
+rather than a mismatch. This is the same bargain
+[`BudgetTimeline`](../src/lib/BudgetTimeline.svelte) makes for its today mark.
+A build older than the month it ran in serves a stale month for one frame and
+corrects itself.
+
+The month is clamped into the months the calendar covers, because `step()` and
+the Prev/Next buttons work off `months.indexOf(month)` and need a real index.
 
 ## Prerendering
 
@@ -200,7 +214,7 @@ Svelte 5 runes, in a small amount of state:
 | `activeBoards`                | a `SvelteSet` of board filters; empty means all              |
 | `showAgendas` / `showMinutes` | document-kind toggles                                        |
 | `showExpected`                | whether sittings the Council's rule expects are shown        |
-| `today`                       | today's date, filled in after mount                          |
+| `inTheBrowser`                | the reader's own date, filled in after mount                 |
 
 Two details are deliberate:
 
@@ -210,14 +224,23 @@ hidden one dropped from its chip; a meeting left with nothing visible disappears
 entirely. Hiding the whole meeting because one of its documents was filtered out
 would be the wrong answer to "show me the minutes".
 
-**The default month is the newest month containing meetings, not today.**
-Because the page is prerendered, "today" at build time and "today" in the
-reader's browser are different dates. Deriving the default from the data keeps
-the server and client render identical.
+**The default month is the month we are in**, and the today mark is in the
+served HTML. See [the month it opens on](#the-month-it-opens-on) for how that
+avoids a hydration mismatch, and why the newest month covered is the wrong
+answer now that the calendar projects forward.
 
-**`today` is set in `onMount`.** It starts empty, so the prerendered HTML has no
-"today" highlight, and it fills in on the client. Computing it during render
-would produce a hydration mismatch.
+**Every "today" on this site is a date in Haverhill, not in UTC.**
+`easternDate()` in `calendar.ts` is the only way one is computed —
+`new Date().toISOString()` names tomorrow from eight in the evening here, which
+would ring the wrong cell and, now that the calendar opens on the current month,
+jump a month at dinnertime on the last day of one. `TIMEZONE` lives beside it
+and is the one copy of `America/New_York` on the site;
+[`ics.ts`](../src/lib/ics.ts) and [`router.ts`](../src/lib/router.ts) take it
+from there rather than keeping their own.
+
+Note the distinction from the rule above: stored dates are `YYYY-MM-DD` strings
+parsed with `Date.UTC(...)`, and that stays — it is what stops a stored date
+sliding a day. The zone only ever decides which day _now_ is.
 
 Everything downstream — `visible`, `byDate`, `weeks`, `monthCount` — is
 `$derived`, so filtering and navigation need no manual invalidation.
@@ -474,9 +497,10 @@ than present uncertain data as authoritative.
 the production build and covers: the month heading renders, every entry links to
 a meeting and is same-tab, month navigation works, board filtering narrows
 results, unchecking agendas drops the document count without dropping the
-meetings that still have minutes, the calendar opens on the newest documented
-month rather than the projection's last, and an expected sitting is drawn as an
-outline and hidden by its own toggle. Which sitting that is comes from
+meetings that still have minutes, the calendar opens on the current month (with
+a case running `javaScriptEnabled: false`, so the served bytes are what is
+checked) and rings today's cell by Haverhill's date rather than UTC's, and an
+expected sitting is drawn as an outline and hidden by its own toggle. Which sitting that is comes from
 `expectedSittings()` against `meetings.json` — the same derivation the site
 makes — so the test follows the data rather than pinning a date the city may
 publish an agenda for tomorrow.

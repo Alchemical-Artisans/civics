@@ -113,10 +113,22 @@ stops the build rather than quietly putting meetings on the calendar the Council
 never meant to hold. An expected sitting is a dashed outline with no `A`/`M`
 letters and its own filter; the meeting page quotes the rule in full where the
 agenda would be, and the hour it states lets a reader add the sitting to their
-own calendar. **The calendar now opens on the newest month containing a
-document**, not the newest month covered -- the projection runs to December, and
-opening there would land every reader in a month of empty Tuesdays. See
+own calendar. See
 [docs/calendar-page.md](docs/calendar-page.md#sittings-the-rule-expects).
+
+**The calendar opens on the month we are in, and every "today" is a date in
+Haverhill.** `easternDate()` in `calendar.ts` is the only way one is computed:
+`new Date().toISOString()` names tomorrow from eight in the evening here, which
+rings the wrong cell and jumps a month at dinnertime on the last day of one.
+`TIMEZONE` beside it is the site's one copy of `America/New_York`; `ics.ts` and
+`router.ts` take it from there. Stored dates stay UTC-parsed `YYYY-MM-DD`
+strings -- that is what stops one sliding a day; the zone only decides which day
+_now_ is. The default month used to be the newest month covered, which the
+forward projection turned into December; `calendar()` now returns the build's
+date as `today` so the served HTML carries the right month and its mark, and the
+component's `inTheBrowser` -- unset in both the server render and the client's
+first -- fills in on mount as an ordinary reactive change rather than a
+mismatch, the same bargain `BudgetTimeline` makes.
 
 **A calendar entry is a meeting, not a document.** The city publishes an agenda
 and its minutes separately; they are two documents about one sitting, matched on

@@ -67,6 +67,7 @@
 
 <script lang="ts">
   import { onMount } from "svelte"
+  import { easternDate } from "$lib/calendar"
 
   let {
     steps,
@@ -93,9 +94,11 @@
     documents?: Partial<Record<"book" | "order", string | null>>
   } = $props()
 
+  // The reader's own date, in the city rather than in UTC -- `toISOString`
+  // would say tomorrow for anyone reading after eight in the evening here.
   let inTheBrowser = $state<string | null>(null)
   onMount(() => {
-    inTheBrowser = new Date().toISOString().slice(0, 10)
+    inTheBrowser = easternDate()
   })
 
   const today = $derived(inTheBrowser ?? asOf)

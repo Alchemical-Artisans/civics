@@ -8,6 +8,7 @@
  */
 import raw from "./data/meetings.json"
 import {
+  easternDate,
   groupIntoMeetings,
   withScheduled,
   type Meeting,
@@ -31,8 +32,9 @@ import { expectedSittings } from "./schedule"
  * `[meeting]` itself matches the glob, and is dropped.
  */
 /**
- * The day this build ran, which is as far back as the calendar's projection of
- * future sittings starts.
+ * The day this build ran, in the city -- as far back as the calendar's
+ * projection of future sittings starts, and the month the calendar opens on
+ * until the reader's own browser says otherwise.
  *
  * Read once at module load rather than per call. `calendar()` is called by the
  * calendar page, by every meeting page's layout, and by `entries()` deciding
@@ -40,7 +42,7 @@ import { expectedSittings } from "./schedule"
  * two of those would prerender a set of ids the layout then disagreed with, and
  * fail. One value for the whole build cannot.
  */
-const BUILT_ON = new Date().toISOString().slice(0, 10)
+const BUILT_ON = easternDate()
 
 const written = new Set(
   Object.keys(import.meta.glob("../routes/calendar/meetings/*/+page.svelte"))
@@ -64,6 +66,12 @@ export interface Calendar {
   documents: number
   /** Sittings the Council's rule expects, ahead of any document. */
   scheduled: number
+  /**
+   * The day this build ran, in the city. The calendar opens on its month and
+   * marks its cell, so a reader running no script still gets a today rather
+   * than none; the browser replaces it on mount with the reader's own date.
+   */
+  today: string
 }
 
 /**
@@ -117,5 +125,6 @@ export function calendar(): Calendar {
     written: meetings.filter((m) => m.written).length,
     documents: documents.length,
     scheduled: meetings.filter((m) => m.scheduled).length,
+    today: BUILT_ON,
   }
 }

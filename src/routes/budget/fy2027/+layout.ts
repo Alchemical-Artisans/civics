@@ -1,4 +1,5 @@
 import type { LayoutLoad } from "./$types"
+import { easternDate } from "$lib/calendar"
 import { CALENDAR } from "./budget-calendar"
 import { AGENDA } from "./council-orders"
 
@@ -23,7 +24,7 @@ export const load: LayoutLoad = () => ({
    * replaces it with the reader's own date on mount; this is what a reader
    * without a script sees, and it is never more stale than the last deploy.
    */
-  asOf: new Date().toISOString().slice(0, 10),
+  asOf: easternDate(),
 
   /**
    * The agenda the Council's appropriation orders are on. It hangs off the run

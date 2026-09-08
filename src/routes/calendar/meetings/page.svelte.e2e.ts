@@ -3,7 +3,7 @@ import { existsSync, readdirSync, readFileSync } from "node:fs"
 import { join } from "node:path"
 import { fileURLToPath } from "node:url"
 import meetingsData from "../../../lib/data/meetings.json" with { type: "json" }
-import { meetingId } from "../../../lib/calendar"
+import { easternDate, meetingId } from "../../../lib/calendar"
 import { expectedSittings } from "../../../lib/schedule"
 
 /**
@@ -14,7 +14,7 @@ import { expectedSittings } from "../../../lib/schedule"
 const documented = new Set(
   meetingsData.meetings.filter((m) => m.date).map((m) => `${m.board}::${m.date}`),
 )
-const expected = expectedSittings(new Date().toISOString().slice(0, 10))
+const expected = expectedSittings(easternDate())
   .filter((s) => !documented.has(`${s.board}::${s.date}`))
   .map((s) => ({ id: meetingId(s.board, s.date), rule: s.rule }))
 

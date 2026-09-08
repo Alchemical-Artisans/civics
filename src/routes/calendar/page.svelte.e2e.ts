@@ -1,7 +1,10 @@
 import { expect, test } from "@playwright/test"
 import meetings from "../../lib/data/meetings.json" with { type: "json" }
-import { meetingId } from "../../lib/calendar"
+import { easternDate, meetingId } from "../../lib/calendar"
 import { expectedSittings } from "../../lib/schedule"
+
+/** Today in Haverhill, the same day the build resolved. */
+const TODAY = easternDate()
 
 /**
  * The sittings the Council's rule expects that no document covers -- derived
@@ -14,7 +17,7 @@ import { expectedSittings } from "../../lib/schedule"
 const documented = new Set(
   meetings.meetings.filter((m) => m.date).map((m) => `${m.board}::${m.date}`),
 )
-const expected = expectedSittings(new Date().toISOString().slice(0, 10))
+const expected = expectedSittings(TODAY)
   .filter((s) => !documented.has(`${s.board}::${s.date}`))
   .map((s) => ({ id: meetingId(s.board, s.date), date: s.date }))
 
@@ -97,16 +100,30 @@ test.describe("meeting calendar", () => {
     expect(Number(meetingsAfter)).toBeLessThanOrEqual(Number(meetingsBefore))
   })
 
-  test("opens on the newest month with a document, not the projection's last", async ({ page }) => {
-    // The rule projects to the end of the year, so the newest month the
-    // calendar covers is December. Opening there would drop every reader into a
-    // month of Tuesdays nothing has been published for.
-    const newest = meetings.meetings
-      .filter((m) => m.date)
-      .map((m) => m.date!)
-      .sort()
-      .at(-1)!
-    await expect(page.getByRole("heading", { level: 2 })).toHaveText(monthHeading(newest))
+  test("opens on the month we are in", async ({ page }) => {
+    // Not the newest month covered: the Council's rule projects sittings to the
+    // end of the year, so that is December. The reader wants the month they are
+    // in, which is where the record ends and the projection begins.
+    await expect(page.getByRole("heading", { level: 2 })).toHaveText(monthHeading(TODAY))
+  })
+
+  test("serves the month in the HTML, before any script runs", async ({ browser }) => {
+    // A reader with no script still gets the current month rather than the
+    // oldest one, because the build's own date is baked into the page.
+    const context = await browser.newContext({ javaScriptEnabled: false })
+    const bare = await context.newPage()
+    await bare.goto("/calendar")
+    await expect(bare.getByRole("heading", { level: 2 })).toHaveText(monthHeading(TODAY))
+    await context.close()
+  })
+
+  test("marks today's cell in Haverhill's date, not UTC's", async ({ page }) => {
+    // `toISOString` names tomorrow from eight in the evening here, which would
+    // ring the wrong cell -- and, now that the calendar opens on the current
+    // month, would jump a month at dinnertime on the last day of one.
+    const cell = page.locator("td.ring-amber-400")
+    await expect(cell).toHaveCount(1)
+    await expect(cell).toContainText(String(Number(TODAY.slice(8))))
   })
 
   // Nested, so the skip below governs only these two. A group-level `test.skip`
