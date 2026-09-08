@@ -216,6 +216,35 @@ re-apply them, and a rebuild stops being destructive.
 Entries are never removed automatically. A correction has to outlive the conflict
 that prompted it — otherwise fixing a date would delete the fix.
 
+## Checking a flagged record
+
+A run flags a record when its sources disagree — the title says one date, the
+PDF's filename another. Neither the summary nor the scrape can settle that; only
+the document can.
+
+```sh
+npm run cache -- --review      # fetch just the flagged ones
+find .cache -name doc081426.pdf
+```
+
+`.cache/documents/` holds the files named by document id, and `.cache/by-name/`
+symlinks each under the city's own filename — which is what the summary prints,
+and so what you have in your hand. Both are gitignored and disposable; with no
+flags the script fetches the whole corpus, which is now a couple of thousand
+documents.
+
+Then read the date off the first page and record the answer in
+[`reviews.json`](#corrections-reviewsjson), which is what survives a rebuild.
+
+**Most flags are a scan date, not an error.** `doc081426.pdf` is the Zoning
+Board's agenda for 19 August 2026; the filename is the day the clerk scanned it,
+and the stamp on the page says so. Roughly two thirds of the flagged documents
+are scans with no text layer at all, so they have to be read by eye.
+
+**Some are real.** One record titled `02.04.2025.BOA.Mtg.Min` links to
+`inaugural-jan-1-2018.pdf` — the city's own link points at the wrong document.
+That is the kind of thing the flag exists to surface.
+
 ## Editing by hand
 
 Hand-editing is supported and sometimes the right answer, particularly for the

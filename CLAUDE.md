@@ -732,6 +732,18 @@ rules that bite:
   and linked with `Router.excerpt(...)`; `.cache/` is gitignored, so re-cutting
   means re-fetching the original.
 
+## Checking a flagged record
+
+A run flags a record when its title and its PDF's filename disagree about the
+date. `npm run cache -- --review` downloads just those into `.cache/`, named by
+document id under `documents/` and symlinked under the city's own filename in
+`by-name/` -- the latter being what the run summary prints. Read the date off
+the first page and settle it in `reviews.json`. Most flags are a scan date
+rather than an error, and about two thirds of the flagged documents are scans
+with no text layer, so they have to be read by eye. The cache is gitignored and
+disposable; it used to be a side effect of the PDF-to-HTML pipeline and was lost
+when that went, which is why the flags outlived the means of answering them.
+
 ## Deployment
 
 Push to `main` triggers `.github/workflows/deploy.yml`, which runs `npm ci` and

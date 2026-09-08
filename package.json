@@ -19,6 +19,7 @@
     "calendar:rebuild": "node scripts/rebuild-calendar.mjs",
     "calendar:update": "node scripts/update-calendar.mjs",
     "boards:update": "node scripts/update-board-pages.mjs",
+    "cache": "node scripts/cache-documents.mjs",
     "budget:update": "node scripts/update-budget.mjs",
     "schedule:update": "node scripts/update-schedule.mjs",
     "storybook": "storybook dev -p 6006",

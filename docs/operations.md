@@ -26,6 +26,7 @@ them.
 npm run calendar:update    # add documents published since the last run
 npm run calendar:rebuild   # re-scrape everything from scratch
 npm run boards:update      # re-scrape the board pages and the city's two archives
+npm run cache -- --review  # download the flagged documents so a date can be checked
 npm run budget:update      # re-scrape the budget and audit listing
 npm run schedule:update    # re-read the boards' meeting rules and calendars
 ```

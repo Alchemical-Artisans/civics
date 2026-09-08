@@ -96,6 +96,8 @@ scripts/
   update-schedule.mjs      re-read those rules and calendars off their pages
   lib/board-pages.mjs      agendas and minutes kept on a board's own page
   lib/board-pages.spec.mjs unit tests for that parser
+  lib/cache.mjs            local copies of the city's files, for checking by hand
+  cache-documents.mjs      download them; --review fetches only the flagged ones
   lib/archives.mjs         the city's own agenda and minutes archives, to 2012
   lib/archives.spec.mjs    unit tests for that parser
   update-board-pages.mjs   re-scrape those pages and the two archives
