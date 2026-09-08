@@ -177,6 +177,16 @@ export function parseDateFromTitle(title) {
     const mon = MONTHS[m[1].slice(0, 3).toLowerCase()]
     if (mon) return iso(+m[3], mon, +m[2])
   }
+  // January 212026 | Minutes February 192025 -- day and year run together,
+  // which is how the Zoning Board writes them where a label was left blank and
+  // in most of its filenames.
+  if ((m = title.match(/([A-Za-z]{3,9})\.?\s+(\d{1,2})((?:19|20)\d{2})(?!\d)/))) {
+    const mon = MONTHS[m[1].slice(0, 3).toLowerCase()]
+    if (mon) {
+      const date = iso(+m[3], mon, +m[2])
+      if (date) return date
+    }
+  }
   // 10.28.2025 | 9.16.2025 | 4.8.25
   if ((m = title.match(/(?:^|[\s_])(\d{1,2})[.\-/](\d{1,2})[.\-/](\d{2,4})(?!\d)/))) {
     const y = +m[3]
@@ -195,6 +205,13 @@ export function parseDateFromTitle(title) {
 export function parseDateFromFilename(fileUrl) {
   if (!fileUrl) return null
   const name = decodeURIComponent(fileUrl.split("/").pop() ?? "").replace(/\.[a-z]+$/i, "")
+
+  // A filename that names its month is read the way a title is, and preferred:
+  // "january-212026-boa-agenda" is 21 January, where the digit-run reading
+  // below sees `212026` as the 1st of February. A month name is not a guess.
+  const named = parseDateFromTitle(name.replace(/[-_]+/g, " "))
+  if (named) return { date: named, ambiguous: false }
+
   for (const run of name.match(/\d{4,8}/g) ?? []) {
     for (const [ylen, base] of [
       [4, 0],

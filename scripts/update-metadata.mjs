@@ -27,9 +27,9 @@ import path from "node:path"
 
 const STEPS = [
   { name: "calendar", script: "update-calendar.mjs" },
-  // After the calendar: it replaces this board's records in the same file, and
+  // After the calendar: it replaces these boards' records in the same file, and
   // running it second means a `--prune` pass has already settled the listing's.
-  { name: "planning board", script: "update-planning-board.mjs" },
+  { name: "board pages", script: "update-board-pages.mjs" },
   { name: "budget", script: "update-budget.mjs" },
   { name: "schedule", script: "update-schedule.mjs" },
 ]

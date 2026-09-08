@@ -68,11 +68,20 @@ describe("the scraped calendars", () => {
 
   it("drops a date the schedule itself calls off, and says which", () => {
     // The Planning Board's 2026 schedule names 11 November and then prints
-    // "NO MEETING VETERANS DAY!" under it. Advertising a sitting the board has
-    // already called off would be worse than showing nothing.
+    // "NO MEETING VETERANS DAY!" under it; its page calls off two more.
+    // Advertising a sitting a board has already called off would be worse than
+    // showing nothing.
     const board = find("Planning Board")!
-    expect(board.cancelled).toEqual(["2026-11-11"])
-    expect(board.sittings.map((s) => s.date)).not.toContain("2026-11-11")
+    expect(board.cancelled).toContain("2026-11-11")
+    for (const off of board.cancelled!) {
+      expect(board.sittings.map((s) => s.date)).not.toContain(off)
+    }
+
+    // The Zoning Board's page calls two off that its own schedule PDF still
+    // lists -- 16 September is eight days out. The page is the later word.
+    const zoning = find("Zoning Board of Appeals")!
+    expect(zoning.cancelled).toEqual(["2026-02-18", "2026-09-16"])
+    expect(zoning.sittings.map((s) => s.date)).not.toContain("2026-09-16")
   })
 
   it("lets a schedule run past the year it is headed with", () => {
@@ -223,7 +232,13 @@ describe("expectedSittings", () => {
     const sittings = expectedSittings("2026-09-08")
     expect(sittings.map((s) => s.date)).toEqual([...sittings.map((s) => s.date)].sort())
     expect(new Set(sittings.map((s) => s.board))).toEqual(
-      new Set(["City Council", "Conservation Commission", "License Commission", "Planning Board"]),
+      new Set([
+        "City Council",
+        "Conservation Commission",
+        "License Commission",
+        "Planning Board",
+        "Zoning Board of Appeals",
+      ]),
     )
   })
 

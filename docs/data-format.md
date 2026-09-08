@@ -62,16 +62,18 @@ every write so refreshes produce readable diffs rather than reshuffled files.
 `source` names the page a record was scraped from, and **each scraper only ever
 replaces its own**:
 
-| `source`                                              | Written by                                                          |
-| ----------------------------------------------------- | ------------------------------------------------------------------- |
-| `…/government/agendas-and-minutes/`                   | [`update-calendar.mjs`](../scripts/update-calendar.mjs)             |
-| `…/boards-committees-and-commissions/planning-board/` | [`update-planning-board.mjs`](../scripts/update-planning-board.mjs) |
+| `source`                                                       | Written by                                                    |
+| -------------------------------------------------------------- | ------------------------------------------------------------- |
+| `…/government/agendas-and-minutes/`                            | [`update-calendar.mjs`](../scripts/update-calendar.mjs)       |
+| `…/boards-committees-and-commissions/planning-board/`          | [`update-board-pages.mjs`](../scripts/update-board-pages.mjs) |
+| `…/boards-committees-and-commissions/zoning-board-of-appeals/` | the same                                                      |
 
-This is not bookkeeping. The Planning Board keeps its agendas and minutes on its
-own page rather than in the city's listing — 163 of them, back to November 2017,
-of which the listing holds one — so `calendar:update --prune`, which drops stored
-records no longer in the listing, would delete every one of them. It prunes only
-records whose `source` is the listing.
+This is not bookkeeping. The Planning Board and the Zoning Board of Appeals keep
+their agendas and minutes on their own pages rather than in the city's listing —
+163 back to November 2017 and 174 back to February 2018, of which the listing
+holds one and none — so `calendar:update --prune`, which drops stored records no
+longer in the listing, would delete every one of them. It prunes only records
+whose `source` is the listing.
 
 A record written before the field existed is backfilled with the listing on the
 next run of either script, since until the board's page was scraped the listing

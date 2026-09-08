@@ -22,7 +22,7 @@
  * Only what the page says is taken here, either way.
  */
 import { spawn } from "node:child_process"
-import { LISTING_URL, USER_AGENT, retrying } from "./haverhill.mjs"
+import { LISTING_URL, USER_AGENT, parseDateFromTitle, retrying } from "./haverhill.mjs"
 
 export { LISTING_URL }
 
@@ -50,6 +50,15 @@ export const CALENDAR_PAGES = [
     // goes if it is postponed. Both are real dates and neither is a meeting --
     // taking the whole table would treble the board's calendar.
     column: "Meeting Date",
+  },
+  {
+    board: "Zoning Board of Appeals",
+    url: "https://www.haverhillma.gov/government/boards-committees-and-commissions/zoning-board-of-appeals/",
+    // Same shape as the Planning Board's: a schedule PDF per year, written as
+    // labelled blocks. Its own labels differ -- "Online Filing Deadline",
+    // "Appeal Period Expires @ Midnight" -- which is why a block's rows are
+    // recognised by their shape rather than by name.
+    pdf: /(\d{4})\s*BOA MEETING SCHEDULE/i,
   },
   {
     board: "Planning Board",
@@ -281,7 +290,17 @@ export function parseScheduleLinks(html, pattern) {
  * on the calendar would be advertising a meeting the board has already called
  * off.
  */
-const BLOCK_LABEL = /^(?:Meeting Date|Escrows|Public Hearings|ADVERTISE)/i
+/**
+ * Whether a line is one of a block's labelled rows rather than a note under it.
+ *
+ * A labelled row is a label, a wide gap, and a value -- so it carries a run of
+ * two or more spaces between text. A note is a bare phrase sitting in the value
+ * column ("NO MEETING VETERANS DAY!") and carries none. That is the rule rather
+ * than a list of the labels themselves, because the two boards use different
+ * ones: the Planning Board's are Escrows and ADVERTISE, the Zoning Board's are
+ * "Online Filing Deadline" and "Appeal Period Expires @ Midnight".
+ */
+const isLabelledRow = (line) => /\S {2,}\S/.test(line.trim())
 
 export function parseScheduleText(pdfText, year) {
   const lines = pdfText.split(/\r?\n/)
@@ -292,15 +311,46 @@ export function parseScheduleText(pdfText, year) {
     if (!m) continue
     const date = parseCalendarDate(m[1], year)
     if (!date) continue
-    // Anything before the next labelled line belongs to this block.
+    // A note sits between the date and the block's next labelled row.
     let note = ""
-    for (let j = i + 1; j < lines.length && !BLOCK_LABEL.test(lines[j].trim()); j++) {
+    for (let j = i + 1; j < lines.length; j++) {
+      if (!lines[j].trim() || isLabelledRow(lines[j])) break
       note += ` ${lines[j]}`
     }
     if (/NO MEETING/i.test(note)) cancelled.push(date)
     else sittings.push({ date })
   }
   return { sittings, cancelled }
+}
+
+/**
+ * Dates a board page says are off, from entries that carry no document.
+ *
+ * A cancelled sitting is written as an ordinary entry with the note appended
+ * and **no link behind it** -- "September 16, 2026 Agenda MEETING CANCELLED",
+ * "Planning Board Agenda 6.10.26 NO MEETING". There is no agenda to publish for
+ * a meeting that will not happen, which is exactly what makes the missing link
+ * the signal.
+ *
+ * This matters most where the schedule PDF does not know. The Zoning Board's
+ * 2026 schedule lists 16 September as a meeting date; its page says the meeting
+ * is cancelled. The page is the later word, and without it the calendar would
+ * advertise a sitting the board has called off.
+ */
+export function parseCancelledOnPage(html) {
+  const out = new Set()
+  for (const m of html.matchAll(/<(p|li|td)[^>]*>([\s\S]*?)<\/\1>/gi)) {
+    if (/<a[^>]+\.pdf/i.test(m[2])) continue
+    const label = text(m[2])
+    if (!/\b(meeting cancell?ed|no meeting)\b/i.test(label)) continue
+    // The date sits wherever the board puts it -- before the word Agenda for
+    // one board ("September 16, 2026 Agenda MEETING CANCELLED"), after it for
+    // the other ("Planning Board Agenda 6.10.26 NO MEETING") -- so this is the
+    // same loose reader the document titles use rather than a fixed shape.
+    const date = parseDateFromTitle(label)
+    if (date) out.add(date)
+  }
+  return [...out].sort()
 }
 
 const get = (url, label) =>
@@ -373,14 +423,19 @@ export async function fetchMeetingCalendars({ year = new Date().getFullYear() } 
           await pdfText(link.url, `fetch ${link.label}`),
           link.year,
         )
-        if (sittings.length) {
+        // The page is the later word than the PDF it links: a board that has
+        // called a sitting off says so beside the missing agenda, not by
+        // reissuing the schedule.
+        const off = [...new Set([...cancelled, ...parseCancelledOnPage(html)])].sort()
+        const kept = sittings.filter((s) => !off.includes(s.date))
+        if (kept.length) {
           out.push({
             board: page.board,
             source: link.url,
             year: link.year,
             heading: link.label,
-            sittings,
-            ...(cancelled.length ? { cancelled } : {}),
+            sittings: kept,
+            ...(off.length ? { cancelled: off } : {}),
           })
         }
       }

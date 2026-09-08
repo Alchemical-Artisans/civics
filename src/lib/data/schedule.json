@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-08T15:34:52.683Z",
+  "generatedAt": "2026-09-08T20:08:44.332Z",
   "rules": [
     {
       "board": "City Council",
@@ -307,9 +307,6 @@
       "heading": "Planning Board Meeting Schedule 2026",
       "sittings": [
         {
-          "date": "2026-01-14"
-        },
-        {
           "date": "2026-02-11"
         },
         {
@@ -320,9 +317,6 @@
         },
         {
           "date": "2026-05-13"
-        },
-        {
-          "date": "2026-06-10"
         },
         {
           "date": "2026-07-08"
@@ -340,7 +334,46 @@
           "date": "2026-12-09"
         }
       ],
-      "cancelled": ["2026-11-11"]
+      "cancelled": ["2026-01-14", "2026-06-10", "2026-11-11"]
+    },
+    {
+      "board": "Zoning Board of Appeals",
+      "source": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/g25nizak/2026-boa-meeting-schedule.pdf",
+      "year": 2026,
+      "heading": "2026 BOA MEETING SCHEDULE",
+      "sittings": [
+        {
+          "date": "2026-01-21"
+        },
+        {
+          "date": "2026-03-18"
+        },
+        {
+          "date": "2026-04-15"
+        },
+        {
+          "date": "2026-05-20"
+        },
+        {
+          "date": "2026-06-17"
+        },
+        {
+          "date": "2026-07-15"
+        },
+        {
+          "date": "2026-08-19"
+        },
+        {
+          "date": "2026-10-21"
+        },
+        {
+          "date": "2026-11-18"
+        },
+        {
+          "date": "2026-12-16"
+        }
+      ],
+      "cancelled": ["2026-02-18", "2026-09-16"]
     }
   ]
 }

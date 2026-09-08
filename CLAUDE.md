@@ -65,18 +65,33 @@ npx playwright test src/routes/calendar/page.svelte.e2e.ts
 
 Two halves joined by one committed data file and nothing else.
 
-**Not every board's documents are in the listing.** The Planning Board keeps its
-agendas and minutes on its own page as plain CDN links, 163 of them back to
-November 2017, and the listing holds one -- so without
-`scripts/update-planning-board.mjs` (`npm run planning-board:update`) the
-calendar showed a board that meets monthly as having met once. There are no
-media pages there, so the date comes from the link's own label and the rest is
-the ordinary pipeline (`resolveDocument` with `fetchPage: false`, then
-`assignIds`). **Every record now carries a `source`** naming the scrape that
-produced it, and each scrape replaces only its own: `calendar:update --prune`
-drops stored records missing from the listing, which would delete all 163 of
-these, so it skips records whose source is not the listing. Its schedule is a
-PDF the page links rather than markup on the page, read with `pdftotext`.
+**Not every board's documents are in the listing.** The Planning Board and the
+Zoning Board of Appeals keep their agendas and minutes on their own pages as
+plain CDN links -- 163 back to November 2017 and 174 back to February 2018 --
+and the listing holds one of the first and none of the second, so without
+`scripts/update-board-pages.mjs` (`npm run boards:update`) the calendar showed
+two monthly boards as having met once and never. There are no media pages
+there, so the date comes from the link's own label (or its `title` attribute
+where the Zoning Board left the label blank, or failing that the filename) and
+the rest is the ordinary pipeline (`resolveDocument` with `fetchPage: false`,
+then `assignIds`). **The board is passed as `category`**, the field the listing
+names one in, so `classify` derives it the same way for both -- guessing would
+read `boa-` in a Zoning Board filename as the Board of Assessors, a different
+body. **Every record carries a `source`** naming the scrape that produced it,
+and each scrape replaces only its own: `calendar:update --prune` drops stored
+records missing from the listing, which would delete all 337 of these, so it
+skips records whose source is not the listing. Both boards' schedules are PDFs
+their pages link rather than markup, read with `pdftotext`.
+
+**A board calls a sitting off by dropping the link, not by reissuing the
+schedule.** "September 16, 2026 Agenda MEETING CANCELLED" and "Planning Board
+Agenda 6.10.26 NO MEETING" are ordinary entries with the note appended and no
+PDF behind them -- there is no agenda to publish for a meeting that will not
+happen, which is what makes the missing link the signal.
+`parseCancelledOnPage` reads those and drops the dates from the expected
+sittings, which matters because the Zoning Board's own schedule PDF still lists
+16 September: without it the calendar would advertise a sitting called off,
+eight days out.
 
 **Scrapers (`scripts/`)** run by hand, never in CI. `lib/haverhill.mjs` replays
 the AJAX POST the city's listing page makes to an Umbraco surface controller
