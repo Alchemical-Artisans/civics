@@ -16,14 +16,28 @@
 
 {#if data.meeting.scheduled}
   <!-- Not "nobody has transcribed this yet": there is nothing to transcribe.
-       The city has published no agenda and no minutes, and the sitting is on
-       the calendar because a schedule of the board's own says it was to be
-       held. Saying so is the point of the entry -- a calendar built only from
-       documents cannot show a date the city published nothing for. -->
+       This Tuesday has not happened, so the city has published nothing for it,
+       and the sitting is here because the Council's own standing rule names the
+       day. Quoting that rule is the whole content of the page -- it is the
+       evidence, and it is the city's own wording. -->
   <p>
-    The city has published no agenda or minutes for this sitting. It is here because the meeting
-    schedule linked above lists the date; whether the sitting was held, cancelled or continued is
-    not something that schedule records.
+    The city has published no agenda for this sitting yet. It is on the calendar because the
+    <a href={data.meeting.scheduled.rule.url} target="_blank" rel="external noopener noreferrer"
+      >City Council's own meeting rule</a
+    >
+    expects it:
+  </p>
+  <blockquote>
+    <p>{data.meeting.scheduled.rule.intro}</p>
+    <ul>
+      {#each data.meeting.scheduled.rule.exceptions as clause (clause)}
+        <li>{clause}</li>
+      {/each}
+    </ul>
+  </blockquote>
+  <p>
+    The Council does not sit on every Tuesday the rule names, and it publishes an agenda a few days
+    beforehand. Check the calendar again nearer the day.
   </p>
 {:else}
   <p>Nobody has transcribed this meeting yet. The city's own files are linked above.</p>

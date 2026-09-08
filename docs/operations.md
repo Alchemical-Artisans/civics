@@ -6,7 +6,7 @@
 npm run metadata:update    # refresh everything the site takes from the city
 ```
 
-That is the command to run. It drives the two scrapers in sequence and prints
+That is the command to run. It drives the three scrapers in sequence and prints
 each one's summary under a heading, then says whether anything failed.
 
 A failing step does not stop the ones after it, and the exit status is non-zero
@@ -17,7 +17,8 @@ succeeded. Whatever did succeed has already been written; the failures are
 repeated at the end so they cannot scroll past.
 
 Arguments are forwarded to every step, so `npm run metadata:update -- --prune`
-reaches the calendar. The budget script takes no flags and ignores them.
+reaches the calendar. The budget and schedule scripts take no flags and ignore
+them.
 
 ## The scripts underneath
 
@@ -25,6 +26,7 @@ reaches the calendar. The budget script takes no flags and ignores them.
 npm run calendar:update    # add documents published since the last run
 npm run calendar:rebuild   # re-scrape everything from scratch
 npm run budget:update      # re-scrape the budget and audit listing
+npm run schedule:update    # re-read the meeting rules off the listing page
 ```
 
 Worth running alone while working on one of them, or when only one half needs
@@ -33,9 +35,18 @@ refreshing.
 **Use `calendar:update` for routine refreshes.** Reach for `calendar:rebuild`
 only when the scraping or date logic itself has changed.
 
-There is no `budget:rebuild`. The whole budget listing is one request and
-twenty-two rows, so the distinction between a cheap refresh and an expensive
-full rebuild has no meaning there — every run replaces the file.
+There is no `budget:rebuild` or `schedule:rebuild`. The whole budget listing is
+one request and twenty-two rows, and the schedule is three sentences of prose on
+one page, so the distinction between a cheap refresh and an expensive full
+rebuild has no meaning for either — every run replaces the file.
+
+**`schedule:update` shouts when the wording changes.** The rule it scrapes is
+prose, and `src/lib/schedule.ts` reads that prose into dates — a reading that is
+only valid for the sentences it was made about. So the script prints a warning
+when the words move, and `schedule.spec.ts` fails outright. Re-read the rule and
+check the date logic against it before committing; a silently misread rule puts
+meetings on the calendar the Council never meant to hold. See
+[calendar-page.md](./calendar-page.md#sittings-the-rule-expects).
 
 None of them touches the hand-written pages. Those live in
 `src/routes/calendar/meetings/` and `src/routes/budget/<year>/`; the scripts

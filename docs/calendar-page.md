@@ -34,84 +34,94 @@ generated from data rather than written, so there is nothing to hand-write, and
 if the data and the links ever disagree, where relying on SvelteKit's crawler
 would quietly emit fewer pages.
 
-## Sittings off the schedule, not off a document
+## Sittings the rule expects
 
-One of the documents in the listing is not about a sitting at all: it is the
-City Council's meeting schedule for a calendar year, a page of month-and-days
-with `7:00 PM Council Chambers Room 202` printed once at its head. Read as a
-document it is undated and drops off the calendar. Read as a schedule it says
-which sittings are to be held, which the agendas cannot: **a sitting that has
-not happened yet has no agenda, and a sitting the city published nothing for
-has nothing at all.**
+The city's schedule is not a document. It is prose on the listing page itself,
+in the section directly above the document listing:
 
-So the calendar carries a second kind of entry. `withScheduled()` in
-`calendar.ts` takes the meetings built from documents and adds a `Meeting` for
-every scheduled date that has none — same board-and-date identity, so a
-scheduled date the city did publish an agenda for is an ordinary meeting and is
-left alone. The added entry has `documents: []` and a `scheduled` field naming
-the schedule it came off.
+> Regular meetings of the City Council shall be held every Tuesday at 7:00
+> o'clock P.M. except in:
+>
+> - June there shall be a meeting on the first, third and fourth Tuesday ---
+>   except when June has five Tuesdays then it will be first, third and fifth.
+> - From July until the second Tuesday after Labor Day, the Council shall meet
+>   every other week beginning with the second Tuesday of July.
+> - In September, starting with the second Tuesday after Labor Day, the Council
+>   shall return to its regular weekly schedule.
 
-**The claim is about the schedule and nothing more.** A date listed there was
-scheduled; whether the sitting was held, cancelled or continued is not
-something a schedule can say, and neither the entry, the page nor the footer
-says it.
+Read into dates it shows sittings the documents cannot: **a sitting that has not
+happened yet has no agenda**, so a calendar built only from what the city has
+published is blank from today forward — which is precisely the part a reader
+wanting to attend one needs. It is also the only part of this data that is not
+retrospective.
 
-### Nothing scrapes this
+`scripts/update-schedule.mjs` scrapes the wording into
+[`schedule.json`](../src/lib/data/schedule.json);
+[`schedule.ts`](../src/lib/schedule.ts) reads it into Tuesdays; `withScheduled()`
+in `calendar.ts` adds a `Meeting` with `documents: []` for every one no document
+covers. Board and date are the identity, exactly as for a document, so a date
+the city has since published an agenda for is an ordinary meeting and is left
+alone.
 
-The one schedule the city has published is a scan — a Toshiba copier's JPEG
-wrapped in a PDF, with no text layer at all — so there is nothing to parse.
-It is transcribed by hand into
-[`src/lib/data/schedule.json`](../src/lib/data/schedule.json), the way the
-FY2027 budget book's own pages were read off rendered images. That and
-`glossary.json` are the two files in `data/` no scraper writes, and
-[`budget:update`](./operations.md) and `calendar:update` will never touch
-either.
+### Forward only, and why
 
-The JSON keeps the document's own shape — a month and its days — rather than a
-flat list of dates, so a transcription can be checked against the page line by
-line. `sittingsOf()` expands it; the dates are built as strings, never through
-the local-time `Date` constructor, for the reason the rest of this file is
-UTC. [`schedule.spec.ts`](../src/lib/schedule.spec.ts) checks that every
-transcribed day exists in its month and that all 35 of the 2025 dates land on a
-Tuesday, which is the cheapest way to catch a mistyped digit.
+**The rule is not the schedule the Council actually adopts.** Checked against the
+Council's own published 2025 schedule, the rule yields 46 sittings where the
+adopted schedule has 35. It says "every Tuesday", but the Council skips roughly
+one Tuesday a month — 21 January, 18 February, 22 April, 27 May, 14 October, 11
+and 25 November, 23 and 30 December 2025 are all rule-Tuesdays the Council did
+not schedule and published nothing for. It errs the other way in June: the rule
+excludes 10 June 2025, and the Council met that day.
+
+So sittings are projected **from the build date to the end of that year, and
+never into the past**. For a day already past, the documents are the better
+authority, and a rule-Tuesday with no agenda and no minutes is far more likely
+to be a Tuesday the Council never sat than a hole in the record. Ahead of today
+there are no documents to be the authority at all, and a projection understood
+as one beats an empty calendar.
+
+That is also why these entries are called **expected** rather than scheduled.
+The city has announced nothing about a particular Tuesday. The Council has said
+which Tuesdays it means to sit on, and this is that statement applied to a date.
+
+### The wording is pinned
+
+Reading prose into dates is a judgement, and it is only valid for the sentences
+it was made about. `RULE_AS_READ` in `schedule.ts` holds the exact wording the
+date logic was written against, and `schedule.spec.ts` fails when the scrape no
+longer matches it. `schedule:update` prints a warning to the same effect. A
+reworded rule therefore stops the build rather than being quietly misread into
+meetings the Council never meant to hold.
 
 ### What the reader sees
 
-On the grid, a scheduled sitting is drawn as a **dashed outline** rather than a
+On the grid, an expected sitting is drawn as a **dashed outline** rather than a
 filled chip, and carries none of the `A`/`M` letters — the city has published
-nothing for it, and an entry that looked like one carrying an agenda would
-claim more than the schedule says. Its accessible name reads `, scheduled; no
-documents published`.
+nothing for it, and an entry that looked like one carrying an agenda would claim
+more than the rule says. Its accessible name reads `, expected; no agenda
+published yet`.
 
 It has its own filter beside Agendas and Minutes rather than joining them: the
 kind toggles hide documents, and a sitting with no documents has no kind to
 filter on.
 
-On the meeting page the schedule takes the row the agenda would occupy, chip
-and all, linked to the city's own file. The time and room the schedule prints
-once for the year become the header's `MeetingDetails` where no write-up
-supplies its own — which is the point of the entry, since it lets a reader put
-a sitting in their own calendar off the schedule alone, before there is an
-agenda. A write-up always wins: it was read off the notice for that particular
-sitting, where the schedule speaks for the year.
+On the meeting page the rule takes the row the agenda would occupy, linked to
+the page it is printed on, and the page below quotes the rule in full — it is
+the evidence for the entry, and it is the city's own wording, so quoting beats
+paraphrasing. The hour the rule states becomes the header's `MeetingDetails`,
+which is what lets a reader add the sitting to their own calendar before an
+agenda exists. No room: the rule names none, and the last agenda's room is not
+evidence about a Tuesday that has not happened.
 
-The footer discloses the count and what it does and does not mean, in the same
-voice as the undated and flagged counts below.
+The footer says how many are shown and what the number does and does not mean.
 
-**Today no date qualifies**, and the calendar shows no scheduled entries at all.
-One did: 28 January 2025, which the Council scheduled and which appeared to
-carry nothing. It turned out the minutes exist and were filed under 25 January,
-a Saturday — the city's `Meeting Date` field says 01/26 and the UTC rollback
-took it back a day. Nothing flagged that: no source contradicted it. The
-schedule did, by putting an empty Tuesday one cell away from a Saturday sitting
-with minutes, and the date is corrected in `reviews.json`. See
-[dates.md](./dates.md#a-wrong-date-nothing-flags).
+### The default month moved because of this
 
-So the machinery currently displays nothing, and both halves of the point still
-hold. The day the city posts its next year's schedule, transcribing it puts
-every future sitting on the calendar at once; and in the meantime a board's own
-list of the days it sits is the only independent check this data has on the
-dates documents are filed under.
+The calendar used to open on the newest month it covered. With the rule
+projecting to the end of the year that is December, and opening there would drop
+every reader into a month of Tuesdays nothing has been published for. It now
+opens on the newest month containing a **document**, which is where the record
+actually ends; the expected sittings sit a page or two forward from it.
 
 ## Prerendering
 
@@ -148,7 +158,7 @@ the browser.
 **Groups into meetings.** `groupIntoMeetings()` collapses the documents by board
 and date. Undated documents are dropped here rather than later, so a `Meeting`
 always has a date and `groupByDate()` never has to check for one.
-`withScheduled()` then adds the sittings a published schedule lists and no
+`withScheduled()` then adds the sittings the Council's rule expects and no
 document covers — see above.
 
 The result: 282 records become 276 documents in 166 meetings, with `undated`,
@@ -189,7 +199,7 @@ Svelte 5 runes, in a small amount of state:
 | `chosen`                      | the month the reader navigated to, or `null` for the default |
 | `activeBoards`                | a `SvelteSet` of board filters; empty means all              |
 | `showAgendas` / `showMinutes` | document-kind toggles                                        |
-| `showScheduled`               | whether sittings off a schedule are shown                    |
+| `showExpected`                | whether sittings the Council's rule expects are shown        |
 | `today`                       | today's date, filled in after mount                          |
 
 Two details are deliberate:
@@ -464,10 +474,12 @@ than present uncertain data as authoritative.
 the production build and covers: the month heading renders, every entry links to
 a meeting and is same-tab, month navigation works, board filtering narrows
 results, unchecking agendas drops the document count without dropping the
-meetings that still have minutes, and a sitting off the schedule is drawn as an
+meetings that still have minutes, the calendar opens on the newest documented
+month rather than the projection's last, and an expected sitting is drawn as an
 outline and hidden by its own toggle. Which sitting that is comes from
-`schedule.json` against `meetings.json`, so the test follows the data rather
-than pinning a date the city may yet publish an agenda for.
+`expectedSittings()` against `meetings.json` — the same derivation the site
+makes — so the test follows the data rather than pinning a date the city may
+publish an agenda for tomorrow.
 
 [`meetings/page.svelte.e2e.ts`](../src/routes/calendar/meetings/page.svelte.e2e.ts)
 covers the meeting pages, enumerating the written ones from the route
@@ -475,8 +487,8 @@ directories that exist: a written meeting is what the calendar lands on and has
 a transcription on it, the board and date render with the city's files beside
 them, a meeting nobody wrote up still lists its files, an item page sits beneath
 its meeting and returns to it, the back link reaches the calendar, an unknown id
-returns a 404, and a sitting off the schedule cites the schedule in place of
-files, states the time it prints, and can still be added to a reader's own
+returns a 404, and an expected sitting quotes the rule it rests on in place of
+files, states the hour the rule gives, and can be added to a reader's own
 calendar.
 
 [`src/routes/page.svelte.e2e.ts`](../src/routes/page.svelte.e2e.ts) covers the

@@ -2,11 +2,12 @@
 /**
  * Refresh everything this site derives from the City of Haverhill.
  *
- * Two halves, two listings, one command. They stay separate scripts because
+ * Two halves, three listings, one command. They stay separate scripts because
  * they are genuinely different jobs -- the calendar diffs a listing and then
  * resolves a media page per new document, the budget replaces twenty-two rows
- * in a single request -- and either is worth running alone while working on
- * it. This is the one to run when you just want the site to be current.
+ * in a single request, the schedule re-reads three sentences of prose off the
+ * calendar's own listing page -- and any of them is worth running alone while
+ * working on it. This is the one to run when you just want the site current.
  *
  * Steps run in sequence rather than in parallel: they hit the same host, and
  * interleaved progress output from two scrapers is unreadable.
@@ -19,7 +20,8 @@
  * status is non-zero if any step failed.
  *
  * Arguments are forwarded to every step, so `npm run metadata:update -- --prune`
- * reaches the calendar. The budget script takes no flags and ignores them.
+ * reaches the calendar. The budget and schedule scripts take no flags and
+ * ignore them.
  */
 import { spawnSync } from "node:child_process"
 import path from "node:path"
@@ -27,6 +29,7 @@ import path from "node:path"
 const STEPS = [
   { name: "calendar", script: "update-calendar.mjs" },
   { name: "budget", script: "update-budget.mjs" },
+  { name: "schedule", script: "update-schedule.mjs" },
 ]
 
 const args = process.argv.slice(2)

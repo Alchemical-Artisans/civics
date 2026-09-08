@@ -1,26 +1,24 @@
 import { expect, test } from "@playwright/test"
 import meetings from "../../lib/data/meetings.json" with { type: "json" }
-import schedule from "../../lib/data/schedule.json" with { type: "json" }
 import { meetingId } from "../../lib/calendar"
+import { expectedSittings } from "../../lib/schedule"
 
 /**
- * The sittings a published schedule lists and no document covers -- worked out
- * from the same two files the site builds from, so this follows the data
- * instead of pinning whichever date happens to be uncovered today.
+ * The sittings the Council's rule expects that no document covers -- derived
+ * the way the site derives them, so this follows the data and the calendar
+ * rather than pinning a date the city may publish an agenda for tomorrow.
+ *
+ * The suite runs against a build made moments ago, so "today" here and the
+ * build's own projection horizon are the same day.
  */
 const documented = new Set(
   meetings.meetings.filter((m) => m.date).map((m) => `${m.board}::${m.date}`),
 )
-const scheduledOnly = schedule.schedules.flatMap((s) =>
-  s.months.flatMap(({ month, days }) =>
-    days
-      .map((day) => `${s.year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`)
-      .filter((date) => !documented.has(`${s.board}::${date}`))
-      .map((date) => ({ id: meetingId(s.board, date), date })),
-  ),
-)
+const expected = expectedSittings(new Date().toISOString().slice(0, 10))
+  .filter((s) => !documented.has(`${s.board}::${s.date}`))
+  .map((s) => ({ id: meetingId(s.board, s.date), date: s.date }))
 
-/** `January 2025` for `2025-01-07`, which is what the month heading reads. */
+/** `September 2026` for `2026-09-15`, which is what the month heading reads. */
 const monthHeading = (date: string) =>
   new Date(`${date}T00:00:00Z`).toLocaleString("en-US", {
     month: "long",
@@ -28,13 +26,13 @@ const monthHeading = (date: string) =>
     timeZone: "UTC",
   })
 
-/** Step the calendar back to a month, which is client-side and needs no reload. */
+/** Step the calendar to a month, which is client-side and needs no reload. */
 async function goToMonth(page: import("@playwright/test").Page, name: string) {
   const heading = page.getByRole("heading", { level: 2 })
-  const prev = page.getByRole("button", { name: "Previous month" })
   for (let i = 0; i < 120 && (await heading.textContent()) !== name; i++) {
-    if (await prev.isDisabled()) break
-    await prev.click()
+    const next = page.getByRole("button", { name: "Next month" })
+    if (await next.isDisabled()) break
+    await next.click()
   }
   await expect(heading).toHaveText(name)
 }
@@ -99,19 +97,28 @@ test.describe("meeting calendar", () => {
     expect(Number(meetingsAfter)).toBeLessThanOrEqual(Number(meetingsBefore))
   })
 
+  test("opens on the newest month with a document, not the projection's last", async ({ page }) => {
+    // The rule projects to the end of the year, so the newest month the
+    // calendar covers is December. Opening there would drop every reader into a
+    // month of Tuesdays nothing has been published for.
+    const newest = meetings.meetings
+      .filter((m) => m.date)
+      .map((m) => m.date!)
+      .sort()
+      .at(-1)!
+    await expect(page.getByRole("heading", { level: 2 })).toHaveText(monthHeading(newest))
+  })
+
   // Nested, so the skip below governs only these two. A group-level `test.skip`
   // applies to every test in its describe wherever it is written, which in the
   // outer one would take the rest of the suite with it.
   test.describe(() => {
-    // Skipped only if every scheduled date has since acquired a document, which
-    // would be the city filling its own gaps rather than a broken feature.
-    test.skip(
-      scheduledOnly.length === 0,
-      "every scheduled sitting is covered by a document the city published",
-    )
+    // Skipped only in the last days of December, when the rule's horizon --
+    // the end of the calendar year -- has nothing left in it.
+    test.skip(expected.length === 0, "no expected sittings left in the year")
 
-    test("shows a sitting the schedule lists and no document covers", async ({ page }) => {
-      const { id, date } = scheduledOnly[0]
+    test("shows a sitting the Council's rule expects, with no agenda yet", async ({ page }) => {
+      const { id, date } = expected[0]
       await goToMonth(page, monthHeading(date))
 
       const entry = page.locator(`table a[href$="/calendar/meetings/${id}"]`)
@@ -119,22 +126,22 @@ test.describe("meeting calendar", () => {
       // Drawn as an outline rather than a filled chip: the city has published
       // nothing for it, and it must not read like an entry carrying an agenda.
       await expect(entry).toHaveClass(/border-dashed/)
-      await expect(entry).toHaveAttribute("title", /scheduled/)
+      await expect(entry).toHaveAttribute("title", /expected/)
     })
 
-    test("the Scheduled toggle hides those sittings and nothing else", async ({ page }) => {
-      const { id, date } = scheduledOnly[0]
+    test("the Expected toggle hides those sittings and nothing else", async ({ page }) => {
+      const { id, date } = expected[0]
       await goToMonth(page, monthHeading(date))
 
       const entries = page.locator("table a")
       const before = await entries.count()
       const entry = page.locator(`table a[href$="/calendar/meetings/${id}"]`)
 
-      await page.getByRole("checkbox", { name: "Scheduled" }).uncheck()
+      await page.getByRole("checkbox", { name: "Expected" }).uncheck()
       await expect(entry).toHaveCount(0)
       // A sitting with documents is untouched: the kind toggles govern those.
       expect(await entries.count()).toBe(
-        before - scheduledOnly.filter((s) => s.date.startsWith(date.slice(0, 7))).length,
+        before - expected.filter((s) => s.date.startsWith(date.slice(0, 7))).length,
       )
     })
   })

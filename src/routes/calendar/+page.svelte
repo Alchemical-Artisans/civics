@@ -29,20 +29,28 @@
   const months = $derived(monthsCovered(all))
   const boards = $derived(boardsOf(all))
 
-  // Until the reader picks a month, show the most recent one that actually has
-  // meetings. Deliberately not "today" -- that would differ between the
+  // Until the reader picks a month, show the most recent one that has a
+  // document. Deliberately not "today" -- that would differ between the
   // prerender and the browser and cause a hydration mismatch.
+  //
+  // Not simply the last month covered, either: the Council's rule projects
+  // expected sittings to the end of the year, so the newest month covered is
+  // December, and opening there would land every reader in a month of Tuesdays
+  // nothing has been published for. The newest month the city has actually
+  // published something in is the one to open on; the expected sittings sit a
+  // page or two forward from it.
   let chosen = $state<string | null>(null)
-  const month = $derived(chosen ?? months.at(-1) ?? "2026-01")
+  const documented = $derived(all.filter((m) => m.documents.length > 0))
+  const month = $derived(chosen ?? monthsCovered(documented).at(-1) ?? months.at(-1) ?? "2026-01")
 
   const activeBoards = new SvelteSet<string>()
   let showAgendas = $state(true)
   let showMinutes = $state(true)
-  // Scheduled sittings are a third thing on the grid rather than a third kind
-  // of document, so they get their own toggle rather than joining `wanted`
-  // below: a meeting the city has published nothing for has no document kind
-  // to filter on.
-  let showScheduled = $state(true)
+  // Expected sittings are a third thing on the grid rather than a third kind of
+  // document, so they get their own toggle rather than joining `wanted` below:
+  // a sitting the city has published nothing for has no document kind to filter
+  // on.
+  let showExpected = $state(true)
 
   // `today` stays empty during prerender and fills in after mount, so the
   // highlight never causes a hydration mismatch.
@@ -64,9 +72,9 @@
     all
       .filter((m) => !activeBoards.size || activeBoards.has(m.board))
       .map((m) => ({ ...m, documents: m.documents.filter((d) => wanted(d.kind)) }))
-      // A scheduled sitting has no documents at all, so the kind toggles have
+      // An expected sitting has no documents at all, so the kind toggles have
       // nothing to say about it and its own toggle decides on its own.
-      .filter((m) => (m.scheduled ? showScheduled : m.documents.length > 0)),
+      .filter((m) => (m.scheduled ? showExpected : m.documents.length > 0)),
   )
 
   const byDate = $derived(groupByDate(meetings))
@@ -104,11 +112,11 @@
         : "bg-slate-100 text-slate-900 hover:bg-slate-200"
 
   /**
-   * A sitting off the schedule is drawn as an outline rather than a filled
-   * chip: the city has published nothing for it, and an entry that looks
-   * exactly like one carrying an agenda would claim more than the schedule
-   * says. Dashed, because the same shape with a solid edge reads as a
-   * different colour of the same thing rather than as an absence.
+   * An expected sitting is drawn as an outline rather than a filled chip: the
+   * city has published nothing for it, and an entry that looks exactly like one
+   * carrying an agenda would claim more than the rule says. Dashed, because the
+   * same shape with a solid edge reads as a different colour of the same thing
+   * rather than as an absence.
    */
   const entryClass = (m: Meeting) =>
     m.scheduled
@@ -117,7 +125,7 @@
 
   const entryTitle = (m: Meeting) =>
     m.scheduled
-      ? `${m.board} — scheduled; no documents published`
+      ? `${m.board} — expected; no agenda published yet`
       : `${m.board} — ${m.documents.length} document${m.documents.length === 1 ? "" : "s"}`
 </script>
 
@@ -158,12 +166,12 @@
         </span>
       </label>
       <label class="flex items-center gap-2 text-sm text-slate-700">
-        <input type="checkbox" bind:checked={showScheduled} class="rounded border-slate-300" />
+        <input type="checkbox" bind:checked={showExpected} class="rounded border-slate-300" />
         <span class="inline-flex items-center gap-1">
           <span
             class="h-2.5 w-2.5 rounded-full border border-dashed border-slate-500"
             aria-hidden="true"
-          ></span> Scheduled
+          ></span> Expected
         </span>
       </label>
     </div>
@@ -272,7 +280,7 @@
                         <span class="min-w-0 flex-1 truncate">{m.board}</span>
                         <!-- One letter per document, coloured by kind: the
                              reader can see at a glance whether a meeting has
-                             minutes yet without opening it. A scheduled sitting
+                             minutes yet without opening it. An expected sitting
                              has none, and its outline says so. -->
                         <span class="flex shrink-0 gap-0.5" aria-hidden="true">
                           {#each m.documents as doc, i (i)}
@@ -286,7 +294,7 @@
                           {/each}
                         </span>
                         {#if m.scheduled}
-                          <span class="sr-only">, scheduled; no documents published</span>
+                          <span class="sr-only">, expected; no agenda published yet</span>
                         {:else}
                           <span class="sr-only">
                             , {m.documents.length} document{m.documents.length === 1
@@ -335,7 +343,7 @@
                       <span
                         class="ml-2 rounded border border-dashed border-slate-400 px-1.5 py-0.5 text-[11px] text-slate-600"
                       >
-                        scheduled
+                        expected
                       </span>
                     {/if}
                   </a>
@@ -371,10 +379,12 @@
     </p>
     {#if data.scheduled > 0}
       <p class="mt-1">
-        {data.scheduled} sitting{data.scheduled === 1 ? "" : "s"} shown as scheduled: a published meeting
-        schedule lists {data.scheduled === 1 ? "it" : "them"} and the city has published no agenda or
-        minutes. That the schedule listed a date is all it says; whether the sitting was held is not something
-        the schedule records.
+        {data.scheduled} sitting{data.scheduled === 1 ? "" : "s"} shown as expected, from today to the
+        end of the year: the City Council's own rule says it sits every Tuesday, with exceptions for June
+        and the summer, and the city has published no agenda for {data.scheduled === 1
+          ? "that date"
+          : "those dates"} yet. The Council does not sit on every Tuesday its rule names, so an expected
+        sitting is not an announced one.
       </p>
     {/if}
     {#if data.flagged > 0}

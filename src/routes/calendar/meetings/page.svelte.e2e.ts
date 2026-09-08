@@ -3,25 +3,20 @@ import { existsSync, readdirSync, readFileSync } from "node:fs"
 import { join } from "node:path"
 import { fileURLToPath } from "node:url"
 import meetingsData from "../../../lib/data/meetings.json" with { type: "json" }
-import schedule from "../../../lib/data/schedule.json" with { type: "json" }
 import { meetingId } from "../../../lib/calendar"
+import { expectedSittings } from "../../../lib/schedule"
 
 /**
- * The sittings a published schedule lists and no document covers, worked out
- * from the same two files the site builds from -- read rather than hardcoded,
- * for the same reason `written` is read off the directories.
+ * The sittings the Council's rule expects that no document covers, derived the
+ * way the site derives them -- read rather than hardcoded, for the same reason
+ * `written` is read off the route directories.
  */
 const documented = new Set(
   meetingsData.meetings.filter((m) => m.date).map((m) => `${m.board}::${m.date}`),
 )
-const scheduledOnly = schedule.schedules.flatMap((s) =>
-  s.months.flatMap(({ month, days }) =>
-    days
-      .map((day) => `${s.year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`)
-      .filter((date) => !documented.has(`${s.board}::${date}`))
-      .map((date) => ({ id: meetingId(s.board, date), document: s.document })),
-  ),
-)
+const expected = expectedSittings(new Date().toISOString().slice(0, 10))
+  .filter((s) => !documented.has(`${s.board}::${s.date}`))
+  .map((s) => ({ id: meetingId(s.board, s.date), rule: s.rule }))
 
 /**
  * The meetings somebody has written up: one route directory each, named for
@@ -135,37 +130,36 @@ test.describe("meeting pages", () => {
   // Skipped only if the city has since published something for every date its
   // own schedule lists, which would be the gap closing rather than a break.
   test.describe(() => {
-    test.skip(
-      scheduledOnly.length === 0,
-      "every scheduled sitting is covered by a document the city published",
-    )
+    test.skip(expected.length === 0, "no expected sittings left in the year")
 
-    test("a scheduled sitting says so, and cites the schedule instead of files", async ({
-      page,
-    }) => {
-      const { id, document } = scheduledOnly[0]
+    test("an expected sitting quotes the rule it rests on", async ({ page }) => {
+      const { id, rule } = expected[0]
       await page.goto(`/calendar/meetings/${id}`)
-      await expect(page.getByRole("article")).toContainText("published no agenda or minutes")
 
-      // The schedule stands where the agenda would: the only thing the city
-      // published saying this sitting exists. Located by href, since the site
-      // header's own menu of fiscal years links the city's CDN too.
-      const source = page.locator(`a[href="${document.fileUrl}"]`)
+      // The rule is the evidence, so the page quotes it rather than
+      // paraphrasing why the sitting is there -- and every clause of it.
+      const article = page.getByRole("article")
+      await expect(article).toContainText("published no agenda for this sitting yet")
+      await expect(article).toContainText(rule.intro)
+      for (const clause of rule.exceptions) await expect(article).toContainText(clause)
+
+      // It stands where the agenda would, linked to the page it is printed on.
+      // The last `header` on the page: the site banner is the first.
+      const header = page.locator("header").last()
+      const source = header.locator(`a[href="${rule.url}"]`)
       await expect(source).toHaveCount(1)
       await expect(source).toHaveAttribute("target", "_blank")
-      await expect(page.locator("header").filter({ has: source })).toContainText("Scheduled")
-
-      // The time and room are printed once at the head of the schedule, which
-      // is what lets the header state them with no agenda to read.
-      await expect(
-        page.locator("header").getByText(/^[A-Z][a-z]+day, [A-Z][a-z]+ \d{1,2}, \d{4} at \d/),
-      ).toBeVisible()
+      await expect(header).toContainText("Expected")
     })
 
-    test("a scheduled sitting can still be added to a calendar", async ({ page }) => {
-      // The point of showing a sitting before its agenda exists: a reader can
-      // put it in their own calendar off the schedule alone.
-      await page.goto(`/calendar/meetings/${scheduledOnly[0].id}`)
+    test("an expected sitting states its hour and can be added to a calendar", async ({ page }) => {
+      // The point of showing a sitting before its agenda exists: the rule gives
+      // the hour, so a reader can put it in their own calendar off the rule.
+      await page.goto(`/calendar/meetings/${expected[0].id}`)
+      await expect(
+        page.locator("header").getByText(/^[A-Z][a-z]+day, [A-Z][a-z]+ \d{1,2}, \d{4} at 7:00 PM/),
+      ).toBeVisible()
+
       await page.getByRole("button", { name: "Add to calendar" }).click()
       const google = page.getByRole("link", { name: /Google Calendar/ })
       const href = new URL((await google.getAttribute("href"))!)

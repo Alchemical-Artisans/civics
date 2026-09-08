@@ -172,20 +172,25 @@ is wrong, with nothing to contradict it, passes every check.
 filename carries no unambiguous date (`12825` does not split one way), so
 `filenameDate` was null, `dateConflict` false, `needsReview` false -- and the
 Council appeared to have met on a Saturday. The document's own first line reads
-`Tuesday, January 28, 2025 at 7:00 PM`.
-
-**The schedule is what caught it.** Reading the Council's published meeting
-schedule (see
-[calendar-page.md](./calendar-page.md#sittings-off-the-schedule-not-off-a-document))
-put 28 January on the calendar as a sitting with no documents, one cell away
-from a Saturday sitting with minutes -- which is what a wrong date looks like
-once there is something to check it against. It is corrected in
+`Tuesday, January 28, 2025 at 7:00 PM`. It is corrected in
 [`reviews.json`](./data-format.md#corrections-reviewsjson), so it survives a
 rebuild.
 
-That is the second reason to read the schedule, after showing sittings that
-have not happened yet: a body's own list of the days it sits is the only
-independent check this data has on the dates the city files documents under.
+**It was found by reading the Council's own schedule against the data.** The
+city published an amended meeting schedule for 2025 as a document of its own
+(a scan, with no text layer); read alongside `meetings.json` it names 28 January
+as a sitting, one cell from a Saturday sitting carrying minutes -- which is what
+a wrong date looks like once there is something independent to check it against.
+
+Nothing in the build does that check now. The calendar reads the Council's
+standing rule off the listing page, but projects it **forward only** and for
+good reason -- see
+[calendar-page.md](./calendar-page.md#forward-only-and-why) --
+so it never comments on a date already past. Comparing a published annual
+schedule against the stored dates stays a thing a person does by hand, and it is
+worth doing whenever the city publishes a new one: a body's own list of the days
+it sits is the only independent evidence this data has about the dates documents
+are filed under.
 
 ## What `needsReview` means
 

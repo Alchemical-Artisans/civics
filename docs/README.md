@@ -88,9 +88,12 @@ scripts/
   lib/reviews.spec.mjs     unit tests for it
   lib/budget.mjs           the budget listing: fetch, parse, diff
   lib/budget.spec.mjs      unit tests for that parser
+  lib/schedule.mjs         the meeting rules printed on the listing page
+  lib/schedule.spec.mjs    unit tests for that parser
   rebuild-calendar.mjs     full re-scrape
   update-calendar.mjs      incremental refresh
   update-budget.mjs        re-scrape the budget and audit listing
+  update-schedule.mjs      re-read the meeting rules off the listing page
   update-metadata.mjs      run every scraper in sequence
 
 src/lib/
@@ -105,9 +108,9 @@ src/lib/
   budget-table.spec.ts     unit tests for it
   calendar.ts              pure date/grouping helpers used by the page
   calendar.spec.ts         unit tests for those helpers
-  meetings.ts              meetings.json plus the schedule, as the site shows them
-  schedule.ts              the transcribed meeting schedules, expanded to dates
-  schedule.spec.ts         unit tests for it, and checks on the transcription
+  meetings.ts              meetings.json plus the expected sittings, as shown
+  schedule.ts              the Council's meeting rule, read into future dates
+  schedule.spec.ts         unit tests for it, and the pin on the rule's wording
   router.ts                every internal URL the site builds, in one place
   router.spec.ts           unit tests for it
   budget.ts                the budget listing, section slugs and book contents
@@ -115,7 +118,7 @@ src/lib/
   data/meetings.json       the committed meeting dataset
   data/budget.json         the committed budget and audit listing
   data/reviews.json        human corrections, overlaid onto the meetings
-  data/schedule.json       meeting schedules, transcribed by hand from a scan
+  data/schedule.json       the meeting rules scraped off the listing page
 
 src/routes/
   +page.svelte             `/`, the landing page: a card to each half
@@ -151,9 +154,8 @@ static/
 ## Current dataset
 
 As of the last refresh: **281 documents** spanning **2025-01-07 to 2026-08-27**,
-across 10 boards. 280 resolve to a date; the one that does not is a schedule
-document rather than a meeting, and it is read as a schedule instead -- see
-[data-format.md](./data-format.md#schedulejson-which-no-scraper-writes). Those become **275 document pages** — a few PDFs
+across 10 boards. 280 resolve to a date; the one that does not is the Council's
+2025 meeting schedule, a document about the year rather than about a sitting. Those become **275 document pages** — a few PDFs
 are published under two media pages each, and one listing row has no file at all.
 A page is written for a document when somebody writes one; the rest link
 straight to the city's PDF, which [document-pages.md](./document-pages.md)

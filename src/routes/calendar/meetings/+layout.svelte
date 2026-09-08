@@ -3,7 +3,7 @@
   import Note from "$lib/Note.svelte"
   import AddToCalendar from "$lib/AddToCalendar.svelte"
   import { Router } from "$lib/router"
-  import { formatLongDate, type MeetingDocument } from "$lib/calendar"
+  import { formatLongDate, type MeetingDetails, type MeetingDocument } from "$lib/calendar"
 
   let { data, children } = $props()
 
@@ -13,17 +13,15 @@
   // printed. Absent on a meeting nobody has written up, and on one whose
   // document states none of it.
   //
-  // A sitting that reached the calendar off a published schedule has no
-  // document to read any of this from, but the schedule prints the time and
-  // room once at its head for every date it lists -- which is exactly what
-  // this header wants, and what lets a reader put a sitting on their own
-  // calendar before there is an agenda for it. A write-up always wins: it was
-  // read off the notice for that particular sitting, where the schedule speaks
-  // for the year.
-  const scheduled = $derived(meeting.scheduled)
-  const details = $derived(
-    page.data.details ??
-      (scheduled ? { time: scheduled.time, location: scheduled.location } : undefined),
+  // A sitting the Council's rule expects has no document to read any of this
+  // from, but the rule states the hour it sits at -- which is what lets a
+  // reader put a sitting on their own calendar before there is an agenda for
+  // it. No room: the rule names none, and the last agenda's room is not
+  // evidence about a Tuesday that has not happened. A write-up always wins,
+  // having been read off the notice for that particular sitting.
+  const expected = $derived(meeting.scheduled)
+  const details = $derived<MeetingDetails | undefined>(
+    page.data.details ?? (expected ? { time: expected.time } : undefined),
   )
 
   // A page for a single agenda item titles itself after the item. The meeting
@@ -53,8 +51,8 @@
   <title>{heading} - Haverhill Meeting Calendar</title>
   <meta
     name="description"
-    content="{meeting.board}, {formatLongDate(meeting.date)}: {scheduled
-      ? `a sitting the City of Haverhill's published meeting schedule lists.`
+    content="{meeting.board}, {formatLongDate(meeting.date)}: {expected
+      ? `a sitting expected under the Council's own meeting rule; no agenda published yet.`
       : `the documents the City of Haverhill published for the meeting.`}"
   />
 </svelte:head>
@@ -163,25 +161,25 @@
             </a>
           </li>
         {/each}
-        <!-- The schedule takes the place of the documents on a sitting that has
-             none: it is the only thing the city has published saying this
-             sitting exists, so it is this page's record and belongs in the same
-             row the agenda would occupy. -->
-        {#if scheduled}
+        <!-- The rule takes the place of the documents on a sitting that has
+             none: it is the only thing the city has published bearing on this
+             Tuesday at all, so it belongs in the row the agenda would occupy,
+             linked to the page it is printed on. -->
+        {#if expected}
           <li class="flex flex-wrap items-center gap-2">
             <span
               class="rounded border border-dashed border-slate-400 px-1.5 py-0.5 text-[11px] text-slate-600"
             >
-              Scheduled
+              Expected
             </span>
             <a
               class="text-slate-600 underline hover:text-slate-900"
-              href={scheduled.document.fileUrl}
+              href={expected.rule.url}
               target="_blank"
               rel="external noopener noreferrer"
             >
-              {scheduled.document.title}<span class="sr-only">
-                , opens the city's file in a new tab</span
+              The Council's meeting rule<span class="sr-only">
+                , opens the city's page in a new tab</span
               >
             </a>
           </li>
@@ -204,8 +202,9 @@
       {#if meeting.written}
         Written up by hand from the city's documents. It may summarise, condense or omit &mdash; the
         city's own files, linked above, are the record.
-      {:else if scheduled}
-        The city's own schedule, linked above, is the record that this sitting was to be held.
+      {:else if expected}
+        Nothing has been published for this sitting. The Council's own rule, linked above, is why it
+        is on the calendar.
       {:else}
         The city's own files, linked above, are the record.
       {/if}

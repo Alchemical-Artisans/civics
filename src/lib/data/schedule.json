@@ -1,32 +1,14 @@
 {
+  "generatedAt": "2026-09-08T09:17:41.853Z",
   "source": "https://www.haverhillma.gov/government/agendas-and-minutes/",
-  "schedules": [
+  "rules": [
     {
       "board": "City Council",
-      "year": 2025,
-      "document": {
-        "title": "City Council Amended Schedule 2025",
-        "pageUrl": "/document-manager/media-pages/agenda-and-minutes/city-council-amended-schedule-2025/",
-        "fileUrl": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/v4zftsvg/citycouncilscheduleamended_2025.pdf"
-      },
-      "time": "7:00 PM",
-      "location": {
-        "name": "Council Chambers Room 202",
-        "mapQuery": "4 Summer Street, Haverhill, MA 01830"
-      },
-      "months": [
-        { "month": 1, "days": [7, 14, 28] },
-        { "month": 2, "days": [4, 11, 25] },
-        { "month": 3, "days": [4, 11, 18, 25] },
-        { "month": 4, "days": [1, 8, 15, 29] },
-        { "month": 5, "days": [6, 13, 20] },
-        { "month": 6, "days": [3, 10, 17, 24] },
-        { "month": 7, "days": [8, 22] },
-        { "month": 8, "days": [5, 19] },
-        { "month": 9, "days": [16, 23, 30] },
-        { "month": 10, "days": [7, 21, 28] },
-        { "month": 11, "days": [18] },
-        { "month": 12, "days": [2, 9, 16] }
+      "intro": "Regular meetings of the City Council shall be held every Tuesday at 7:00 o'clock P.M. except in:",
+      "exceptions": [
+        "June there shall be a meeting on the first, third and fourth Tuesday --- except when June has five Tuesdays then it will be first, third and fifth.",
+        "From July until the second Tuesday after Labor Day, the Council shall meet every other week beginning with the second Tuesday of July.",
+        "In September, starting with the second Tuesday after Labor Day, the Council shall return to its regular weekly schedule."
       ]
     }
   ]

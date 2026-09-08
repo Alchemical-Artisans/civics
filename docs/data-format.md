@@ -198,57 +198,49 @@ run summary and from the warning count in the page footer.
 editing it. To give a document a page, add the HTML file rather than changing
 anything here.
 
-## `schedule.json`, which no scraper writes
+## `schedule.json`, the meeting rules
 
-Location: [`src/lib/data/schedule.json`](../src/lib/data/schedule.json).
+Location: [`src/lib/data/schedule.json`](../src/lib/data/schedule.json), written
+by [`update-schedule.mjs`](../scripts/update-schedule.mjs).
 
-The city publishes the City Council's meeting dates for a calendar year as a
-document of its own. It is in the same listing as the agendas, but it is not
-about a sitting, so it resolves to no date and drops out of `meetings.json` --
-it is the one undated record the footer counts. Read as a schedule instead it
-says which sittings are to be held, which is what puts a sitting on the calendar
-before any agenda exists, and what shows a date the city published nothing for
-at all.
-
-**It cannot be scraped.** The file is a scan -- a Toshiba copier's JPEG wrapped
-in a PDF, with no text layer -- so it is transcribed by hand, the way the FY2027
-budget book was. `glossary.json` is the only other file here no script writes.
+The city's meeting schedule is not a document in the listing. It is prose on the
+listing page itself, in the ordinary HTML of the section above the document
+table: a heading naming the board, a sentence saying when it sits, and a list of
+exceptions. That is why the calendar could not see it while it read only the
+listing — the scraper fetched that very page for its antiforgery token and threw
+the rest away.
 
 ```json
 {
+  "generatedAt": "2026-09-08T09:17:41.853Z",
   "source": "https://www.haverhillma.gov/government/agendas-and-minutes/",
-  "schedules": [
+  "rules": [
     {
       "board": "City Council",
-      "year": 2025,
-      "document": { "title": "…", "pageUrl": "/document-manager/…", "fileUrl": "https://media…" },
-      "time": "7:00 PM",
-      "location": {
-        "name": "Council Chambers Room 202",
-        "mapQuery": "4 Summer Street, Haverhill, MA 01830"
-      },
-      "months": [{ "month": 1, "days": [7, 14, 28] }]
+      "intro": "Regular meetings of the City Council shall be held every Tuesday at 7:00 o'clock P.M. except in:",
+      "exceptions": ["June there shall be …", "From July until …", "In September, starting with …"]
     }
   ]
 }
 ```
 
-| Field      | Meaning                                                                        |
-| ---------- | ------------------------------------------------------------------------------ |
-| `board`    | Matched against `meetings.json`'s `board`, so it must be spelled the same way. |
-| `year`     | The calendar year the schedule covers.                                         |
-| `document` | The schedule itself, so a sitting off it can link its source.                  |
-| `time`     | The start time as the document prints it, e.g. `7:00 PM`. Optional.            |
-| `location` | Where it says the board sits; `mapQuery` is the geocodable address.            |
-| `months`   | A month number and its days, exactly as the page lists them.                   |
+| Field        | Meaning                                                                     |
+| ------------ | --------------------------------------------------------------------------- |
+| `board`      | The `<h2>` over the rule. Matched against `meetings.json`'s `board`.        |
+| `intro`      | The sentence before the list, verbatim.                                     |
+| `exceptions` | One string per `<li>`, verbatim, entities decoded and whitespace collapsed. |
 
-**`months` keeps the document's own shape** rather than a flat list of dates, so
-a transcription can be checked against the page line by line.
-[`schedule.ts`](../src/lib/schedule.ts) expands it; see
-[calendar-page.md](./calendar-page.md#sittings-off-the-schedule-not-off-a-document)
-for what the calendar then does with it, and for the one thing these entries do
-not claim -- that the sitting was held.
+**Only the words are stored.** Turning "the second Tuesday after Labor Day" into
+a date is [`schedule.ts`](../src/lib/schedule.ts) on the site side, and the two
+are kept honest by `RULE_AS_READ` — a copy of the exact wording the date logic
+was written against, which `schedule.spec.ts` compares this file to. A reworded
+rule fails the build instead of being silently reinterpreted.
 
-To transcribe a new one, render the PDF (`pdftoppm -png -r 150`) and read it,
-then add a `schedules` entry. `schedule.spec.ts` will fail on a day that does
-not exist in its month.
+Every run replaces the file; there is no incremental mode. An empty parse is
+treated as a failure rather than written, because it means the page's markup has
+changed shape.
+
+See
+[calendar-page.md](./calendar-page.md#sittings-the-rule-expects)
+for what the calendar does with it, and in particular why the projection runs
+forward only.

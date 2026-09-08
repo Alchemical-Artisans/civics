@@ -14,7 +14,7 @@ import {
   type MeetingDocument,
   type MeetingKind,
 } from "./calendar"
-import { scheduledSittings } from "./schedule"
+import { expectedSittings } from "./schedule"
 
 /**
  * The meetings somebody has written up by hand.
@@ -30,6 +30,18 @@ import { scheduledSittings } from "./schedule"
  *
  * `[meeting]` itself matches the glob, and is dropped.
  */
+/**
+ * The day this build ran, which is as far back as the calendar's projection of
+ * future sittings starts.
+ *
+ * Read once at module load rather than per call. `calendar()` is called by the
+ * calendar page, by every meeting page's layout, and by `entries()` deciding
+ * which meeting routes to prerender -- a build that crossed midnight between
+ * two of those would prerender a set of ids the layout then disagreed with, and
+ * fail. One value for the whole build cannot.
+ */
+const BUILT_ON = new Date().toISOString().slice(0, 10)
+
 const written = new Set(
   Object.keys(import.meta.glob("../routes/calendar/meetings/*/+page.svelte"))
     .map((path) => path.split("/").at(-2)!)
@@ -50,7 +62,7 @@ export interface Calendar {
   written: number
   /** Documents shown, across every meeting. */
   documents: number
-  /** Meetings a published schedule lists and no document covers. */
+  /** Sittings the Council's rule expects, ahead of any document. */
   scheduled: number
 }
 
@@ -84,13 +96,14 @@ export function calendar(): Calendar {
     docId: m.docId,
   }))
 
-  // The documents first, then the sittings a published schedule lists that
-  // none of them account for. Order matters: a scheduled date with an agenda is
-  // an ordinary meeting, and `withScheduled` only fills the gaps left over.
+  // The documents first, then the sittings the Council's rule expects that none
+  // of them account for. Order matters: an expected date the city has since
+  // published an agenda for is an ordinary meeting, and `withScheduled` only
+  // fills the gaps left over.
   const isWritten = (id: string) => written.has(id)
   const meetings = withScheduled(
     groupIntoMeetings(documents, isWritten),
-    scheduledSittings(),
+    expectedSittings(BUILT_ON),
     isWritten,
   )
 

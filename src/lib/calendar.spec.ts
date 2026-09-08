@@ -190,16 +190,15 @@ const sitting = (date: string, board = "City Council"): ScheduledSitting => ({
   board,
   date,
   time: "7:00 PM",
-  location: { name: "Council Chambers Room 202", mapQuery: "4 Summer Street, Haverhill, MA 01830" },
-  document: {
-    title: "City Council Amended Schedule 2025",
-    pageUrl: "/p",
-    fileUrl: "https://example.test/schedule.pdf",
+  rule: {
+    url: "https://example.test/agendas-and-minutes/",
+    intro: "Regular meetings shall be held every Tuesday at 7:00 o'clock P.M. except in:",
+    exceptions: ["June there shall be a meeting on the first, third and fourth Tuesday."],
   },
 })
 
 describe("withScheduled", () => {
-  it("adds a sitting the schedule lists and no document covers", () => {
+  it("adds a sitting the rule names and no document covers", () => {
     const meetings = withScheduled([], [sitting("2025-01-28")])
     expect(meetings).toHaveLength(1)
     expect(meetings[0].id).toBe("city-council-2025-01-28")
@@ -207,10 +206,10 @@ describe("withScheduled", () => {
     expect(meetings[0].scheduled?.time).toBe("7:00 PM")
   })
 
-  it("leaves a scheduled date the city published a document for alone", () => {
-    // The documents are the record; the schedule only fills what they leave
-    // empty, so an entry with an agenda must not pick up a `scheduled` flag
-    // that would draw it as an absence.
+  it("leaves an expected date the city published a document for alone", () => {
+    // The documents are the record; the rule only fills what they leave empty,
+    // so an entry with an agenda must not pick up a `scheduled` flag that would
+    // draw it as an absence.
     const documented = groupIntoMeetings([doc("2025-01-07")])
     const meetings = withScheduled(documented, [sitting("2025-01-07")])
     expect(meetings).toHaveLength(1)
@@ -240,7 +239,7 @@ describe("withScheduled", () => {
     expect(meetings.map((m) => m.date)).toEqual(["2025-01-07", "2025-01-28", "2025-02-04"])
   })
 
-  it("marks a scheduled sitting written when somebody has written it up", () => {
+  it("marks an expected sitting written when somebody has written it up", () => {
     const meetings = withScheduled([], [sitting("2025-01-28")], (id) => id.endsWith("2025-01-28"))
     expect(meetings[0].written).toBe(true)
   })
