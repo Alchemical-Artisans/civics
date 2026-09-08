@@ -13,6 +13,7 @@
  */
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs"
 import path from "node:path"
+import { reviewKey } from "./reviews.mjs"
 
 const CACHE = path.join(import.meta.dirname, "..", "..", ".cache")
 export const REPORT_FILE = path.join(CACHE, "needs-attention.txt")
@@ -50,42 +51,82 @@ export function collect(meetings, linkStatus) {
       .map(([k]) => k),
   )
 
+  // `settled: true` in reviews.json means a person has looked and wants no more
+  // of it, whatever the reason -- the one marker that silences every group. The
+  // date groups additionally honour `needsReview: false`, which is the older and
+  // more specific way of saying the same thing about a date.
+  const live = (m) => !m.settled
+  const unanswered = (m) => live(m) && m.needsReview !== false
+
   const groups = [
     {
       key: "undated",
       title: "No date could be resolved at all",
       note: "These cannot go on the calendar. Open the document and put the date in reviews.json.",
-      records: meetings.filter((m) => !m.date),
+      records: meetings.filter((m) => !m.date && unanswered(m)),
     },
     {
       key: "conflict",
       title: "The document's own filename contradicts its date",
       note: "Usually the filename is the day it was scanned, not the day of the meeting -- but not always. Open it and see.",
-      records: meetings.filter((m) => m.dateConflict),
+      records: meetings.filter((m) => m.dateConflict && unanswered(m)),
     },
     {
       key: "ambiguous",
       title: "The date was read from a filename that splits more than one way",
       note: "`106` is 1/06 or 10/6. The first reading was taken; open the document to confirm it.",
       records: meetings.filter(
-        (m) => m.needsReview && !m.dateConflict && m.date && m.dateSource === "filename",
+        (m) => unanswered(m) && !m.dateConflict && m.date && m.dateSource === "filename",
       ),
     },
     {
       key: "dead",
       title: "The city's own link is broken",
-      note: "The calendar sends a reader to a 404. Nothing here can fix it; the city has moved or dropped the file.",
-      records: dead.size ? meetings.filter((m) => m.fileUrl && dead.has(m.fileUrl)) : [],
+      note: "The calendar sends a reader to a 404. Nothing here can fix it; the city has moved or dropped the file. `needsReview` does not apply -- the date is fine -- so silence one with `settled`.",
+      records: dead.size ? meetings.filter((m) => m.fileUrl && dead.has(m.fileUrl) && live(m)) : [],
     },
   ]
   return groups.filter((g) => g.records.length)
 }
 
+/**
+ * Printed at the head of the report, because someone reading it should not have
+ * to go and find out how to answer what it says.
+ */
+const HOW_TO = `${"-".repeat(74)}
+HOW TO ANSWER ONE OF THESE
+
+  npm run cache -- --review        download these documents to .cache/
+  find .cache -name <filename>     open the one you want to check
+
+Then record what you decided in src/lib/data/reviews.json, keyed by the "key:"
+line under each record below. It survives a full rebuild; editing meetings.json
+does not.
+
+  "<key>": { "needsReview": false, "date": "2026-08-19" }
+      the date was wrong, and this is the right one
+
+  "<key>": { "needsReview": false }
+      the date was already right; stop asking about it
+
+  "<key>": { "settled": true }
+      nothing more to do with this record, whatever the reason. This is the
+      only one that silences a broken link, where the date is not in question.
+
+Nothing here is ever removed automatically: a decision has to outlive the
+scrape that prompted it.
+${"-".repeat(74)}
+`
+
 const line = (m) =>
   `  ${(m.date ?? "????-??-??").padEnd(12)}${(m.board ?? "").padEnd(28)}${m.title}\n` +
   `${" ".repeat(16)}file: ${filenameOf(m.fileUrl)}` +
   (m.filenameDate ? `  (which says ${m.filenameDate})` : "") +
-  `\n${" ".repeat(16)}${m.fileUrl ?? ""}\n`
+  `\n${" ".repeat(16)}${m.fileUrl ?? ""}\n` +
+  // The reviews.json key, ready to paste. It is the media page's slug and the
+  // PDF's filename, and working it out by hand for each record is exactly the
+  // friction that stops anyone answering these.
+  `${" ".repeat(16)}key:  ${reviewKey(m)}\n`
 
 /** Write the full report and return the short block for the console. */
 export function report(meetings, { linkStatus = loadLinkStatus() } = {}) {
@@ -106,7 +147,7 @@ export function report(meetings, { linkStatus = loadLinkStatus() } = {}) {
   mkdirSync(CACHE, { recursive: true })
   writeFileSync(
     REPORT_FILE,
-    `Needs attention, as of ${new Date().toISOString()}\n\n` +
+    `Needs attention, as of ${new Date().toISOString()}\n\n${HOW_TO}\n` +
       (body || "Nothing. Every record has a date its own file agrees with.\n"),
   )
   return { groups, file: REPORT_FILE, linkStatus }

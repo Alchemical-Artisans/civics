@@ -201,6 +201,26 @@ corrected date is:
 There is no separate marker for "this was set by hand" — an entry here carrying a
 `date` _is_ that marker.
 
+### Silencing a record
+
+The run's "needs your attention" block lists a record until something here says
+it has been dealt with. Three ways, and the report prints the key to use for
+each record so it can be pasted:
+
+| Entry                                            | Means                                                    |
+| ------------------------------------------------ | -------------------------------------------------------- |
+| `{ "needsReview": false, "date": "2026-08-19" }` | the date was wrong; this is the right one                |
+| `{ "needsReview": false }`                       | the date was already right; stop asking                  |
+| `{ "settled": true }`                            | nothing more to do with this record, whatever the reason |
+
+`needsReview: false` answers a question about a **date**, and only the date
+groups honour it. A **broken link** has no date problem at all — its `needsReview`
+is already false — so `settled` is the only thing that silences one. It silences
+every group, being the general "a person has looked at this".
+
+Neither is ever added automatically, and nothing is removed automatically
+either: a decision has to outlive the scrape that prompted it.
+
 The overlay is applied after scraping and before anything is written, so
 `meetings.json` and the calendar both show the corrected value. The scraper's own
 evidence stays on the record: `rawMeetingDate`, `filenameDate` and `dateConflict`

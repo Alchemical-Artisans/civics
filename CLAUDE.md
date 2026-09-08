@@ -744,7 +744,12 @@ says. Broken links come from `npm run links:check` (a HEAD each, cached in
 `.cache/link-status.json`, a step of `metadata:update`); whether a URL resolves
 is a fact about the city's site today rather than about the record, so it is not
 stored in `meetings.json`. 72 of 2,207 files are currently dead, 59 of them on
-the retired `cityofhaverhill.com` domain.
+the retired `cityofhaverhill.com` domain. **A record is silenced from `reviews.json`**:
+`needsReview: false` answers a question about a date and only the date groups
+honour it, while `settled: true` is the general "a person has looked at this" and
+is the only thing that silences a broken link, whose date was never in question.
+The report prints each record's `reviews.json` key ready to paste, since working
+it out by hand is the friction that stops anyone answering these.
 
 ## Checking a flagged record
 
