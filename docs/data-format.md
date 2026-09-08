@@ -68,12 +68,24 @@ replaces its own**:
 | `…/boards-committees-and-commissions/planning-board/`          | [`update-board-pages.mjs`](../scripts/update-board-pages.mjs) |
 | `…/boards-committees-and-commissions/zoning-board-of-appeals/` | the same                                                      |
 
-This is not bookkeeping. The Planning Board and the Zoning Board of Appeals keep
-their agendas and minutes on their own pages rather than in the city's listing —
-163 back to November 2017 and 174 back to February 2018, of which the listing
-holds one and none — so `calendar:update --prune`, which drops stored records no
-longer in the listing, would delete every one of them. It prunes only records
-whose `source` is the listing.
+This is not bookkeeping. Most of the city's record is not in the listing at all:
+the listing reaches back only to 2025, and under it sit an **Agenda Archive** and
+a **Minutes Archive** holding ~1,620 more documents back to April 2012. Two
+boards keep theirs on their own pages besides — the Planning Board's 163 back to
+November 2017 and the Zoning Board of Appeals' 174 back to February 2018, of
+which the listing holds one and none. So `calendar:update --prune`, which drops
+stored records no longer in the listing, would delete all 1,958 of them. It
+prunes only records whose `source` is the listing.
+
+**The archives are read by heading, checked by link.** Neither archive is a
+document listing: both are one long run of links separated by headings in bare
+text, so a link's board and kind come from the heading above it. Where the link's
+own title and filename name a different board, the link wins — 268 Board of
+Assessors minutes sit under a Council heading, the same `boa-mtg-min-*` series
+the listing files under that board and nothing the Council ever sat for. The run
+reports how many were re-filed that way, and how many links carried no readable
+date at all (42, including "June 7, 2o16" — a letter o for a nought, in the
+city's own copy). Both are numbers to watch if those pages are restructured.
 
 A record written before the field existed is backfilled with the listing on the
 next run of either script, since until the board's page was scraped the listing

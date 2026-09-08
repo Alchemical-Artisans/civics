@@ -274,12 +274,17 @@ meeting page needs the same list built the same way.
 
 ## Payload
 
-The dataset ships as a route-level JS chunk of roughly 150KB — about 16KB
-gzipped — loaded only when someone visits `/calendar`. The prerendered HTML
-itself is ~28KB, containing the current month's markup.
+The dataset ships as a route-level JS chunk, loaded only when someone visits
+`/calendar`. It grew a great deal when the city's two archives and the two
+boards that keep their own pages were added: from ~276 documents to ~2,200, and
+from ~16KB gzipped to **~81KB** (1.2MB raw). The prerendered HTML is ~42KB,
+containing the current month's markup.
 
-That is comfortably small enough to keep all months client-side, which is what
-makes month navigation and filtering instant with no further requests.
+That is still small enough to keep every month client-side, which is what makes
+month navigation and filtering instant with no further requests — but it is no
+longer negligible, and it is the number to watch. If it doubles again the answer
+is to split the payload by year rather than to drop months: the archive is the
+point of having it.
 
 ## Date handling
 

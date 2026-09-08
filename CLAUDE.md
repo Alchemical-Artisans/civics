@@ -65,7 +65,17 @@ npx playwright test src/routes/calendar/page.svelte.e2e.ts
 
 Two halves joined by one committed data file and nothing else.
 
-**Not every board's documents are in the listing.** The Planning Board and the
+**Most of the city's record is not in the listing.** It reaches back only to
+2025; beneath it sit an Agenda Archive and a Minutes Archive holding ~1,620 more
+documents to April 2012, linked from a sentence on the listing page. Neither is
+a document listing -- both are one run of links separated by headings in bare
+text, so `scripts/lib/archives.mjs` files a link under the heading above it and
+then checks that against what the link's own title and filename say, the link
+winning where they differ: 268 Board of Assessors minutes sit under a Council
+heading, the `boa-mtg-min-*` series the listing files under that board. Links
+with no readable date are skipped and counted rather than guessed at.
+
+**Not every board's documents are in the listing either.** The Planning Board and the
 Zoning Board of Appeals keep their agendas and minutes on their own pages as
 plain CDN links -- 163 back to November 2017 and 174 back to February 2018 --
 and the listing holds one of the first and none of the second, so without

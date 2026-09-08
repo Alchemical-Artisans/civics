@@ -96,7 +96,9 @@ scripts/
   update-schedule.mjs      re-read those rules and calendars off their pages
   lib/board-pages.mjs      agendas and minutes kept on a board's own page
   lib/board-pages.spec.mjs unit tests for that parser
-  update-board-pages.mjs   re-scrape those boards' own documents
+  lib/archives.mjs         the city's own agenda and minutes archives, to 2012
+  lib/archives.spec.mjs    unit tests for that parser
+  update-board-pages.mjs   re-scrape those pages and the two archives
   update-metadata.mjs      run every scraper in sequence
 
 src/lib/

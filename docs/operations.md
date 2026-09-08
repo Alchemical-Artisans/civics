@@ -25,7 +25,7 @@ them.
 ```sh
 npm run calendar:update    # add documents published since the last run
 npm run calendar:rebuild   # re-scrape everything from scratch
-npm run boards:update      # re-scrape the boards that keep their own documents
+npm run boards:update      # re-scrape the board pages and the city's two archives
 npm run budget:update      # re-scrape the budget and audit listing
 npm run schedule:update    # re-read the boards' meeting rules and calendars
 ```
@@ -43,12 +43,13 @@ a cheap refresh and an expensive full rebuild has no meaning for either — ever
 run replaces the file.
 
 **`boards:update` runs after the calendar, and replaces only its own records.**
-The Planning Board and the Zoning Board of Appeals publish their agendas and
-minutes on their own pages rather than in the city's listing, so their records
-sit in `meetings.json` beside the listing's but are scraped from somewhere else.
-Each record carries a `source` saying which scrape owns it, and
-`calendar:update --prune` skips the ones it does not — without that it would
-delete all 337 on its next run. See
+Most of the city's record is not in the listing: it reaches back only to 2025,
+and the Agenda and Minutes archives beneath it hold ~1,620 more documents to
+2012, while the Planning Board and the Zoning Board of Appeals keep theirs on
+their own pages. All of it sits in `meetings.json` beside the listing's records
+but is scraped from somewhere else. Each record carries a `source` saying which
+scrape owns it, and `calendar:update --prune` skips the ones it does not —
+without that it would delete all 1,958 on its next run. See
 [data-format.md](./data-format.md#where-a-record-came-from).
 
 **`schedule:update` shouts when the Council's wording changes.** That rule is
