@@ -218,6 +218,14 @@ groups honour it. A **broken link** has no date problem at all — its `needsRev
 is already false — so `settled` is the only thing that silences one. It silences
 every group, being the general "a person has looked at this".
 
+`gone` is the one entry here that changes what a reader sees: the document is
+dropped from the calendar entirely, and a sitting whose every document is gone
+gets no page at all. It is not shown as a broken link, because an entry whose
+only offer is a 404 wastes the action it invites, and there is nothing to
+transcribe instead. The footer says how many in one line. It lives here rather
+than in the gitignored link cache because the site has to know, and a build has
+no way to check a URL.
+
 Neither is ever added automatically, and nothing is removed automatically
 either: a decision has to outlive the scrape that prompted it.
 

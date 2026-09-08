@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-08T21:59:17.299Z",
+  "generatedAt": "2026-09-08T22:04:32.623Z",
   "source": "https://www.haverhillma.gov/government/agendas-and-minutes/",
   "count": 2245,
   "meetings": [
@@ -4105,8 +4105,9 @@
       "filenameDate": "2025-08-20",
       "needsReview": false,
       "source": "https://www.haverhillma.gov/government/boards-committees-and-commissions/zoning-board-of-appeals/",
+      "settled": true,
       "docId": "zoning-board-of-appeals-c7cff4cf",
-      "settled": true
+      "gone": true
     },
     {
       "title": "August 20, 2025 Minutes",
@@ -6086,8 +6087,9 @@
       "dateConflict": false,
       "filenameDate": null,
       "needsReview": false,
+      "settled": true,
       "docId": "agenda-archive-7d63f198",
-      "settled": true
+      "gone": true
     },
     {
       "title": "March 14, 2025",
@@ -6195,8 +6197,9 @@
       "dateConflict": false,
       "filenameDate": "2025-03-06",
       "needsReview": false,
+      "settled": true,
       "docId": "agenda-archive-bc3b9dcb",
-      "settled": true
+      "gone": true
     },
     {
       "title": "March 6, 2025",
@@ -6268,8 +6271,9 @@
       "dateConflict": false,
       "filenameDate": "2025-03-04",
       "needsReview": false,
+      "settled": true,
       "docId": "agenda-archive-98558e2c",
-      "settled": true
+      "gone": true
     },
     {
       "title": "CityCouncil_2.25.25_minutes",
@@ -6305,8 +6309,9 @@
       "dateConflict": false,
       "filenameDate": "2025-02-25",
       "needsReview": false,
+      "settled": true,
       "docId": "agenda-archive-0549672c",
-      "settled": true
+      "gone": true
     },
     {
       "title": "February 25, 2025",
@@ -6450,8 +6455,9 @@
       "dateConflict": false,
       "filenameDate": "2025-02-11",
       "needsReview": false,
+      "settled": true,
       "docId": "agenda-archive-ea490630",
-      "settled": true
+      "gone": true
     },
     {
       "title": "February 11, 2025",
@@ -6487,8 +6493,9 @@
       "dateConflict": false,
       "filenameDate": "2025-02-06",
       "needsReview": false,
+      "settled": true,
       "docId": "agenda-archive-ec79d75a",
-      "settled": true
+      "gone": true
     },
     {
       "title": "February 5, 2025 - Cultural Council Minutes",
@@ -6758,8 +6765,9 @@
       "dateConflict": false,
       "filenameDate": "2025-01-14",
       "needsReview": false,
+      "settled": true,
       "docId": "agenda-archive-b97995ca",
-      "settled": true
+      "gone": true
     },
     {
       "title": "January 14, 2025",
@@ -6885,8 +6893,9 @@
       "dateConflict": false,
       "filenameDate": "2025-01-02",
       "needsReview": false,
+      "settled": true,
       "docId": "agenda-archive-b8aa8334",
-      "settled": true
+      "gone": true
     },
     {
       "title": "December 18, 2024 Agenda",
@@ -7516,8 +7525,9 @@
       "dateConflict": false,
       "filenameDate": null,
       "needsReview": false,
+      "settled": true,
       "docId": "agenda-archive-6ebd3c92",
-      "settled": true
+      "gone": true
     },
     {
       "title": "October 3, 2024",
@@ -7805,8 +7815,9 @@
       "dateConflict": false,
       "filenameDate": "2024-09-11",
       "needsReview": false,
+      "settled": true,
       "docId": "agenda-archive-0cc4c01c",
-      "settled": true
+      "gone": true
     },
     {
       "title": "September 11, 2024",
@@ -7896,8 +7907,9 @@
       "dateConflict": false,
       "filenameDate": null,
       "needsReview": false,
+      "settled": true,
       "docId": "agenda-archive-7adbcb76",
-      "settled": true
+      "gone": true
     },
     {
       "title": "September 5, 2024",
@@ -8167,8 +8179,9 @@
       "dateConflict": false,
       "filenameDate": null,
       "needsReview": false,
+      "settled": true,
       "docId": "agenda-archive-7f0b367c",
-      "settled": true
+      "gone": true
     },
     {
       "title": "August 1, 2024, Part 2",
@@ -8186,8 +8199,9 @@
       "dateConflict": false,
       "filenameDate": null,
       "needsReview": false,
+      "settled": true,
       "docId": "agenda-archive-c894d263",
-      "settled": true
+      "gone": true
     },
     {
       "title": "07.23.2024.BOA.Mtg.Min",
@@ -8295,8 +8309,9 @@
       "dateConflict": false,
       "filenameDate": "2024-07-11",
       "needsReview": false,
+      "settled": true,
       "docId": "agenda-archive-2dbad75d",
-      "settled": true
+      "gone": true
     },
     {
       "title": "July 11, 2024",
@@ -8584,8 +8599,9 @@
       "dateConflict": false,
       "filenameDate": null,
       "needsReview": false,
+      "settled": true,
       "docId": "agenda-archive-983b2782",
-      "settled": true
+      "gone": true
     },
     {
       "title": "June 6, 2024",
@@ -8891,8 +8907,9 @@
       "dateConflict": false,
       "filenameDate": null,
       "needsReview": false,
+      "settled": true,
       "docId": "agenda-archive-56b6714f",
-      "settled": true
+      "gone": true
     },
     {
       "title": "04.30.2024.BOA.Mtg.Min",
@@ -9126,8 +9143,9 @@
       "dateConflict": false,
       "filenameDate": null,
       "needsReview": false,
+      "settled": true,
       "docId": "agenda-archive-120002f4",
-      "settled": true
+      "gone": true
     },
     {
       "title": "04.02.2024.BOA.Mtg.Min",
@@ -9379,8 +9397,9 @@
       "dateConflict": false,
       "filenameDate": null,
       "needsReview": false,
+      "settled": true,
       "docId": "agenda-archive-7dd2ddc5",
-      "settled": true
+      "gone": true
     },
     {
       "title": "03.05.2024.BOA.Mtg.Min",
@@ -9650,8 +9669,9 @@
       "dateConflict": false,
       "filenameDate": "2024-02-01",
       "needsReview": false,
+      "settled": true,
       "docId": "agenda-archive-17fc2573",
-      "settled": true
+      "gone": true
     },
     {
       "title": "January 30, 2024",
@@ -9867,8 +9887,9 @@
       "dateConflict": false,
       "filenameDate": "2024-01-04",
       "needsReview": false,
+      "settled": true,
       "docId": "agenda-archive-6cf000b6",
-      "settled": true
+      "gone": true
     },
     {
       "title": "January 4, 2024",
@@ -10300,8 +10321,9 @@
       "dateConflict": false,
       "filenameDate": "2023-11-14",
       "needsReview": false,
+      "settled": true,
       "docId": "minutes-archive-2f317ac4",
-      "settled": true
+      "gone": true
     },
     {
       "title": "November 14, 2023",
@@ -11543,8 +11565,9 @@
       "dateConflict": false,
       "filenameDate": "2023-06-13",
       "needsReview": false,
+      "settled": true,
       "docId": "agenda-archive-df13ecbb",
-      "settled": true
+      "gone": true
     },
     {
       "title": "June 13, 2023",
@@ -12354,8 +12377,9 @@
       "dateConflict": false,
       "filenameDate": "2023-03-28",
       "needsReview": false,
+      "settled": true,
       "docId": "minutes-archive-58d124d7",
-      "settled": true
+      "gone": true
     },
     {
       "title": "03.28.2023.BOA.Mtg.Min",
@@ -22651,8 +22675,9 @@
       "dateConflict": false,
       "filenameDate": null,
       "needsReview": false,
+      "settled": true,
       "docId": "minutes-archive-8a6ddeab",
-      "settled": true
+      "gone": true
     },
     {
       "title": "April 15 2020 - virtual",
@@ -24704,8 +24729,9 @@
       "dateConflict": false,
       "filenameDate": "2019-10-08",
       "needsReview": false,
+      "settled": true,
       "docId": "minutes-archive-2a0e4abd",
-      "settled": true
+      "gone": true
     },
     {
       "title": "October 8 2019",
@@ -25533,8 +25559,9 @@
       "filenameDate": null,
       "needsReview": false,
       "source": "https://www.haverhillma.gov/government/boards-committees-and-commissions/zoning-board-of-appeals/",
+      "settled": true,
       "docId": "zoning-board-of-appeals-1c20d5cc",
-      "settled": true
+      "gone": true
     },
     {
       "title": "July 19, 2019 Agenda",
@@ -26092,8 +26119,9 @@
       "filenameDate": "2019-05-15",
       "needsReview": false,
       "source": "https://www.haverhillma.gov/government/boards-committees-and-commissions/zoning-board-of-appeals/",
+      "settled": true,
       "docId": "zoning-board-of-appeals-27f86da5",
-      "settled": true
+      "gone": true
     },
     {
       "title": "May 15, 2019 Agenda",
@@ -27209,8 +27237,9 @@
       "dateConflict": false,
       "filenameDate": "2019-02-12",
       "needsReview": false,
+      "settled": true,
       "docId": "minutes-archive-7eec8fe4",
-      "settled": true
+      "gone": true
     },
     {
       "title": "Feb 12, 2019",
@@ -27606,8 +27635,9 @@
       "dateConflict": false,
       "filenameDate": null,
       "needsReview": false,
+      "settled": true,
       "docId": "agenda-archive-e5174e34",
-      "settled": true
+      "gone": true
     },
     {
       "title": "December 18 2018",
@@ -27679,8 +27709,9 @@
       "dateConflict": false,
       "filenameDate": "2018-12-11",
       "needsReview": false,
+      "settled": true,
       "docId": "agenda-archive-65e7c5aa",
-      "settled": true
+      "gone": true
     },
     {
       "title": "December 11 2018",
@@ -27788,8 +27819,9 @@
       "dateConflict": false,
       "filenameDate": "2018-12-04",
       "needsReview": false,
+      "settled": true,
       "docId": "agenda-archive-5e4ecc5a",
-      "settled": true
+      "gone": true
     },
     {
       "title": "December 4 2018",
@@ -27861,8 +27893,9 @@
       "dateConflict": false,
       "filenameDate": "2018-11-27",
       "needsReview": false,
+      "settled": true,
       "docId": "agenda-archive-52549d9e",
-      "settled": true
+      "gone": true
     },
     {
       "title": "November 27 2018",
@@ -27970,8 +28003,9 @@
       "dateConflict": false,
       "filenameDate": "2018-11-13",
       "needsReview": false,
+      "settled": true,
       "docId": "agenda-archive-d24f7d41",
-      "settled": true
+      "gone": true
     },
     {
       "title": "November 13 2018",
@@ -28097,8 +28131,9 @@
       "dateConflict": false,
       "filenameDate": "2018-10-30",
       "needsReview": false,
+      "settled": true,
       "docId": "agenda-archive-86edf0bf",
-      "settled": true
+      "gone": true
     },
     {
       "title": "October 30 2018",
@@ -28152,8 +28187,9 @@
       "dateConflict": false,
       "filenameDate": "2018-10-23",
       "needsReview": false,
+      "settled": true,
       "docId": "agenda-archive-97e498fb",
-      "settled": true
+      "gone": true
     },
     {
       "title": "October 23 2018",
@@ -28207,8 +28243,9 @@
       "dateConflict": false,
       "filenameDate": "2018-10-16",
       "needsReview": false,
+      "settled": true,
       "docId": "agenda-archive-1efe7421",
-      "settled": true
+      "gone": true
     },
     {
       "title": "October 16 2018",
@@ -28280,8 +28317,9 @@
       "dateConflict": true,
       "filenameDate": "2018-08-07",
       "needsReview": true,
+      "settled": true,
       "docId": "agenda-archive-1ebc96d5",
-      "settled": true
+      "gone": true
     },
     {
       "title": "October 9, 2018",
@@ -28371,8 +28409,9 @@
       "dateConflict": false,
       "filenameDate": "2018-10-02",
       "needsReview": false,
+      "settled": true,
       "docId": "agenda-archive-1dd0488a",
-      "settled": true
+      "gone": true
     },
     {
       "title": "October 2 2018",
@@ -28426,8 +28465,9 @@
       "dateConflict": false,
       "filenameDate": "2018-09-25",
       "needsReview": false,
+      "settled": true,
       "docId": "agenda-archive-d2d29397",
-      "settled": true
+      "gone": true
     },
     {
       "title": "September 25 2018",
@@ -28517,8 +28557,9 @@
       "dateConflict": false,
       "filenameDate": "2018-09-18",
       "needsReview": false,
+      "settled": true,
       "docId": "agenda-archive-33f5c4ca",
-      "settled": true
+      "gone": true
     },
     {
       "title": "September 18 2018",
@@ -28626,8 +28667,9 @@
       "dateConflict": false,
       "filenameDate": "2018-09-11",
       "needsReview": false,
+      "settled": true,
       "docId": "agenda-archive-e8ad668a",
-      "settled": true
+      "gone": true
     },
     {
       "title": "September 11 2018",
@@ -28753,8 +28795,9 @@
       "dateConflict": false,
       "filenameDate": "2018-08-21",
       "needsReview": false,
+      "settled": true,
       "docId": "agenda-archive-59a9bf66",
-      "settled": true
+      "gone": true
     },
     {
       "title": "August 21 2018",
@@ -28880,8 +28923,9 @@
       "dateConflict": false,
       "filenameDate": "2018-08-07",
       "needsReview": true,
+      "settled": true,
       "docId": "agenda-archive-1ebc96d5",
-      "settled": true
+      "gone": true
     },
     {
       "title": "August 7 2018",
@@ -28917,8 +28961,9 @@
       "dateConflict": false,
       "filenameDate": "2018-08-07",
       "needsReview": true,
+      "settled": true,
       "docId": "agenda-archive-1ebc96d5",
-      "settled": true
+      "gone": true
     },
     {
       "title": "comp agenda 2 aug 7 2018",
@@ -28936,8 +28981,9 @@
       "dateConflict": false,
       "filenameDate": "2018-08-07",
       "needsReview": true,
+      "settled": true,
       "docId": "agenda-archive-1ebc96d5",
-      "settled": true
+      "gone": true
     },
     {
       "title": "comp agenda 2 aug 7 2018",
@@ -28955,8 +29001,9 @@
       "dateConflict": false,
       "filenameDate": "2018-08-07",
       "needsReview": true,
+      "settled": true,
       "docId": "agenda-archive-1ebc96d5",
-      "settled": true
+      "gone": true
     },
     {
       "title": "comp agenda 2 aug 7 2018",
@@ -28974,8 +29021,9 @@
       "dateConflict": false,
       "filenameDate": "2018-08-07",
       "needsReview": true,
+      "settled": true,
       "docId": "agenda-archive-1ebc96d5",
-      "settled": true
+      "gone": true
     },
     {
       "title": "comp agenda 2 aug 7 2018",
@@ -28993,8 +29041,9 @@
       "dateConflict": false,
       "filenameDate": "2018-08-07",
       "needsReview": true,
+      "settled": true,
       "docId": "agenda-archive-1ebc96d5",
-      "settled": true
+      "gone": true
     },
     {
       "title": "comp agenda 2 aug 7 2018",
@@ -29012,8 +29061,9 @@
       "dateConflict": false,
       "filenameDate": "2018-08-07",
       "needsReview": true,
+      "settled": true,
       "docId": "agenda-archive-1ebc96d5",
-      "settled": true
+      "gone": true
     },
     {
       "title": "comp agenda 2 aug 7 2018",
@@ -29031,8 +29081,9 @@
       "dateConflict": false,
       "filenameDate": "2018-08-07",
       "needsReview": true,
+      "settled": true,
       "docId": "agenda-archive-1ebc96d5",
-      "settled": true
+      "gone": true
     },
     {
       "title": "comp agenda 2 aug 7 2018",
@@ -29050,8 +29101,9 @@
       "dateConflict": false,
       "filenameDate": "2018-08-07",
       "needsReview": true,
+      "settled": true,
       "docId": "agenda-archive-1ebc96d5",
-      "settled": true
+      "gone": true
     },
     {
       "title": "comp agenda 2 aug 7 2018",
@@ -29069,8 +29121,9 @@
       "dateConflict": false,
       "filenameDate": "2018-08-07",
       "needsReview": true,
+      "settled": true,
       "docId": "agenda-archive-1ebc96d5",
-      "settled": true
+      "gone": true
     },
     {
       "title": "comp agenda 2 aug 7 2018",
@@ -29088,8 +29141,9 @@
       "dateConflict": false,
       "filenameDate": "2018-08-07",
       "needsReview": true,
+      "settled": true,
       "docId": "agenda-archive-1ebc96d5",
-      "settled": true
+      "gone": true
     },
     {
       "title": "comp agenda 2 aug 7 2018",
@@ -29107,8 +29161,9 @@
       "dateConflict": false,
       "filenameDate": "2018-08-07",
       "needsReview": true,
+      "settled": true,
       "docId": "agenda-archive-1ebc96d5",
-      "settled": true
+      "gone": true
     },
     {
       "title": "August 2 2018",
@@ -29180,8 +29235,9 @@
       "dateConflict": false,
       "filenameDate": "2018-07-24",
       "needsReview": false,
+      "settled": true,
       "docId": "agenda-archive-611e9eb3",
-      "settled": true
+      "gone": true
     },
     {
       "title": "July 24 2018",
@@ -29289,8 +29345,9 @@
       "dateConflict": false,
       "filenameDate": "2018-07-10",
       "needsReview": false,
+      "settled": true,
       "docId": "agenda-archive-07ae7f99",
-      "settled": true
+      "gone": true
     },
     {
       "title": "July 10 2018",
@@ -29344,8 +29401,9 @@
       "dateConflict": false,
       "filenameDate": "2018-06-26",
       "needsReview": false,
+      "settled": true,
       "docId": "agenda-archive-4ed91945",
-      "settled": true
+      "gone": true
     },
     {
       "title": "June 26 2018",
@@ -29399,8 +29457,9 @@
       "dateConflict": false,
       "filenameDate": null,
       "needsReview": false,
+      "settled": true,
       "docId": "agenda-archive-c96b0f22",
-      "settled": true
+      "gone": true
     },
     {
       "title": "June 19 2018",
@@ -29508,8 +29567,9 @@
       "dateConflict": false,
       "filenameDate": "2018-06-05",
       "needsReview": false,
+      "settled": true,
       "docId": "agenda-archive-10c187f8",
-      "settled": true
+      "gone": true
     },
     {
       "title": "June 5 2018",
@@ -29581,8 +29641,9 @@
       "dateConflict": false,
       "filenameDate": "2018-05-22",
       "needsReview": false,
+      "settled": true,
       "docId": "agenda-archive-339d7ad7",
-      "settled": true
+      "gone": true
     },
     {
       "title": "May 22 2018",
@@ -29618,8 +29679,9 @@
       "dateConflict": false,
       "filenameDate": "2018-05-15",
       "needsReview": false,
+      "settled": true,
       "docId": "agenda-archive-fd1a70be",
-      "settled": true
+      "gone": true
     },
     {
       "title": "May 15 2018",
@@ -29655,8 +29717,9 @@
       "dateConflict": false,
       "filenameDate": "2018-05-08",
       "needsReview": false,
+      "settled": true,
       "docId": "agenda-archive-f426507e",
-      "settled": true
+      "gone": true
     },
     {
       "title": "May 8 2018",
@@ -29728,8 +29791,9 @@
       "dateConflict": false,
       "filenameDate": "2018-05-01",
       "needsReview": false,
+      "settled": true,
       "docId": "agenda-archive-beac4750",
-      "settled": true
+      "gone": true
     },
     {
       "title": "May 1 2018",
@@ -29765,8 +29829,9 @@
       "dateConflict": false,
       "filenameDate": "2018-04-24",
       "needsReview": false,
+      "settled": true,
       "docId": "agenda-archive-2326aa27",
-      "settled": true
+      "gone": true
     },
     {
       "title": "April 24 2018",
@@ -29838,8 +29903,9 @@
       "dateConflict": false,
       "filenameDate": "2018-04-10",
       "needsReview": false,
+      "settled": true,
       "docId": "agenda-archive-8265f9ff",
-      "settled": true
+      "gone": true
     },
     {
       "title": "April 10 2018",
@@ -29929,8 +29995,9 @@
       "dateConflict": false,
       "filenameDate": "2018-04-03",
       "needsReview": false,
+      "settled": true,
       "docId": "agenda-archive-ee61fbe4",
-      "settled": true
+      "gone": true
     },
     {
       "title": "April 3 2018",
@@ -29966,8 +30033,9 @@
       "dateConflict": false,
       "filenameDate": "2018-03-27",
       "needsReview": false,
+      "settled": true,
       "docId": "agenda-archive-5c4018f9",
-      "settled": true
+      "gone": true
     },
     {
       "title": "March 27 2018",
@@ -30003,8 +30071,9 @@
       "dateConflict": false,
       "filenameDate": "2018-03-20",
       "needsReview": false,
+      "settled": true,
       "docId": "agenda-archive-9bed0842",
-      "settled": true
+      "gone": true
     },
     {
       "title": "March 20 2018",
@@ -30112,8 +30181,9 @@
       "dateConflict": false,
       "filenameDate": "2018-03-06",
       "needsReview": false,
+      "settled": true,
       "docId": "agenda-archive-deac7eaf",
-      "settled": true
+      "gone": true
     },
     {
       "title": "March 6 2018",
@@ -30185,8 +30255,9 @@
       "dateConflict": false,
       "filenameDate": "2018-02-27",
       "needsReview": false,
+      "settled": true,
       "docId": "agenda-archive-a0f1d859",
-      "settled": true
+      "gone": true
     },
     {
       "title": "February 27 2018",
@@ -30258,8 +30329,9 @@
       "dateConflict": false,
       "filenameDate": "2018-02-13",
       "needsReview": false,
+      "settled": true,
       "docId": "agenda-archive-e46dbd30",
-      "settled": true
+      "gone": true
     },
     {
       "title": "February 13 2018",
@@ -30313,8 +30385,9 @@
       "dateConflict": false,
       "filenameDate": "2018-02-06",
       "needsReview": false,
+      "settled": true,
       "docId": "agenda-archive-ce2b845b",
-      "settled": true
+      "gone": true
     },
     {
       "title": "February 6 2018",
@@ -30386,8 +30459,9 @@
       "dateConflict": false,
       "filenameDate": null,
       "needsReview": false,
+      "settled": true,
       "docId": "agenda-archive-d12cf0a5",
-      "settled": true
+      "gone": true
     },
     {
       "title": "January 30 2018",
@@ -30423,8 +30497,9 @@
       "dateConflict": false,
       "filenameDate": "2018-01-23",
       "needsReview": false,
+      "settled": true,
       "docId": "agenda-archive-238ebcaf",
-      "settled": true
+      "gone": true
     },
     {
       "title": "January 23 2018",
@@ -30514,8 +30589,9 @@
       "dateConflict": false,
       "filenameDate": "2018-01-16",
       "needsReview": false,
+      "settled": true,
       "docId": "agenda-archive-bdcfb53f",
-      "settled": true
+      "gone": true
     },
     {
       "title": "January 16 2018",
@@ -30587,8 +30663,9 @@
       "dateConflict": false,
       "filenameDate": "2018-01-09",
       "needsReview": false,
+      "settled": true,
       "docId": "agenda-archive-2ef9f2e7",
-      "settled": true
+      "gone": true
     },
     {
       "title": "January 9 2018",
@@ -32874,8 +32951,9 @@
       "dateConflict": false,
       "filenameDate": "2017-01-24",
       "needsReview": false,
+      "settled": true,
       "docId": "agenda-archive-97f03f48",
-      "settled": true
+      "gone": true
     },
     {
       "title": "January 24, 2017",
@@ -32947,8 +33025,9 @@
       "dateConflict": false,
       "filenameDate": "2017-01-17",
       "needsReview": false,
+      "settled": true,
       "docId": "agenda-archive-54313aa7",
-      "settled": true
+      "gone": true
     },
     {
       "title": "January 17, 2017",
@@ -32984,8 +33063,9 @@
       "dateConflict": false,
       "filenameDate": "2017-01-10",
       "needsReview": false,
+      "settled": true,
       "docId": "agenda-archive-8d21c9a1",
-      "settled": true
+      "gone": true
     },
     {
       "title": "January 10, 2017",
@@ -33093,8 +33173,9 @@
       "dateConflict": false,
       "filenameDate": "2017-01-03",
       "needsReview": false,
+      "settled": true,
       "docId": "agenda-archive-7f7fca37",
-      "settled": true
+      "gone": true
     },
     {
       "title": "January 3, 2017",
@@ -37630,8 +37711,9 @@
       "dateConflict": false,
       "filenameDate": null,
       "needsReview": false,
+      "settled": true,
       "docId": "agenda-archive-674c2af3",
-      "settled": true
+      "gone": true
     },
     {
       "title": "October 7, 2014",
@@ -38693,8 +38775,9 @@
       "dateConflict": false,
       "filenameDate": null,
       "needsReview": false,
+      "settled": true,
       "docId": "minutes-archive-b755c12e",
-      "settled": true
+      "gone": true
     },
     {
       "title": "April 22, 2014",
@@ -39000,8 +39083,9 @@
       "dateConflict": false,
       "filenameDate": null,
       "needsReview": false,
+      "settled": true,
       "docId": "agenda-archive-121f2869",
-      "settled": true
+      "gone": true
     },
     {
       "title": "March 4, 2014",

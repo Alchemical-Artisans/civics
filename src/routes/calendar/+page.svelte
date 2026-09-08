@@ -393,6 +393,12 @@
       {#if data.duplicates > 0}
         {data.duplicates} duplicate listing{data.duplicates === 1 ? "" : "s"} collapsed.
       {/if}
+      {#if data.gone > 0}
+        {data.gone} document{data.gone === 1 ? "" : "s"} the city has since taken down
+        {data.gone === 1 ? "is" : "are"} not shown: the link{data.gone === 1 ? "" : "s"}
+        {data.gone === 1 ? "returns" : "return"} a 404, so there is nothing to open. Most of them were
+        on cityofhaverhill.com, the address the city used before haverhillma.gov.
+      {/if}
     </p>
     {#if data.scheduled > 0}
       <p class="mt-1">

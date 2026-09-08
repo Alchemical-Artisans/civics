@@ -270,3 +270,18 @@ describe("easternDate", () => {
     expect(easternDate(new Date("2026-01-05T17:00:00Z"))).toMatch(/^\d{4}-\d{2}-\d{2}$/)
   })
 })
+
+describe("documents the city has taken down", () => {
+  it("never reaches a meeting, and empties the sitting it was the only one for", () => {
+    // `calendar()` drops them before grouping, so this is what grouping sees.
+    // A sitting whose every document is gone is never built at all -- there is
+    // nothing to put on its page and nothing to link, and an entry offering a
+    // 404 wastes the one action it invites.
+    const kept = groupIntoMeetings([doc("2025-03-14"), doc("2025-03-14", "License Commission")])
+    expect(kept).toHaveLength(2)
+
+    // With the License Commission's dropped upstream, only the Council's sits.
+    const afterDrop = groupIntoMeetings([doc("2025-03-14")])
+    expect(afterDrop.map((m) => m.board)).toEqual(["City Council"])
+  })
+})

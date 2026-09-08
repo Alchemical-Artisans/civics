@@ -749,7 +749,14 @@ the retired `cityofhaverhill.com` domain. **A record is silenced from `reviews.j
 honour it, while `settled: true` is the general "a person has looked at this" and
 is the only thing that silences a broken link, whose date was never in question.
 The report prints each record's `reviews.json` key ready to paste, since working
-it out by hand is the friction that stops anyone answering these.
+it out by hand is the friction that stops anyone answering these. **`gone: true`
+beside `settled` drops the document from the site**: `src/lib/meetings.ts`
+filters those out before grouping, so a sitting whose every document is gone
+gets no page at all -- 84 documents and 8 sittings today. They are not shown as
+broken links, because an entry whose only offer is a 404 wastes the action it
+invites; the footer says how many in one line. The flag lives in `reviews.json`
+rather than the gitignored link cache because the site has to know and a build
+cannot check a URL.
 
 ## Checking a flagged record
 

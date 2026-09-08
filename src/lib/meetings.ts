@@ -66,6 +66,8 @@ export interface Calendar {
   documents: number
   /** Sittings the Council's rule expects, ahead of any document. */
   scheduled: number
+  /** Documents the city has taken down, dropped rather than linked to a 404. */
+  gone: number
   /**
    * The day this build ran, in the city. The calendar opens on its month and
    * marks its cell, so a reader running no script still gets a today rather
@@ -81,7 +83,20 @@ export interface Calendar {
  * are dropped here so they never reach the browser.
  */
 export function calendar(): Calendar {
-  const dated = raw.meetings.filter((m) => m.date)
+  // Documents the city has taken down. `links:check` finds them and the
+  // decision is recorded in `reviews.json` as `gone`, which is why it survives
+  // into the data rather than living in the gitignored link cache -- the site
+  // has to know, and a build has nothing to check a URL against.
+  //
+  // They are dropped outright rather than shown as broken. A calendar entry
+  // whose only offer is a link to a 404 wastes the one action it invites, and
+  // there is nothing here to transcribe or link instead: the record is that the
+  // city published something and has since removed it, which the footer says in
+  // one line rather than 84 dead ends.
+  const live = raw.meetings.filter((m) => !("gone" in m && m.gone))
+  const gone = raw.meetings.length - live.length
+
+  const dated = live.filter((m) => m.date)
 
   // A handful of PDFs are published under two media pages, which would
   // otherwise render the same document twice. Keep one copy, preferring the
@@ -119,12 +134,13 @@ export function calendar(): Calendar {
     meetings,
     generatedAt: raw.generatedAt,
     source: raw.source,
-    undated: raw.meetings.length - dated.length,
+    undated: live.length - dated.length,
     duplicates: dated.length - documents.length,
     flagged: kept.filter((m) => m.needsReview).length,
     written: meetings.filter((m) => m.written).length,
     documents: documents.length,
     scheduled: meetings.filter((m) => m.scheduled).length,
+    gone,
     today: BUILT_ON,
   }
 }
