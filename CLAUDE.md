@@ -98,9 +98,20 @@ same board-and-date identity, so a date the city has since published an agenda
 for is an ordinary meeting. This is what shows a sitting **before** an agenda
 exists -- the only part of the site's data that is not retrospective.
 
+**Two clauses do not mean quite what they say, and the Council's published 2025
+schedule settles both.** "The second Tuesday after Labor Day" counts the Labor
+Day week's own Tuesday as the first -- Labor Day 2025 was 1 September, giving 9
+September, and that sheet is headed "Amended - removal of 9/9/25 due to
+municipal preliminary election", which only makes sense if 9 September had been
+scheduled. And the summer's every-other-week run stops at the end of August, not
+at the day weekly resumes: read literally it would add a sitting on 2 September
+2025 and 8 September 2026, and the adopted schedule has neither -- the third
+clause governs September and says the month's meetings _start_ with the second
+Tuesday after Labor Day, so nothing precedes them.
+
 **Forward only, and the entries are called expected, not scheduled.** The rule
 is not the schedule the Council adopts: against the Council's own published 2025
-schedule it yields 46 sittings to that schedule's 35 (it says "every Tuesday",
+schedule it yields 45 sittings to that schedule's 35 (it says "every Tuesday",
 but the Council skips roughly one a month), and it wrongly drops 10 June 2025,
 which the Council held. So sittings are projected from the build date to the end
 of that year and never backwards -- for a day already past the documents are the

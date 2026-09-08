@@ -10,7 +10,7 @@
  * **It projects forward only.** Sittings are generated from the build date to
  * the end of that year and never into the past, because the rule is not the
  * schedule the Council actually adopts. Checked against the Council's own
- * published 2025 schedule, the rule yields 46 sittings where the adopted
+ * published 2025 schedule, the rule yields 45 sittings where the adopted
  * schedule has 35: it says "every Tuesday", but the Council skips roughly one
  * Tuesday a month, and it drops 10 June 2025, which the Council did hold. So
  * for a date already past, a rule-Tuesday with no agenda and no minutes is
@@ -81,11 +81,14 @@ function laborDay(year: number): Date {
 }
 
 /**
- * "the second Tuesday after Labor Day" -- the day weekly meetings resume, and
- * the day the summer's every-other-week run stops.
+ * "the second Tuesday after Labor Day" -- the day weekly meetings resume.
  *
  * Counted from Labor Day itself: the Tuesday of that same week is the first
- * after it, and a week later is the second.
+ * after it, and a week later is the second. The Council's published 2025
+ * schedule confirms the counting. Labor Day fell on 1 September that year, so
+ * this gives 9 September -- and the schedule is headed "Amended - removal of
+ * 9/9/25 due to municipal preliminary election", which only makes sense if the
+ * Council had scheduled 9 September in the first place.
  */
 function weeklyResumes(year: number): Date {
   const monday = laborDay(year)
@@ -96,10 +99,10 @@ function weeklyResumes(year: number): Date {
 /**
  * Every Tuesday the rule names in one calendar year.
  *
- * June is its own exception; July and August come only from the summer's
- * every-other-week run, which may reach into September; September is weekly
- * from the day the rule says weekly resumes; every other month is every
- * Tuesday, which is the rule before any exception touches it.
+ * June is its own exception; July and August are the summer's every-other-week
+ * run and nothing else; September is weekly from the day the rule says weekly
+ * resumes, and holds nothing before it; every other month is every Tuesday,
+ * which is the rule before any exception touches it.
  */
 export function sittingsIn(year: number): string[] {
   const resume = weeklyResumes(year)
@@ -120,10 +123,18 @@ export function sittingsIn(year: number): string[] {
     }
   }
 
-  // "every other week beginning with the second Tuesday of July", running
-  // until weekly meetings resume -- which is why early September can carry a
-  // sitting that is not part of September's own weekly run.
-  for (let d = tuesdays(year, 7)[1]; d < resume; d = add(d, 14)) out.push(d)
+  // "every other week beginning with the second Tuesday of July" -- July and
+  // August, and no further.
+  //
+  // Read literally, "until the second Tuesday after Labor Day" would let the
+  // run put one more sitting in early September, a fortnight after the last
+  // August one. It does not: the third clause governs September and says the
+  // month's meetings *start* with the second Tuesday after Labor Day, so
+  // nothing in September precedes them. The Council's own published 2025
+  // schedule settles it -- the summer run there ends on 19 August and the
+  // schedule has no sitting on 2 September, which is exactly the date the
+  // literal reading invents.
+  for (let d = tuesdays(year, 7)[1]; d.getUTCMonth() <= 7; d = add(d, 14)) out.push(d)
 
   return [...new Set(out.map(iso))].sort()
 }

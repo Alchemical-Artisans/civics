@@ -66,12 +66,14 @@ alone.
 ### Forward only, and why
 
 **The rule is not the schedule the Council actually adopts.** Checked against the
-Council's own published 2025 schedule, the rule yields 46 sittings where the
+Council's own published 2025 schedule, the rule yields 45 sittings where the
 adopted schedule has 35. It says "every Tuesday", but the Council skips roughly
 one Tuesday a month — 21 January, 18 February, 22 April, 27 May, 14 October, 11
 and 25 November, 23 and 30 December 2025 are all rule-Tuesdays the Council did
 not schedule and published nothing for. It errs the other way in June: the rule
-excludes 10 June 2025, and the Council met that day.
+excludes 10 June 2025, and the Council met that day. (The one other divergence,
+9 September 2025, is not the rule's fault — the Council scheduled it and then
+amended it away for the municipal preliminary election.)
 
 So sittings are projected **from the build date to the end of that year, and
 never into the past**. For a day already past, the documents are the better
@@ -83,6 +85,27 @@ as one beats an empty calendar.
 That is also why these entries are called **expected** rather than scheduled.
 The city has announced nothing about a particular Tuesday. The Council has said
 which Tuesdays it means to sit on, and this is that statement applied to a date.
+
+### Two places the wording has to be read against the evidence
+
+The rule is prose, and twice it does not mean quite what it says. The Council's
+own published 2025 schedule is what settles both.
+
+**"The second Tuesday after Labor Day" counts the Labor Day week's own
+Tuesday as the first.** Labor Day fell on 1 September 2025, so this gives 9
+September — and the published sheet is headed _"Amended - removal of 9/9/25 due
+to municipal preliminary election"_, which only makes sense if 9 September had
+been scheduled to begin with. What the amended sheet prints for September,
+16/23/30, is exactly what is left.
+
+**The summer's every-other-week run stops at the end of August**, not at the day
+weekly resumes. Read literally, "from July until the second Tuesday after Labor
+Day … every other week" would add one more fortnightly sitting in early
+September — 2 September 2025, 8 September 2026. The adopted 2025 schedule has no
+such sitting: its run ends on 19 August and September begins at the return to
+weekly. The third clause is why. It governs September and says the month's
+meetings _start_ with the second Tuesday after Labor Day, so nothing in
+September precedes them.
 
 ### The wording is pinned
 
