@@ -58,8 +58,12 @@ export interface MeetingCalendar {
   year: number
   /** The board's own heading over the table, e.g. `CALENDAR OF MEETINGS FOR 2026`. */
   heading: string
-  /** `YYYY-MM-DD`, ascending. May run past `year`: a schedule's last row often does. */
-  dates: string[]
+  /**
+   * The dates it prints, ascending, each with whatever else its own row says.
+   * May run past `year`: a schedule's last row often carries the first sitting
+   * of the next.
+   */
+  sittings: { date: string; related?: { label: string; date: string }[] }[]
   /**
    * The hour the page states, e.g. `7:15 PM`, where it states one. The
    * Conservation Commission's does, in the paragraph over its table; the
@@ -195,11 +199,16 @@ export function meetingCalendars(): MeetingCalendar[] {
  */
 export function expectedSittings(today: string): ScheduledSitting[] {
   const fromCalendars = meetingCalendars().flatMap((calendar) =>
-    calendar.dates
-      .filter((date) => date >= today)
-      .map((date) => ({
+    calendar.sittings
+      .filter((sitting) => sitting.date >= today)
+      .map((sitting) => ({
         board: calendar.board,
-        date,
+        date: sitting.date,
+        // The board's own other columns for this row -- a filing deadline, a
+        // postponement date. Carried onto the sitting rather than left in the
+        // source, because they are facts about the day rather than about the
+        // page it was read from.
+        ...(sitting.related ? { related: sitting.related } : {}),
         // Only where the page states one. A board that prints dates and no
         // hour gets none: the hour on its last agenda is not evidence about a
         // sitting that has not happened, and an event with no time is an

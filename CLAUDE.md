@@ -95,8 +95,9 @@ all twelve in it, two columns, January beside July; the Conservation
 Commission's meeting-schedule page carries eighteen, every three weeks on a
 Thursday, in the _middle column_ of a table whose other two are the filing
 deadline and the date a postponed meeting moves to -- taking the whole table
-would treble that board's calendar -- with the hour, 7:15 PM, in the paragraph
-above it. Nothing is interpreted and nothing can be misread; this is by far the
+would treble that board's calendar, but a sitting keeps its row's other columns
+as `related`, labelled by the board's own headers, and its meeting page states
+them -- with the hour, 7:15 PM, in the paragraph above it. Nothing is interpreted and nothing can be misread; this is by far the
 better evidence, every past date on both carrying documents, and the sittings in
 the data that are not on them are special meetings and postponements. **The City Council prints a rule** above the document table:
 every Tuesday at 7:00 PM, with exceptions for June, the summer, and the return

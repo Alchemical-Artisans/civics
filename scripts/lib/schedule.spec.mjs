@@ -162,15 +162,15 @@ describe("parseMeetingCalendars", () => {
     const [calendar] = parseMeetingCalendars(licenseHtml, licensePage)
     expect(calendar.year).toBe(2026)
     expect(calendar.heading).toBe("CALENDAR OF MEETINGS FOR 2026")
-    expect(calendar.dates).toEqual([
-      "2026-01-08",
-      "2026-02-05",
-      "2026-03-05",
-      "2026-07-02",
-      "2026-08-06",
-      "2026-09-03",
+    expect(calendar.sittings).toEqual([
+      { date: "2026-01-08" },
+      { date: "2026-02-05" },
+      { date: "2026-03-05" },
+      { date: "2026-07-02" },
+      { date: "2026-08-06" },
+      { date: "2026-09-03" },
     ])
-    // The page prints dates and no hour.
+    // The page prints dates and no hour, and nothing beside them to carry.
     expect(calendar.time).toBeUndefined()
   })
 
@@ -178,9 +178,30 @@ describe("parseMeetingCalendars", () => {
     // The other two columns are real dates and neither is a meeting: taking the
     // whole table would treble the board's calendar.
     const [calendar] = parseMeetingCalendars(conservationHtml, conservationPage)
-    expect(calendar.dates).toEqual(["2026-01-08", "2026-01-29", "2027-01-07"])
+    expect(calendar.sittings.map((s) => s.date)).toEqual(["2026-01-08", "2026-01-29", "2027-01-07"])
     expect(calendar.heading).toBe("2026 Meeting Schedule")
     expect(calendar.time).toBe("7:15 PM")
+  })
+
+  it("keeps the row's other columns beside the sitting, under their own labels", () => {
+    // Not sittings, but what the board published about the day: the deadline
+    // for filing to be heard at it, and where it moves if postponed.
+    const [calendar] = parseMeetingCalendars(conservationHtml, conservationPage)
+    expect(calendar.sittings[0]).toEqual({
+      date: "2026-01-08",
+      related: [
+        { label: "Submittal Date", date: "2025-12-18" },
+        { label: "Postponement Date", date: "2026-01-15" },
+      ],
+    })
+    // The year comes from the heading where a cell leaves it off, which works
+    // because the board writes it out on exactly the rows that need it -- the
+    // first submittal falls in the previous year, the last postponement in the
+    // next, and both are printed in full.
+    expect(calendar.sittings.at(-1).related).toEqual([
+      { label: "Submittal Date", date: "2026-12-17" },
+      { label: "Postponement Date", date: "2027-01-14" },
+    ])
   })
 
   it("finds nothing rather than guessing when the named column is gone", () => {

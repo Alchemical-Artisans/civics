@@ -52,8 +52,10 @@ The **Conservation Commission**'s
 carries eighteen, every three weeks on a Thursday, in the **middle column** of a
 table whose other two are the filing deadline for permit applications and the
 date a postponed meeting moves to. Both of those are real dates and neither is a
-sitting; taking the whole table would treble the board's calendar. The paragraph
-above it states the hour, 7:15 PM.
+sitting; taking the whole table would treble the board's calendar. But they are
+what the board published about the day, so a sitting keeps its own row's other
+columns as `related`, labelled by the board's own headers, and the meeting page
+states them. The paragraph above the table gives the hour, 7:15 PM.
 
 Nothing needs interpreting for either and nothing can be misread: the dates are
 the dates. This is by far the better evidence. Every past date on both carries
@@ -129,7 +131,9 @@ A board that prints its dates is one entry in `CALENDAR_PAGES` in
 [`scripts/lib/schedule.mjs`](../scripts/lib/schedule.mjs): its URL, a `heading`
 pattern whose one capture group is the year, and — where the table holds more
 than sittings — the `column` naming the one that does. The first table after the
-heading is the schedule; the prose between the two is searched for an hour,
+heading is the schedule; every **other** dated column of a sitting's row comes
+back with it as `related`, labelled by its own header; and the prose between
+heading and table is searched for an hour,
 anchored on "at" so that the Conservation Commission's own "Filing deadlines are
 11:00AM two weeks prior" cannot be read as a meeting time.
 
@@ -186,8 +190,9 @@ On the meeting page the evidence takes the row the agenda would occupy, linked
 to the page it is printed on and named for what it is — the board's own heading
 for its list of dates, or "the ⟨board⟩'s meeting rule". The page below shows it:
 a rule is quoted in full, clause by clause, since it is the city's own wording
-and quoting beats paraphrasing; a printed calendar is cited by its heading,
-because there is nothing to quote beyond the date itself.
+and quoting beats paraphrasing; a printed calendar is cited by its heading, and
+where the board's table gives other dates against the sitting they follow as a
+`<dl>` under its own labels — `Submittal Date`, `Postponement Date`.
 
 An hour the source states becomes the header's `MeetingDetails`, which is what
 lets a reader add the sitting to their own calendar before an agenda exists. The

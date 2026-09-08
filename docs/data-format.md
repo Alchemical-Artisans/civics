@@ -227,7 +227,15 @@ already dates.
       "source": "https://www.haverhillma.gov/…/conservation-commission/meeting-schedule/",
       "year": 2026,
       "heading": "2026 Meeting Schedule",
-      "dates": ["2026-01-08", "2026-01-29", "…"],
+      "sittings": [
+        {
+          "date": "2026-01-08",
+          "related": [
+            { "label": "Submittal Date", "date": "2025-12-18" },
+            { "label": "Postponement Date", "date": "2026-01-15" }
+          ]
+        }
+      ],
       "time": "7:15 PM"
     },
     {
@@ -235,7 +243,7 @@ already dates.
       "source": "https://www.haverhillma.gov/government/boards-committees-and-commissions/license-commission/",
       "year": 2026,
       "heading": "CALENDAR OF MEETINGS FOR 2026",
-      "dates": ["2026-01-08", "2026-02-05", "…"]
+      "sittings": [{ "date": "2026-01-08" }, { "date": "2026-02-05" }]
     }
   ]
 }
@@ -258,14 +266,14 @@ rule fails the build instead of being silently reinterpreted.
 
 ### `calendars` — the dates themselves
 
-| Field     | Meaning                                                                                                                                                                                           |
-| --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `board`   | Named beside the URL in the scraper: the page is the board, and its heading names only the year. Must match `meetings.json`'s `board`.                                                            |
-| `source`  | The board's own page.                                                                                                                                                                             |
-| `year`    | From the heading.                                                                                                                                                                                 |
-| `heading` | As printed, e.g. `CALENDAR OF MEETINGS FOR 2026` or `2026 Meeting Schedule`. A meeting page cites it.                                                                                             |
-| `dates`   | `YYYY-MM-DD`, ascending. Sorted rather than read in document order, since one table runs in two columns. May run past `year` — a schedule's last row often carries the first sitting of the next. |
-| `time`    | The hour the page states, e.g. `7:15 PM`, where it states one. Optional.                                                                                                                          |
+| Field      | Meaning                                                                                                                                                                                                           |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `board`    | Named beside the URL in the scraper: the page is the board, and its heading names only the year. Must match `meetings.json`'s `board`.                                                                            |
+| `source`   | The board's own page.                                                                                                                                                                                             |
+| `year`     | From the heading.                                                                                                                                                                                                 |
+| `heading`  | As printed, e.g. `CALENDAR OF MEETINGS FOR 2026` or `2026 Meeting Schedule`. A meeting page cites it.                                                                                                             |
+| `sittings` | `{ date, related? }`, ascending by date. Sorted rather than read in document order, since one table runs in two columns. May run past `year` — a schedule's last row often carries the first sitting of the next. |
+| `time`     | The hour the page states, e.g. `7:15 PM`, where it states one. Optional.                                                                                                                                          |
 
 Nothing is interpreted, so nothing can be misread. `parseCalendarDate` handles
 both forms the boards write — `January 8, 2026` and `1/8/2026`, the latter often

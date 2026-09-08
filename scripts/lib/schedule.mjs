@@ -162,12 +162,19 @@ const rowsOf = (table) =>
   )
 
 /**
- * The meeting dates one board page prints, per `page`'s description of it.
+ * The sittings one board page prints, per `page`'s description of it.
  *
  * `page.heading` finds the heading and the year in its one capture group; the
  * first table after it is the schedule. `page.column` names the column holding
  * the sittings where the table has more than dates in it -- without one, every
  * cell is a sitting.
+ *
+ * Where there is a named column, the **other** dated columns of a sitting's own
+ * row come back with it, labelled by their own headers. They are not sittings
+ * and must never be treated as ones -- the Conservation Commission's are the
+ * deadline for filing a permit application and the date the meeting moves to if
+ * it is postponed -- but they are what the board published about that sitting,
+ * and a reader looking at the date wants them.
  *
  * The heading is kept as printed: it is what a meeting page cites, and it is
  * the board's own name for its list.
@@ -180,24 +187,43 @@ export function parseMeetingCalendars(html, page) {
   if (!table) return []
 
   const rows = rowsOf(table[0])
-  let cells
+  let sittings
   if (page.column) {
     const at = rows[0]?.indexOf(page.column) ?? -1
     // No such column means the table has been rearranged, and guessing which
     // of three date columns is the meeting would be worse than finding none.
     if (at < 0) return []
-    cells = rows.slice(1).map((row) => row[at] ?? "")
+    sittings = rows.slice(1).flatMap((row) => {
+      const date = parseCalendarDate(row[at] ?? "", year)
+      if (!date) return []
+      // The year is taken from the heading where a cell leaves it off, which
+      // works because the board spells it out on exactly the rows that need it
+      // -- the first submittal date falls in the previous year and the last
+      // postponement in the next, and both are written out in full.
+      const related = rows[0].flatMap((label, i) => {
+        const other = i === at ? null : parseCalendarDate(row[i] ?? "", year)
+        return other ? [{ label, date: other }] : []
+      })
+      return [related.length ? { date, related } : { date }]
+    })
   } else {
-    cells = rows.flat()
+    sittings = rows
+      .flat()
+      .map((cell) => parseCalendarDate(cell, year))
+      .filter(Boolean)
+      .map((date) => ({ date }))
   }
 
-  const dates = [...new Set(cells.map((cell) => parseCalendarDate(cell, year)).filter(Boolean))]
-  if (!dates.length) return []
+  // One entry per date, and in date order: a schedule laid out in columns does
+  // not run in date order down the page.
+  const byDate = new Map(sittings.map((sitting) => [sitting.date, sitting]))
+  if (!byDate.size) return []
+  const ordered = [...byDate.values()].sort((a, b) => a.date.localeCompare(b.date))
 
   const prose = html.slice(heading.index + heading[0].length, heading.index + table.index)
   const time = parseTime(text(prose))
 
-  return [{ year, heading: text(heading[0]), dates: dates.sort(), ...(time ? { time } : {}) }]
+  return [{ year, heading: text(heading[0]), sittings: ordered, ...(time ? { time } : {}) }]
 }
 
 const get = (url, label) =>

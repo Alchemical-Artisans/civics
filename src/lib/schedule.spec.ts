@@ -30,8 +30,10 @@ describe("the scraped calendars", () => {
     // table, say -- would show up here as six.
     const commission = find("License Commission")
     expect(commission).toBeDefined()
-    expect(commission!.dates).toHaveLength(12)
-    expect(new Set(commission!.dates.map((d) => d.slice(0, 7))).size).toBe(12)
+    expect(commission!.sittings).toHaveLength(12)
+    expect(new Set(commission!.sittings.map((s) => s.date.slice(0, 7))).size).toBe(12)
+    // Its table is dates and nothing else, so there is nothing else to carry.
+    expect(commission!.sittings.every((s) => !s.related)).toBe(true)
     // The page prints dates and no hour.
     expect(commission!.time).toBeUndefined()
   })
@@ -44,10 +46,23 @@ describe("the scraped calendars", () => {
     const commission = find("Conservation Commission")
     expect(commission).toBeDefined()
     expect(commission!.time).toBe("7:15 PM")
-    const days = commission!.dates.map((d) => Date.parse(`${d}T00:00:00Z`) / 86_400_000)
+    const days = commission!.sittings.map((s) => Date.parse(`${s.date}T00:00:00Z`) / 86_400_000)
     for (const [i, day] of days.entries()) {
       expect(new Date(day * 86_400_000).getUTCDay()).toBe(4)
       if (i) expect(day - days[i - 1]).toBeGreaterThanOrEqual(21)
+    }
+  })
+
+  it("keeps the other dated columns of a sitting's own row", () => {
+    // Neither is a sitting -- one is the deadline for filing to be heard at it,
+    // the other the date it moves to if postponed -- but both are what the
+    // board published about the day, labelled in its own words.
+    const commission = find("Conservation Commission")!
+    for (const sitting of commission.sittings) {
+      expect(sitting.related?.map((r) => r.label)).toEqual(["Submittal Date", "Postponement Date"])
+      const [submittal, postponement] = sitting.related!
+      expect(submittal.date < sitting.date).toBe(true)
+      expect(postponement.date > sitting.date).toBe(true)
     }
   })
 
@@ -55,7 +70,7 @@ describe("the scraped calendars", () => {
     // The Conservation Commission's last row is the first sitting of the next
     // year, printed with its own year. Clamping to the heading would move it.
     const commission = find("Conservation Commission")!
-    expect(commission.dates.at(-1)!.slice(0, 4)).toBe(String(commission.year + 1))
+    expect(commission.sittings.at(-1)!.date.slice(0, 4)).toBe(String(commission.year + 1))
   })
 })
 
@@ -183,7 +198,7 @@ describe("expectedSittings", () => {
       const mine = expectedSittings("2026-09-08")
         .filter((s) => s.board === calendar.board)
         .map((s) => s.date)
-      expect(mine).toEqual(calendar.dates.filter((d) => d >= "2026-09-08"))
+      expect(mine).toEqual(calendar.sittings.map((s) => s.date).filter((d) => d >= "2026-09-08"))
     }
   })
 

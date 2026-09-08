@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-08T14:50:38.833Z",
+  "generatedAt": "2026-09-08T15:02:00.842Z",
   "rules": [
     {
       "board": "City Council",
@@ -18,25 +18,241 @@
       "source": "https://www.haverhillma.gov/government/boards-committees-and-commissions/conservation-commission/meeting-schedule/",
       "year": 2026,
       "heading": "2026 Meeting Schedule",
-      "dates": [
-        "2026-01-08",
-        "2026-01-29",
-        "2026-02-19",
-        "2026-03-12",
-        "2026-04-02",
-        "2026-04-23",
-        "2026-05-14",
-        "2026-06-04",
-        "2026-06-25",
-        "2026-07-16",
-        "2026-08-06",
-        "2026-08-27",
-        "2026-09-17",
-        "2026-10-08",
-        "2026-10-29",
-        "2026-11-19",
-        "2026-12-10",
-        "2027-01-07"
+      "sittings": [
+        {
+          "date": "2026-01-08",
+          "related": [
+            {
+              "label": "Submittal Date",
+              "date": "2025-12-18"
+            },
+            {
+              "label": "Postponement Date",
+              "date": "2026-01-15"
+            }
+          ]
+        },
+        {
+          "date": "2026-01-29",
+          "related": [
+            {
+              "label": "Submittal Date",
+              "date": "2026-01-15"
+            },
+            {
+              "label": "Postponement Date",
+              "date": "2026-02-05"
+            }
+          ]
+        },
+        {
+          "date": "2026-02-19",
+          "related": [
+            {
+              "label": "Submittal Date",
+              "date": "2026-02-05"
+            },
+            {
+              "label": "Postponement Date",
+              "date": "2026-02-26"
+            }
+          ]
+        },
+        {
+          "date": "2026-03-12",
+          "related": [
+            {
+              "label": "Submittal Date",
+              "date": "2026-02-26"
+            },
+            {
+              "label": "Postponement Date",
+              "date": "2026-03-19"
+            }
+          ]
+        },
+        {
+          "date": "2026-04-02",
+          "related": [
+            {
+              "label": "Submittal Date",
+              "date": "2026-03-19"
+            },
+            {
+              "label": "Postponement Date",
+              "date": "2026-04-09"
+            }
+          ]
+        },
+        {
+          "date": "2026-04-23",
+          "related": [
+            {
+              "label": "Submittal Date",
+              "date": "2026-04-09"
+            },
+            {
+              "label": "Postponement Date",
+              "date": "2026-04-30"
+            }
+          ]
+        },
+        {
+          "date": "2026-05-14",
+          "related": [
+            {
+              "label": "Submittal Date",
+              "date": "2026-04-30"
+            },
+            {
+              "label": "Postponement Date",
+              "date": "2026-05-21"
+            }
+          ]
+        },
+        {
+          "date": "2026-06-04",
+          "related": [
+            {
+              "label": "Submittal Date",
+              "date": "2026-05-21"
+            },
+            {
+              "label": "Postponement Date",
+              "date": "2026-06-11"
+            }
+          ]
+        },
+        {
+          "date": "2026-06-25",
+          "related": [
+            {
+              "label": "Submittal Date",
+              "date": "2026-06-11"
+            },
+            {
+              "label": "Postponement Date",
+              "date": "2026-07-02"
+            }
+          ]
+        },
+        {
+          "date": "2026-07-16",
+          "related": [
+            {
+              "label": "Submittal Date",
+              "date": "2026-07-02"
+            },
+            {
+              "label": "Postponement Date",
+              "date": "2026-07-23"
+            }
+          ]
+        },
+        {
+          "date": "2026-08-06",
+          "related": [
+            {
+              "label": "Submittal Date",
+              "date": "2026-07-23"
+            },
+            {
+              "label": "Postponement Date",
+              "date": "2026-08-13"
+            }
+          ]
+        },
+        {
+          "date": "2026-08-27",
+          "related": [
+            {
+              "label": "Submittal Date",
+              "date": "2026-08-13"
+            },
+            {
+              "label": "Postponement Date",
+              "date": "2026-09-03"
+            }
+          ]
+        },
+        {
+          "date": "2026-09-17",
+          "related": [
+            {
+              "label": "Submittal Date",
+              "date": "2026-09-03"
+            },
+            {
+              "label": "Postponement Date",
+              "date": "2026-09-24"
+            }
+          ]
+        },
+        {
+          "date": "2026-10-08",
+          "related": [
+            {
+              "label": "Submittal Date",
+              "date": "2026-09-24"
+            },
+            {
+              "label": "Postponement Date",
+              "date": "2026-10-15"
+            }
+          ]
+        },
+        {
+          "date": "2026-10-29",
+          "related": [
+            {
+              "label": "Submittal Date",
+              "date": "2026-10-15"
+            },
+            {
+              "label": "Postponement Date",
+              "date": "2026-11-05"
+            }
+          ]
+        },
+        {
+          "date": "2026-11-19",
+          "related": [
+            {
+              "label": "Submittal Date",
+              "date": "2026-11-05"
+            },
+            {
+              "label": "Postponement Date",
+              "date": "2026-11-24"
+            }
+          ]
+        },
+        {
+          "date": "2026-12-10",
+          "related": [
+            {
+              "label": "Submittal Date",
+              "date": "2026-11-24"
+            },
+            {
+              "label": "Postponement Date",
+              "date": "2026-12-17"
+            }
+          ]
+        },
+        {
+          "date": "2027-01-07",
+          "related": [
+            {
+              "label": "Submittal Date",
+              "date": "2026-12-17"
+            },
+            {
+              "label": "Postponement Date",
+              "date": "2027-01-14"
+            }
+          ]
+        }
       ],
       "time": "7:15 PM"
     },
@@ -45,19 +261,43 @@
       "source": "https://www.haverhillma.gov/government/boards-committees-and-commissions/license-commission/",
       "year": 2026,
       "heading": "CALENDAR OF MEETINGS FOR 2026",
-      "dates": [
-        "2026-01-08",
-        "2026-02-05",
-        "2026-03-05",
-        "2026-04-02",
-        "2026-05-07",
-        "2026-06-04",
-        "2026-07-02",
-        "2026-08-06",
-        "2026-09-03",
-        "2026-10-01",
-        "2026-11-05",
-        "2026-12-03"
+      "sittings": [
+        {
+          "date": "2026-01-08"
+        },
+        {
+          "date": "2026-02-05"
+        },
+        {
+          "date": "2026-03-05"
+        },
+        {
+          "date": "2026-04-02"
+        },
+        {
+          "date": "2026-05-07"
+        },
+        {
+          "date": "2026-06-04"
+        },
+        {
+          "date": "2026-07-02"
+        },
+        {
+          "date": "2026-08-06"
+        },
+        {
+          "date": "2026-09-03"
+        },
+        {
+          "date": "2026-10-01"
+        },
+        {
+          "date": "2026-11-05"
+        },
+        {
+          "date": "2026-12-03"
+        }
       ]
     }
   ]

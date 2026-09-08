@@ -57,6 +57,18 @@ export interface ScheduledSitting {
   date: string
   /** Start time where the source states one, e.g. `"7:00 PM"`. */
   time?: string
+  /**
+   * Other dates the board's schedule prints on this sitting's own row, labelled
+   * by its own column headers.
+   *
+   * The Conservation Commission's table gives two: the deadline for filing a
+   * permit application to be heard at the sitting, and the date the sitting
+   * moves to if it is postponed. Neither is a sitting and neither is ever
+   * treated as one -- they would treble that board's calendar -- but they are
+   * what the board published about the day, and a reader looking at it wants
+   * them.
+   */
+  related?: { label: string; date: string }[]
   /** What the city published that puts this sitting on the calendar. */
   source: SittingSource
 }

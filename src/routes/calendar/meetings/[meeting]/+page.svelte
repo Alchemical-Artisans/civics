@@ -10,6 +10,8 @@
   the static route then serves it and this one stops covering the id.
 -->
 <script lang="ts">
+  import { formatLongDate } from "$lib/calendar"
+
   // From the layout's load, which is where every meeting page gets its sitting.
   let { data } = $props()
 </script>
@@ -33,6 +35,20 @@
       <a href={source.url} target="_blank" rel="external noopener noreferrer">{source.heading}</a>
       lists the date.
     </p>
+    <!-- The other dated columns of this sitting's own row, under the board's
+         own headings for them. Neither is a sitting -- one is the deadline for
+         filing to be heard at this one, the other the date it moves to if it is
+         postponed -- so they are stated here rather than being given calendar
+         entries of their own. -->
+    {#if data.meeting.scheduled.related?.length}
+      <p>That schedule prints two other dates against this sitting:</p>
+      <dl>
+        {#each data.meeting.scheduled.related as other (other.label)}
+          <dt>{other.label}</dt>
+          <dd>{formatLongDate(other.date)}</dd>
+        {/each}
+      </dl>
+    {/if}
     <p>An agenda is usually published a few days beforehand. Check again nearer the day.</p>
   {:else}
     <p>

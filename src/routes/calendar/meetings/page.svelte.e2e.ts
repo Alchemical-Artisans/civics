@@ -16,7 +16,7 @@ const documented = new Set(
 )
 const expected = expectedSittings(easternDate())
   .filter((s) => !documented.has(`${s.board}::${s.date}`))
-  .map((s) => ({ id: meetingId(s.board, s.date), source: s.source }))
+  .map((s) => ({ id: meetingId(s.board, s.date), source: s.source, related: s.related }))
 
 /**
  * The meetings somebody has written up: one route directory each, named for
@@ -150,6 +150,15 @@ test.describe("meeting pages", () => {
             await expect(article).toContainText(clause)
         } else {
           await expect(article).toContainText(sitting.source.heading)
+          // The other dated columns of the sitting's own row, under the board's
+          // own headings. Not sittings -- a filing deadline and a postponement
+          // date -- but what the board published about the day.
+          for (const other of sitting.related ?? []) {
+            await expect(article.getByRole("term").filter({ hasText: other.label })).toHaveCount(1)
+          }
+          if (sitting.related?.length) {
+            await expect(article.getByRole("definition")).toHaveCount(sitting.related.length)
+          }
         }
 
         // It stands where the agenda would, linked to the page it is printed

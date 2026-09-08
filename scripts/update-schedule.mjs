@@ -51,7 +51,7 @@ await writeFile(
 console.log()
 for (const rule of rules)
   console.log(`  ${rule.board}: a rule, ${rule.exceptions.length} exceptions`)
-for (const c of calendars) console.log(`  ${c.board}: ${c.dates.length} dates for ${c.year}`)
+for (const c of calendars) console.log(`  ${c.board}: ${c.sittings.length} dates for ${c.year}`)
 
 // The wording is what the date logic is written against, so a change to it is
 // the one thing worth shouting about on an otherwise silent run.
