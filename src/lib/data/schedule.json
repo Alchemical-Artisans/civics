@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-08T15:02:00.842Z",
+  "generatedAt": "2026-09-08T15:34:52.683Z",
   "rules": [
     {
       "board": "City Council",
@@ -299,6 +299,48 @@
           "date": "2026-12-03"
         }
       ]
+    },
+    {
+      "board": "Planning Board",
+      "source": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/mbahy0o1/planning-board-meeing-schedule-2026.pdf",
+      "year": 2026,
+      "heading": "Planning Board Meeting Schedule 2026",
+      "sittings": [
+        {
+          "date": "2026-01-14"
+        },
+        {
+          "date": "2026-02-11"
+        },
+        {
+          "date": "2026-03-11"
+        },
+        {
+          "date": "2026-04-08"
+        },
+        {
+          "date": "2026-05-13"
+        },
+        {
+          "date": "2026-06-10"
+        },
+        {
+          "date": "2026-07-08"
+        },
+        {
+          "date": "2026-08-12"
+        },
+        {
+          "date": "2026-09-09"
+        },
+        {
+          "date": "2026-10-14"
+        },
+        {
+          "date": "2026-12-09"
+        }
+      ],
+      "cancelled": ["2026-11-11"]
     }
   ]
 }

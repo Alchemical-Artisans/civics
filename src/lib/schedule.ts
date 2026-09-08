@@ -3,15 +3,17 @@
  *
  * Two boards say so, and they say it differently.
  *
- * **Two boards print their dates.** The License Commission's page carries a
+ * **Three boards publish their dates.** The License Commission's page carries a
  * table headed "CALENDAR OF MEETINGS FOR 2026" listing all twelve; the
  * Conservation Commission's carries eighteen, every three weeks on a Thursday,
  * in the middle column of a table whose other two are the filing deadline and
- * the date a postponed meeting moves to. Nothing is interpreted for either: the
- * dates are used as printed. This is by far the better evidence -- every past
- * date on both carries documents, and the handful of sittings in the data that
- * are *not* on them are special meetings and postponements, which is exactly
- * what one would expect.
+ * the date a postponed meeting moves to; the Planning Board's are not on its
+ * page at all but inside a PDF it links, one per year, as a run of labelled
+ * blocks. Nothing is interpreted for any of them: the dates are used as
+ * printed. This is by far the better evidence -- every past date carries
+ * documents, and the handful of sittings in the data that are *not* on them
+ * are special meetings and postponements, which is exactly what one would
+ * expect.
  *
  * **The City Council prints a rule.** The "Agendas and Minutes" page carries a
  * short standing rule above its document listing: the Council sits every
@@ -70,6 +72,16 @@ export interface MeetingCalendar {
    * License Commission's prints dates and nothing else.
    */
   time?: string
+  /**
+   * Dates the schedule names and then calls off -- the Planning Board's own
+   * "NO MEETING VETERANS DAY!" against 11 November 2026.
+   *
+   * Kept rather than silently dropped so the exclusion is auditable: a parser
+   * that quietly lost dates would look exactly like a board that scheduled
+   * fewer. Nothing on the site draws them; a sitting the board has already
+   * called off is not a sitting, and the calendar says nothing about it.
+   */
+  cancelled?: string[]
 }
 
 /**

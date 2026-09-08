@@ -4,6 +4,8 @@ import {
   parseCalendarDate,
   parseMeetingCalendars,
   parseMeetingRules,
+  parseScheduleLinks,
+  parseScheduleText,
   parseTime,
 } from "./schedule.mjs"
 
@@ -230,5 +232,78 @@ describe("parseMeetingCalendars", () => {
         licensePage,
       ),
     ).toEqual([])
+  })
+})
+
+const planningPage = CALENDAR_PAGES.find((p) => p.board === "Planning Board")
+
+/** The board page's own two sections: this year's schedules, then the archive. */
+const planningHtml = `
+<p>Planning Board Meeting Schedules</p>
+<a href="https://cdn.test/pb-2026.pdf">Planning Board Meeting Schedule 2026</a>
+<a href="https://cdn.test/pb-2025.pdf">Planning Board Meeting Schedule 2025</a>
+<p>Planning Board Meeting Schedule Archive</p>
+<a href="https://cdn.test/old-2024.pdf">Planning Board Meeting Schedule 2024</a>
+<a href="https://cdn.test/old-2025.pdf">Planning Board Meeting Schedule 2025</a>
+<a href="https://cdn.test/agenda.pdf">Planning Board Agenda 9.9.26</a>
+`
+
+/** `pdftotext -layout` output, as the labelled blocks the PDF is written in. */
+const planningText = [
+  "                           2026---PLANNING BOARD---2026",
+  "      Meeting Date:                                          January 14, 2026",
+  "      Escrows-deadline                                       December 17 , 2026",
+  "      Public Hearings-Cut Off Date                           12/3/26-Hearing Cut Off Date.",
+  "      ADVERTISE:                                             12/25/26 & 1/1/26-Advertise dates",
+  "",
+  "      Meeting Date:                                          November 11, 2026",
+  "                                                             NO MEETING VETERANS DAY!",
+  "      Escrows-deadline                                       October 21,2026",
+  "      ADVERTISE:                                             11/26/26 & 12/3/26",
+  "",
+  "      Meeting Date:                                          December 9, 2026",
+  "      Escrows-deadline                                       November 18, 2026",
+].join("\n")
+
+describe("parseScheduleLinks", () => {
+  it("finds a schedule PDF per year, newest section first", () => {
+    const links = parseScheduleLinks(planningHtml, planningPage.pdf)
+    expect(links.map((l) => l.year)).toEqual([2026, 2025, 2024])
+  })
+
+  it("keeps the first link for a year, not the archive's copy", () => {
+    // The page lists 2025 twice -- once at the top and again in the archive.
+    // They are the same schedule, and the one the page leads with is the one.
+    const links = parseScheduleLinks(planningHtml, planningPage.pdf)
+    expect(links.find((l) => l.year === 2025).url).toBe("https://cdn.test/pb-2025.pdf")
+  })
+
+  it("ignores PDFs that are not schedules", () => {
+    const links = parseScheduleLinks(planningHtml, planningPage.pdf)
+    expect(links.some((l) => l.url.endsWith("agenda.pdf"))).toBe(false)
+  })
+})
+
+describe("parseScheduleText", () => {
+  it("reads the Meeting Date line of each block", () => {
+    const { sittings } = parseScheduleText(planningText, 2026)
+    expect(sittings.map((s) => s.date)).toEqual(["2026-01-14", "2026-12-09"])
+  })
+
+  it("drops a date the schedule itself calls off, and reports it", () => {
+    // 11 November carries "NO MEETING VETERANS DAY!" on the line beneath it.
+    // Putting it on the calendar would advertise a meeting already called off.
+    const { sittings, cancelled } = parseScheduleText(planningText, 2026)
+    expect(cancelled).toEqual(["2026-11-11"])
+    expect(sittings.map((s) => s.date)).not.toContain("2026-11-11")
+  })
+
+  it("reads no dates from the other three labelled lines", () => {
+    // Deliberate: this board's own copies of them are full of slips -- an
+    // escrow deadline of "December 17 , 2026" against a meeting in January
+    // 2026 -- so parsing them would publish the city's typos as fact.
+    const { sittings } = parseScheduleText(planningText, 2026)
+    expect(sittings.every((s) => !s.related)).toBe(true)
+    expect(sittings).toHaveLength(2)
   })
 })

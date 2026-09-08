@@ -21,6 +21,7 @@
  *
  * Only what the page says is taken here, either way.
  */
+import { spawn } from "node:child_process"
 import { LISTING_URL, USER_AGENT, retrying } from "./haverhill.mjs"
 
 export { LISTING_URL }
@@ -49,6 +50,15 @@ export const CALENDAR_PAGES = [
     // goes if it is postponed. Both are real dates and neither is a meeting --
     // taking the whole table would treble the board's calendar.
     column: "Meeting Date",
+  },
+  {
+    board: "Planning Board",
+    url: "https://www.haverhillma.gov/government/boards-committees-and-commissions/planning-board/",
+    // This board's dates are not on the page at all: the page links a PDF per
+    // year, and the dates are inside it. Only years from the current one are
+    // fetched -- the page also lists an archive back to 2018, and a schedule
+    // whose year is over has nothing left to project.
+    pdf: /Planning Board Meeting Schedule (\d{4})/i,
   },
 ]
 
@@ -226,6 +236,73 @@ export function parseMeetingCalendars(html, page) {
   return [{ year, heading: text(heading[0]), sittings: ordered, ...(time ? { time } : {}) }]
 }
 
+/**
+ * The schedule PDFs a board page links, newest first, one per year.
+ *
+ * Several boards keep an archive of past years on the same page, so this is
+ * filtered by the caller rather than here: what counts as still worth reading
+ * is a question about today, not about the page.
+ */
+export function parseScheduleLinks(html, pattern) {
+  const out = []
+  for (const m of html.matchAll(/<a[^>]+href="([^"]+\.pdf[^"]*)"[^>]*>([\s\S]*?)<\/a>/gi)) {
+    const label = text(m[2])
+    const year = pattern.exec(label)?.[1]
+    if (year) out.push({ year: Number(year), label, url: m[1] })
+  }
+  // The same year can be linked twice -- once in the current section and again
+  // in the archive. Keep the first, which is the one the page leads with.
+  const seen = new Set()
+  return out.filter(({ year }) => !seen.has(year) && seen.add(year))
+}
+
+/**
+ * The sittings a Planning Board schedule PDF states, from its extracted text.
+ *
+ * The PDF is a run of labelled blocks rather than a table:
+ *
+ * ```
+ * Meeting Date:                 January 14, 2026
+ * Escrows-deadline              December 17 , 2026
+ * Public Hearings-Cut Off Date  12/3/26-Hearing Cut Off Date.
+ * ADVERTISE:                    12/25/26 & 1/1/26-Advertise dates
+ * ```
+ *
+ * Only the `Meeting Date` line is read. **The other three are left alone on
+ * purpose**: this board's own copy of them is full of slips -- an escrow
+ * deadline of "December 17 , 2026" against a meeting on 14 January 2026, a cut
+ * off date of "2/18/226", an "7/1//26" -- so parsing them into dates would
+ * publish the city's typos as fact. The Conservation Commission's equivalent
+ * columns are clean, which is why those are carried and these are not.
+ *
+ * A block can carry an unlabelled line under the date saying the board will not
+ * sit that day -- "NO MEETING VETERANS DAY!" against 11 November 2026. That is
+ * the board saying a scheduled date is off, so the date is dropped: putting it
+ * on the calendar would be advertising a meeting the board has already called
+ * off.
+ */
+const BLOCK_LABEL = /^(?:Meeting Date|Escrows|Public Hearings|ADVERTISE)/i
+
+export function parseScheduleText(pdfText, year) {
+  const lines = pdfText.split(/\r?\n/)
+  const sittings = []
+  const cancelled = []
+  for (const [i, line] of lines.entries()) {
+    const m = line.match(/^\s*Meeting Date:?\s\s+(.+?)\s*$/i)
+    if (!m) continue
+    const date = parseCalendarDate(m[1], year)
+    if (!date) continue
+    // Anything before the next labelled line belongs to this block.
+    let note = ""
+    for (let j = i + 1; j < lines.length && !BLOCK_LABEL.test(lines[j].trim()); j++) {
+      note += ` ${lines[j]}`
+    }
+    if (/NO MEETING/i.test(note)) cancelled.push(date)
+    else sittings.push({ date })
+  }
+  return { sittings, cancelled }
+}
+
 const get = (url, label) =>
   retrying(label, async () => {
     const res = await fetch(url, { headers: { "User-Agent": USER_AGENT } })
@@ -239,11 +316,77 @@ export async function fetchMeetingRules() {
   return rules.map((rule) => ({ ...rule, source: LISTING_URL }))
 }
 
-/** Fetch each board page that prints its own dates, and read them. */
-export async function fetchMeetingCalendars() {
+/**
+ * A PDF's text, via poppler's `pdftotext`.
+ *
+ * Shelled out to rather than pulled in as a library because poppler is already
+ * how this project reads the city's PDFs -- the budget book was checked with
+ * it, and a document's excerpts are cut with it -- and the scrapers run by hand
+ * on a developer's machine, never in CI. A missing binary says so plainly
+ * instead of failing as an empty parse, which would look like the city having
+ * moved the schedule.
+ */
+async function pdfText(url, label) {
+  const res = await retrying(label, async () => {
+    const r = await fetch(url, { headers: { "User-Agent": USER_AGENT } })
+    if (!r.ok) throw new Error(`HTTP ${r.status}`)
+    return Buffer.from(await r.arrayBuffer())
+  })
+  // `spawn` rather than `execFile`: the latter has no way to hand a child its
+  // stdin, and the PDF goes in that way so nothing is written to disk.
+  return new Promise((resolve, reject) => {
+    const child = spawn("pdftotext", ["-layout", "-", "-"])
+    const out = []
+    const err = []
+    child.stdout.on("data", (chunk) => out.push(chunk))
+    child.stderr.on("data", (chunk) => err.push(chunk))
+    child.on("error", (e) =>
+      reject(
+        e.code === "ENOENT"
+          ? new Error("pdftotext not found: install poppler-utils to read schedule PDFs")
+          : e,
+      ),
+    )
+    child.on("close", (code) =>
+      code === 0
+        ? resolve(Buffer.concat(out).toString("utf8"))
+        : reject(new Error(`pdftotext exited ${code}: ${Buffer.concat(err).toString("utf8")}`)),
+    )
+    child.stdin.on("error", reject)
+    child.stdin.end(res)
+  })
+}
+
+/** Fetch each board page that publishes its own dates, and read them. */
+export async function fetchMeetingCalendars({ year = new Date().getFullYear() } = {}) {
   const out = []
   for (const page of CALENDAR_PAGES) {
+    console.log(`  reading ${page.board}...`)
     const html = await get(page.url, `fetch ${page.board} page`)
+
+    if (page.pdf) {
+      // The dates are in a linked PDF, one per year. A schedule whose year is
+      // already out has nothing left to project, so the archive is skipped.
+      for (const link of parseScheduleLinks(html, page.pdf).filter((l) => l.year >= year)) {
+        console.log(`    ${link.label}`)
+        const { sittings, cancelled } = parseScheduleText(
+          await pdfText(link.url, `fetch ${link.label}`),
+          link.year,
+        )
+        if (sittings.length) {
+          out.push({
+            board: page.board,
+            source: link.url,
+            year: link.year,
+            heading: link.label,
+            sittings,
+            ...(cancelled.length ? { cancelled } : {}),
+          })
+        }
+      }
+      continue
+    }
+
     for (const calendar of parseMeetingCalendars(html, page)) {
       out.push({ board: page.board, source: page.url, ...calendar })
     }
