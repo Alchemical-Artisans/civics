@@ -12,7 +12,19 @@
   // When and where, set by the write-up below from what its document actually
   // printed. Absent on a meeting nobody has written up, and on one whose
   // document states none of it.
-  const details = $derived(page.data.details)
+  //
+  // A sitting that reached the calendar off a published schedule has no
+  // document to read any of this from, but the schedule prints the time and
+  // room once at its head for every date it lists -- which is exactly what
+  // this header wants, and what lets a reader put a sitting on their own
+  // calendar before there is an agenda for it. A write-up always wins: it was
+  // read off the notice for that particular sitting, where the schedule speaks
+  // for the year.
+  const scheduled = $derived(meeting.scheduled)
+  const details = $derived(
+    page.data.details ??
+      (scheduled ? { time: scheduled.time, location: scheduled.location } : undefined),
+  )
 
   // A page for a single agenda item titles itself after the item. The meeting
   // logistics stay on the meeting page: they describe the whole sitting, and
@@ -41,8 +53,9 @@
   <title>{heading} - Haverhill Meeting Calendar</title>
   <meta
     name="description"
-    content="{meeting.board}, {formatLongDate(meeting.date)}: the documents the City of Haverhill
-    published for the meeting."
+    content="{meeting.board}, {formatLongDate(meeting.date)}: {scheduled
+      ? `a sitting the City of Haverhill's published meeting schedule lists.`
+      : `the documents the City of Haverhill published for the meeting.`}"
   />
 </svelte:head>
 
@@ -150,6 +163,29 @@
             </a>
           </li>
         {/each}
+        <!-- The schedule takes the place of the documents on a sitting that has
+             none: it is the only thing the city has published saying this
+             sitting exists, so it is this page's record and belongs in the same
+             row the agenda would occupy. -->
+        {#if scheduled}
+          <li class="flex flex-wrap items-center gap-2">
+            <span
+              class="rounded border border-dashed border-slate-400 px-1.5 py-0.5 text-[11px] text-slate-600"
+            >
+              Scheduled
+            </span>
+            <a
+              class="text-slate-600 underline hover:text-slate-900"
+              href={scheduled.document.fileUrl}
+              target="_blank"
+              rel="external noopener noreferrer"
+            >
+              {scheduled.document.title}<span class="sr-only">
+                , opens the city's file in a new tab</span
+              >
+            </a>
+          </li>
+        {/if}
       </ul>
     {/if}
   </header>
@@ -168,6 +204,8 @@
       {#if meeting.written}
         Written up by hand from the city's documents. It may summarise, condense or omit &mdash; the
         city's own files, linked above, are the record.
+      {:else if scheduled}
+        The city's own schedule, linked above, is the record that this sitting was to be held.
       {:else}
         The city's own files, linked above, are the record.
       {/if}

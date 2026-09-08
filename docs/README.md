@@ -13,7 +13,7 @@ link to the original at the top, or as the city's own PDF.
 | ---------------------------------------- | ------------------------------------------------------------------- |
 | [scraping.md](./scraping.md)             | How documents are pulled off the city's site                        |
 | [dates.md](./dates.md)                   | How a meeting date is determined, and why that is hard              |
-| [data-format.md](./data-format.md)       | The `meetings.json` schema, field by field                          |
+| [data-format.md](./data-format.md)       | The `meetings.json` and `schedule.json` schemas, field by field     |
 | [document-pages.md](./document-pages.md) | Writing a page for a meeting document, and why they are hand-made   |
 | [budget-pages.md](./budget-pages.md)     | The budget half, and writing up a section of a budget book          |
 | [calendar-page.md](./calendar-page.md)   | How the page renders, filters, and prerenders                       |
@@ -105,6 +105,9 @@ src/lib/
   budget-table.spec.ts     unit tests for it
   calendar.ts              pure date/grouping helpers used by the page
   calendar.spec.ts         unit tests for those helpers
+  meetings.ts              meetings.json plus the schedule, as the site shows them
+  schedule.ts              the transcribed meeting schedules, expanded to dates
+  schedule.spec.ts         unit tests for it, and checks on the transcription
   router.ts                every internal URL the site builds, in one place
   router.spec.ts           unit tests for it
   budget.ts                the budget listing, section slugs and book contents
@@ -112,6 +115,7 @@ src/lib/
   data/meetings.json       the committed meeting dataset
   data/budget.json         the committed budget and audit listing
   data/reviews.json        human corrections, overlaid onto the meetings
+  data/schedule.json       meeting schedules, transcribed by hand from a scan
 
 src/routes/
   +page.svelte             `/`, the landing page: a card to each half
@@ -148,7 +152,8 @@ static/
 
 As of the last refresh: **281 documents** spanning **2025-01-07 to 2026-08-27**,
 across 10 boards. 280 resolve to a date; the one that does not is a schedule
-document rather than a meeting. Those become **275 document pages** — a few PDFs
+document rather than a meeting, and it is read as a schedule instead -- see
+[data-format.md](./data-format.md#schedulejson-which-no-scraper-writes). Those become **275 document pages** — a few PDFs
 are published under two media pages each, and one listing row has no file at all.
 A page is written for a document when somebody writes one; the rest link
 straight to the city's PDF, which [document-pages.md](./document-pages.md)

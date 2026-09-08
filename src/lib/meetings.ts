@@ -7,7 +7,14 @@
  * browser except the data it returns.
  */
 import raw from "./data/meetings.json"
-import { groupIntoMeetings, type Meeting, type MeetingDocument, type MeetingKind } from "./calendar"
+import {
+  groupIntoMeetings,
+  withScheduled,
+  type Meeting,
+  type MeetingDocument,
+  type MeetingKind,
+} from "./calendar"
+import { scheduledSittings } from "./schedule"
 
 /**
  * The meetings somebody has written up by hand.
@@ -43,6 +50,8 @@ export interface Calendar {
   written: number
   /** Documents shown, across every meeting. */
   documents: number
+  /** Meetings a published schedule lists and no document covers. */
+  scheduled: number
 }
 
 /**
@@ -75,7 +84,15 @@ export function calendar(): Calendar {
     docId: m.docId,
   }))
 
-  const meetings = groupIntoMeetings(documents, (id) => written.has(id))
+  // The documents first, then the sittings a published schedule lists that
+  // none of them account for. Order matters: a scheduled date with an agenda is
+  // an ordinary meeting, and `withScheduled` only fills the gaps left over.
+  const isWritten = (id: string) => written.has(id)
+  const meetings = withScheduled(
+    groupIntoMeetings(documents, isWritten),
+    scheduledSittings(),
+    isWritten,
+  )
 
   return {
     meetings,
@@ -86,5 +103,6 @@ export function calendar(): Calendar {
     flagged: kept.filter((m) => m.needsReview).length,
     written: meetings.filter((m) => m.written).length,
     documents: documents.length,
+    scheduled: meetings.filter((m) => m.scheduled).length,
   }
 }

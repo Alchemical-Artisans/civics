@@ -2,6 +2,26 @@ import { expect, test } from "@playwright/test"
 import { existsSync, readdirSync, readFileSync } from "node:fs"
 import { join } from "node:path"
 import { fileURLToPath } from "node:url"
+import meetingsData from "../../../lib/data/meetings.json" with { type: "json" }
+import schedule from "../../../lib/data/schedule.json" with { type: "json" }
+import { meetingId } from "../../../lib/calendar"
+
+/**
+ * The sittings a published schedule lists and no document covers, worked out
+ * from the same two files the site builds from -- read rather than hardcoded,
+ * for the same reason `written` is read off the directories.
+ */
+const documented = new Set(
+  meetingsData.meetings.filter((m) => m.date).map((m) => `${m.board}::${m.date}`),
+)
+const scheduledOnly = schedule.schedules.flatMap((s) =>
+  s.months.flatMap(({ month, days }) =>
+    days
+      .map((day) => `${s.year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`)
+      .filter((date) => !documented.has(`${s.board}::${date}`))
+      .map((date) => ({ id: meetingId(s.board, date), document: s.document })),
+  ),
+)
 
 /**
  * The meetings somebody has written up: one route directory each, named for
@@ -110,5 +130,46 @@ test.describe("meeting pages", () => {
   test("has no page for a meeting that never happened", async ({ page }) => {
     const response = await page.goto("/calendar/meetings/not-a-board-2026-01-01")
     expect(response?.status()).toBe(404)
+  })
+
+  // Skipped only if the city has since published something for every date its
+  // own schedule lists, which would be the gap closing rather than a break.
+  test.describe(() => {
+    test.skip(
+      scheduledOnly.length === 0,
+      "every scheduled sitting is covered by a document the city published",
+    )
+
+    test("a scheduled sitting says so, and cites the schedule instead of files", async ({
+      page,
+    }) => {
+      const { id, document } = scheduledOnly[0]
+      await page.goto(`/calendar/meetings/${id}`)
+      await expect(page.getByRole("article")).toContainText("published no agenda or minutes")
+
+      // The schedule stands where the agenda would: the only thing the city
+      // published saying this sitting exists. Located by href, since the site
+      // header's own menu of fiscal years links the city's CDN too.
+      const source = page.locator(`a[href="${document.fileUrl}"]`)
+      await expect(source).toHaveCount(1)
+      await expect(source).toHaveAttribute("target", "_blank")
+      await expect(page.locator("header").filter({ has: source })).toContainText("Scheduled")
+
+      // The time and room are printed once at the head of the schedule, which
+      // is what lets the header state them with no agenda to read.
+      await expect(
+        page.locator("header").getByText(/^[A-Z][a-z]+day, [A-Z][a-z]+ \d{1,2}, \d{4} at \d/),
+      ).toBeVisible()
+    })
+
+    test("a scheduled sitting can still be added to a calendar", async ({ page }) => {
+      // The point of showing a sitting before its agenda exists: a reader can
+      // put it in their own calendar off the schedule alone.
+      await page.goto(`/calendar/meetings/${scheduledOnly[0].id}`)
+      await page.getByRole("button", { name: "Add to calendar" }).click()
+      const google = page.getByRole("link", { name: /Google Calendar/ })
+      const href = new URL((await google.getAttribute("href"))!)
+      expect(href.searchParams.get("dates")).toMatch(/^\d{8}T\d{6}\/\d{8}T\d{6}$/)
+    })
   })
 })

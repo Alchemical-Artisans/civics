@@ -4,8 +4,9 @@ Route: `/calendar`. Files:
 [`+page.ts`](../src/routes/calendar/+page.ts) (build-time data),
 [`+page.svelte`](../src/routes/calendar/+page.svelte) (UI),
 [`src/lib/meetings.ts`](../src/lib/meetings.ts) (turning `meetings.json` into
-what the site shows), and [`src/lib/calendar.ts`](../src/lib/calendar.ts) (pure
-helpers).
+what the site shows), [`src/lib/schedule.ts`](../src/lib/schedule.ts) (the
+sittings a published schedule lists), and
+[`src/lib/calendar.ts`](../src/lib/calendar.ts) (pure helpers).
 
 ## One entry per meeting, not per document
 
@@ -32,6 +33,85 @@ generated from data rather than written, so there is nothing to hand-write, and
 `+page.ts` exports `entries()` naming every id. That makes the build fail loudly
 if the data and the links ever disagree, where relying on SvelteKit's crawler
 would quietly emit fewer pages.
+
+## Sittings off the schedule, not off a document
+
+One of the documents in the listing is not about a sitting at all: it is the
+City Council's meeting schedule for a calendar year, a page of month-and-days
+with `7:00 PM Council Chambers Room 202` printed once at its head. Read as a
+document it is undated and drops off the calendar. Read as a schedule it says
+which sittings are to be held, which the agendas cannot: **a sitting that has
+not happened yet has no agenda, and a sitting the city published nothing for
+has nothing at all.**
+
+So the calendar carries a second kind of entry. `withScheduled()` in
+`calendar.ts` takes the meetings built from documents and adds a `Meeting` for
+every scheduled date that has none — same board-and-date identity, so a
+scheduled date the city did publish an agenda for is an ordinary meeting and is
+left alone. The added entry has `documents: []` and a `scheduled` field naming
+the schedule it came off.
+
+**The claim is about the schedule and nothing more.** A date listed there was
+scheduled; whether the sitting was held, cancelled or continued is not
+something a schedule can say, and neither the entry, the page nor the footer
+says it.
+
+### Nothing scrapes this
+
+The one schedule the city has published is a scan — a Toshiba copier's JPEG
+wrapped in a PDF, with no text layer at all — so there is nothing to parse.
+It is transcribed by hand into
+[`src/lib/data/schedule.json`](../src/lib/data/schedule.json), the way the
+FY2027 budget book's own pages were read off rendered images. That and
+`glossary.json` are the two files in `data/` no scraper writes, and
+[`budget:update`](./operations.md) and `calendar:update` will never touch
+either.
+
+The JSON keeps the document's own shape — a month and its days — rather than a
+flat list of dates, so a transcription can be checked against the page line by
+line. `sittingsOf()` expands it; the dates are built as strings, never through
+the local-time `Date` constructor, for the reason the rest of this file is
+UTC. [`schedule.spec.ts`](../src/lib/schedule.spec.ts) checks that every
+transcribed day exists in its month and that all 35 of the 2025 dates land on a
+Tuesday, which is the cheapest way to catch a mistyped digit.
+
+### What the reader sees
+
+On the grid, a scheduled sitting is drawn as a **dashed outline** rather than a
+filled chip, and carries none of the `A`/`M` letters — the city has published
+nothing for it, and an entry that looked like one carrying an agenda would
+claim more than the schedule says. Its accessible name reads `, scheduled; no
+documents published`.
+
+It has its own filter beside Agendas and Minutes rather than joining them: the
+kind toggles hide documents, and a sitting with no documents has no kind to
+filter on.
+
+On the meeting page the schedule takes the row the agenda would occupy, chip
+and all, linked to the city's own file. The time and room the schedule prints
+once for the year become the header's `MeetingDetails` where no write-up
+supplies its own — which is the point of the entry, since it lets a reader put
+a sitting in their own calendar off the schedule alone, before there is an
+agenda. A write-up always wins: it was read off the notice for that particular
+sitting, where the schedule speaks for the year.
+
+The footer discloses the count and what it does and does not mean, in the same
+voice as the undated and flagged counts below.
+
+**Today no date qualifies**, and the calendar shows no scheduled entries at all.
+One did: 28 January 2025, which the Council scheduled and which appeared to
+carry nothing. It turned out the minutes exist and were filed under 25 January,
+a Saturday — the city's `Meeting Date` field says 01/26 and the UTC rollback
+took it back a day. Nothing flagged that: no source contradicted it. The
+schedule did, by putting an empty Tuesday one cell away from a Saturday sitting
+with minutes, and the date is corrected in `reviews.json`. See
+[dates.md](./dates.md#a-wrong-date-nothing-flags).
+
+So the machinery currently displays nothing, and both halves of the point still
+hold. The day the city posts its next year's schedule, transcribing it puts
+every future sitting on the calendar at once; and in the meantime a board's own
+list of the days it sits is the only independent check this data has on the
+dates documents are filed under.
 
 ## Prerendering
 
@@ -68,6 +148,8 @@ the browser.
 **Groups into meetings.** `groupIntoMeetings()` collapses the documents by board
 and date. Undated documents are dropped here rather than later, so a `Meeting`
 always has a date and `groupByDate()` never has to check for one.
+`withScheduled()` then adds the sittings a published schedule lists and no
+document covers — see above.
 
 The result: 282 records become 276 documents in 166 meetings, with `undated`,
 `duplicates`, and `flagged` counts passed alongside for the footer.
@@ -107,6 +189,7 @@ Svelte 5 runes, in a small amount of state:
 | `chosen`                      | the month the reader navigated to, or `null` for the default |
 | `activeBoards`                | a `SvelteSet` of board filters; empty means all              |
 | `showAgendas` / `showMinutes` | document-kind toggles                                        |
+| `showScheduled`               | whether sittings off a schedule are shown                    |
 | `today`                       | today's date, filled in after mount                          |
 
 Two details are deliberate:
@@ -380,16 +463,21 @@ than present uncertain data as authoritative.
 [`page.svelte.e2e.ts`](../src/routes/calendar/page.svelte.e2e.ts) runs against
 the production build and covers: the month heading renders, every entry links to
 a meeting and is same-tab, month navigation works, board filtering narrows
-results, and unchecking agendas drops the document count without dropping the
-meetings that still have minutes.
+results, unchecking agendas drops the document count without dropping the
+meetings that still have minutes, and a sitting off the schedule is drawn as an
+outline and hidden by its own toggle. Which sitting that is comes from
+`schedule.json` against `meetings.json`, so the test follows the data rather
+than pinning a date the city may yet publish an agenda for.
 
 [`meetings/page.svelte.e2e.ts`](../src/routes/calendar/meetings/page.svelte.e2e.ts)
 covers the meeting pages, enumerating the written ones from the route
 directories that exist: a written meeting is what the calendar lands on and has
 a transcription on it, the board and date render with the city's files beside
 them, a meeting nobody wrote up still lists its files, an item page sits beneath
-its meeting and returns to it, the back link reaches the calendar, and an
-unknown id returns a 404.
+its meeting and returns to it, the back link reaches the calendar, an unknown id
+returns a 404, and a sitting off the schedule cites the schedule in place of
+files, states the time it prints, and can still be added to a reader's own
+calendar.
 
 [`src/routes/page.svelte.e2e.ts`](../src/routes/page.svelte.e2e.ts) covers the
 root and the header: `/` is a landing page the reader stays on, with a card to

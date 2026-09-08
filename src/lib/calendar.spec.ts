@@ -10,7 +10,9 @@ import {
   meetingId,
   monthKey,
   monthsCovered,
+  withScheduled,
   type MeetingDocument,
+  type ScheduledSitting,
 } from "./calendar"
 
 const doc = (
@@ -181,5 +183,65 @@ describe("groupIntoMeetings", () => {
 
   it("drops undated documents, and the meeting with them", () => {
     expect(groupIntoMeetings([doc(null)])).toEqual([])
+  })
+})
+
+const sitting = (date: string, board = "City Council"): ScheduledSitting => ({
+  board,
+  date,
+  time: "7:00 PM",
+  location: { name: "Council Chambers Room 202", mapQuery: "4 Summer Street, Haverhill, MA 01830" },
+  document: {
+    title: "City Council Amended Schedule 2025",
+    pageUrl: "/p",
+    fileUrl: "https://example.test/schedule.pdf",
+  },
+})
+
+describe("withScheduled", () => {
+  it("adds a sitting the schedule lists and no document covers", () => {
+    const meetings = withScheduled([], [sitting("2025-01-28")])
+    expect(meetings).toHaveLength(1)
+    expect(meetings[0].id).toBe("city-council-2025-01-28")
+    expect(meetings[0].documents).toEqual([])
+    expect(meetings[0].scheduled?.time).toBe("7:00 PM")
+  })
+
+  it("leaves a scheduled date the city published a document for alone", () => {
+    // The documents are the record; the schedule only fills what they leave
+    // empty, so an entry with an agenda must not pick up a `scheduled` flag
+    // that would draw it as an absence.
+    const documented = groupIntoMeetings([doc("2025-01-07")])
+    const meetings = withScheduled(documented, [sitting("2025-01-07")])
+    expect(meetings).toHaveLength(1)
+    expect(meetings[0].scheduled).toBeUndefined()
+    expect(meetings[0].documents).toHaveLength(1)
+  })
+
+  it("matches on board as well as date", () => {
+    // Two bodies can sit the same evening, and a Conservation Commission
+    // agenda says nothing about whether the Council met.
+    const other = groupIntoMeetings([doc("2025-01-28", "Conservation Commission")])
+    const meetings = withScheduled(other, [sitting("2025-01-28")])
+    expect(meetings.map((m) => m.id)).toEqual([
+      "city-council-2025-01-28",
+      "conservation-commission-2025-01-28",
+    ])
+  })
+
+  it("adds a date only once however many times it is listed", () => {
+    const meetings = withScheduled([], [sitting("2025-01-28"), sitting("2025-01-28")])
+    expect(meetings).toHaveLength(1)
+  })
+
+  it("keeps the whole list in date then board order", () => {
+    const documented = groupIntoMeetings([doc("2025-02-04"), doc("2025-01-07")])
+    const meetings = withScheduled(documented, [sitting("2025-01-28")])
+    expect(meetings.map((m) => m.date)).toEqual(["2025-01-07", "2025-01-28", "2025-02-04"])
+  })
+
+  it("marks a scheduled sitting written when somebody has written it up", () => {
+    const meetings = withScheduled([], [sitting("2025-01-28")], (id) => id.endsWith("2025-01-28"))
+    expect(meetings[0].written).toBe(true)
   })
 })

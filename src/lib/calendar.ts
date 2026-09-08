@@ -20,6 +20,37 @@ export interface MeetingDocument {
 }
 
 /**
+ * One sitting a published meeting schedule lists.
+ *
+ * The city publishes a board's meeting dates for a calendar year as a document
+ * of its own -- a page of month-and-days with the time and room printed once at
+ * the head. It is not an agenda and not minutes, so it is not a document about
+ * any one sitting; it is a statement that these sittings are to be held, which
+ * is what makes it worth reading apart from the rest of the listing.
+ *
+ * Transcribed by hand into `src/lib/data/schedule.json` and expanded by
+ * `$lib/schedule`; see there for why no scraper produces this.
+ */
+export interface ScheduledSitting {
+  board: string
+  /** `YYYY-MM-DD`, from the schedule's year and one of its month's days. */
+  date: string
+  /** Start time exactly as the schedule prints it, e.g. `"7:00 PM"`. */
+  time?: string
+  /** Where the schedule says the board sits; shaped as `MeetingDetails` is. */
+  location?: {
+    name: string
+    mapQuery: string
+  }
+  /** The schedule document itself, so a sitting off it can cite its source. */
+  document: {
+    title: string
+    pageUrl: string
+    fileUrl: string
+  }
+}
+
+/**
  * One sitting of one board, and every document the city published for it.
  *
  * The city publishes an agenda and minutes as separate records, but they are
@@ -40,8 +71,29 @@ export interface Meeting {
   id: string
   board: string
   date: string
-  /** Published order, agendas before minutes. Never empty. */
+  /**
+   * Published order, agendas before minutes. Empty on a sitting that reached
+   * the calendar from a published schedule rather than from a document -- see
+   * `scheduled`, which is set on exactly those.
+   */
   documents: MeetingDocument[]
+  /**
+   * The schedule entry that put this sitting on the calendar, set only where
+   * the city has published no document for it at all.
+   *
+   * A board that publishes its year's meeting dates in advance has said a
+   * sitting is coming before there is an agenda to say what will be on it, and
+   * the calendar of a body that meets every second Tuesday should show the
+   * Tuesdays. It is equally the record's own gaps made visible: a scheduled
+   * date still carrying nothing months later is a sitting the city published
+   * neither agenda nor minutes for, which a calendar built only from documents
+   * has no way to show.
+   *
+   * The claim is about the schedule and nothing more. A date listed here was
+   * scheduled; whether the sitting was held, cancelled or continued is not
+   * something the schedule can say, and nothing here says it.
+   */
+  scheduled?: ScheduledSitting
   /**
    * True when somebody has written this meeting up by hand, which is to say
    * when `src/routes/calendar/meetings/<id>/+page.svelte` exists. The route
@@ -94,6 +146,46 @@ export function groupIntoMeetings(
     m.written = written(m.id)
   }
   return meetings.sort((a, b) => a.date.localeCompare(b.date) || a.board.localeCompare(b.board))
+}
+
+/**
+ * Add the sittings a published schedule lists and no document covers.
+ *
+ * Board and date are the identity here exactly as they are for a document, so
+ * a scheduled date the city later published an agenda for is already on the
+ * calendar and is left alone -- the schedule is only ever consulted for dates
+ * nothing else accounts for. That also means an agenda for a date the schedule
+ * never listed (a special meeting, a continued sitting) is unaffected: the
+ * documents are the record, and this only fills what they leave empty.
+ *
+ * Pure, and takes its sittings as an argument rather than reading the JSON, for
+ * the same reason the rest of this file does: it tests without a fixture file
+ * and without rendering.
+ */
+export function withScheduled(
+  meetings: Meeting[],
+  sittings: ScheduledSitting[],
+  written: (id: string) => boolean = () => false,
+): Meeting[] {
+  const known = new Set(meetings.map((m) => m.id))
+  const out = [...meetings]
+  for (const sitting of sittings) {
+    const id = meetingId(sitting.board, sitting.date)
+    // A schedule can list a date twice, and two schedules can overlap at a
+    // year's edge, so this guards against duplicates within the schedule as
+    // much as against the documents.
+    if (known.has(id)) continue
+    known.add(id)
+    out.push({
+      id,
+      board: sitting.board,
+      date: sitting.date,
+      documents: [],
+      scheduled: sitting,
+      written: written(id),
+    })
+  }
+  return out.sort((a, b) => a.date.localeCompare(b.date) || a.board.localeCompare(b.board))
 }
 
 /**

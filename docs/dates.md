@@ -162,6 +162,31 @@ Deciding these individually is a data-quality task for a human. Because
 `calendar:update` never rewrites existing records, manual corrections made
 directly in `meetings.json` will survive future refreshes.
 
+## A wrong date nothing flags
+
+The flags above only fire where two sources disagree. A record whose only date
+is wrong, with nothing to contradict it, passes every check.
+
+`CityCouncil_1.28.25_minutes` is one. The city's `Meeting Date` field said
+`01/26/2025 12:00 AM`, which the UTC rollback turned into `2025-01-25`. The
+filename carries no unambiguous date (`12825` does not split one way), so
+`filenameDate` was null, `dateConflict` false, `needsReview` false -- and the
+Council appeared to have met on a Saturday. The document's own first line reads
+`Tuesday, January 28, 2025 at 7:00 PM`.
+
+**The schedule is what caught it.** Reading the Council's published meeting
+schedule (see
+[calendar-page.md](./calendar-page.md#sittings-off-the-schedule-not-off-a-document))
+put 28 January on the calendar as a sitting with no documents, one cell away
+from a Saturday sitting with minutes -- which is what a wrong date looks like
+once there is something to check it against. It is corrected in
+[`reviews.json`](./data-format.md#corrections-reviewsjson), so it survives a
+rebuild.
+
+That is the second reason to read the schedule, after showing sittings that
+have not happened yet: a body's own list of the days it sits is the only
+independent check this data has on the dates the city files documents under.
+
 ## What `needsReview` means
 
 A record is flagged when any of these hold:

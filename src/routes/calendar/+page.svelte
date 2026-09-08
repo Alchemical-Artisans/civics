@@ -38,6 +38,11 @@
   const activeBoards = new SvelteSet<string>()
   let showAgendas = $state(true)
   let showMinutes = $state(true)
+  // Scheduled sittings are a third thing on the grid rather than a third kind
+  // of document, so they get their own toggle rather than joining `wanted`
+  // below: a meeting the city has published nothing for has no document kind
+  // to filter on.
+  let showScheduled = $state(true)
 
   // `today` stays empty during prerender and fills in after mount, so the
   // highlight never causes a hydration mismatch.
@@ -59,7 +64,9 @@
     all
       .filter((m) => !activeBoards.size || activeBoards.has(m.board))
       .map((m) => ({ ...m, documents: m.documents.filter((d) => wanted(d.kind)) }))
-      .filter((m) => m.documents.length > 0),
+      // A scheduled sitting has no documents at all, so the kind toggles have
+      // nothing to say about it and its own toggle decides on its own.
+      .filter((m) => (m.scheduled ? showScheduled : m.documents.length > 0)),
   )
 
   const byDate = $derived(groupByDate(meetings))
@@ -95,6 +102,23 @@
       : kind === "minutes"
         ? "bg-emerald-100 text-emerald-900 hover:bg-emerald-200"
         : "bg-slate-100 text-slate-900 hover:bg-slate-200"
+
+  /**
+   * A sitting off the schedule is drawn as an outline rather than a filled
+   * chip: the city has published nothing for it, and an entry that looks
+   * exactly like one carrying an agenda would claim more than the schedule
+   * says. Dashed, because the same shape with a solid edge reads as a
+   * different colour of the same thing rather than as an absence.
+   */
+  const entryClass = (m: Meeting) =>
+    m.scheduled
+      ? "border border-dashed border-slate-400 text-slate-600 hover:bg-slate-100"
+      : "bg-slate-100 text-slate-900 hover:bg-slate-200"
+
+  const entryTitle = (m: Meeting) =>
+    m.scheduled
+      ? `${m.board} — scheduled; no documents published`
+      : `${m.board} — ${m.documents.length} document${m.documents.length === 1 ? "" : "s"}`
 </script>
 
 <svelte:head>
@@ -131,6 +155,15 @@
         <input type="checkbox" bind:checked={showMinutes} class="rounded border-slate-300" />
         <span class="inline-flex items-center gap-1">
           <span class="h-2.5 w-2.5 rounded-full bg-emerald-500" aria-hidden="true"></span> Minutes
+        </span>
+      </label>
+      <label class="flex items-center gap-2 text-sm text-slate-700">
+        <input type="checkbox" bind:checked={showScheduled} class="rounded border-slate-300" />
+        <span class="inline-flex items-center gap-1">
+          <span
+            class="h-2.5 w-2.5 rounded-full border border-dashed border-slate-500"
+            aria-hidden="true"
+          ></span> Scheduled
         </span>
       </label>
     </div>
@@ -231,15 +264,16 @@
                     <li>
                       <a
                         href={linkFor(m)}
-                        title="{m.board} — {m.documents.length} document{m.documents.length === 1
-                          ? ''
-                          : 's'}"
-                        class="flex items-center gap-1 rounded bg-slate-100 px-1 py-0.5 text-[11px] leading-tight text-slate-900 transition hover:bg-slate-200"
+                        title={entryTitle(m)}
+                        class="flex items-center gap-1 rounded px-1 py-0.5 text-[11px] leading-tight transition {entryClass(
+                          m,
+                        )}"
                       >
                         <span class="min-w-0 flex-1 truncate">{m.board}</span>
                         <!-- One letter per document, coloured by kind: the
                              reader can see at a glance whether a meeting has
-                             minutes yet without opening it. -->
+                             minutes yet without opening it. A scheduled sitting
+                             has none, and its outline says so. -->
                         <span class="flex shrink-0 gap-0.5" aria-hidden="true">
                           {#each m.documents as doc, i (i)}
                             <span
@@ -251,9 +285,15 @@
                             </span>
                           {/each}
                         </span>
-                        <span class="sr-only">
-                          , {m.documents.length} document{m.documents.length === 1 ? "" : "s"}</span
-                        >
+                        {#if m.scheduled}
+                          <span class="sr-only">, scheduled; no documents published</span>
+                        {:else}
+                          <span class="sr-only">
+                            , {m.documents.length} document{m.documents.length === 1
+                              ? ""
+                              : "s"}</span
+                          >
+                        {/if}
                       </a>
                     </li>
                   {/each}
@@ -291,6 +331,13 @@
                         {doc.kind}
                       </span>
                     {/each}
+                    {#if m.scheduled}
+                      <span
+                        class="ml-2 rounded border border-dashed border-slate-400 px-1.5 py-0.5 text-[11px] text-slate-600"
+                      >
+                        scheduled
+                      </span>
+                    {/if}
                   </a>
                 </li>
               {/each}
@@ -322,6 +369,14 @@
         {data.duplicates} duplicate listing{data.duplicates === 1 ? "" : "s"} collapsed.
       {/if}
     </p>
+    {#if data.scheduled > 0}
+      <p class="mt-1">
+        {data.scheduled} sitting{data.scheduled === 1 ? "" : "s"} shown as scheduled: a published meeting
+        schedule lists {data.scheduled === 1 ? "it" : "them"} and the city has published no agenda or
+        minutes. That the schedule listed a date is all it says; whether the sitting was held is not something
+        the schedule records.
+      </p>
+    {/if}
     {#if data.flagged > 0}
       <p class="mt-1">
         {data.flagged} document{data.flagged === 1 ? "" : "s"} carry a meeting date that disagrees with

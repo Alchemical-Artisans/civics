@@ -197,3 +197,58 @@ run summary and from the warning count in the page footer.
 `docId` is re-derived on every run from the file URL, so there is no point
 editing it. To give a document a page, add the HTML file rather than changing
 anything here.
+
+## `schedule.json`, which no scraper writes
+
+Location: [`src/lib/data/schedule.json`](../src/lib/data/schedule.json).
+
+The city publishes the City Council's meeting dates for a calendar year as a
+document of its own. It is in the same listing as the agendas, but it is not
+about a sitting, so it resolves to no date and drops out of `meetings.json` --
+it is the one undated record the footer counts. Read as a schedule instead it
+says which sittings are to be held, which is what puts a sitting on the calendar
+before any agenda exists, and what shows a date the city published nothing for
+at all.
+
+**It cannot be scraped.** The file is a scan -- a Toshiba copier's JPEG wrapped
+in a PDF, with no text layer -- so it is transcribed by hand, the way the FY2027
+budget book was. `glossary.json` is the only other file here no script writes.
+
+```json
+{
+  "source": "https://www.haverhillma.gov/government/agendas-and-minutes/",
+  "schedules": [
+    {
+      "board": "City Council",
+      "year": 2025,
+      "document": { "title": "…", "pageUrl": "/document-manager/…", "fileUrl": "https://media…" },
+      "time": "7:00 PM",
+      "location": {
+        "name": "Council Chambers Room 202",
+        "mapQuery": "4 Summer Street, Haverhill, MA 01830"
+      },
+      "months": [{ "month": 1, "days": [7, 14, 28] }]
+    }
+  ]
+}
+```
+
+| Field      | Meaning                                                                        |
+| ---------- | ------------------------------------------------------------------------------ |
+| `board`    | Matched against `meetings.json`'s `board`, so it must be spelled the same way. |
+| `year`     | The calendar year the schedule covers.                                         |
+| `document` | The schedule itself, so a sitting off it can link its source.                  |
+| `time`     | The start time as the document prints it, e.g. `7:00 PM`. Optional.            |
+| `location` | Where it says the board sits; `mapQuery` is the geocodable address.            |
+| `months`   | A month number and its days, exactly as the page lists them.                   |
+
+**`months` keeps the document's own shape** rather than a flat list of dates, so
+a transcription can be checked against the page line by line.
+[`schedule.ts`](../src/lib/schedule.ts) expands it; see
+[calendar-page.md](./calendar-page.md#sittings-off-the-schedule-not-off-a-document)
+for what the calendar then does with it, and for the one thing these entries do
+not claim -- that the sitting was held.
+
+To transcribe a new one, render the PDF (`pdftoppm -png -r 150`) and read it,
+then add a `schedules` entry. `schedule.spec.ts` will fail on a day that does
+not exist in its month.
