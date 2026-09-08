@@ -27,6 +27,7 @@ npm run calendar:update    # add documents published since the last run
 npm run calendar:rebuild   # re-scrape everything from scratch
 npm run boards:update      # re-scrape the board pages and the city's two archives
 npm run cache -- --review  # download the flagged documents so a date can be checked
+npm run links:check        # HEAD every linked file; find the ones the city has broken
 npm run budget:update      # re-scrape the budget and audit listing
 npm run schedule:update    # re-read the boards' meeting rules and calendars
 ```
@@ -302,3 +303,34 @@ network access — the conversion heuristics are tested against inline fixtures
 rather than real PDFs, so no binary is needed either. The end-to-end tests run
 against a real production build. Neither touches the city's servers, so the
 whole suite works offline.
+
+## What needs your attention
+
+Every run ends with the same block, and it is the last thing printed:
+
+```
+──────────────────────────────────────────────────────────────────────────
+  NEEDS YOUR ATTENTION -- 159 record(s)
+
+        1  No date could be resolved at all
+       75  The document's own filename contradicts its date
+       84  The city's own link is broken
+
+  Every one of them, with the file to open:
+    .cache/needs-attention.txt
+```
+
+The counts are complete and the full list is written to a file rather than
+truncated into the console — the summary used to print fifteen records and "and
+62 more", which named the problem without giving anyone a way to work through
+it. The file groups records by what is wrong with them, says what to do about
+each kind, and gives the city's own filename and URL for every one.
+
+Then `npm run cache -- --review` fetches those documents, and the answer goes in
+[`reviews.json`](./data-format.md#corrections-reviewsjson).
+
+**Broken links are only counted once `links:check` has run.** Whether a URL
+resolves is a fact about the city's site today rather than about the record, so
+it is not stored in `meetings.json`; it lives in `.cache/link-status.json` and is
+reused between runs, so only newly-added documents are fetched. The block says
+so when it has never run.

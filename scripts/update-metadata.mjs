@@ -2,7 +2,7 @@
 /**
  * Refresh everything this site derives from the City of Haverhill.
  *
- * Two halves, four scrapes, one command. They stay separate scripts because
+ * Two halves, five steps, one command. They stay separate scripts because
  * they are genuinely different jobs -- the calendar diffs a listing and then
  * resolves a media page per new document, the budget replaces twenty-two rows
  * in a single request, the schedule re-reads three sentences of prose off the
@@ -32,6 +32,9 @@ const STEPS = [
   { name: "board pages", script: "update-board-pages.mjs" },
   { name: "budget", script: "update-budget.mjs" },
   { name: "schedule", script: "update-schedule.mjs" },
+  // Last, and after everything that can add a document: it checks every link
+  // the calendar carries, and ends with the run's "needs your attention" block.
+  { name: "links", script: "check-links.mjs" },
 ]
 
 const args = process.argv.slice(2)

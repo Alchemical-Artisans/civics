@@ -53,10 +53,6 @@ export function summarize(meetings) {
   }
 }
 
-/** The PDF's own filename, which is how you find the document to check it. */
-const filenameOf = (fileUrl) =>
-  fileUrl ? decodeURIComponent(fileUrl.split("/").pop() ?? "") : "(no file)"
-
 export function printSummary(meetings, written = new Set()) {
   const s = summarize(meetings)
   console.log(`\n  ${s.total} meetings, ${s.dated} with a resolved date`)
@@ -73,16 +69,7 @@ export function printSummary(meetings, written = new Set()) {
         `${docs.withPage} written up here, ${docs.withoutPage} linking straight to the city's PDF`,
     )
   }
-  if (s.review.length) {
-    console.log(`\n  ${s.review.length} need review (no date, or an ambiguous filename date):`)
-    for (const m of s.review.slice(0, 15)) {
-      // The filename is here because it is usually the thing that disagrees:
-      // most flagged records are a media-page date contradicting a date in the
-      // PDF's own name, so this is what you open to settle it.
-      console.log(
-        `    - ${m.date ?? "????-??-??"}  ${m.title}  [${m.dateSource}]  ${filenameOf(m.fileUrl)}`,
-      )
-    }
-    if (s.review.length > 15) console.log(`    ... and ${s.review.length - 15} more`)
-  }
+  // What needs a person is printed by `printAttention`, last and in full --
+  // this used to end with fifteen flagged records and "and 62 more", which
+  // named the problem without giving anyone a way to work through it.
 }

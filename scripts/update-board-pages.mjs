@@ -23,6 +23,7 @@ import { LISTING_URL, resolveDocument } from "./lib/haverhill.mjs"
 import { BOARD_PAGES, fetchBoardDocuments } from "./lib/board-pages.mjs"
 import { ARCHIVE_PAGES, fetchArchives } from "./lib/archives.mjs"
 import { loadStore, saveStore, printSummary } from "./lib/store.mjs"
+import { printAttention } from "./lib/attention.mjs"
 import { assignIds, pagesWritten } from "./lib/documents.mjs"
 import {
   applyReviews,
@@ -91,3 +92,5 @@ if (archived.skipped.length) {
 console.log(`  ${before} replaced, ${others.length} records from elsewhere untouched`)
 printSummary(meetings, await pagesWritten())
 summarizeReviews(reviews)
+
+printAttention(meetings)

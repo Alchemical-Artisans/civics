@@ -732,6 +732,20 @@ rules that bite:
   and linked with `Router.excerpt(...)`; `.cache/` is gitignored, so re-cutting
   means re-fetching the original.
 
+## What needs attention
+
+Every run ends with a "NEEDS YOUR ATTENTION" block: complete counts by reason --
+no date at all, a filename contradicting the date, a broken link -- and a path
+to `.cache/needs-attention.txt`, which lists every one with the city's filename
+and URL. The summary used to print fifteen and "and 62 more", which named the
+problem without giving anyone a way to work through it, so `printAttention` in
+`scripts/lib/attention.mjs` replaced it and is deliberately the last thing a run
+says. Broken links come from `npm run links:check` (a HEAD each, cached in
+`.cache/link-status.json`, a step of `metadata:update`); whether a URL resolves
+is a fact about the city's site today rather than about the record, so it is not
+stored in `meetings.json`. 72 of 2,207 files are currently dead, 59 of them on
+the retired `cityofhaverhill.com` domain.
+
 ## Checking a flagged record
 
 A run flags a record when its title and its PDF's filename disagree about the

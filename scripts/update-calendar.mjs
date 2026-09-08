@@ -21,6 +21,7 @@ import {
   LISTING_URL,
 } from "./lib/haverhill.mjs"
 import { loadStore, saveStore, printSummary, DATA_FILE } from "./lib/store.mjs"
+import { printAttention } from "./lib/attention.mjs"
 import { assignIds, pagesWritten } from "./lib/documents.mjs"
 import {
   applyReviews,
@@ -100,3 +101,5 @@ function reportReviews(reviews, added) {
       `${s.corrected} carrying corrections`,
   )
 }
+
+printAttention(meetings)
