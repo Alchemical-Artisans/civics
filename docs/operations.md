@@ -37,17 +37,17 @@ only when the scraping or date logic itself has changed.
 
 There is no `budget:rebuild` or `schedule:rebuild`. The whole budget listing is
 one request and twenty-two rows, and the schedule is three sentences of prose on
-one page and a table of dates on another, so the distinction between a cheap
-refresh and an expensive full rebuild has no meaning for either — every run
-replaces the file.
+one page and a table of dates on each of two others, so the distinction between
+a cheap refresh and an expensive full rebuild has no meaning for either — every
+run replaces the file.
 
 **`schedule:update` shouts when the Council's wording changes.** That rule is
 prose, and `src/lib/schedule.ts` reads it into dates — a reading only valid for
 the sentences it was made about. So the script prints a warning when the words
 move, and `schedule.spec.ts` fails outright. Re-read the rule and check the date
 logic against it before committing; a silently misread rule puts meetings on the
-calendar the Council never meant to hold. The License Commission's own table of
-dates needs no such care — the dates are the dates. See
+calendar the Council never meant to hold. The two boards that print their own
+dates need no such care — the dates are the dates. See
 [calendar-page.md](./calendar-page.md#sittings-the-city-has-said-it-will-hold).
 
 Either half coming back empty is a hard failure rather than a written file: it

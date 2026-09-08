@@ -203,11 +203,12 @@ anything here.
 Location: [`src/lib/data/schedule.json`](../src/lib/data/schedule.json), written
 by [`update-schedule.mjs`](../scripts/update-schedule.mjs).
 
-Neither board's schedule is a document in the listing. Both are ordinary HTML on
-a page — which is why the calendar could not see either while it read only the
-listing; the scraper fetched one of those very pages for its antiforgery token
-and threw the rest away. They are kept apart in this file because they are
-different kinds of thing.
+No board's schedule is a document in the listing. All are ordinary HTML on a
+page — which is why the calendar could not see any of them while it read only
+the listing; the scraper fetched one of those very pages for its antiforgery
+token and threw the rest away. Rules and calendars are kept apart in this file
+because they are different kinds of thing: one has to be read, the other is
+already dates.
 
 ```json
 {
@@ -221,6 +222,14 @@ different kinds of thing.
     }
   ],
   "calendars": [
+    {
+      "board": "Conservation Commission",
+      "source": "https://www.haverhillma.gov/…/conservation-commission/meeting-schedule/",
+      "year": 2026,
+      "heading": "2026 Meeting Schedule",
+      "dates": ["2026-01-08", "2026-01-29", "…"],
+      "time": "7:15 PM"
+    },
     {
       "board": "License Commission",
       "source": "https://www.haverhillma.gov/government/boards-committees-and-commissions/license-commission/",
@@ -249,23 +258,28 @@ rule fails the build instead of being silently reinterpreted.
 
 ### `calendars` — the dates themselves
 
-| Field     | Meaning                                                                                                                                |
-| --------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| `board`   | Named beside the URL in the scraper: the page is the board, and its heading names only the year. Must match `meetings.json`'s `board`. |
-| `source`  | The board's own page.                                                                                                                  |
-| `year`    | From the heading.                                                                                                                      |
-| `heading` | As printed, e.g. `CALENDAR OF MEETINGS FOR 2026`. A meeting page cites it.                                                             |
-| `dates`   | `YYYY-MM-DD`, ascending — the table runs in two columns, so they are sorted rather than read in document order.                        |
+| Field     | Meaning                                                                                                                                                                                           |
+| --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `board`   | Named beside the URL in the scraper: the page is the board, and its heading names only the year. Must match `meetings.json`'s `board`.                                                            |
+| `source`  | The board's own page.                                                                                                                                                                             |
+| `year`    | From the heading.                                                                                                                                                                                 |
+| `heading` | As printed, e.g. `CALENDAR OF MEETINGS FOR 2026` or `2026 Meeting Schedule`. A meeting page cites it.                                                                                             |
+| `dates`   | `YYYY-MM-DD`, ascending. Sorted rather than read in document order, since one table runs in two columns. May run past `year` — a schedule's last row often carries the first sitting of the next. |
+| `time`    | The hour the page states, e.g. `7:15 PM`, where it states one. Optional.                                                                                                                          |
 
-Nothing is interpreted, so nothing can be misread. `parseLongDate` refuses a day
-that does not exist in its month rather than letting `new Date` roll it over
-into a plausible-looking wrong date.
+Nothing is interpreted, so nothing can be misread. `parseCalendarDate` handles
+both forms the boards write — `January 8, 2026` and `1/8/2026`, the latter often
+with the year left off — and refuses a day that does not exist in its month
+rather than letting `new Date` roll it over into a plausible-looking wrong date.
+An explicit year always beats the heading's.
 
 To add a board that prints its dates, add it to `CALENDAR_PAGES` in
-[`scripts/lib/schedule.mjs`](../scripts/lib/schedule.mjs) — the parser looks for
-a `CALENDAR OF MEETINGS FOR <year>` heading and the table under it. A board that
-prints a rule instead needs its wording read into dates by hand in
-`schedule.ts`; there is no guessing at one.
+[`scripts/lib/schedule.mjs`](../scripts/lib/schedule.mjs): the URL, a `heading`
+pattern whose capture group is the year, and — where the table holds more than
+sittings — the `column` naming the one that does. See
+[calendar-page.md](./calendar-page.md#adding-a-board). A board that prints a rule
+instead needs its wording read into dates by hand in `schedule.ts`; there is no
+guessing at one.
 
 Every run replaces the file; there is no incremental mode. An empty parse of
 either half is treated as a failure rather than written, because it means a

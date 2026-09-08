@@ -3,12 +3,15 @@
  *
  * Two boards say so, and they say it differently.
  *
- * **The License Commission prints the dates.** Its own page carries a table
- * headed "CALENDAR OF MEETINGS FOR 2026" listing all twelve. Nothing is
- * interpreted here: the dates are used as they are printed. It is by far the
- * better evidence -- every one of this year's past dates on it carries
- * documents, and the two Commission sittings in the data that are *not* on it
- * are special meetings, which is exactly what one would expect.
+ * **Two boards print their dates.** The License Commission's page carries a
+ * table headed "CALENDAR OF MEETINGS FOR 2026" listing all twelve; the
+ * Conservation Commission's carries eighteen, every three weeks on a Thursday,
+ * in the middle column of a table whose other two are the filing deadline and
+ * the date a postponed meeting moves to. Nothing is interpreted for either: the
+ * dates are used as printed. This is by far the better evidence -- every past
+ * date on both carries documents, and the handful of sittings in the data that
+ * are *not* on them are special meetings and postponements, which is exactly
+ * what one would expect.
  *
  * **The City Council prints a rule.** The "Agendas and Minutes" page carries a
  * short standing rule above its document listing: the Council sits every
@@ -55,8 +58,14 @@ export interface MeetingCalendar {
   year: number
   /** The board's own heading over the table, e.g. `CALENDAR OF MEETINGS FOR 2026`. */
   heading: string
-  /** `YYYY-MM-DD`, ascending. */
+  /** `YYYY-MM-DD`, ascending. May run past `year`: a schedule's last row often does. */
   dates: string[]
+  /**
+   * The hour the page states, e.g. `7:15 PM`, where it states one. The
+   * Conservation Commission's does, in the paragraph over its table; the
+   * License Commission's prints dates and nothing else.
+   */
+  time?: string
 }
 
 /**
@@ -191,9 +200,11 @@ export function expectedSittings(today: string): ScheduledSitting[] {
       .map((date) => ({
         board: calendar.board,
         date,
-        // No time: the Commission prints the dates and not the hour, and the
-        // hour on its last agenda is not evidence about a sitting that has not
-        // happened. An event with no time is an all-day one; see $lib/ics.
+        // Only where the page states one. A board that prints dates and no
+        // hour gets none: the hour on its last agenda is not evidence about a
+        // sitting that has not happened, and an event with no time is an
+        // all-day one rather than an invented one. See $lib/ics.
+        ...(calendar.time ? { time: calendar.time } : {}),
         source: {
           kind: "calendar" as const,
           url: calendar.source,

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-08T14:34:12.368Z",
+  "generatedAt": "2026-09-08T14:50:38.833Z",
   "rules": [
     {
       "board": "City Council",
@@ -13,6 +13,33 @@
     }
   ],
   "calendars": [
+    {
+      "board": "Conservation Commission",
+      "source": "https://www.haverhillma.gov/government/boards-committees-and-commissions/conservation-commission/meeting-schedule/",
+      "year": 2026,
+      "heading": "2026 Meeting Schedule",
+      "dates": [
+        "2026-01-08",
+        "2026-01-29",
+        "2026-02-19",
+        "2026-03-12",
+        "2026-04-02",
+        "2026-04-23",
+        "2026-05-14",
+        "2026-06-04",
+        "2026-06-25",
+        "2026-07-16",
+        "2026-08-06",
+        "2026-08-27",
+        "2026-09-17",
+        "2026-10-08",
+        "2026-10-29",
+        "2026-11-19",
+        "2026-12-10",
+        "2027-01-07"
+      ],
+      "time": "7:15 PM"
+    },
     {
       "board": "License Commission",
       "source": "https://www.haverhillma.gov/government/boards-committees-and-commissions/license-commission/",

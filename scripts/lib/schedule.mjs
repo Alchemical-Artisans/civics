@@ -36,6 +36,19 @@ export const CALENDAR_PAGES = [
   {
     board: "License Commission",
     url: "https://www.haverhillma.gov/government/boards-committees-and-commissions/license-commission/",
+    // A heading, then a table that is nothing but dates, two columns wide --
+    // January beside July.
+    heading: /CALENDAR OF MEETINGS FOR\s*(\d{4})/i,
+  },
+  {
+    board: "Conservation Commission",
+    url: "https://www.haverhillma.gov/government/boards-committees-and-commissions/conservation-commission/meeting-schedule/",
+    heading: /(\d{4})\s+Meeting Schedule/i,
+    // Three columns, and only the middle one is a sitting: the first is the
+    // filing deadline for permit applications, the third is where the meeting
+    // goes if it is postponed. Both are real dates and neither is a meeting --
+    // taking the whole table would treble the board's calendar.
+    column: "Meeting Date",
   },
 ]
 
@@ -95,43 +108,96 @@ export function parseMeetingRules(html) {
 
 const pad = (n) => String(n).padStart(2, "0")
 
-/**
- * `January 8, 2026` -> `2026-01-08`, or null for anything else.
- *
- * Built from the parts rather than handed to `new Date(...)`, which accepts a
- * great deal it should not and answers with a local-time instant -- exactly the
- * two things the rest of this project's date handling avoids.
- */
-export function parseLongDate(text) {
-  const m = text.trim().match(/^([A-Za-z]+)\s+(\d{1,2}),\s*(\d{4})$/)
-  if (!m) return null
-  const month = MONTHS[m[1].toLowerCase()]
-  const day = Number(m[2])
-  if (!month || day < 1 || day > 31) return null
-  const iso = `${m[3]}-${pad(month)}-${pad(day)}`
-  // A date that does not survive the round trip -- 31 September, say -- is a
-  // misread rather than something the city published.
-  return new Date(`${iso}T00:00:00Z`).toISOString().slice(0, 10) === iso ? iso : null
+/** `2026-01-08` if that date exists, else null. Rejects 31 September and such. */
+function iso(year, month, day) {
+  if (!year || !month || day < 1 || day > 31) return null
+  const out = `${year}-${pad(month)}-${pad(day)}`
+  // A date that does not survive the round trip is a misread rather than
+  // something the city published, and `new Date` would roll it over silently.
+  return new Date(`${out}T00:00:00Z`).toISOString().slice(0, 10) === out ? out : null
 }
 
 /**
- * Every "CALENDAR OF MEETINGS FOR <year>" table on a page, as ISO dates.
+ * One cell of a meeting table as `YYYY-MM-DD`, or null for anything else.
+ *
+ * Two forms, because the two boards write dates differently: `January 8, 2026`
+ * and `1/8/2026`. The slashed form often drops the year -- a schedule headed
+ * with one does not repeat it on every row -- so `year` fills it in. An
+ * explicit year always wins: the Conservation Commission's last row carries
+ * `1/7/2027`, the first sitting of the year after the one the page is headed
+ * with, and forcing the heading's year onto it would move the meeting.
+ *
+ * Built from the parts rather than handed to `new Date(...)`, which accepts a
+ * great deal it should not and answers with a local-time instant -- the two
+ * things the rest of this project's date handling avoids.
+ */
+export function parseCalendarDate(text, year) {
+  const trimmed = text.trim()
+  const long = trimmed.match(/^([A-Za-z]+)\s+(\d{1,2}),\s*(\d{4})$/)
+  if (long) return iso(Number(long[3]), MONTHS[long[1].toLowerCase()], Number(long[2]))
+  const slashed = trimmed.match(/^(\d{1,2})\/(\d{1,2})(?:\/(\d{4}))?$/)
+  if (slashed) {
+    return iso(Number(slashed[3] ?? year), Number(slashed[1]), Number(slashed[2]))
+  }
+  return null
+}
+
+/**
+ * The hour a page states its board sits at, e.g. `7:15 PM`, or null.
+ *
+ * Anchored on "at", which is what keeps the Conservation Commission's own
+ * "Filing deadlines are 11:00AM two weeks prior" from being read as a meeting
+ * time -- that sentence sits in the same paragraph as "on Thursday evenings at
+ * 7:15 PM". Only the text between the heading and its table is searched, so
+ * nothing elsewhere on the page can supply one.
+ */
+export function parseTime(prose) {
+  const m = prose.match(/\bat\s+(\d{1,2}):(\d{2})\s*(?:o'clock\s*)?([AaPp])\.?\s*[Mm]\.?/)
+  return m ? `${Number(m[1])}:${m[2]} ${m[3].toUpperCase()}M` : null
+}
+
+const rowsOf = (table) =>
+  [...table.matchAll(/<tr[^>]*>([\s\S]*?)<\/tr>/g)].map((row) =>
+    [...row[1].matchAll(/<td[^>]*>([\s\S]*?)<\/td>/g)].map((cell) => text(cell[1])),
+  )
+
+/**
+ * The meeting dates one board page prints, per `page`'s description of it.
+ *
+ * `page.heading` finds the heading and the year in its one capture group; the
+ * first table after it is the schedule. `page.column` names the column holding
+ * the sittings where the table has more than dates in it -- without one, every
+ * cell is a sitting.
  *
  * The heading is kept as printed: it is what a meeting page cites, and it is
- * the board's own name for the list. The table runs in two columns -- January
- * beside July, February beside August -- so the cells are sorted rather than
- * read in document order.
+ * the board's own name for its list.
  */
-export function parseMeetingCalendars(html) {
-  const out = []
-  const re =
-    /<h2[^>]*>\s*(CALENDAR OF MEETINGS FOR\s*(\d{4}))\s*<\/h2>\s*(<table[\s\S]*?<\/table>)/gi
-  for (const match of html.matchAll(re)) {
-    const cells = [...match[3].matchAll(/<td[^>]*>([\s\S]*?)<\/td>/g)].map((c) => text(c[1]))
-    const dates = [...new Set(cells.map(parseLongDate).filter(Boolean))].sort()
-    if (dates.length) out.push({ year: Number(match[2]), heading: text(match[1]), dates })
+export function parseMeetingCalendars(html, page) {
+  const heading = page.heading.exec(html)
+  if (!heading) return []
+  const year = Number(heading[1])
+  const table = /<table[\s\S]*?<\/table>/.exec(html.slice(heading.index))
+  if (!table) return []
+
+  const rows = rowsOf(table[0])
+  let cells
+  if (page.column) {
+    const at = rows[0]?.indexOf(page.column) ?? -1
+    // No such column means the table has been rearranged, and guessing which
+    // of three date columns is the meeting would be worse than finding none.
+    if (at < 0) return []
+    cells = rows.slice(1).map((row) => row[at] ?? "")
+  } else {
+    cells = rows.flat()
   }
-  return out
+
+  const dates = [...new Set(cells.map((cell) => parseCalendarDate(cell, year)).filter(Boolean))]
+  if (!dates.length) return []
+
+  const prose = html.slice(heading.index + heading[0].length, heading.index + table.index)
+  const time = parseTime(text(prose))
+
+  return [{ year, heading: text(heading[0]), dates: dates.sort(), ...(time ? { time } : {}) }]
 }
 
 const get = (url, label) =>
@@ -151,8 +217,10 @@ export async function fetchMeetingRules() {
 export async function fetchMeetingCalendars() {
   const out = []
   for (const page of CALENDAR_PAGES) {
-    const found = parseMeetingCalendars(await get(page.url, `fetch ${page.board} page`))
-    for (const calendar of found) out.push({ board: page.board, source: page.url, ...calendar })
+    const html = await get(page.url, `fetch ${page.board} page`)
+    for (const calendar of parseMeetingCalendars(html, page)) {
+      out.push({ board: page.board, source: page.url, ...calendar })
+    }
   }
   return out.sort((a, b) => a.year - b.year || a.board.localeCompare(b.board))
 }

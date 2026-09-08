@@ -1,5 +1,14 @@
 import { describe, it, expect } from "vitest"
-import { parseLongDate, parseMeetingCalendars, parseMeetingRules } from "./schedule.mjs"
+import {
+  CALENDAR_PAGES,
+  parseCalendarDate,
+  parseMeetingCalendars,
+  parseMeetingRules,
+  parseTime,
+} from "./schedule.mjs"
+
+const licensePage = CALENDAR_PAGES.find((p) => p.board === "License Commission")
+const conservationPage = CALENDAR_PAGES.find((p) => p.board === "Conservation Commission")
 
 /** The shape the page actually serves, trimmed to what the parser looks at. */
 const page = `
@@ -60,8 +69,8 @@ describe("parseMeetingRules", () => {
   })
 })
 
-/** The Commission's own table, in the two columns the page lays it out in. */
-const commissionPage = `
+/** The License Commission's table, in the two columns the page lays it out in. */
+const licenseHtml = `
 <h2>CALENDAR OF MEETINGS FOR 2026</h2>
 <table border="1">
 <tbody>
@@ -74,31 +83,83 @@ const commissionPage = `
 <p>Not a calendar.</p>
 `
 
-describe("parseLongDate", () => {
-  it("reads the form the page prints", () => {
-    expect(parseLongDate("January 8, 2026")).toBe("2026-01-08")
-    expect(parseLongDate("  December 3, 2026 ")).toBe("2026-12-03")
+/** The Conservation Commission's: prose, then three columns with a header row. */
+const conservationHtml = `
+<p class="heading">2026 Meeting Schedule</p>
+<div class="text"><p>The Commission generally meets every three (3) weeks on Thursday evenings at
+7:15 PM (unless otherwise posted), however, sometimes the timing of holidays impacts this
+schedule.</p>
+<p><strong>Filing deadlines are 11:00AM two weeks prior to the Meeting Date.</strong></p></div>
+<table border="1">
+<tbody>
+<tr><td><strong>Submittal Date</strong></td><td><strong>Meeting Date</strong></td><td><strong>Postponement Date</strong></td></tr>
+<tr><td>12/18/2025</td><td><strong>1/8/2026</strong></td><td>1/15/2026</td></tr>
+<tr><td>1/15</td><td><strong>1/29</strong></td><td>2/5</td></tr>
+<tr><td>12/17</td><td><strong>1/7/2027</strong></td><td>1/14/2027</td></tr>
+</tbody>
+</table>
+`
+
+describe("parseCalendarDate", () => {
+  it("reads the long form the License Commission prints", () => {
+    expect(parseCalendarDate("January 8, 2026", 2026)).toBe("2026-01-08")
+    expect(parseCalendarDate("  December 3, 2026 ", 2026)).toBe("2026-12-03")
+  })
+
+  it("reads the slashed form, taking the year from the heading when absent", () => {
+    expect(parseCalendarDate("1/8/2026", 2026)).toBe("2026-01-08")
+    expect(parseCalendarDate("1/29", 2026)).toBe("2026-01-29")
+    expect(parseCalendarDate("12/10", 2026)).toBe("2026-12-10")
+  })
+
+  it("lets an explicit year win over the heading's", () => {
+    // The Conservation Commission's last row is the first sitting of the next
+    // year. Forcing the heading's year onto it would move the meeting.
+    expect(parseCalendarDate("1/7/2027", 2026)).toBe("2027-01-07")
   })
 
   it("refuses a day that does not exist in its month", () => {
     // A round trip catches the rollover `new Date` would otherwise perform
     // silently, turning a misread into a plausible-looking date.
-    expect(parseLongDate("September 31, 2026")).toBeNull()
-    expect(parseLongDate("February 30, 2026")).toBeNull()
+    expect(parseCalendarDate("September 31, 2026", 2026)).toBeNull()
+    expect(parseCalendarDate("2/30", 2026)).toBeNull()
   })
 
   it("refuses anything that is not a date at all", () => {
-    expect(parseLongDate("")).toBeNull()
-    expect(parseLongDate("Hours")).toBeNull()
-    expect(parseLongDate("Smarch 4, 2026")).toBeNull()
-    expect(parseLongDate("8 January 2026")).toBeNull()
+    for (const junk of ["", "Meeting Date", "Smarch 4, 2026", "8 January 2026", "1/"]) {
+      expect(parseCalendarDate(junk, 2026)).toBeNull()
+    }
+  })
+})
+
+describe("parseTime", () => {
+  it("takes the hour the page says the board sits at", () => {
+    expect(parseTime("meets on Thursday evenings at 7:15 PM (unless otherwise posted)")).toBe(
+      "7:15 PM",
+    )
+    expect(parseTime("held every Tuesday at 7:00 o'clock P.M. except in:")).toBe("7:00 PM")
+  })
+
+  it("is not fooled by a filing deadline in the same paragraph", () => {
+    // The anchor is "at". The Commission's own "Filing deadlines are 11:00AM"
+    // sits beside its meeting time and must not be read as one.
+    expect(
+      parseTime("Filing deadlines are 11:00AM two weeks prior to the Meeting Date."),
+    ).toBeNull()
+    expect(parseTime("meets at 7:15 PM. Filing deadlines are 11:00AM two weeks prior.")).toBe(
+      "7:15 PM",
+    )
+  })
+
+  it("is null when the page states no hour", () => {
+    expect(parseTime("CALENDAR OF MEETINGS FOR 2026")).toBeNull()
   })
 })
 
 describe("parseMeetingCalendars", () => {
-  it("reads the whole table, both columns, in date order", () => {
+  it("reads a whole plain table, both columns, in date order", () => {
     // The page runs January beside July, so document order is not date order.
-    const [calendar] = parseMeetingCalendars(commissionPage)
+    const [calendar] = parseMeetingCalendars(licenseHtml, licensePage)
     expect(calendar.year).toBe(2026)
     expect(calendar.heading).toBe("CALENDAR OF MEETINGS FOR 2026")
     expect(calendar.dates).toEqual([
@@ -109,20 +170,44 @@ describe("parseMeetingCalendars", () => {
       "2026-08-06",
       "2026-09-03",
     ])
+    // The page prints dates and no hour.
+    expect(calendar.time).toBeUndefined()
+  })
+
+  it("takes one named column where the table holds more than sittings", () => {
+    // The other two columns are real dates and neither is a meeting: taking the
+    // whole table would treble the board's calendar.
+    const [calendar] = parseMeetingCalendars(conservationHtml, conservationPage)
+    expect(calendar.dates).toEqual(["2026-01-08", "2026-01-29", "2027-01-07"])
+    expect(calendar.heading).toBe("2026 Meeting Schedule")
+    expect(calendar.time).toBe("7:15 PM")
+  })
+
+  it("finds nothing rather than guessing when the named column is gone", () => {
+    // Three date columns and no way to tell which is the meeting. Guessing
+    // would put filing deadlines on the calendar as sittings.
+    const renamed = conservationHtml.replace(
+      "Meeting Date</strong></td><td>",
+      "Meeting</strong></td><td>",
+    )
+    expect(parseMeetingCalendars(renamed, conservationPage)).toEqual([])
   })
 
   it("takes only the table under its own heading", () => {
-    // The page carries other tables -- hours, phone, the clerk's name -- and a
-    // second heading after this one. Only the calendar's own table is read.
-    expect(parseMeetingCalendars(commissionPage)).toHaveLength(1)
-    expect(parseMeetingCalendars(`<table><tr><td>January 8, 2026</td></tr></table>`)).toEqual([])
+    expect(parseMeetingCalendars(licenseHtml, licensePage)).toHaveLength(1)
+    expect(
+      parseMeetingCalendars(`<table><tr><td>January 8, 2026</td></tr></table>`, licensePage),
+    ).toEqual([])
   })
 
   it("returns nothing when the heading moves", () => {
     // The update script treats an empty result as a failure rather than writing
     // a file that would empty the calendar of every upcoming sitting.
     expect(
-      parseMeetingCalendars(commissionPage.replace("CALENDAR OF MEETINGS FOR", "Meetings in")),
+      parseMeetingCalendars(
+        licenseHtml.replace("CALENDAR OF MEETINGS FOR", "Meetings in"),
+        licensePage,
+      ),
     ).toEqual([])
   })
 })

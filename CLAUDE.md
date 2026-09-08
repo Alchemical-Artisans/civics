@@ -89,12 +89,16 @@ trims to the fields the UI needs, and groups the documents into meetings.
 which is why the calendar could not see either while it read only the listing --
 the scraper already fetched one of those very pages for its antiforgery token
 and threw the rest away. The two differ in kind, and `schedule.json` keeps them
-apart as `rules` and `calendars`. **The License Commission prints the dates**: a
-table on its own page headed `CALENDAR OF MEETINGS FOR 2026` with all twelve in
-it, two columns, January beside July. Nothing is interpreted and nothing can be
-misread; it is by far the better evidence, every past date on it carrying
-documents, and the two Commission sittings in the data that are not on it are
-special meetings. **The City Council prints a rule** above the document table:
+apart as `rules` and `calendars`. **Two boards print their dates**: the License
+Commission's page carries a table headed `CALENDAR OF MEETINGS FOR 2026` with
+all twelve in it, two columns, January beside July; the Conservation
+Commission's meeting-schedule page carries eighteen, every three weeks on a
+Thursday, in the _middle column_ of a table whose other two are the filing
+deadline and the date a postponed meeting moves to -- taking the whole table
+would treble that board's calendar -- with the hour, 7:15 PM, in the paragraph
+above it. Nothing is interpreted and nothing can be misread; this is by far the
+better evidence, every past date on both carrying documents, and the sittings in
+the data that are not on them are special meetings and postponements. **The City Council prints a rule** above the document table:
 every Tuesday at 7:00 PM, with exceptions for June, the summer, and the return
 to weekly meetings in September -- which has to be read into dates.
 `scripts/update-schedule.mjs` (`npm run schedule:update`, and a step of
@@ -109,8 +113,13 @@ differently: a board that prints its dates has stated _this_ one, where a rule
 states a pattern the day falls under. An hour the source states pins the "add to
 calendar" event; the Commission prints only dates, so those are all-day rather
 than given an invented time. To add another board that prints its dates, add it
-to `CALENDAR_PAGES` in `scripts/lib/schedule.mjs`; one that prints a rule needs
-its wording read by hand in `schedule.ts`, never guessed at.
+to `CALENDAR_PAGES` in `scripts/lib/schedule.mjs` -- URL, a `heading` pattern
+capturing the year, and a `column` where the table holds more than sittings;
+naming a column that is not there yields nothing rather than a guess. One that
+prints a rule needs its wording read by hand in `schedule.ts`, never guessed at.
+Only the rule's dates are capped at year end, being a projection; a published
+date stands however far ahead it is, which is why the Conservation Commission's
+last row puts 7 January 2027 on the calendar.
 
 **Two clauses do not mean quite what they say, and the Council's published 2025
 schedule settles both.** "The second Tuesday after Labor Day" counts the Labor
@@ -127,8 +136,8 @@ Tuesday after Labor Day, so nothing precedes them.
 is not the schedule the Council adopts: against the Council's own published 2025
 schedule it yields 45 sittings to that schedule's 35 (it says "every Tuesday",
 but the Council skips roughly one a month), and it wrongly drops 10 June 2025,
-which the Council held. The Commission's printed dates need none of this defence
-and get the same treatment for consistency. So sittings are projected from the build date to the end
+which the Council held. The printed calendars need none of this defence and
+get the forward-only treatment for consistency. So sittings are projected from the build date to the end
 of that year and never backwards -- for a day already past the documents are the
 better authority, and a rule-Tuesday with nothing on it is far more likely to be
 a Tuesday the Council never sat. Ahead of today there are no documents at all,

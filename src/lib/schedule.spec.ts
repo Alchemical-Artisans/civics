@@ -22,16 +22,40 @@ describe("the scraped rule", () => {
 })
 
 describe("the scraped calendars", () => {
+  const find = (board: string) => meetingCalendars().find((c) => c.board === board)
+
   it("gives the License Commission a date a month", () => {
     // Twelve dates, one per month, is the shape the Commission has published
     // every year. A parse that half-worked -- one column of the two-column
     // table, say -- would show up here as six.
-    const commission = meetingCalendars().find((c) => c.board === "License Commission")
+    const commission = find("License Commission")
     expect(commission).toBeDefined()
     expect(commission!.dates).toHaveLength(12)
     expect(new Set(commission!.dates.map((d) => d.slice(0, 7))).size).toBe(12)
-    for (const date of commission!.dates)
-      expect(date.startsWith(String(commission!.year))).toBe(true)
+    // The page prints dates and no hour.
+    expect(commission!.time).toBeUndefined()
+  })
+
+  it("gives the Conservation Commission a Thursday every three weeks", () => {
+    // The board's own description of its schedule, and the cheapest check that
+    // the middle column was the one read: the filing deadlines two weeks either
+    // side of it are Thursdays too, but a fortnight apart rather than three
+    // weeks. Reading the wrong column would fail the gap and not the weekday.
+    const commission = find("Conservation Commission")
+    expect(commission).toBeDefined()
+    expect(commission!.time).toBe("7:15 PM")
+    const days = commission!.dates.map((d) => Date.parse(`${d}T00:00:00Z`) / 86_400_000)
+    for (const [i, day] of days.entries()) {
+      expect(new Date(day * 86_400_000).getUTCDay()).toBe(4)
+      if (i) expect(day - days[i - 1]).toBeGreaterThanOrEqual(21)
+    }
+  })
+
+  it("lets a schedule run past the year it is headed with", () => {
+    // The Conservation Commission's last row is the first sitting of the next
+    // year, printed with its own year. Clamping to the heading would move it.
+    const commission = find("Conservation Commission")!
+    expect(commission.dates.at(-1)!.slice(0, 4)).toBe(String(commission.year + 1))
   })
 })
 
@@ -117,15 +141,20 @@ describe("sittingsIn", () => {
 })
 
 describe("expectedSittings", () => {
-  it("projects forward only, to the end of the year", () => {
+  it("projects forward only", () => {
     // Never backwards: the rule over-generates against the schedule the Council
     // actually adopts, so for a day already past the documents are the better
     // authority and a rule-Tuesday with nothing on it is far more likely to be
     // a Tuesday the Council never sat. See schedule.ts.
-    const dates = expectedSittings("2026-09-08").map((s) => s.date)
-    expect(dates[0]).toBe("2026-09-15")
-    expect(dates.at(-1)).toBe("2026-12-29")
-    expect(dates.every((d) => d >= "2026-09-08")).toBe(true)
+    const sittings = expectedSittings("2026-09-08")
+    expect(sittings.every((s) => s.date >= "2026-09-08")).toBe(true)
+    expect(sittings[0].date).toBe("2026-09-15")
+  })
+
+  it("stops projecting the rule at the end of the year", () => {
+    // The cap is the rule's, being a projection, and not the whole list's.
+    const rules = expectedSittings("2026-09-08").filter((s) => s.source.kind === "rule")
+    expect(rules.at(-1)!.date).toBe("2026-12-29")
   })
 
   it("carries the evidence itself onto every sitting", () => {
@@ -138,10 +167,11 @@ describe("expectedSittings", () => {
         expect(sitting.time).toBe("7:00 PM")
         expect(sitting.source.intro).toBe(RULE_AS_READ.intro)
       } else {
-        expect(sitting.source.heading).toMatch(/^CALENDAR OF MEETINGS FOR \d{4}$/)
-        // The Commission prints dates and not an hour, and the hour on its last
-        // agenda is not evidence about a sitting that has not happened.
-        expect(sitting.time).toBeUndefined()
+        expect(sitting.source.heading).toBeTruthy()
+        // An hour only where the page states one. A board that prints dates and
+        // nothing else gets none: the hour on its last agenda is not evidence
+        // about a sitting that has not happened.
+        expect(sitting.time).toBe(meetingCalendars().find((c) => c.board === sitting.board)!.time)
       }
     }
   })
@@ -149,23 +179,30 @@ describe("expectedSittings", () => {
   it("takes a printed calendar's dates exactly as printed", () => {
     // Nothing is interpreted for a board that prints its dates, so the only
     // thing to check is that every date it prints and nothing else comes back.
-    const commission = meetingCalendars().find((c) => c.board === "License Commission")!
-    const mine = expectedSittings("2026-09-08")
-      .filter((s) => s.board === "License Commission")
-      .map((s) => s.date)
-    expect(mine).toEqual(commission.dates.filter((d) => d >= "2026-09-08"))
-    expect(mine).toEqual(["2026-10-01", "2026-11-05", "2026-12-03"])
+    for (const calendar of meetingCalendars()) {
+      const mine = expectedSittings("2026-09-08")
+        .filter((s) => s.board === calendar.board)
+        .map((s) => s.date)
+      expect(mine).toEqual(calendar.dates.filter((d) => d >= "2026-09-08"))
+    }
   })
 
-  it("puts both boards' sittings in one list, in date order", () => {
+  it("carries a printed calendar past the end of its own year", () => {
+    // Only the Council's rule is capped at year end, being a projection. A date
+    // the city has actually published stands however far ahead it is.
     const dates = expectedSittings("2026-09-08").map((s) => s.date)
-    expect(dates).toEqual([...dates].sort())
-    expect(new Set(expectedSittings("2026-09-08").map((s) => s.board))).toEqual(
-      new Set(["City Council", "License Commission"]),
+    expect(dates.at(-1)!.startsWith("2027")).toBe(true)
+  })
+
+  it("puts every board's sittings in one list, in date order", () => {
+    const sittings = expectedSittings("2026-09-08")
+    expect(sittings.map((s) => s.date)).toEqual([...sittings.map((s) => s.date)].sort())
+    expect(new Set(sittings.map((s) => s.board))).toEqual(
+      new Set(["City Council", "Conservation Commission", "License Commission"]),
     )
   })
 
   it("is empty once every published date is behind us", () => {
-    expect(expectedSittings("2026-12-30")).toEqual([])
+    expect(expectedSittings("2027-12-30")).toEqual([])
   })
 })

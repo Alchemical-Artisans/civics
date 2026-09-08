@@ -40,15 +40,28 @@ would quietly emit fewer pages.
 which is why the calendar could not see either while it read only the listing —
 and the two say it in quite different ways.
 
-**The License Commission prints the dates.** Its own
+**Two boards print their dates**, and each prints them differently.
+
+The **License Commission**'s
 [page](https://www.haverhillma.gov/government/boards-committees-and-commissions/license-commission/)
 carries a table headed `CALENDAR OF MEETINGS FOR 2026` with all twelve in it,
-laid out in two columns — January beside July. Nothing needs interpreting and
-nothing can be misread: the dates are the dates. It is by far the better
-evidence of the two. Every one of this year's past dates on it carries
-documents, and the two Commission sittings in the data that are _not_ on it —
-20 May and 18 June — are special meetings, which is exactly what one would
-expect.
+two columns wide — January beside July — and nothing but dates in it.
+
+The **Conservation Commission**'s
+[meeting schedule](https://www.haverhillma.gov/government/boards-committees-and-commissions/conservation-commission/meeting-schedule/)
+carries eighteen, every three weeks on a Thursday, in the **middle column** of a
+table whose other two are the filing deadline for permit applications and the
+date a postponed meeting moves to. Both of those are real dates and neither is a
+sitting; taking the whole table would treble the board's calendar. The paragraph
+above it states the hour, 7:15 PM.
+
+Nothing needs interpreting for either and nothing can be misread: the dates are
+the dates. This is by far the better evidence. Every past date on both carries
+documents, and the handful of sittings in the data that are _not_ on them are
+special meetings and postponements — the Commission's own 20 May and 18 June,
+the Conservation Commission's 21 May and 11 June, the last two of which appear
+in its postponement column and whose agendas say "Postponed from" in their
+titles. Exactly what one would expect.
 
 **The City Council prints a rule.** The listing page carries it in the section
 directly above the document table:
@@ -69,15 +82,15 @@ published is blank from today forward — which is precisely the part a reader
 wanting to attend one needs. It is the only part of this data that is not
 retrospective.
 
-`scripts/update-schedule.mjs` scrapes both pages into
+`scripts/update-schedule.mjs` scrapes all three pages into
 [`schedule.json`](../src/lib/data/schedule.json) — `rules` and `calendars`, kept
 apart because they are different kinds of thing;
 [`schedule.ts`](../src/lib/schedule.ts) turns both into dates; `withScheduled()`
 in `calendar.ts` adds a `Meeting` with `documents: []` for every one no document
 covers. Board and date are the identity, exactly as for a document, so a date
 the city has since published an agenda for is an ordinary meeting and is left
-alone — and a document for a date no calendar or rule named, like those two
-special meetings, is unaffected.
+alone — and a document for a date no calendar or rule named, like those special
+meetings and postponements, is unaffected.
 
 A `ScheduledSitting` carries its evidence as a discriminated `source`, `calendar`
 or `rule`, and the meeting page shows the two differently: a board that prints
@@ -109,6 +122,23 @@ as one beats an empty calendar.
 That is also why these entries are called **expected** rather than scheduled.
 The city has announced nothing about a particular Tuesday. The Council has said
 which Tuesdays it means to sit on, and this is that statement applied to a date.
+
+### Adding a board
+
+A board that prints its dates is one entry in `CALENDAR_PAGES` in
+[`scripts/lib/schedule.mjs`](../scripts/lib/schedule.mjs): its URL, a `heading`
+pattern whose one capture group is the year, and — where the table holds more
+than sittings — the `column` naming the one that does. The first table after the
+heading is the schedule; the prose between the two is searched for an hour,
+anchored on "at" so that the Conservation Commission's own "Filing deadlines are
+11:00AM two weeks prior" cannot be read as a meeting time.
+
+Naming a column that is not there yields nothing rather than a guess. Three date
+columns and no way to tell which is the meeting is precisely the case where
+guessing would put filing deadlines on the calendar as sittings.
+
+A board that prints a **rule** instead needs its wording read into dates by hand
+in `schedule.ts`, as the Council's was. There is no guessing at one.
 
 ### Two clauses of the rule have to be read against the evidence
 
@@ -161,10 +191,13 @@ because there is nothing to quote beyond the date itself.
 
 An hour the source states becomes the header's `MeetingDetails`, which is what
 lets a reader add the sitting to their own calendar before an agenda exists. The
-Council's rule gives one; the Commission's table gives only dates, so those get
-an all-day event rather than an invented time. Neither gives a room, and the
-room on a board's last agenda is not evidence about a sitting that has not
-happened.
+Council's rule gives one and so does the Conservation Commission's page; the
+License Commission's table gives only dates, so those get an all-day event
+rather than an invented time. No source gives a room — the Conservation
+Commission's page names one, City Hall Room 301, but a room needs a geocodable
+address beside it to be worth linking and that would be ours rather than the
+city's — and the room on a board's last agenda is not evidence about a sitting
+that has not happened.
 
 The footer says how many are shown and what the number does and does not mean.
 
