@@ -424,9 +424,48 @@ See [deployment.md](./deployment.md#base-path).
 ## The site root
 
 `/` is a landing page:
-[`src/routes/+page.svelte`](../src/routes/+page.svelte) names the site and gives
-a card for each half — the meeting calendar and the current budget book. It
-prerenders to static HTML like the rest of the site.
+[`src/routes/+page.svelte`](../src/routes/+page.svelte) names the site, carries
+a slogan, and gives a card for each half — the meeting calendar and the current
+budget book. It prerenders to static HTML like the rest of the site.
+
+**A card is its half rather than a description of one.** Both cards used to
+carry a paragraph saying what was behind them, under a paragraph saying what the
+site was for; all three were the site talking about itself to a reader who had
+not been shown anything yet. What is there instead is a drawing:
+
+- The **calendar card** shows the week the build ran in, a day to a row, with
+  today's row ringed, the days behind it greyed the way the calendar greys a day
+  outside the month it is showing, and each sitting drawn as the chip the
+  calendar draws it as — filled where the city has published a document, a
+  dashed outline where a board has only said it will sit. `weekOf` in
+  [`src/lib/calendar.ts`](../src/lib/calendar.ts) gives the seven days;
+  [`src/routes/+page.ts`](../src/routes/+page.ts) trims the calendar to them, so
+  the page carries seven days of meetings rather than the whole record. Rows and
+  not a Sunday-to-Saturday rail, which is how the calendar itself is laid out
+  and was this card's first shape: a day cell in a rail is a seventh of half a
+  page, and "Planning Board" arrives in one as "P…".
+- The **budget card** shows the chart the book itself opens with — `BudgetColumns`,
+  the two sides of the year on one scale — reduced to what a card can say. Each
+  book carries its own `summary.ts` (see
+  [`src/routes/budget/fy2027/summary.ts`](../src/routes/budget/fy2027/summary.ts)),
+  which reads the same `SPENDING` and `REVENUE_DETAIL` the book's own front page
+  draws in full and rolls each down to its largest three parts plus everything
+  else, so the card and the book cannot state different figures. The front page
+  globs `./budget/*/summary.ts` and takes the newest written book's, the same
+  directory-listing trick everything else here follows. A legend names the
+  segments, which the charts inside the book do without: there a segment names
+  itself on hover, and this is the first thing on the site, read as often on a
+  phone where there is no hover to give.
+
+Both cards are one big link by way of the heading's own `::after` covering the
+card, which is what lets the things inside them be links too — a card wrapped in
+an `<a>` could hold no meeting link at all, and a week whose sittings cannot be
+opened is a picture of a calendar rather than a way into one.
+
+**A mostly empty week is the ordinary case and is drawn as one.** Haverhill's
+boards sit once or twice a week and the projection of expected sittings runs
+forward only, so the days behind today carry documents and nothing else. The
+point of showing the week is that a reader can see which days those are.
 
 It forwarded straight to the budget book for a while, on the reasoning that an
 index costs every visitor a hop — the same objection that turned the meeting

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest"
-import { contents, fiscalYears, sectionSlug } from "./budget"
+import { contents, fiscalYears, headline, sectionSlug } from "./budget"
 
 describe("sectionSlug", () => {
   it("slugs a plain title", () => {
@@ -80,5 +80,40 @@ describe("fiscalYears", () => {
 
   it("marks FY2027 written, since its book has a page here", () => {
     expect(fiscalYears().find((y) => y.id === "fy2027")?.written).toBe(true)
+  })
+})
+
+describe("headline", () => {
+  const parts = [
+    { label: "Small", amount: 1 },
+    { label: "Large", amount: 100 },
+    { label: "Middling", amount: 10 },
+    { label: "Tiny", amount: 2 },
+    { label: "Smaller", amount: 3 },
+  ]
+
+  it("keeps the largest few, largest first", () => {
+    expect(
+      headline(parts)
+        .slice(0, 3)
+        .map((part) => part.label),
+    ).toEqual(["Large", "Middling", "Smaller"])
+  })
+
+  // The bar is still the whole side: what is left over is drawn rather than
+  // dropped, so the segments add up to what the column is worth.
+  it("gathers the rest into one part rather than dropping it", () => {
+    const rolled = headline(parts)
+    expect(rolled.at(-1)).toEqual({ label: "Everything else", amount: 3 })
+    expect(rolled.reduce((sum, part) => sum + part.amount, 0)).toBe(116)
+  })
+
+  it("adds no leftover part when the largest few are all of them", () => {
+    expect(headline(parts, 5).map((part) => part.label)).not.toContain("Everything else")
+  })
+
+  it("leaves the caller's array alone", () => {
+    headline(parts)
+    expect(parts[0].label).toBe("Small")
   })
 })

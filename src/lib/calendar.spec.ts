@@ -3,6 +3,7 @@ import {
   addMonths,
   boardsOf,
   buildMonthGrid,
+  weekOf,
   formatLongDate,
   formatMonth,
   groupByDate,
@@ -55,6 +56,44 @@ describe("addMonths", () => {
 describe("formatLongDate", () => {
   it("names the correct weekday", () => {
     expect(formatLongDate("2026-08-27")).toBe("Thursday, August 27, 2026")
+  })
+})
+
+describe("weekOf", () => {
+  it("runs Sunday to Saturday around the day it is given", () => {
+    // 2026-09-09 is a Wednesday.
+    expect(weekOf("2026-09-09")).toEqual([
+      "2026-09-06",
+      "2026-09-07",
+      "2026-09-08",
+      "2026-09-09",
+      "2026-09-10",
+      "2026-09-11",
+      "2026-09-12",
+    ])
+  })
+
+  it("returns the day itself first when it is a Sunday", () => {
+    expect(weekOf("2026-09-06")[0]).toBe("2026-09-06")
+  })
+
+  it("crosses a month, and a year", () => {
+    // The week the front page shows is whatever week the build lands in, which
+    // five weeks out of six is not one month's worth of days.
+    expect(weekOf("2026-09-01")).toEqual([
+      "2026-08-30",
+      "2026-08-31",
+      "2026-09-01",
+      "2026-09-02",
+      "2026-09-03",
+      "2026-09-04",
+      "2026-09-05",
+    ])
+    expect(weekOf("2027-01-01").at(0)).toBe("2026-12-27")
+  })
+
+  it("crosses a leap day", () => {
+    expect(weekOf("2028-03-01")).toContain("2028-02-29")
   })
 })
 

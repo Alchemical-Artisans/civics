@@ -54,6 +54,53 @@ test.describe("the site root", () => {
       .click()
     await expect(page).toHaveURL("/calendar")
   })
+
+  test("draws the week the build ran in, a day to a row", async ({ page }) => {
+    await page.goto("/")
+    const card = page.getByRole("navigation", { name: "The two halves" }).locator("> div").first()
+
+    // Seven days, Sunday first, whatever week the build landed in.
+    const days = card.getByRole("listitem").filter({ hasText: /^(SUN|MON|TUE|WED|THU|FRI|SAT)/i })
+    await expect(days).toHaveCount(7)
+    await expect(days.first()).toContainText("Sun")
+    await expect(days.last()).toContainText("Sat")
+  })
+
+  test("its budget card draws the year rather than describing it", async ({ page }) => {
+    await page.goto("/")
+    const card = page.getByRole("navigation", { name: "The two halves" }).locator("> div").last()
+
+    // The same two columns the book's own front page opens with, named twice
+    // apiece -- once under the column, once over its half of the legend.
+    await expect(card.getByText("Spending", { exact: true })).toHaveCount(2)
+    await expect(card.getByText("Revenue", { exact: true })).toHaveCount(2)
+
+    // Every segment names itself, so the four colours are not decoration.
+    await expect(card.getByText("Everything else")).toHaveCount(2)
+
+    // The figures are the book's own, read out of the transcribed tables by
+    // `summary.ts` rather than typed a second time here. The card and the page
+    // it opens cannot disagree, and this fails if either changes alone.
+    const book = await (await page.request.get(`/budget/${newest}`)).text()
+    for (const total of ["$316,044,835", "$310,893,296"]) {
+      await expect(card.getByText(total)).toBeVisible()
+      expect(book).toContain(total)
+    }
+  })
+
+  test("a sitting in the week opens its own meeting page", async ({ page }) => {
+    await page.goto("/")
+    const card = page.getByRole("navigation", { name: "The two halves" }).locator("> div").first()
+    const sitting = card.locator('a[href*="/calendar/meetings/"]').first()
+
+    // A quiet week is the ordinary case and is not a failure -- Haverhill's
+    // boards sit once or twice a week, and some weeks not at all. What is
+    // asserted is that a sitting drawn here is a way in and not a picture: the
+    // card is one big link to the calendar, and this has to survive that.
+    if (!(await sitting.count())) return
+    await sitting.click()
+    await expect(page).toHaveURL(/\/calendar\/meetings\/.+/)
+  })
 })
 
 test.describe("the site header", () => {

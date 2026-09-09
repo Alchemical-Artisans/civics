@@ -244,15 +244,36 @@ itself is `scripts/prompts/transcribe-meeting.md` and is the thing to edit when
 a transcription comes out wrong -- a correction made there is one every future
 run gets. `--prompt-only` writes it and launches nothing.
 
-**`/` is the landing page** (`src/routes/+page.svelte`): the site's name and a
-card for each half — the meeting calendar and the current budget book. It
+**`/` is the landing page** (`src/routes/+page.svelte`): the site's name, a
+slogan, and a card for each half — the meeting calendar and the current budget
+book, side by side. It
 forwarded straight to the budget for a while (an index costs a hop), which
 stopped making sense once the two halves became separate things a reader arrives
 wanting one or the other of; the old meta refresh and its e2e tests are gone.
 The budget card's year comes from `fiscalYears().find((y) => y.written)`, so
 creating `src/routes/budget/fy2028/` moves it; with no book written the card is
 dropped. The header carries a link to each half from every page, so no page
-needs its own sideways link. See
+needs its own sideways link. **A card is its half rather than a description of
+one**: both carried a paragraph explaining what was behind them, under a
+paragraph explaining the site, and all three were the site talking about itself
+to a reader who had not been shown anything yet. The calendar card draws the
+week the build ran in, a day to a row, today's row ringed and each sitting the
+chip the calendar draws it as -- `weekOf` in `calendar.ts` gives the seven days
+and `src/routes/+page.ts` trims the record to them, so the page carries seven
+days rather than a few thousand meetings. Rows and not a Sunday-to-Saturday
+rail, which is how the calendar itself is laid out and was this card's first
+shape: a cell in a rail is a seventh of half a page, and "Planning Board"
+arrives in one as "P…". The budget card draws `BudgetColumns` -- the chart the
+book itself opens with -- from the book's own `summary.ts`, which reads the same
+`SPENDING` and `REVENUE_DETAIL` the book's front page draws in full and rolls
+each down to its largest three parts plus everything else, so the card and the
+book cannot state different figures; the front page globs `./budget/*/summary.ts`
+and takes the newest written book's, the same directory-listing trick everything
+else here follows. Its legend is the one thing the book's own charts do
+without -- there a segment names itself on hover, and this is the first thing on
+the site, read as often on a phone where there is no hover to give. Both cards
+are one big link by way of the heading's own `::after` covering the card, which
+is what lets the sittings inside one still be links. See
 [docs/calendar-page.md](docs/calendar-page.md#the-site-root).
 
 **The two columns are the whole city's budget, not the book's.** Page 78's two

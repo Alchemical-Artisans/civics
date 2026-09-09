@@ -342,6 +342,29 @@ export function addMonths(key: string, delta: number): string {
 }
 
 /**
+ * The Sunday-aligned week a date falls in, as seven `YYYY-MM-DD` strings.
+ *
+ * The front page's preview of the calendar is one of `buildMonthGrid`'s rows,
+ * and would be exactly that if a week never crossed a month -- but the week of
+ * the first or the last of a month is half in each, and a month grid has it
+ * padded out with days marked `inMonth: false`. A week is its own thing here
+ * rather than a slice of a month for that reason.
+ *
+ * `Date.UTC` throughout, the same as everything else in this file: the
+ * local-time constructor shifts the week's start a day west of UTC.
+ */
+export function weekOf(date: string): string[] {
+  const [year, month, day] = date.split("-").map(Number)
+  const start = new Date(Date.UTC(year, month - 1, day))
+  start.setUTCDate(start.getUTCDate() - start.getUTCDay())
+  return Array.from({ length: 7 }, (_, at) => {
+    const cursor = new Date(start)
+    cursor.setUTCDate(start.getUTCDate() + at)
+    return isoOf(cursor)
+  })
+}
+
+/**
  * Build the Sunday-aligned grid for a month, padded with the leading/trailing
  * days needed to fill whole weeks.
  */

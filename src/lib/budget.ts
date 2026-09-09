@@ -127,3 +127,62 @@ export function contents(bookId: string, entries: [title: string, page: number][
     return { title, page, slug, written: writtenSections.has(`${bookId}/${slug}`) }
   })
 }
+
+/**
+ * A budget book reduced to what fits on the front page's card: each side of
+ * the year as a handful of parts and the figure they come to.
+ *
+ * The type is here and the figures are in the book, as `summary.ts` beside its
+ * `+page.ts` -- the same arrangement every other figure on the site has, where
+ * a transcribed table lives with the section that renders it and everything
+ * that draws it reads the one copy. The front page globs for the newest
+ * written book's, so a book written up next year carries its own headline onto
+ * the front page by existing, exactly as writing the directory is what puts it
+ * in the header's menu.
+ *
+ * `parts` is not the whole side -- forty-two departments and fifty-four
+ * revenue sources are what the book's own pages are for. It is the largest few
+ * and then everything else, which is as much as a bar an inch tall can say.
+ */
+export interface BudgetSide {
+  /** What the side is: "Spending". */
+  label: string
+  /** Where the book says it in full. */
+  href: string
+  /**
+   * The figure to print and the length of the bar. Stated rather than summed
+   * where a document states one -- the book's appropriations column adds to a
+   * dollar over the total printed under it, and the site shows the printed
+   * one -- so the parts need not add to exactly this.
+   */
+  total: number
+  /** Largest first, ending in whatever the largest few leave over. */
+  parts: { label: string; amount: number }[]
+}
+
+/** The two sides of a book, for the front page's card. */
+export interface BookSummary {
+  spending: BudgetSide
+  revenue: BudgetSide
+}
+
+/**
+ * The largest `keep` of a side, and everything else as one part.
+ *
+ * A card-sized bar can hold three or four segments before they stop being
+ * lengths and start being stripes, and the rest is not dropped -- it is drawn
+ * as the one part it is, so the bar is still the whole side and its segments
+ * still add up to it. Summed from the parts left over rather than subtracted
+ * from `total`, since `total` may be a figure a document states rather than
+ * the sum of the parts.
+ */
+export function headline(
+  parts: { label: string; amount: number }[],
+  keep = 3,
+): { label: string; amount: number }[] {
+  const sorted = [...parts].sort((a, b) => b.amount - a.amount)
+  const rest = sorted.slice(keep).reduce((sum, part) => sum + part.amount, 0)
+  return rest > 0
+    ? [...sorted.slice(0, keep), { label: "Everything else", amount: rest }]
+    : sorted.slice(0, keep)
+}
