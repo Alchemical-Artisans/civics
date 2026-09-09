@@ -112,26 +112,29 @@ const pageName = (url: string) => {
   )
 }
 
+/**
+ * What the calendar page needs, and nothing else.
+ *
+ * It used to carry nine counts as well -- documents indexed, records with no
+ * date, duplicates collapsed, dates the scraper flagged, documents the city has
+ * taken down, sittings projected -- which the page printed as four paragraphs
+ * under the grid. They were there to keep the site honest about data it knows
+ * to be imperfect, and they are still true; what they were not was anything a
+ * reader came for, and they made the foot of the page a wall of small type
+ * around the one thing there worth reading, which is where all of this comes
+ * from. `scripts/` still counts every one of them, and the run summary's
+ * "NEEDS YOUR ATTENTION" block is where they belong -- it is addressed to
+ * whoever can act on them. `generatedAt` stays, as the one line under the
+ * links: when the scrape last ran is not a caveat about the data, it is how
+ * old the page is, and a reader looking at a calendar of public meetings has
+ * every reason to want it.
+ */
 export interface Calendar {
   meetings: Meeting[]
-  generatedAt: string
-  source: string
   /** Every page the calendar is read off. */
   sources: Sources
-  /** Records with no date, which cannot be placed on a calendar. */
-  undated: number
-  /** Records dropped as duplicate publications of one PDF. */
-  duplicates: number
-  /** Kept records whose date the scraper was unsure of. */
-  flagged: number
-  /** Meetings with a write-up on this site. */
-  written: number
-  /** Documents shown, across every meeting. */
-  documents: number
-  /** Sittings the Council's rule expects, ahead of any document. */
-  scheduled: number
-  /** Documents the city has taken down, dropped rather than linked to a 404. */
-  gone: number
+  /** When the scrape behind all of this last ran, as the scraper stamped it. */
+  generatedAt: string
   /**
    * The day this build ran, in the city. The calendar opens on its month and
    * marks its cell, so a reader running no script still gets a today rather
@@ -158,8 +161,6 @@ export function calendar(): Calendar {
   // city published something and has since removed it, which the footer says in
   // one line rather than 84 dead ends.
   const live = raw.meetings.filter((m) => !("gone" in m && m.gone))
-  const gone = raw.meetings.length - live.length
-
   const dated = live.filter((m) => m.date)
 
   // A handful of PDFs are published under two media pages, which would
@@ -172,8 +173,7 @@ export function calendar(): Calendar {
     if (!kept || (kept.needsReview && !m.needsReview)) best.set(key, m)
   }
 
-  const kept = [...best.values()]
-  const documents: MeetingDocument[] = kept.map((m) => ({
+  const documents: MeetingDocument[] = [...best.values()].map((m) => ({
     title: m.title,
     date: m.date,
     board: m.board,
@@ -209,7 +209,6 @@ export function calendar(): Calendar {
   return {
     meetings,
     generatedAt: raw.generatedAt,
-    source: raw.source,
     sources: {
       // By URL, which is not an arbitrary order: the city's own listing is the
       // shortest of these paths and the two archives sit under it, so sorting
@@ -226,13 +225,6 @@ export function calendar(): Calendar {
         pdf: url.endsWith(".pdf"),
       })),
     },
-    undated: live.length - dated.length,
-    duplicates: dated.length - documents.length,
-    flagged: kept.filter((m) => m.needsReview).length,
-    written: meetings.filter((m) => m.written).length,
-    documents: documents.length,
-    scheduled: meetings.filter((m) => m.scheduled).length,
-    gone,
     today: BUILT_ON,
   }
 }

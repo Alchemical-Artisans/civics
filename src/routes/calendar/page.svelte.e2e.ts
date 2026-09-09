@@ -92,6 +92,17 @@ test.describe("meeting calendar", () => {
     }
   })
 
+  test("says when the scrape last ran, and nothing else about the data", async ({ page }) => {
+    const footer = page.locator("footer").first()
+    await expect(footer).toContainText(/Last updated \d{4}-\d{2}-\d{2}/)
+
+    // The four paragraphs of counts under it are gone: still true, still
+    // counted by `scripts/` on every run, and not what a reader came for.
+    await expect(footer).not.toContainText("indexed")
+    await expect(footer).not.toContainText("collapsed")
+    await expect(footer).not.toContainText("not shown")
+  })
+
   test("every entry opens a meeting on this site", async ({ page }) => {
     // An entry is one sitting, not one document, so nothing in the grid leaves
     // the site any more -- the city's files are listed on the meeting page.

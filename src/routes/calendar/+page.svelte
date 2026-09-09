@@ -402,20 +402,29 @@
 
   <footer class="mt-8 border-t border-slate-200 pt-4 text-xs text-slate-500">
     <!--
-    Where all of this comes from, in full.
+      Where all of this comes from, in full.
 
-    One link used to stand for the lot, to the listing the scrape started
-    with. That listing reaches back only to 2025 -- two archives hold the
-    ~1,620 documents before it -- the Planning Board and the Zoning Board of
-    Appeals keep theirs on their own pages, and none of the four boards that
-    publish a meeting schedule publishes it on any of those. A reader
-    checking this calendar against what the city posted was being pointed at
-    a fraction of it.
+      One link used to stand for the lot, to the listing the scrape started
+      with. That listing reaches back only to 2025 -- two archives hold the
+      ~1,620 documents before it -- the Planning Board and the Zoning Board of
+      Appeals keep theirs on their own pages, and none of the four boards that
+      publish a meeting schedule publishes it on any of those. A reader checking
+      this calendar against what the city posted was being pointed at a fraction
+      of it.
 
-    Built from the data rather than written out here, so a scrape that starts
-    reading a new page lists it without anyone remembering to: see `Sources`
-    in `$lib/meetings`.
-  -->
+      Built from the data rather than written out here, so a scrape that starts
+      reading a new page lists it without anyone remembering to: see `Sources`
+      in `$lib/meetings`.
+
+      The four paragraphs of counts that used to sit under this are gone --
+      documents indexed, records with no date, duplicates collapsed, dates the
+      scraper flagged, documents the city has taken down, sittings projected.
+      They kept the site honest about data it knows to be imperfect and they
+      are all still true; what they were not was anything a reader came for,
+      and they made the foot of the page a wall of small type around the one
+      thing here worth reading. `scripts/` still counts every one of them, and
+      says so to whoever can act on them.
+    -->
     <section aria-label="Sources" class="space-y-1 text-xs text-slate-500">
       {#each sources as group (group.label)}
         <p class="m-0 flex flex-wrap items-baseline gap-x-2 gap-y-1">
@@ -439,40 +448,19 @@
       {/each}
     </section>
 
-    <p class="mt-3">
-      {all.length} meetings indexed, {data.documents} documents, {months.length} months covered.
-      {#if data.undated > 0}
-        {data.undated} document{data.undated === 1 ? "" : "s"} had no resolvable date and {data.undated ===
-        1
-          ? "is"
-          : "are"} not shown.
-      {/if}
-      {#if data.duplicates > 0}
-        {data.duplicates} duplicate listing{data.duplicates === 1 ? "" : "s"} collapsed.
-      {/if}
-      {#if data.gone > 0}
-        {data.gone} document{data.gone === 1 ? "" : "s"} the city has since taken down
-        {data.gone === 1 ? "is" : "are"} not shown: the link{data.gone === 1 ? "" : "s"}
-        {data.gone === 1 ? "returns" : "return"} a 404, so there is nothing to open. Most of them were
-        on cityofhaverhill.com, the address the city used before haverhillma.gov.
-      {/if}
+    <!--
+      How old the page is, which is the one thing under the links worth
+      saying: everything here is scraped ahead of time and committed, so a
+      reader looking at a calendar of public meetings has every reason to ask
+      when it was last brought up to date.
+
+      The scraper's stamp is an instant, and the day it names is the day in
+      Haverhill -- `easternDate` off that timestamp, not `toISOString`, which
+      names tomorrow for any scrape run after eight in the evening here.
+    -->
+    <p class="m-0 mt-1 flex flex-wrap items-baseline gap-x-2">
+      <span class="font-semibold text-slate-700">Last updated</span>
+      <span>{easternDate(new Date(data.generatedAt))}</span>
     </p>
-    {#if data.scheduled > 0}
-      <p class="mt-1">
-        {data.scheduled} sitting{data.scheduled === 1 ? "" : "s"} shown as expected, from today to the
-        end of the year: the City Council's own rule says it sits every Tuesday, with exceptions for June
-        and the summer, and the city has published no agenda for {data.scheduled === 1
-          ? "that date"
-          : "those dates"} yet. The Council does not sit on every Tuesday its rule names, so an expected
-        sitting is not an announced one.
-      </p>
-    {/if}
-    {#if data.flagged > 0}
-      <p class="mt-1">
-        {data.flagged} document{data.flagged === 1 ? "" : "s"} carry a meeting date that disagrees with
-        the date in their own title or filename; those dates may be off. Check the linked document.
-      </p>
-    {/if}
-    <p class="mt-1">Data scraped {new Date(data.generatedAt).toISOString().slice(0, 10)}.</p>
   </footer>
 </div>

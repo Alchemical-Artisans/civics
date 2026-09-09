@@ -218,7 +218,14 @@ explaining that an entry is a meeting and naming the city's listing as the
 source -- the largest thing on the page and the least informative, since the
 bar already marks "Calendar" as the section, the tab says the same words, and
 the grid heads itself with the month. The heading is `sr-only` now, so the page
-still has one; the sentence is gone. In its place, at the foot of the page, is
+still has one; the sentence is gone. The footer's four paragraphs of counts are
+gone with it -- documents indexed, records with no date, duplicates collapsed,
+dates the scraper flagged, documents the city has taken down, sittings
+projected: all still true, none of it what a reader came for, and together a
+wall of small type around the one thing at the foot of the page worth reading.
+`scripts/` counts every one of them on every run and `printAttention` says so to
+whoever can act on it, which is where that disclosure belongs; `Calendar` in
+`meetings.ts` no longer carries any of them. What is left is
 `Sources`: the ten pages the calendar actually comes from, in two groups --
 documents (the agendas-and-minutes listing, its Agenda Archive and Minutes
 Archive, the Planning Board's and the Zoning Board of Appeals' own pages) and
@@ -230,7 +237,11 @@ city's own name for a page, keyed on the last path segment so a page that moves
 keeps its name, with a slug-derived fallback. Documents are ordered by URL,
 which puts the listing first with its archives under it and the board pages
 after -- ordering by document count reads the other way round, the archives
-together holding more of the record than the listing they hang off.
+together holding more of the record than the listing they hang off. Under the
+links, one line: **Last updated**, the day the scrape ran, resolved with
+`easternDate` off the scraper's own timestamp rather than `toISOString` -- how
+old the page is, which is not a caveat about the data but the thing a reader of
+a prerendered calendar of public meetings has every reason to ask.
 
 **A calendar entry is a meeting, not a document.** The city publishes an agenda
 and its minutes separately; they are two documents about one sitting, matched on

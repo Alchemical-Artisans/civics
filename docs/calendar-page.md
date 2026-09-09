@@ -615,11 +615,13 @@ Constraints that shaped it:
   comments were moved here; the file keeps only a `<title>`, which is small and
   gives the mark an accessible name if it is ever used inline in the page.
 
-## Honesty in the footer
+## The footer is the source list
 
-The footer opens with **every page the calendar is read off**, in two groups:
-the pages the agendas and minutes come from, and the pages and files the
-expected sittings come from. Ten links today — the agendas-and-minutes listing
+The footer is **every page the calendar is read off**, in two groups, and one
+line saying when the scrape behind it last ran. Nothing else.
+
+The two groups are the pages the agendas and minutes come from, and the pages
+and files the expected sittings come from. Ten links today — the agendas-and-minutes listing
 with its Agenda Archive and Minutes Archive under it, the Planning Board's and
 the Zoning Board of Appeals' own pages, and the four boards' meeting schedules,
 two of which are PDFs on the city's CDN.
@@ -656,14 +658,28 @@ the same words, and the grid heads itself with the month. The heading stays as
 sentence is gone outright, the grid demonstrating in less time than it takes to
 read that an entry is a sitting.
 
-The footer then states how many meetings and documents are indexed, how many were
-dropped for having no date, how many duplicates were collapsed, and how many
-carry a date
-that contradicts their own title or filename.
+**The counts that used to follow are gone.** Four paragraphs of them: meetings
+and documents indexed, records dropped for having no date, duplicates
+collapsed, dates that contradict their own title or filename, documents the city
+has since taken down, sittings projected from the Council's rule. They were
+there to keep the site honest about data it knows to be imperfect — the
+underlying record has real quality problems, see [dates.md](./dates.md) — and
+every one of them is still true. What they were not was anything a reader came
+for, and they turned the foot of the page into a wall of small type around the
+one thing there worth reading. The disclosure has a better home already:
+`scripts/` counts all of it on every run and `printAttention` ends the run with
+it, addressed to the person who can actually act on it (see
+[operations.md](./operations.md)). `Calendar` in
+[`src/lib/meetings.ts`](../src/lib/meetings.ts) no longer carries any of them.
 
-This is intentional. The underlying data has real quality problems (see
-[dates.md](./dates.md)); a civic information site should say so plainly rather
-than present uncertain data as authoritative.
+**"Last updated" stays**, as the one line under the links. When the scrape last
+ran is not a caveat about the data; it is how old the page is, and everything
+here is scraped ahead of time and committed, so a reader looking at a calendar
+of public meetings has every reason to want it. The scraper's stamp is an
+instant, and the day it names is resolved with `easternDate` off that timestamp
+rather than `toISOString` — which names tomorrow for any scrape run after eight
+in the evening in Haverhill, the same bug the rest of the site's dates are
+built to avoid.
 
 ## Tests
 
