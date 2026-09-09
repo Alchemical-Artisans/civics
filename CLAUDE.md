@@ -46,6 +46,7 @@ npm run metadata:update     # refresh everything the site takes from the city
 npm run calendar:update     # scrape only documents new since the last run
 npm run calendar:rebuild    # re-scrape everything (only when scrape/date logic changed)
 npm run budget:update       # re-scrape the budget and audit listing (always full)
+npm run transcribe -- <id>  # hand a sitting to Claude Code to write its page
 npm run storybook           # storybook on :6006
 ```
 
@@ -232,6 +233,16 @@ refresh cannot contradict any of it.
 
 `docs/document-pages.md` calls these document pages; they are meeting pages now,
 and an agenda's transcription is what a meeting page shows.
+
+**Writing one is the one job here that cannot be scripted**, because two thirds
+of what the city publishes is scanned paper with no text layer -- the document
+has to be read by eye. `npm run transcribe -- <meeting id | date | board>`
+scripts everything around that: it works out the meeting id, fetches the PDF,
+decides whether `pdftotext` got anything, renders the pages when it did not, and
+hands Claude Code a prompt with the rules and the file paths in it. The prompt
+itself is `scripts/prompts/transcribe-meeting.md` and is the thing to edit when
+a transcription comes out wrong -- a correction made there is one every future
+run gets. `--prompt-only` writes it and launches nothing.
 
 **`/` is the landing page** (`src/routes/+page.svelte`): the site's name and a
 card for each half — the meeting calendar and the current budget book. It

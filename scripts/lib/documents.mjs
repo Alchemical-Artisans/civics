@@ -144,8 +144,11 @@ export async function pagesWritten() {
  * rather than imported because the scripts are plain .mjs run by node and that
  * module is TypeScript compiled by Vite; `documents.spec.mjs` pins the two
  * together by asserting the shape this produces.
+ *
+ * Exported because `lib/transcribe.mjs` names a page's directory with it, and a
+ * third copy of the rule is one too many.
  */
-const meetingIdOf = (record) =>
+export const meetingIdOf = (record) =>
   `${record.board
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")

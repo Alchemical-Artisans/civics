@@ -25,7 +25,8 @@
     "schedule:update": "node scripts/update-schedule.mjs",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "glossary:check": "node scripts/check-glossary.mjs"
+    "glossary:check": "node scripts/check-glossary.mjs",
+    "transcribe": "node scripts/transcribe-meeting.mjs"
   },
   "devDependencies": {
     "@chromatic-com/storybook": "latest",

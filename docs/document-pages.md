@@ -24,12 +24,45 @@ automated transcription of all of them. So the calendar is now honest about
 which is which: a link either opens something written here, or it opens the
 city's file.
 
+## Running it
+
+```sh
+npm run transcribe -- planning-board-2026-09-09   # a meeting id
+npm run transcribe -- 2026-09-09                  # everything that sat that day
+npm run transcribe -- planning-board              # a board, oldest first
+npm run transcribe -- --today
+```
+
+The steps below are what has to happen; this is what does the parts of it that
+are mechanical. It resolves the sitting, downloads each of its documents into
+`.cache/documents/`, runs `pdftotext` over them, and — for the two thirds of the
+corpus that is scanned paper and yields nothing — renders the pages as images
+into `.cache/transcribe/<document id>/`. Then it appends all of that to
+`scripts/prompts/transcribe-meeting.md` and hands the result to Claude Code.
+
+A date or part of a board's name can match several sittings; it lists them and
+asks you to name one rather than picking. `--prompt-only` writes the prompt and
+launches nothing, which is also how you read what it is about to say.
+`--accept-edits` saves confirming every file, and `--print` runs headless.
+
+**The prompt is the thing to edit.** When a transcription comes out wrong — a
+slug named badly, an item that should not have had its own page, a heading given
+prose the city never printed — the fix belongs in that file, where every future
+run gets it, and not only in the page that came out wrong. Only the front of a
+document is rendered (40 pages), which is enough for an agenda outline; a packet
+running to hundreds is not transcribed anyway.
+
+Everything it writes is under `.cache/`, which is gitignored and disposable.
+
 ## Writing a page
 
-1. **Find the document's id.** It is in `meetings.json` as `docId`, and in the
-   URL of any existing page. Ids are permanent — a readable slug with a hash of
-   the file URL appended — so they can be settled before anything is written.
-   See `documentId()` in [`scripts/lib/documents.mjs`](../scripts/lib/documents.mjs).
+1. **Find the meeting's id.** A page is written for a sitting rather than for
+   one of its documents, so the id is the board slugged and then the date —
+   `planning-board-2026-09-09` — which is what `meetingId()` in
+   [`src/lib/calendar.ts`](../src/lib/calendar.ts) builds and what the calendar
+   already links to. `npm run transcribe` prints it. (`docId`, a readable slug
+   with a hash of the file URL appended, is a different thing: it names a
+   document in `meetings.json` and in the cache, not a route.)
 
 2. **Create `src/routes/calendar/meetings/<id>/+page.svelte`.** The directory
    name is the id and becomes the URL. The page is the write-up and nothing
@@ -46,12 +79,12 @@ city's file.
 
 3. **If the document says when and where, add a `+page.ts` beside it.** An
    agenda usually opens with a time, a room and a link to join remotely. Those
-   belong in the header rather than in the prose, so return them as `meeting`
+   belong in the header rather than in the prose, so return them as `details`
    and let the layout render them:
 
    ```ts
    export const load: PageLoad = () => ({
-     meeting: {
+     details: {
        time: "7:00 PM",
        location: { name: "…, 4 Summer St, Room 202", mapQuery: "4 Summer Street, Haverhill, MA" },
        remote: { url: "https://meet.google.com/…", meetingId: "…", passcode: "…" },
