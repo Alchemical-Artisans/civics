@@ -10,23 +10,32 @@
   // in columns beside each other, and squeezing them into a 48rem strip left
   // most of the screen as margin.
   //
-  // Every page of a book ends in a footer fixed to the bottom of the window --
-  // the budget calendar -- which is out of the flow and so cannot push anything
-  // out from under itself. The padding is what keeps the last line of the page
-  // clear of it: 7rem against a footer that is 84px at its shortest and 101 at
-  // its tallest, which is clearance rather than a margin. It was 8rem, and that
-  // extra half-inch read as a gap between the chart's figures and the calendar.
-  // Both kinds of page carry it, now that both carry the calendar. The site's
-  // attribution footer sits in that clearance too -- rendered below the article
-  // here rather than by the root layout, which puts it at the foot of the flow
-  // where the fixed calendar would cover it -- so the 7rem now holds it, rather
-  // than the last line of the transcription, off the calendar.
+  // Every page of a book ends in two footers fixed to the bottom of the window
+  // -- the budget calendar, and the site's attribution line under it -- which
+  // are out of the flow and so cannot push anything out from under themselves.
+  // The padding is what keeps the last line of the page clear of both: 9.5rem
+  // against a calendar that is 84px at its shortest and 101 at its tallest,
+  // plus the 40px of attribution beneath it. Clearance rather than a margin,
+  // and the same 11px of slack the 7rem here used to leave the calendar alone.
+  //
+  // The attribution used to sit in that clearance instead, at the end of the
+  // flow, which put it *above* the calendar: the one line of the site's own
+  // words, wedged between the reading and the city's own process. It is the
+  // bottom of the window it belongs at, under everything, which on this half
+  // means fixed too -- rendered below the article here, the calendar half
+  // still gets it from the root layout at the foot of an ordinary flow.
+  //
+  // Fixed here rather than beside the calendar in `fy2027/+layout.svelte`,
+  // where it would sit visually: the calendar is one book's, and the
+  // attribution is every page's. A book with no calendar drawn still carries
+  // its line.
+  //
   // A section can ask for the book page's treatment instead, by returning
   // `wide` from its own load: `reserves` is two charts and a column of prose
   // laid out as one screen, and a 48rem strip has nowhere to put the charts.
   // It keeps a reading measure on the prose itself rather than on the page.
   const wide = $derived(!data.isSection || page.data.wide === true)
-  const column = $derived(wide ? "max-w-none pb-28" : "max-w-3xl pb-28")
+  const column = $derived(wide ? "max-w-none pb-38" : "max-w-3xl pb-38")
 </script>
 
 <svelte:head>
@@ -54,12 +63,13 @@
   <article class="budget-prose prose max-w-none break-words prose-slate">
     {@render children()}
   </article>
+</div>
 
-  <!-- The site's attribution line. The calendar half puts it at the foot of the
-       flow; here it sits inside the same `pb-28` that clears the fixed budget
-       calendar, so the clearance now holds the last line of the page off the
-       calendar rather than the last line of the transcription. The single-screen
-       sections subtract its height in their own `calc(100vh - ...)`. -->
+<!-- The site's attribution line, at the bottom of the window with the budget
+     calendar directly above it. `bottom-10` on that calendar is this element's
+     own 40px, which is why `SiteFooter` fixes its height rather than letting
+     its one line size it. Opaque, because the page scrolls underneath. -->
+<div class="fixed inset-x-0 bottom-0 z-40 bg-white">
   <SiteFooter />
 </div>
 

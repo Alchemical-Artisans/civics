@@ -91,10 +91,10 @@
     view; a chart that scrolls away is a chart consulted once.
 
     So the page is one screen: 221px of it is spoken for -- the bar at the top
-    (53), the padding the layout puts above the page (16), the site's
-    attribution footer (40) and the padding that clears the fixed budget
-    calendar below it (112) -- and the grid takes the rest.
-    The calendar then sits inside that bottom padding rather than over anything,
+    (53), the padding the layout puts above the page (16), and the padding that
+    clears the two fixed footers below it, the budget calendar and the site's
+    attribution line under it (152) -- and the grid takes the rest.
+    Both then sit inside that bottom padding rather than over anything,
     and the only thing that scrolls is the list itself. Full height also buys the chart every pixel it can get, which
     $5,151,539 out of $316 million needs. Below `lg` this is all off -- the page
     is a single column and scrolls as a page.

@@ -703,9 +703,18 @@ Notable pieces:
 - **`src/lib/BudgetTimeline.svelte`** draws page 13, the budget calendar, as the
   footer of _every_ page of a book, fixed to the bottom of the window: a row of
   twelve boxes
-  with a mark showing where today falls in the process. `budget/+layout.svelte` pads
-  every book page by more than the footer is tall, since a fixed footer cannot
-  push anything out from under itself. It is a drawing rather than a section of its own,
+  with a mark showing where today falls in the process. The site's attribution
+  line is fixed under it -- `bottom-0` to the calendar's `bottom-10`, which is
+  `SiteFooter`'s own fixed 40px -- rather than sitting at the end of the flow,
+  where it came _above_ the calendar: the site's one line of its own words,
+  wedged between the reading and the city's own process. It is rendered by
+  `budget/+layout.svelte` and not beside the calendar in `fy2027/+layout.svelte`,
+  because the calendar is one book's and the attribution is every page's.
+  `budget/+layout.svelte` pads
+  every book page by more than the two are tall (`pb-38`), since a fixed footer cannot
+  push anything out from under itself; the single-screen sections'
+  `calc(100vh - 221px)` is unchanged by the move, the same 40px being subtracted
+  either way. It is a drawing rather than a section of its own,
   and its entries are `budget-calendar.ts`, loaded by `fy2027/+layout.ts` so the
   footer sits under the sections as well as the front page — which is what lets
   the bar at the top carry no source link on any page. A box

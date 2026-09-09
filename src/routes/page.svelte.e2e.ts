@@ -103,6 +103,36 @@ test.describe("the site root", () => {
   })
 })
 
+test.describe("the site's attribution line", () => {
+  test("is the last thing on a calendar page", async ({ page }) => {
+    await page.goto("/calendar")
+    await expect(
+      page.getByRole("contentinfo").getByText("Created by Alchemical Artisans"),
+    ).toBeVisible()
+  })
+
+  test("sits below the budget calendar on a budget page", async ({ page }) => {
+    // Both are fixed to the bottom of the window on this half of the site, and
+    // the attribution is under the calendar rather than wedged between the
+    // reading and it. Asserted as geometry, because that is the whole claim.
+    await page.goto(`/budget/${newest}`)
+    const attribution = page.getByText("Created by Alchemical Artisans")
+    const timeline = page.locator(".budget-timeline")
+
+    const below = (await attribution.boundingBox())!
+    const above = (await timeline.boundingBox())!
+    expect(below.y).toBeGreaterThan(above.y + above.height - 1)
+
+    // And nothing of the page is left underneath either of them: the layout
+    // pads by more than the two are tall.
+    const clearance = await page.evaluate(() => {
+      const article = document.querySelector("article.budget-prose")!
+      return window.innerHeight - article.getBoundingClientRect().bottom
+    })
+    expect(clearance).toBeGreaterThan(0)
+  })
+})
+
 test.describe("the site header", () => {
   test("carries the mark and both sections on every kind of page", async ({ page }) => {
     for (const at of ["/", "/calendar", `/budget/${newest}`, `/budget/${newest}/${section}`]) {

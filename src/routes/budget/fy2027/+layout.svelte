@@ -27,9 +27,14 @@
   under all of it and stays there while the page scrolls past. The budget layout
   pads the page by more than this is tall, because a fixed footer cannot push
   anything out from under itself.
+
+  `bottom-10` and not `bottom-0`: the site's attribution line is fixed to the
+  bottom of the window on this half of the site, and this sits on top of it. Its
+  40px is `SiteFooter`'s own fixed height, which is fixed precisely so that
+  something can be measured against it.
 -->
 <footer
-  class="fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 bg-white/95 px-4 py-2 backdrop-blur"
+  class="fixed inset-x-0 bottom-10 z-40 border-t border-slate-200 bg-white/95 px-4 py-2 backdrop-blur"
 >
   <BudgetTimeline steps={data.calendar} asOf={data.asOf} documents={{ book, order: data.order }} />
 </footer>

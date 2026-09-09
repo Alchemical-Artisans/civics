@@ -1241,6 +1241,21 @@ It is the _book's_ footer and not the site's: page 13 belongs to FY2027, and a
 year written up later brings its own. Nothing outside `/budget/fy2027` draws
 it.
 
+**The site's own attribution line sits under it**, fixed to the bottom of the
+window too, at `bottom-0` with the calendar at `bottom-10` above it — 40px being
+`SiteFooter`'s own fixed height, which is fixed precisely so something can be
+measured against it. It used to sit at the end of the flow instead, which put it
+_above_ the calendar: the one line of the site's own words, wedged between the
+reading and the city's own process. It is rendered by
+[`budget/+layout.svelte`](../src/routes/budget/+layout.svelte) rather than beside
+the calendar in `fy2027/+layout.svelte`, where it would sit visually — the
+calendar is one book's and the attribution is every page's, so a book with no
+calendar drawn still carries its line. `pb-38` on the page clears both: 152px
+against a calendar 84 to 101px tall plus the 40 beneath it. The single-screen
+sections' `calc(100vh - 221px)` is unchanged by the move, since the same 40px is
+subtracted either way — once as a footer in the flow, now as part of the
+clearance.
+
 **A box per step, holding a few words.** A step of a process has a beginning and
 an end, twelve boxes fill the width evenly, and a box is somewhere for words to
 live. The book's own sentence for a step runs to twenty-odd words — a paragraph

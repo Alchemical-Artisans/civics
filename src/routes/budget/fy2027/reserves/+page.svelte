@@ -116,9 +116,9 @@
   the city's prose is exactly the reader who wants that answer still in view.
 
   So the page is one screen on a wide window: 221px of it is spoken for -- the
-  bar at the top (53), the padding the layout puts above the page (16), the
-  site's attribution footer (40) and the padding that clears the fixed calendar
-  below it (112) -- and the grid takes the rest. Below `lg` it is a single
+  bar at the top (53), the padding the layout puts above the page (16), and the
+  padding that clears the two fixed footers below it, the budget calendar and
+  the site's attribution line under it (152) -- and the grid takes the rest. Below `lg` it is a single
   column and scrolls as a page, charts first, because a column narrower than
   these has nowhere to put them.
 -->
