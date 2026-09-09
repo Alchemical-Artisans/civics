@@ -15,7 +15,7 @@ import {
   type MeetingDocument,
   type MeetingKind,
 } from "./calendar"
-import { expectedSittings } from "./schedule"
+import { expectedSittings, meetingCalendars, meetingRules } from "./schedule"
 
 /**
  * The meetings somebody has written up by hand.
@@ -50,10 +50,74 @@ const written = new Set(
     .filter((name) => !name.startsWith("[")),
 )
 
+/** One page or file the calendar is built out of. */
+export interface Source {
+  /** What the city calls it. */
+  name: string
+  url: string
+  /** True where the source is a PDF rather than a page, worth saying before a click. */
+  pdf: boolean
+}
+
+/**
+ * Every page the calendar is read off, in two groups.
+ *
+ * The calendar used to name one: the agendas-and-minutes listing, in a sentence
+ * under the heading. That was the answer while the listing was the whole
+ * scrape, and it stopped being true twice over -- the listing reaches back only
+ * to 2025 and two archives hold the rest, two boards keep their own documents
+ * on their own pages, and none of the four boards that publish a schedule
+ * publishes it there. A reader who wants to check what is here against what the
+ * city posted needs all of them, so all of them are listed.
+ *
+ * Derived rather than written out. Documents come from the distinct `source` on
+ * the records themselves and schedules from `schedule.json`, so a scrape that
+ * starts reading a new page puts it here without anyone remembering to.
+ */
+export interface Sources {
+  /** Where the agendas and minutes were read off, most documents first. */
+  documents: Source[]
+  /** Where the expected sittings were read off, by board. */
+  schedules: Source[]
+}
+
+/**
+ * What the city calls each page, since a record carries only its URL.
+ *
+ * Keyed on the last path segment rather than the whole URL: the city has moved
+ * this material once already, from cityofhaverhill.com to haverhillma.gov, and
+ * a page that moves under a different parent keeps its own name. Anything not
+ * named here is titled from its slug, so a page added to the scrape appears
+ * with a reasonable name rather than not at all.
+ */
+const PAGE_NAMES: Record<string, string> = {
+  "agendas-and-minutes": "Agendas & Minutes",
+  "agenda-archive": "Agenda Archive",
+  "minutes-archive": "Minutes Archive",
+  "planning-board": "Planning Board",
+  "zoning-board-of-appeals": "Zoning Board of Appeals",
+}
+
+const slugOf = (url: string) => url.replace(/\/+$/, "").split("/").pop() ?? url
+
+const pageName = (url: string) => {
+  const slug = slugOf(url)
+  return (
+    PAGE_NAMES[slug] ??
+    slug
+      .replace(/\.[a-z]+$/, "")
+      .split("-")
+      .map((word) => word[0].toUpperCase() + word.slice(1))
+      .join(" ")
+  )
+}
+
 export interface Calendar {
   meetings: Meeting[]
   generatedAt: string
   source: string
+  /** Every page the calendar is read off. */
+  sources: Sources
   /** Records with no date, which cannot be placed on a calendar. */
   undated: number
   /** Records dropped as duplicate publications of one PDF. */
@@ -130,10 +194,38 @@ export function calendar(): Calendar {
     isWritten,
   )
 
+  // Distinct, over `live` rather than `kept`, so a page whose every document is
+  // a duplicate of another page's still says it was read.
+  const perSource = new Set(live.map((m) => m.source))
+
+  // Rules and printed calendars together, by board. The City Council's rule is
+  // printed above the document table on the listing page, so its URL is the
+  // listing's -- the same page under both headings, which is what it is.
+  const schedules = [
+    ...meetingRules().map((rule) => ({ board: rule.board, url: rule.source })),
+    ...meetingCalendars().map((calendar) => ({ board: calendar.board, url: calendar.source })),
+  ].sort((a, b) => a.board.localeCompare(b.board))
+
   return {
     meetings,
     generatedAt: raw.generatedAt,
     source: raw.source,
+    sources: {
+      // By URL, which is not an arbitrary order: the city's own listing is the
+      // shortest of these paths and the two archives sit under it, so sorting
+      // the strings puts the listing first with its archives beneath it and the
+      // board pages after. Ordering by how many documents came from each would
+      // read the other way round, since the archives together hold more of the
+      // record than the listing they hang off does.
+      documents: [...perSource]
+        .sort()
+        .map((url) => ({ name: pageName(url), url, pdf: url.endsWith(".pdf") })),
+      schedules: schedules.map(({ board, url }) => ({
+        name: board,
+        url,
+        pdf: url.endsWith(".pdf"),
+      })),
+    },
     undated: live.length - dated.length,
     duplicates: dated.length - documents.length,
     flagged: kept.filter((m) => m.needsReview).length,

@@ -27,6 +27,20 @@
    */
   const linkFor = (m: Meeting) => Router.meeting(m.id)
 
+  /**
+   * The two groups of source links, labelled for the reader.
+   *
+   * The labels are the only words here that are not the city's own page names:
+   * the split is between what the city published *about* a sitting and what it
+   * published saying the sitting would be held, and those are different kinds
+   * of evidence -- see the meeting page, which shows them differently for the
+   * same reason.
+   */
+  const sources = $derived([
+    { label: "Documents", items: data.sources.documents },
+    { label: "Meeting schedules", items: data.sources.schedules },
+  ])
+
   const all = $derived(data.meetings as Meeting[])
   const months = $derived(monthsCovered(all))
   const boards = $derived(boardsOf(all))
@@ -155,16 +169,21 @@
 </svelte:head>
 
 <div class="mx-auto max-w-6xl px-4 py-8">
-  <header class="mb-6">
-    <h1 class="text-3xl font-bold tracking-tight text-slate-900">Haverhill Meeting Calendar</h1>
-    <p class="mt-2 text-slate-600">
-      Agendas and minutes from
-      <a class="underline hover:text-slate-900" rel="external" href={data.source}>
-        the City of Haverhill
-      </a>. One entry per meeting: open it for the documents the city published, agenda and minutes
-      together.
-    </p>
-  </header>
+  <!--
+      Not shown, because everything it said is already on the screen. The bar
+      above marks "Calendar" as the section the reader is in, the tab says
+      "Haverhill Meeting Calendar", and under this is a month grid with the
+      month's name over it -- a 3xl heading repeating all three was the largest
+      thing on the page and the least informative. The heading itself stays for
+      a reader moving by headings, and so the page has one.
+
+      The sentence under it is gone outright. It explained that an entry is a
+      meeting rather than a document, which the grid demonstrates in less time
+      than it takes to read, and it named the city's listing as the source --
+      true once, and not the whole truth for a while now. What replaces it is
+      every page the calendar is actually read off.
+    -->
+  <h1 class="sr-only">Haverhill Meeting Calendar</h1>
 
   <!-- Filters -->
   <section aria-label="Filters" class="mb-6 rounded-lg border border-slate-200 bg-slate-50 p-4">
@@ -382,7 +401,45 @@
   {/if}
 
   <footer class="mt-8 border-t border-slate-200 pt-4 text-xs text-slate-500">
-    <p>
+    <!--
+    Where all of this comes from, in full.
+
+    One link used to stand for the lot, to the listing the scrape started
+    with. That listing reaches back only to 2025 -- two archives hold the
+    ~1,620 documents before it -- the Planning Board and the Zoning Board of
+    Appeals keep theirs on their own pages, and none of the four boards that
+    publish a meeting schedule publishes it on any of those. A reader
+    checking this calendar against what the city posted was being pointed at
+    a fraction of it.
+
+    Built from the data rather than written out here, so a scrape that starts
+    reading a new page lists it without anyone remembering to: see `Sources`
+    in `$lib/meetings`.
+  -->
+    <section aria-label="Sources" class="space-y-1 text-xs text-slate-500">
+      {#each sources as group (group.label)}
+        <p class="m-0 flex flex-wrap items-baseline gap-x-2 gap-y-1">
+          <span class="font-semibold text-slate-700">{group.label}</span>
+          {#each group.items as item, at (item.url)}
+            {#if at}<span class="text-slate-300" aria-hidden="true">&middot;</span>{/if}
+            <a
+              class="underline decoration-slate-300 hover:text-slate-900 hover:decoration-slate-900"
+              href={item.url}
+              target="_blank"
+              rel="external noopener noreferrer"
+            >
+              {item.name}{#if item.pdf}<span class="ml-1 text-slate-400" aria-hidden="true"
+                  >PDF</span
+                ><span class="sr-only">, PDF</span>{/if}<span class="sr-only">
+                , on the city's site, opens in a new tab</span
+              >
+            </a>
+          {/each}
+        </p>
+      {/each}
+    </section>
+
+    <p class="mt-3">
       {all.length} meetings indexed, {data.documents} documents, {months.length} months covered.
       {#if data.undated > 0}
         {data.undated} document{data.undated === 1 ? "" : "s"} had no resolvable date and {data.undated ===

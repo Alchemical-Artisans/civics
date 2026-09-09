@@ -1,7 +1,10 @@
 import { expect, test } from "@playwright/test"
 import meetings from "../../lib/data/meetings.json" with { type: "json" }
 import { easternDate, meetingId } from "../../lib/calendar"
-import { expectedSittings } from "../../lib/schedule"
+import { expectedSittings, meetingCalendars, meetingRules } from "../../lib/schedule"
+
+const rules = meetingRules()
+const calendars = meetingCalendars()
 
 /** Today in Haverhill, the same day the build resolved. */
 const TODAY = easternDate()
@@ -46,8 +49,47 @@ test.describe("meeting calendar", () => {
   })
 
   test("renders the calendar with a month heading", async ({ page }) => {
-    await expect(page.getByRole("heading", { name: "Haverhill Meeting Calendar" })).toBeVisible()
+    // The page's own `<h1>` is there for a reader moving by headings and is not
+    // drawn: the bar above marks "Calendar" as the section, the tab says the
+    // same words, and the grid heads itself with the month.
+    const title = page.getByRole("heading", { name: "Haverhill Meeting Calendar" })
+    await expect(title).toBeAttached()
+    // Measured rather than asserted with `not.toBeVisible()`: `sr-only` clips a
+    // box down to a pixel rather than hiding it, which is the whole point --
+    // Playwright calls that visible and a screen reader still reads it.
+    const box = (await title.boundingBox())!
+    expect(box.height).toBeLessThanOrEqual(1)
     await expect(page.getByRole("heading", { level: 2 })).toHaveText(/^[A-Z][a-z]+ \d{4}$/)
+  })
+
+  test("lists every page the calendar is read off, and links each one", async ({ page }) => {
+    // One link to the agendas-and-minutes listing used to stand for the lot,
+    // which stopped being the whole truth once the archives, the two boards
+    // that publish their own documents, and the four that publish a schedule
+    // came into the scrape. Derived from the data, so this checks the page
+    // against the same records the calendar is built from rather than against
+    // a list typed out twice.
+    const sources = page.getByRole("region", { name: "Sources" })
+
+    const documents = [...new Set(meetings.meetings.map((m) => m.source))].sort()
+    const schedules = [
+      ...new Set([...rules.map((r) => r.source), ...calendars.map((c) => c.source)]),
+    ]
+    expect(documents.length).toBeGreaterThan(1)
+
+    for (const url of [...documents, ...schedules]) {
+      const link = sources.locator(`a[href="${url}"]`).first()
+      await expect(link).toBeVisible()
+      // Off-site, so it opens in a new tab and cannot reach back into ours.
+      await expect(link).toHaveAttribute("target", "_blank")
+      expect(await link.getAttribute("rel")).toContain("noopener")
+    }
+
+    // Every board that publishes a schedule is named, since the URL alone does
+    // not say whose it is -- two of them are PDFs on the city's CDN.
+    for (const board of [...rules, ...calendars].map((s) => s.board)) {
+      await expect(sources.getByRole("link", { name: new RegExp(board) }).first()).toBeVisible()
+    }
   })
 
   test("every entry opens a meeting on this site", async ({ page }) => {

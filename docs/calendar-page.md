@@ -617,7 +617,46 @@ Constraints that shaped it:
 
 ## Honesty in the footer
 
-The footer states how many meetings and documents are indexed, how many were
+The footer opens with **every page the calendar is read off**, in two groups:
+the pages the agendas and minutes come from, and the pages and files the
+expected sittings come from. Ten links today — the agendas-and-minutes listing
+with its Agenda Archive and Minutes Archive under it, the Planning Board's and
+the Zoning Board of Appeals' own pages, and the four boards' meeting schedules,
+two of which are PDFs on the city's CDN.
+
+This replaced one link, in a sentence at the top of the page, to the listing the
+scrape started with. That was the whole answer once and had not been for a
+while: the listing reaches back only to 2025, two archives hold the ~1,620
+documents before it, two boards keep their own documents on their own pages, and
+none of the four boards that publish a meeting schedule publishes it on any of
+those. A reader checking this calendar against what the city posted was being
+pointed at a fraction of it.
+
+It is derived, not written out: `Sources` in
+[`src/lib/meetings.ts`](../src/lib/meetings.ts) takes the distinct `source` off
+the records themselves and the `source` off each rule and printed calendar in
+`schedule.json`, so a scrape that starts reading a new page lists it without
+anyone remembering to. `PAGE_NAMES` gives the city's own name for a page, keyed
+on the last path segment — the city has moved this material once already, from
+cityofhaverhill.com to haverhillma.gov, and a page that moves under a different
+parent keeps its name; anything unmapped is titled from its slug, so a new page
+appears with a reasonable name rather than not at all. Documents are ordered by
+URL, which is not arbitrary: the listing is the shortest of those paths and the
+archives sit under it, so sorting the strings puts the listing first with its
+archives beneath it and the board pages after. Ordering by how many documents
+came from each would read the other way round, since the archives together hold
+more of the record than the listing they hang off does.
+
+**The page's own `<h1>` is not drawn.** It read "Haverhill Meeting Calendar" at
+`text-3xl` above a sentence explaining that an entry is a meeting rather than a
+document — the largest thing on the page and the least informative, since the
+bar above already marks "Calendar" as the section the reader is in, the tab says
+the same words, and the grid heads itself with the month. The heading stays as
+`sr-only`, so the page still has one for a reader moving by headings; the
+sentence is gone outright, the grid demonstrating in less time than it takes to
+read that an entry is a sitting.
+
+The footer then states how many meetings and documents are indexed, how many were
 dropped for having no date, how many duplicates were collapsed, and how many
 carry a date
 that contradicts their own title or filename.

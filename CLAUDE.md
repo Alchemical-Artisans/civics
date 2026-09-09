@@ -212,6 +212,26 @@ component's `inTheBrowser` -- unset in both the server render and the client's
 first -- fills in on mount as an ordinary reactive change rather than a
 mismatch, the same bargain `BudgetTimeline` makes.
 
+**The calendar names every page it is read off, and heads itself with none.**
+The page opened with a `text-3xl` "Haverhill Meeting Calendar" over a sentence
+explaining that an entry is a meeting and naming the city's listing as the
+source -- the largest thing on the page and the least informative, since the
+bar already marks "Calendar" as the section, the tab says the same words, and
+the grid heads itself with the month. The heading is `sr-only` now, so the page
+still has one; the sentence is gone. In its place, at the foot of the page, is
+`Sources`: the ten pages the calendar actually comes from, in two groups --
+documents (the agendas-and-minutes listing, its Agenda Archive and Minutes
+Archive, the Planning Board's and the Zoning Board of Appeals' own pages) and
+meeting schedules (the four boards that publish one, two of them PDFs on the
+city's CDN). Derived in `src/lib/meetings.ts` from the distinct `source` on the
+records and the `source` on each rule and printed calendar, so a scrape reading
+a new page lists it without anyone remembering to; `PAGE_NAMES` there gives the
+city's own name for a page, keyed on the last path segment so a page that moves
+keeps its name, with a slug-derived fallback. Documents are ordered by URL,
+which puts the listing first with its archives under it and the board pages
+after -- ordering by document count reads the other way round, the archives
+together holding more of the record than the listing they hang off.
+
 **A calendar entry is a meeting, not a document.** The city publishes an agenda
 and its minutes separately; they are two documents about one sitting, matched on
 board and date, which is all the listing gives to match on. An entry opens
