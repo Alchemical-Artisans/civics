@@ -678,6 +678,18 @@ time in the dataset cannot be used.
 summary and the city's file is the record, so the way to the original has to be
 obvious rather than tucked underneath.
 
+**A row carries two links, not one: the file, and the page the city published
+it on.** They are different things and neither is recoverable from the other.
+On the agendas-and-minutes listing the page is the document's media page; on the
+events calendar it is the notice itself, which states the hour and the room
+where the PDF hanging off it states only the topics. The notice used to reach a
+reader only as the `Expected` row — which stands where the agenda would and only
+while there is no agenda — so the day the city attached an agenda to its own
+notice, the notice stopped being linked at all. That is backwards: the agenda is
+a second document about the sitting, not a replacement for the posting that
+called it. The second link is dropped only where the record has no file, or
+where the file and the page are the same URL.
+
 Underneath the layout, each write-up is its own static route — one directory per
 document id, holding a hand-written `+page.svelte`. Being components rather than
 strings of markup, they are formatted by Prettier and parsed by `svelte-check`

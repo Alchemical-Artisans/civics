@@ -146,7 +146,7 @@
 		     are that item's source when they are not -- an item links to its own
 		     excerpt in its own text instead. -->
     {#if !data.isItem}
-      <ul class="mt-4 space-y-1 text-sm">
+      <ul class="mt-4 space-y-1 text-sm" aria-label="What the city published for this meeting">
         {#each meeting.documents as doc (doc.pageUrl + doc.fileUrl)}
           <li class="flex flex-wrap items-center gap-2">
             <span class="rounded px-1.5 py-0.5 text-[11px] {kindClass(doc.kind)}">
@@ -160,6 +160,27 @@
             >
               {doc.title}<span class="sr-only">, opens the city's file in a new tab</span>
             </a>
+            <!-- The page the city published the file on, which is not the file
+                 and is not always recoverable from it. On the listing it is the
+                 media page; on the events calendar it is the notice itself, and
+                 the notice states the hour and the room where the PDF behind it
+                 states only the topics. That link used to stand in the row an
+                 agenda occupies, and only while there was no agenda -- so
+                 publishing one took the notice away, which is backwards: the
+                 agenda is a second document about the sitting, not a
+                 replacement for the posting that called it. -->
+            {#if doc.fileUrl && Router.cityPage(doc.pageUrl) !== doc.fileUrl}
+              <a
+                class="text-slate-500 underline hover:text-slate-900"
+                href={Router.cityPage(doc.pageUrl)}
+                target="_blank"
+                rel="external noopener noreferrer"
+              >
+                City's page<span class="sr-only">
+                  , where {doc.title} is published, opens in a new tab</span
+                >
+              </a>
+            {/if}
           </li>
         {/each}
         <!-- What the city published saying this sitting would be held takes the

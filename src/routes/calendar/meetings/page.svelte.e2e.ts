@@ -73,10 +73,23 @@ test.describe("meeting pages", () => {
     ).toBeVisible()
 
     // Asserted on attributes rather than by following them, so the suite never
-    // reaches out to the city's CDN.
-    const file = page.locator('header a[href^="https://"]').last()
+    // reaches out to the city's CDN. A row is one document the city published
+    // for this sitting, found by the list's own name rather than by position --
+    // the bar at the top of every page is a `header` with a list in it too.
+    const row = page
+      .getByRole("list", { name: /What the city published/ })
+      .locator("li")
+      .first()
+    const file = row.getByRole("link").first()
     await expect(file).toHaveAttribute("target", "_blank")
     expect(await file.getAttribute("rel")).toContain("noopener")
+
+    // The page the city published the file on, beside the file itself. It went
+    // missing once already: it used to stand in the row an agenda occupies and
+    // only while there was no agenda, so publishing one took the posting away.
+    const cityPage = row.getByRole("link", { name: /City's page/ })
+    await expect(cityPage).toHaveAttribute("target", "_blank")
+    expect(await cityPage.getAttribute("href")).not.toEqual(await file.getAttribute("href"))
   })
 
   test("a meeting nobody has written up still lists its files", async ({ page }) => {
