@@ -36,6 +36,14 @@ describe("Router", () => {
     )
   })
 
+  it("leaves a page that is already a whole URL alone", () => {
+    // An agenda read off a meeting notice carries the notice's own URL, and the
+    // events calendar is a different host. Prefixing it would build a link to a
+    // page on the main site that does not exist.
+    const notice = "https://events.haverhillma.gov/default/Detail/2026-09-09-1900-Planning-Board"
+    expect(Router.cityPage(notice)).toBe(notice)
+  })
+
   it("builds a budget book and a section of one", () => {
     expect(Router.budgetBook("fy2027")).toBe("/budget/fy2027")
     expect(Router.budgetSection("fy2027", "fiscal-reserves")).toBe("/budget/fy2027/fiscal-reserves")

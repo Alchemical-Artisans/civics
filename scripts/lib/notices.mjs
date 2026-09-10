@@ -4,8 +4,18 @@
  * <https://events.haverhillma.gov> is where Haverhill files what the Open
  * Meeting Law requires it to post: a body, a day, an hour, and a room, up
  * ahead of the sitting. It is not a document listing and carries no minutes --
- * an entry is the notice itself, which is why this feeds `schedule.json` and
- * not `meetings.json`.
+ * an entry is the notice itself, which is why the sittings feed
+ * `schedule.json` and not `meetings.json`.
+ *
+ * **But a notice can carry the agenda as a file, and often the city publishes
+ * it nowhere else.** The law requires the notice to list the topics, so the PDF
+ * hung off a notice's detail page is that body's agenda for that day -- "Public
+ * Meeting Notice / Board of Assessors / Anticipated Topics for Discussion",
+ * over the city clerk's date stamp. Those are documents, and
+ * `fetchNoticeDocuments` reads them into `meetings.json` under a `source` of
+ * their own. Of the 97 files on the calendar today, 60 are for sittings this
+ * site holds no other document for at all. The city began attaching them in
+ * quantity in June 2026 and has done so every month since.
  *
  * **It is the only place most of the city's boards appear at all.** The
  * agendas-and-minutes listing and its two archives cover five boards between
@@ -24,7 +34,7 @@
  * `User-Agent` with a 502 rather than a 403. `USER_AGENT` is the project's
  * usual one and is not optional here.
  */
-import { mkdirSync, writeFileSync } from "node:fs"
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs"
 import path from "node:path"
 import { USER_AGENT, retrying } from "./haverhill.mjs"
 
@@ -39,6 +49,8 @@ export const NOTICE_CALENDAR = {
   name: "Events Calendar",
   origin: "https://events.haverhillma.gov",
 }
+
+const CACHE = path.join(import.meta.dirname, "..", "..", ".cache")
 
 const pad = (n) => String(n).padStart(2, "0")
 
@@ -447,7 +459,6 @@ export async function fetchNotices({ today = new Date().toISOString().slice(0, 1
   }
 }
 
-const CACHE = path.join(import.meta.dirname, "..", "..", ".cache")
 export const UNRECOGNISED_FILE = path.join(CACHE, "unrecognised-notices.txt")
 
 /**
@@ -482,4 +493,158 @@ export function writeUnrecognised(unrecognised) {
       (body || "Nothing. Every notice matched a body.\n"),
   )
   return UNRECOGNISED_FILE
+}
+
+/**
+ * The files a notice's own detail page hangs off it, as `{ name, url }`.
+ *
+ * The page lists them under a "Related Files:" heading as links back into the
+ * notice's own path with a GUID on the end -- `/default/Detail/<slug>/<guid>`
+ * -- which is the download. The link's text is the city's own filename for it,
+ * and it is the only name the document has: nothing serves it under a filename
+ * of its own and the response carries no `Content-Disposition`.
+ *
+ * Anchored on the notice's own path, so nothing else linked from the page can
+ * be mistaken for one of its files.
+ */
+export function parseAttachments(html, detailPath) {
+  const out = []
+  const pattern = new RegExp(
+    `href="(${detailPath.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}/[0-9a-f-]{36})"[^>]*>([\\s\\S]*?)</a>`,
+    "g",
+  )
+  for (const m of html.matchAll(pattern)) {
+    const name = text(m[2])
+    if (name) out.push({ name, url: `${NOTICE_CALENDAR.origin}${m[1]}` })
+  }
+  return out
+}
+
+/**
+ * Where the calendar's own record starts. Before this it holds a handful of
+ * stray entries and nothing with a file on it.
+ */
+export const FIRST_MONTH = { year: 2025, month: 4 }
+
+/**
+ * The months a document sweep covers: every month the calendar carries.
+ *
+ * **Wider than `monthsToFetch`, and deliberately.** An expected sitting is only
+ * ever a future one -- for a day already past the documents are the better
+ * authority -- but these *are* documents, and the document half of this site is
+ * entirely retrospective. An agenda the city published in June is worth having
+ * in September.
+ */
+export function documentMonths(today, from = FIRST_MONTH) {
+  const out = []
+  const lastYear = Number(today.slice(0, 4))
+  for (let y = from.year; y <= lastYear; y++) {
+    for (let m = y === from.year ? from.month : 1; m <= 12; m++) out.push({ year: y, month: m })
+  }
+  return out
+}
+
+/**
+ * How far back a notice is asked again for a file it did not have before.
+ *
+ * The city posts the notice first and attaches the agenda later, often the day
+ * before the sitting, so "we looked once and there was nothing" goes stale for
+ * anything recent. Older than this and the answer is settled: a body that never
+ * attached its June agenda is not going to now.
+ */
+const RECHECK_DAYS = 45
+
+const CACHE_FILE = path.join(CACHE, "notice-attachments.json")
+
+/** What a previous run found on each notice's page, or nothing. */
+function loadAttachmentCache() {
+  try {
+    return JSON.parse(readFileSync(CACHE_FILE, "utf8"))
+  } catch {
+    return {}
+  }
+}
+
+/**
+ * Every agenda the city has hung off a meeting notice, as document records.
+ *
+ * One request per notice, which is 700-odd on a cold cache and a handful after
+ * that: what each page held is remembered in `.cache/`, and only notices within
+ * `RECHECK_DAYS` of today are asked again. That cache is gitignored and
+ * disposable -- losing it costs a slow run, not a wrong one.
+ *
+ * The records this produces are unusual in one way, and it is the good way:
+ * the **date is the notice's**, not something read out of a title or a
+ * filename. The city posted this notice for this day, which is better evidence
+ * of when the body sat than any string in a file's name.
+ */
+export async function fetchNoticeDocuments({
+  today = new Date().toISOString().slice(0, 10),
+  months = documentMonths(today),
+} = {}) {
+  const cache = loadAttachmentCache()
+  const cutoff = new Date(`${today}T00:00:00Z`)
+  cutoff.setUTCDate(cutoff.getUTCDate() - RECHECK_DAYS)
+  const recheckFrom = cutoff.toISOString().slice(0, 10)
+
+  const documents = []
+  const unrecognised = new Map()
+  let fetched = 0
+  let notices = 0
+
+  for (const { year, month } of months) {
+    const html = await get(monthUrl(year, month), `fetch notices for ${year}-${pad(month)}`)
+    const entries = parseNotices(html).filter(
+      (e) => e.date.startsWith(`${year}-${pad(month)}`) && e.category === "Meetings",
+    )
+    notices += entries.length
+
+    for (const entry of entries) {
+      const board = classifyNotice(entry.title)
+      if (!board) {
+        const key = normaliseTitle(entry.title)
+        if (!unrecognised.has(key)) unrecognised.set(key, { ...entry, count: 0 })
+        unrecognised.get(key).count++
+        continue
+      }
+
+      let files = cache[entry.url]?.files
+      if (!files || entry.date >= recheckFrom) {
+        const page = await get(entry.url, `fetch notice ${entry.date}`)
+        files = parseAttachments(page, new URL(entry.url).pathname)
+        cache[entry.url] = { checkedAt: new Date().toISOString(), files }
+        fetched++
+      }
+
+      for (const file of files) {
+        documents.push({
+          // The notice's own title. The file has no title of its own, only a
+          // filename, which goes in `description` so the city's name for it is
+          // in the data.
+          title: entry.title,
+          description: file.name,
+          pageUrl: entry.url,
+          fileUrl: file.url,
+          // Already decided, by a list a person keeps, rather than left for
+          // `classify` to recover from strings the city wrote for something
+          // else. See `update-notice-documents.mjs` for why that matters here
+          // and nowhere else.
+          board,
+          date: entry.date,
+        })
+      }
+    }
+  }
+
+  mkdirSync(CACHE, { recursive: true })
+  writeFileSync(CACHE_FILE, JSON.stringify(cache, null, 1) + "\n")
+
+  return {
+    documents: documents.sort(
+      (a, b) => a.date.localeCompare(b.date) || a.title.localeCompare(b.title),
+    ),
+    notices,
+    fetched,
+    unrecognised: [...unrecognised.values()].sort((a, b) => b.count - a.count),
+  }
 }

@@ -125,6 +125,22 @@ export interface Meeting {
    */
   scheduled?: ScheduledSitting
   /**
+   * The hour the city's own meeting notice states for this sitting, where it
+   * has posted one.
+   *
+   * Not from `meetings.json`, which carries a clock time in `rawMeetingDate`
+   * that is a mix of real times and placeholders -- 41 City Council agendas say
+   * 11:00 PM for a body that meets at 7:00 -- and is never displayed anywhere.
+   * This is the hour the city published in the notice calling the meeting, and
+   * it is as good as the one somebody reads off the agenda by hand.
+   *
+   * It exists because a sitting used to lose its stated hour the moment an
+   * agenda turned up for it: the hour reached the page through `scheduled`,
+   * which is set only on a sitting with no documents at all. The notice does
+   * not stop being true when the agenda arrives.
+   */
+  time?: string
+  /**
    * True when somebody has written this meeting up by hand, which is to say
    * when `src/routes/calendar/meetings/<id>/+page.svelte` exists. The route
    * decides what the reader sees -- a static directory wins over `[meeting]` --
@@ -132,6 +148,38 @@ export interface Meeting {
    * written page already covers.
    */
   written: boolean
+}
+
+/**
+ * Records from one source that another source already covers, dropped.
+ *
+ * The city publishes the same agenda in two places often enough to matter: on
+ * its document listing, and as the file hung off that sitting's meeting notice.
+ * They are the same document under two filenames and two URLs, so nothing that
+ * compares URLs can see it -- and a sitting offering its agenda twice, once as
+ * "Planning Board Agenda 9.9.26" and once as "Planning Board Meeting", offers
+ * the reader a choice that is not one.
+ *
+ * `source` names the copy that loses. The listing's is the one kept: it is the
+ * city's own name for the document, and it is the copy every other record on
+ * that board is filed beside. Board, date and kind are the identity, which is
+ * as much as the records share -- one carries no title in common with the
+ * other.
+ *
+ * Done at build time rather than in the scrape because it cannot then go stale.
+ * Filing a notice's agenda only when nothing else covered the day would leave
+ * the wrong answer behind the moment the listing caught up.
+ */
+export function withoutSecondCopies<
+  T extends { board: string; date: string | null; kind: string; source?: string },
+>(records: T[], source: string | undefined): T[] {
+  if (!source) return records
+  const elsewhere = new Set(
+    records.filter((r) => r.source !== source).map((r) => `${r.board}|${r.date}|${r.kind}`),
+  )
+  return records.filter(
+    (r) => r.source !== source || !elsewhere.has(`${r.board}|${r.date}|${r.kind}`),
+  )
 }
 
 /**

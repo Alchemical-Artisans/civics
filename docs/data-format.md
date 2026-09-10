@@ -93,17 +93,52 @@ was the only source there was.
 
 ### Fields derived
 
-| Field            | Type                                              | Notes                                                       |
-| ---------------- | ------------------------------------------------- | ----------------------------------------------------------- |
-| `board`          | string                                            | From `category`, else title, else filename. Never empty.    |
-| `kind`           | `agenda` \| `minutes` \| `other`                  | Derived from the same text.                                 |
-| `date`           | `YYYY-MM-DD` \| null                              | The resolved meeting date. **This drives the calendar.**    |
-| `dateSource`     | `meeting-date` \| `title` \| `filename` \| `none` | Which step of the chain produced `date`.                    |
-| `rawMeetingDate` | string \| null                                    | Unmodified `Meeting Date` cell, e.g. `01/08/2025 12:00 AM`. |
-| `dateAdjusted`   | boolean                                           | True if rolled back a day for the UTC rollover.             |
-| `dateConflict`   | boolean                                           | True if the filename date contradicts `date`.               |
-| `filenameDate`   | `YYYY-MM-DD` \| null                              | Unambiguous date read from the filename, if any.            |
-| `needsReview`    | boolean                                           | No date, a conflict, or an ambiguous filename split.        |
+| Field            | Type                                                          | Notes                                                                           |
+| ---------------- | ------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| `board`          | string                                                        | From `category`, else title, else filename. Never empty.                        |
+| `kind`           | `agenda` \| `minutes` \| `other`                              | Derived from the same text.                                                     |
+| `date`           | `YYYY-MM-DD` \| null                                          | The resolved meeting date. **This drives the calendar.**                        |
+| `dateSource`     | `meeting-date` \| `title` \| `filename` \| `notice` \| `none` | Which step of the chain produced `date`. `notice` skips the chain -- see below. |
+| `rawMeetingDate` | string \| null                                                | Unmodified `Meeting Date` cell, e.g. `01/08/2025 12:00 AM`.                     |
+| `dateAdjusted`   | boolean                                                       | True if rolled back a day for the UTC rollover.                                 |
+| `dateConflict`   | boolean                                                       | True if the filename date contradicts `date`.                                   |
+| `filenameDate`   | `YYYY-MM-DD` \| null                                          | Unambiguous date read from the filename, if any.                                |
+| `needsReview`    | boolean                                                       | No date, a conflict, or an ambiguous filename split.                            |
+
+### An agenda read off a meeting notice
+
+The city hangs the agenda off a notice on its
+[events calendar](https://events.haverhillma.gov), and for most of these bodies
+it publishes it nowhere else -- 60 of the 75 on the site today are the only
+document it has for that sitting. Written by
+[`update-notice-documents.mjs`](../scripts/update-notice-documents.mjs), under a
+`source` of `https://events.haverhillma.gov/`.
+
+Four fields do not mean quite what they do on a listing row:
+
+| Field         | On one of these                                                                                                                                                                                                                                                                 |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `dateSource`  | `notice`. **The chain is not walked at all**: the city posted this notice for this day, which is better evidence than any string in a filename. Only twelve of these files carry a readable date, and the five that disagree are scans stamped a day or two before the sitting. |
+| `title`       | The notice's own title -- "Haverhill Retirement Board Meeting". The file has no title of its own.                                                                                                                                                                               |
+| `description` | The city's filename for the attachment -- `retirement 26-007.pdf`. It is the only name the document has: nothing serves it under a filename, and the response carries no `Content-Disposition`.                                                                                 |
+| `pageUrl`     | An **absolute** URL, unlike every other record's path, because the events calendar is a different host. `Router.cityPage` passes an absolute one straight through.                                                                                                              |
+
+`dateConflict`, `filenameDate` and `needsReview` are always false or null. There
+is no derived date here for a filename to contradict, and raising sixty
+questions that are already answered would bury the ones that are not.
+
+`kind` is `agenda` for every one of them, structurally rather than by guessing:
+the Open Meeting Law requires a notice to carry the meeting's topics, so a
+notice's file is the agenda. Minutes are approved afterwards and are never
+attached to the notice of the meeting they record -- and nothing on the calendar
+contradicts it, no attached filename or notice title containing the word.
+
+**A second copy is dropped when the site is built, not when it is scraped.**
+Fifteen of these agendas are also in the city's own listing, under a different
+filename and a different URL, so nothing comparing URLs can see the duplicate.
+`withoutSecondCopies` in [`calendar.ts`](../src/lib/calendar.ts) keeps the
+listing's copy, matching on board, date and kind. Doing it in the scrape instead
+would leave the wrong answer behind the moment the listing caught up.
 
 ### The document's identity
 

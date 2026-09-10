@@ -44,9 +44,16 @@ the other two.
 **The city posts a notice before each sitting.**
 [events.haverhillma.gov](https://events.haverhillma.gov) is where Haverhill
 files what the Open Meeting Law requires it to post: a body, a day, an hour, and
-often a room. It is not a document listing — there are no minutes on it and only
-a handful of entries carry an agenda PDF — so it feeds `schedule.json` rather
-than `meetings.json`.
+often a room. It is not a document listing — there are no minutes on it — so the
+sittings feed `schedule.json` rather than `meetings.json`.
+
+**A notice can carry the agenda, though, and usually the city publishes it
+nowhere else.** The law requires the notice to list the topics, so the PDF hung
+off a notice's detail page is that body's agenda for that day. Those are
+documents, and `notices:update` writes them into `meetings.json` under a
+`source` of their own — **60 of the 75 are the only document this site has for
+that sitting.** See
+[data-format.md](./data-format.md#an-agenda-read-off-a-meeting-notice).
 
 It is the strongest evidence short of an agenda, because it is about _this
 sitting_ rather than about a pattern the sitting falls under: a printed calendar

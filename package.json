@@ -23,6 +23,7 @@
     "links:check": "node scripts/check-links.mjs",
     "budget:update": "node scripts/update-budget.mjs",
     "schedule:update": "node scripts/update-schedule.mjs",
+    "notices:update": "node scripts/update-notice-documents.mjs",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "glossary:check": "node scripts/check-glossary.mjs",

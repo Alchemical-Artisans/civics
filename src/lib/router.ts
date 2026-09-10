@@ -183,9 +183,16 @@ export class Router {
    * is where a meeting page sends a document the city published but nobody has
    * transcribed, so it belongs with the other link builders rather than inline
    * in a template.
+   *
+   * A record's `pageUrl` is a path on the city's main site for everything the
+   * listing and the board pages produce, and that is what `CITY` completes. An
+   * agenda read off a meeting notice carries the notice's own URL instead --
+   * the events calendar is a different host, `events.haverhillma.gov` -- so an
+   * absolute one is already finished and is passed through. Prefixing it would
+   * build a link to a page that does not exist.
    */
   static cityPage(pageUrl: string): string {
-    return `${CITY}${pageUrl}`
+    return /^https?:\/\//.test(pageUrl) ? pageUrl : `${CITY}${pageUrl}`
   }
 
   /**

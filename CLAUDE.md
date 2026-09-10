@@ -46,6 +46,7 @@ npm run metadata:update     # refresh everything the site takes from the city
 npm run calendar:update     # scrape only documents new since the last run
 npm run calendar:rebuild    # re-scrape everything (only when scrape/date logic changed)
 npm run budget:update       # re-scrape the budget and audit listing (always full)
+npm run notices:update      # the agendas the city hangs off its meeting notices
 npm run transcribe -- <id>  # hand a sitting to Claude Code to write its page
 npm run storybook           # storybook on :6006
 ```
@@ -158,6 +159,37 @@ was reissued and the sitting stands. **A notice caps the rule.** The Council's
 rule names six Tuesdays the Council is not holding inside the range it has
 posted, so for a board with any notice the rule resumes only past the last
 posted date -- two projected sittings today where there were fourteen.
+
+**A notice can carry the agenda, and usually the city publishes it nowhere
+else.** The law requires the notice to list the topics, so the PDF hung off a
+notice's detail page is that body's agenda for the day -- "Public Meeting
+Notice / Board of Assessors / Anticipated Topics for Discussion", over the
+clerk's date stamp. Those are documents, so `scripts/update-notice-documents.mjs`
+(`npm run notices:update`) writes them to `meetings.json` under a `source` of
+its own, and **60 of the 75 are the only document the site has for that
+sitting** -- the Retirement Board's, the Library Trustees', the Harbor
+Commission's, the historic commissions', the School Committee's subcommittees'.
+The city began attaching them in quantity in June 2026. It is a separate script
+from `schedule:update` because the two want different windows off the same
+page: sittings are forward-only, but these are documents and the document half
+is retrospective, so this sweeps every month back to April 2025. `kind` is
+`agenda` for all of them structurally rather than by guessing -- minutes are
+approved afterwards and are never attached to the notice of the meeting they
+record. The **date is the notice's**, `dateSource: "notice"`, which skips the
+title/filename chain entirely: only twelve of these files carry a readable date
+and the five that disagree are scans stamped a day or two early, so the filename
+is recorded and never treated as a conflict. `classify` is deliberately not used
+here -- it splits `category` on commas, which would file "Public Health, Safety
+& Works Committee" as "Public Health". A `pageUrl` here is an absolute URL
+rather than a path, the events calendar being a different host, so
+`Router.cityPage` passes an absolute one through. Fifteen of these agendas are
+also in the city's listing under another filename; `withoutSecondCopies` in
+`calendar.ts` drops the notice's copy at **build** time, matching board, date
+and kind -- doing it in the scrape would leave the wrong answer behind the
+moment the listing caught up. A `Meeting` now carries the notice's stated
+`time`, so publishing an agenda no longer takes the hour off the page: it used
+to arrive only through `scheduled`, which is set on sittings with no documents
+at all.
 
 **No board's meeting schedule is a document.** Both are ordinary HTML on a page,
 which is why the calendar could not see either while it read only the listing --

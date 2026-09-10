@@ -30,6 +30,10 @@ const STEPS = [
   // After the calendar: it replaces these boards' records in the same file, and
   // running it second means a `--prune` pass has already settled the listing's.
   { name: "board pages", script: "update-board-pages.mjs" },
+  // After the board pages, and before the schedule: it owns a `source` of its
+  // own in the same file, and it is a document scrape rather than a schedule
+  // one however much it shares a page with the next step.
+  { name: "notice documents", script: "update-notice-documents.mjs" },
   { name: "budget", script: "update-budget.mjs" },
   { name: "schedule", script: "update-schedule.mjs" },
   // Last, and after everything that can add a document: it checks every link

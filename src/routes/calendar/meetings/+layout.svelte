@@ -21,7 +21,8 @@
   // having been read off the notice for that particular sitting.
   const expected = $derived(meeting.scheduled)
   const details = $derived<MeetingDetails | undefined>(
-    page.data.details ?? (expected ? { time: expected.time } : undefined),
+    page.data.details ??
+      (expected ? { time: expected.time } : meeting.time ? { time: meeting.time } : undefined),
   )
 
   // A page for a single agenda item titles itself after the item. The meeting

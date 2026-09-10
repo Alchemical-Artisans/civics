@@ -115,6 +115,13 @@ Current distribution across 280 documents:
 | Filename   |     1 | `filename`     |
 | None       |     1 | `none`         |
 
+A fifth value, `notice`, does not sit on this chain at all. An agenda read off
+the city's events calendar takes the date of the notice it was attached to --
+the city posted that notice for that day, which is better evidence than any
+string in a title or a filename, and is the one case here where nothing has to
+be resolved. See
+[data-format.md](./data-format.md#an-agenda-read-off-a-meeting-notice).
+
 The single unresolved record is `City Council Amended Schedule 2025`, which is a
 schedule document rather than a meeting, so having no meeting date is correct.
 

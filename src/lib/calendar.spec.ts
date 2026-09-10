@@ -13,6 +13,7 @@ import {
   easternDate,
   monthsCovered,
   withScheduled,
+  withoutSecondCopies,
   type MeetingDocument,
   type ScheduledSitting,
 } from "./calendar"
@@ -169,6 +170,68 @@ describe("boardsOf", () => {
         meeting("2026-01-03", "Zoning"),
       ]),
     ).toEqual(["Airport", "Zoning"])
+  })
+})
+
+describe("withoutSecondCopies", () => {
+  const NOTICE = "https://events.haverhillma.gov/"
+  const LISTING = "https://www.haverhillma.gov/government/agendas-and-minutes/"
+  const doc = (board: string, date: string, kind: string, source: string, title: string) => ({
+    board,
+    date,
+    kind,
+    source,
+    title,
+  })
+
+  it("drops a notice's agenda where the listing published the same one", () => {
+    // Same sitting, same kind, two filenames and two URLs -- so no comparison of
+    // URLs can see it. The listing's copy is the one kept.
+    const kept = withoutSecondCopies(
+      [
+        doc("Planning Board", "2026-09-09", "agenda", LISTING, "Planning Board Agenda 9.9.26"),
+        doc("Planning Board", "2026-09-09", "agenda", NOTICE, "Planning Board Meeting"),
+      ],
+      NOTICE,
+    )
+    expect(kept.map((d) => d.title)).toEqual(["Planning Board Agenda 9.9.26"])
+  })
+
+  it("keeps a notice's agenda where the city published nothing else that day", () => {
+    // The whole point: 60 of the 75 are the only agenda the city publishes for
+    // that sitting anywhere.
+    const kept = withoutSecondCopies(
+      [doc("Retirement Board", "2026-09-08", "agenda", NOTICE, "Retirement Board Meeting")],
+      NOTICE,
+    )
+    expect(kept).toHaveLength(1)
+  })
+
+  it("does not let one kind stand in for another", () => {
+    // Minutes for the day are not the agenda for it, so they do not cover it.
+    const kept = withoutSecondCopies(
+      [
+        doc("Board of Assessors", "2026-08-25", "minutes", LISTING, "BOA minutes"),
+        doc("Board of Assessors", "2026-08-25", "agenda", NOTICE, "Board of Assessors"),
+      ],
+      NOTICE,
+    )
+    expect(kept).toHaveLength(2)
+  })
+
+  it("never drops a record from any other source", () => {
+    // Two agendas from the listing for one sitting are the city's business --
+    // a revised agenda beside the original -- and are left exactly alone.
+    const records = [
+      doc("City Council", "2026-09-15", "agenda", LISTING, "Agenda"),
+      doc("City Council", "2026-09-15", "agenda", LISTING, "Agenda revised"),
+    ]
+    expect(withoutSecondCopies(records, NOTICE)).toHaveLength(2)
+  })
+
+  it("changes nothing when there is no such source to prefer against", () => {
+    const records = [doc("City Council", "2026-09-15", "agenda", LISTING, "Agenda")]
+    expect(withoutSecondCopies(records, undefined)).toEqual(records)
   })
 })
 

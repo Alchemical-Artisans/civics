@@ -1,6 +1,8 @@
 import { describe, it, expect } from "vitest"
 import {
   BODIES,
+  documentMonths,
+  parseAttachments,
   classifyNotice,
   isCalledOff,
   monthUrl,
@@ -307,6 +309,82 @@ describe("monthsToFetch", () => {
       { year: 2026, month: 12 },
     ])
     expect(monthsToFetch("2026-12-31")).toEqual([{ year: 2026, month: 12 }])
+  })
+})
+
+/** A detail page, cut to the part that matters: the files hung off the notice. */
+const detail = `
+<div class="icrt-calendarContentDetail">
+  <h3>Event Details</h3>
+  <h3>Related Files:</h3>
+  <a href="/default/Detail/2026-09-09-1900-Planning-Board-Meeting/c0789134-fbd5-4b1c-ad7a-b4b800e30a07"
+     target="_blank" aria-label="planning brd mtg.pdf">
+    planning brd mtg.pdf
+  </a>
+  <a href="/default/Detail/2026-09-09-1900-Planning-Board-Meeting/aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee">
+    second attachment.pdf
+  </a>
+  <a href="/default/Detail/2026-09-16-1830-Some-Other-Notice/11111111-2222-3333-4444-555555555555">
+    another notice's file.pdf
+  </a>
+  <a href="/default/Index">&#8592; Back to Calendar</a>
+</div>
+`
+
+describe("parseAttachments", () => {
+  const path = "/default/Detail/2026-09-09-1900-Planning-Board-Meeting"
+
+  it("takes the city's own filename and the download behind it", () => {
+    // The link text is the only name the document has: nothing serves it under
+    // a filename of its own, and the response carries no Content-Disposition.
+    expect(parseAttachments(detail, path)).toEqual([
+      {
+        name: "planning brd mtg.pdf",
+        url: "https://events.haverhillma.gov/default/Detail/2026-09-09-1900-Planning-Board-Meeting/c0789134-fbd5-4b1c-ad7a-b4b800e30a07",
+      },
+      {
+        name: "second attachment.pdf",
+        url: "https://events.haverhillma.gov/default/Detail/2026-09-09-1900-Planning-Board-Meeting/aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
+      },
+    ])
+  })
+
+  it("takes nothing that is not hung off this notice", () => {
+    // Anchored on the notice's own path, so neither another notice's file nor
+    // the page's own navigation can be read as one of its attachments.
+    const names = parseAttachments(detail, path).map((f) => f.name)
+    expect(names).not.toContain("another notice's file.pdf")
+    expect(names.some((n) => n.includes("Back to Calendar"))).toBe(false)
+  })
+
+  it("finds nothing on a notice with no files, which is most of them", () => {
+    expect(parseAttachments("<div>Event Details</div>", path)).toEqual([])
+  })
+})
+
+describe("documentMonths", () => {
+  it("sweeps every month the calendar carries, not just the ones ahead", () => {
+    // Wider than `monthsToFetch` on purpose. An expected sitting is only ever a
+    // future one; these are documents, and the document half of the site is
+    // entirely retrospective.
+    const months = documentMonths("2026-09-10")
+    expect(months[0]).toEqual({ year: 2025, month: 4 })
+    expect(months.at(-1)).toEqual({ year: 2026, month: 12 })
+    expect(months).toHaveLength(21)
+  })
+
+  it("starts where the calendar's own record does", () => {
+    expect(documentMonths("2025-06-01", { year: 2025, month: 4 })).toEqual([
+      { year: 2025, month: 4 },
+      { year: 2025, month: 5 },
+      { year: 2025, month: 6 },
+      { year: 2025, month: 7 },
+      { year: 2025, month: 8 },
+      { year: 2025, month: 9 },
+      { year: 2025, month: 10 },
+      { year: 2025, month: 11 },
+      { year: 2025, month: 12 },
+    ])
   })
 })
 

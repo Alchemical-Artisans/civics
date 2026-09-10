@@ -30,6 +30,7 @@ npm run cache -- --review  # download the flagged documents so a date can be che
 npm run links:check        # HEAD every linked file; find the ones the city has broken
 npm run budget:update      # re-scrape the budget and audit listing
 npm run schedule:update    # re-read the notices, rules and calendars
+npm run notices:update     # the agendas the city hangs off those notices
 ```
 
 Worth running alone while working on one of them, or when only one half needs
@@ -67,6 +68,21 @@ Any half coming back empty is a hard failure rather than a written file: it
 means a page's markup moved, and a file written from it would empty the calendar
 of every upcoming sitting. `planning-board:update` fails the same way and for
 the same reason.
+
+**`notices:update` is slow once and quick thereafter.** It asks every meeting
+notice on the events calendar whether it carries a file, which is around 600
+requests on a cold cache and a few dozen afterwards: what each page held is
+remembered in `.cache/notice-attachments.json`, and only notices within 45 days
+of today are asked again. The city posts a notice first and attaches the agenda
+later, often the day before the sitting, so a recent "nothing here" goes stale;
+an older one does not. The cache is gitignored and disposable -- losing it costs
+a slow run, not a wrong one.
+
+It sweeps **every month the calendar carries**, back to April 2025, where
+`schedule:update` reads only from this month to the end of the year. The two
+share a page and want different windows: an expected sitting is only ever a
+future one, but these are documents, and the document half of this site is
+entirely retrospective.
 
 **`schedule:update` ends with the notices it could not place.** The city's
 events calendar carries every board that posts a meeting notice — and also

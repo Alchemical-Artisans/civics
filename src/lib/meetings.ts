@@ -11,11 +11,18 @@ import {
   easternDate,
   groupIntoMeetings,
   withScheduled,
+  withoutSecondCopies,
   type Meeting,
   type MeetingDocument,
   type MeetingKind,
 } from "./calendar"
-import { expectedSittings, meetingCalendars, meetingRules, noticeCalendar } from "./schedule"
+import {
+  expectedSittings,
+  meetingCalendars,
+  meetingNotices,
+  meetingRules,
+  noticeCalendar,
+} from "./schedule"
 
 /**
  * The meetings somebody has written up by hand.
@@ -105,6 +112,10 @@ const PAGE_NAMES: Record<string, string> = {
   "minutes-archive": "Minutes Archive",
   "planning-board": "Planning Board",
   "zoning-board-of-appeals": "Zoning Board of Appeals",
+  // A whole host rather than a page under one, so the "last path segment" rule
+  // leaves the hostname, and the slug fallback would title it
+  // "Events.haverhillma.gov".
+  "events.haverhillma.gov": "Events Calendar",
 }
 
 const slugOf = (url: string) => url.replace(/\/+$/, "").split("/").pop() ?? url
@@ -172,11 +183,17 @@ export function calendar(): Calendar {
   const live = raw.meetings.filter((m) => !("gone" in m && m.gone))
   const dated = live.filter((m) => m.date)
 
+  // An agenda read off a meeting notice, where the city published the same
+  // agenda in its own listing too. The listing's copy is the one kept -- see
+  // `withoutSecondCopies`, which explains why, and why this is done here rather
+  // than in the scrape.
+  const filling = withoutSecondCopies(dated, noticeCalendar()?.url)
+
   // A handful of PDFs are published under two media pages, which would
   // otherwise render the same document twice. Keep one copy, preferring the
   // record whose date the scraper did not flag.
   const best = new Map<string, (typeof dated)[number]>()
-  for (const m of dated) {
+  for (const m of filling) {
     const key = m.fileUrl ?? m.pageUrl
     const kept = best.get(key)
     if (!kept || (kept.needsReview && !m.needsReview)) best.set(key, m)
@@ -203,6 +220,20 @@ export function calendar(): Calendar {
     isWritten,
   )
 
+  // The hour the city's notice states, carried onto the sitting whether or not
+  // an agenda has turned up for it. A sitting with no documents gets it through
+  // `scheduled`; one with documents had nowhere to get it at all, so publishing
+  // the agenda used to take the time off the page.
+  const hours = new Map(
+    meetingNotices()
+      .filter((notice) => notice.time)
+      .map((notice) => [`${notice.board}|${notice.date}`, notice.time!]),
+  )
+  const timed = meetings.map((meeting) => {
+    const time = hours.get(`${meeting.board}|${meeting.date}`)
+    return time ? { ...meeting, time } : meeting
+  })
+
   // Distinct, over `live` rather than `kept`, so a page whose every document is
   // a duplicate of another page's still says it was read.
   const perSource = new Set(live.map((m) => m.source))
@@ -221,7 +252,7 @@ export function calendar(): Calendar {
   const notices = noticeCalendar()
 
   return {
-    meetings,
+    meetings: timed,
     generatedAt: raw.generatedAt,
     sources: {
       // By URL, which is not an arbitrary order: the city's own listing is the
