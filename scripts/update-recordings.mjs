@@ -103,24 +103,27 @@ summarizeReviews(reviews)
 
 // The titles that named no body at all. Opt-in the way the notices' own
 // unrecognised list is: a recording reaches the calendar only once someone has
-// taught `RECORDING_BODIES` to place its title.
+// taught `RECORDING_BODIES` to place its title. Rewritten every run, empty
+// included, so a stale list never outlives the pattern that answered it.
+const CACHE = path.join(import.meta.dirname, "..", ".cache")
+const unrecognisedFile = path.join(CACHE, "unrecognised-recordings.txt")
+mkdirSync(CACHE, { recursive: true })
+writeFileSync(
+  unrecognisedFile,
+  `Recording titles no body in scripts/lib/recordings.mjs recognises, ` +
+    `as of ${new Date().toISOString()}\n\n` +
+    (unrecognised.length
+      ? unrecognised
+          .map((u) => `  ${String(u.count).padStart(3)}x  ${u.title}\n${" ".repeat(9)}${u.url}\n`)
+          .join("\n") +
+        `\nWhere one is a body this site carries, add it to RECORDING_BODIES ` +
+        `(there are ${RECORDING_BODIES.length} now) and run \`npm run recordings:update\` again.\n`
+      : "None -- every recording title placed to a body.\n"),
+)
 if (unrecognised.length) {
-  const CACHE = path.join(import.meta.dirname, "..", ".cache")
-  const file = path.join(CACHE, "unrecognised-recordings.txt")
-  mkdirSync(CACHE, { recursive: true })
-  writeFileSync(
-    file,
-    `Recording titles no body in scripts/lib/recordings.mjs recognises, ` +
-      `as of ${new Date().toISOString()}\n\n` +
-      unrecognised
-        .map((u) => `  ${String(u.count).padStart(3)}x  ${u.title}\n${" ".repeat(9)}${u.url}\n`)
-        .join("\n") +
-      `\nWhere one is a body this site carries, add it to RECORDING_BODIES ` +
-      `(there are ${RECORDING_BODIES.length} now) and run \`npm run recordings:update\` again.\n`,
-  )
   const total = unrecognised.reduce((n, u) => n + u.count, 0)
   console.log(`\n  ${total} recording(s) under ${unrecognised.length} title(s) matched no body:`)
-  console.log(`    ${file}`)
+  console.log(`    ${unrecognisedFile}`)
 }
 
 printAttention(meetings)

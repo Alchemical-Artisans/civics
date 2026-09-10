@@ -36,6 +36,8 @@ describe("classifyRecording", () => {
     expect(classifyRecording("Haverhill City Council Budget Hearing – June 08, 2026")).toBe(
       "City Council",
     )
+    // One year the "Council" fell out of the title entirely.
+    expect(classifyRecording("Haverhill City Budget Hearing - May 22, 2023")).toBe("City Council")
     expect(classifyRecording("Haverhill City Council Emergency Meeting – May 8, 2026")).toBe(
       "City Council",
     )

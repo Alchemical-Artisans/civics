@@ -88,8 +88,10 @@ export const RECORDING_BODIES = [
   },
   // Budget hearings and emergency meetings are the council itself, sitting on a
   // day of their own. Left as "City Council" so they match a council sitting on
-  // that date if there is one, and orphan cleanly if there is not.
-  { board: "City Council", match: /\bcity council\b/ },
+  // that date if there is one, and orphan cleanly if there is not. One year HC
+  // Media titled the budget hearings "Haverhill City Budget Meeting", with no
+  // "Council" in it at all.
+  { board: "City Council", match: /\bcity council\b|\bhaverhill city budget\b/ },
   { board: "School Committee", match: /\bschool committee\b/ },
   { board: "License Commission", match: /\blicense commission\b/ },
 ]

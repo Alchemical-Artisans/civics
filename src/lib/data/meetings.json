@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-09-10T22:24:06.821Z",
+  "generatedAt": "2026-09-10T22:42:45.784Z",
   "source": "https://www.haverhillma.gov/government/agendas-and-minutes/",
-  "count": 2881,
+  "count": 2882,
   "meetings": [
     {
       "title": "SEPAC - Special Education Parental Advisory Council Meeting",
@@ -18248,6 +18248,25 @@
       "filenameDate": "2023-05-23",
       "needsReview": false,
       "docId": "minutes-archive-8e729274"
+    },
+    {
+      "title": "Haverhill City Budget Hearing - May 22, 2023",
+      "description": "",
+      "pageUrl": "http://haverhillcommunitytv.org/video/haverhill-city-budget-meeting-may-22-2023",
+      "fileUrl": null,
+      "date": "2023-05-22",
+      "board": "City Council",
+      "kind": "recording",
+      "category": "City Council Recordings",
+      "dateSource": "recording",
+      "rawMeetingDate": null,
+      "dateAdjusted": false,
+      "dateConflict": false,
+      "filenameDate": null,
+      "needsReview": false,
+      "orphan": true,
+      "source": "http://haverhillcommunitytv.org/",
+      "docId": null
     },
     {
       "title": "May 17, 2023",
