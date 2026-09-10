@@ -23,6 +23,29 @@ import {
   meetingRules,
   noticeCalendar,
 } from "./schedule"
+import { Router } from "./router"
+
+/**
+ * The page the city published a document on, where that is a page about the
+ * document rather than the index its link was read off.
+ *
+ * Derived rather than listed. A record's `source` is the page the scrape read,
+ * so a `pageUrl` that is not that page is the document's own: the listing's
+ * media pages and the events calendar's notice detail pages are, the two
+ * archives' and the two boards' single index pages are not. A scraper reading
+ * a new page gets the right answer without anyone adding it here, which is the
+ * same bargain the Sources list makes.
+ *
+ * Compared on host and path, since `pageUrl` is a path on the city's own site
+ * and an absolute URL on the events calendar, and the city is inconsistent
+ * about the trailing slash.
+ */
+const documentPage = (pageUrl: string, source: string): string | null => {
+  const at = (url: string) => new URL(Router.cityPage(url))
+  const [page, read] = [at(pageUrl), at(source)]
+  const path = (url: URL) => url.pathname.replace(/\/+$/, "")
+  return page.host === read.host && path(page) === path(read) ? null : page.href
+}
 
 /**
  * The meetings somebody has written up by hand.
@@ -206,6 +229,7 @@ export function calendar(): Calendar {
     kind: m.kind as MeetingKind,
     fileUrl: m.fileUrl,
     pageUrl: m.pageUrl,
+    documentPage: documentPage(m.pageUrl, m.source),
     docId: m.docId,
   }))
 

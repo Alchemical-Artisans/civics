@@ -690,9 +690,22 @@ a second document about the sitting, not a replacement for the posting that
 called it. It sits on a line of its own above the document rather than trailing
 it, because it is where the document was published and so is read before the
 document, not as an afterthought to it; one per document, since each has its own
--- the listing gives an agenda and its minutes separate media pages. Dropped
-only where the record has no file, or where the file and the page are the same
-URL.
+-- the listing gives an agenda and its minutes separate media pages.
+
+**Only where the city gave the document a page.** `pageUrl` is the page the
+link was read off, which is a page about the document for two of the six
+sources and an index for the other four: the listing puts every file behind a
+media page and the events calendar gives every notice a detail page, 361
+documents between them, while the Agenda Archive, the Minutes Archive and the
+two boards' own pages are one run of links each, so all 1,874 records read off
+them carry that single index. A board's front door is not that document's page,
+and offering it from a meeting sends a reader to look for the agenda they
+already have open. `documentPage` in [`meetings.ts`](../src/lib/meetings.ts)
+tells the two apart by comparing `pageUrl` against the record's own `source` --
+derived rather than listed, so a scraper reading a new page gets the right
+answer without anyone adding it, the same bargain the Sources list makes. Null
+for an index, and the row then carries no second link; also dropped where the
+record has no file of its own, the title link being the page already.
 
 Underneath the layout, each write-up is its own static route — one directory per
 document id, holding a hand-written `+page.svelte`. Being components rather than

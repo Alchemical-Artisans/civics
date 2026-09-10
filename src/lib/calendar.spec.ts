@@ -29,6 +29,7 @@ const doc = (
   kind,
   fileUrl: `https://example.test/${date}-${board}-${kind}.pdf`,
   pageUrl: "/p",
+  documentPage: "https://www.haverhillma.gov/p",
   docId: "a-document-0000abcd",
 })
 

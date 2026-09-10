@@ -154,9 +154,9 @@
         {#each meeting.documents as doc (doc.pageUrl + doc.fileUrl)}
           <li class="flex flex-col gap-1">
             <!-- The page the city published the file on, which is not the file
-                 and is not always recoverable from it. On the listing it is the
-                 media page; on the events calendar it is the notice itself, and
-                 the notice states the hour and the room where the PDF behind it
+                 and is not recoverable from it. On the listing it is the media
+                 page; on the events calendar it is the notice itself, and the
+                 notice states the hour and the room where the PDF behind it
                  states only the topics. That link used to stand in the row an
                  agenda occupies, and only while there was no agenda -- so
                  publishing one took the notice away, which is backwards: the
@@ -167,11 +167,17 @@
                  trailing it: it is where the document was published, so it is
                  read before the document and not as an afterthought to it. One
                  per document, because each has its own -- the listing gives an
-                 agenda and its minutes separate media pages. -->
-            {#if doc.fileUrl && Router.cityPage(doc.pageUrl) !== doc.fileUrl}
+                 agenda and its minutes separate media pages.
+
+                 `documentPage` and not `pageUrl`: three quarters of the record
+                 was read off an index -- the two archives, the two boards' own
+                 pages -- and carries that index as its `pageUrl`. A board's
+                 front door is not this document's page and has no business on
+                 a meeting page, so those rows carry no link at all. -->
+            {#if doc.fileUrl && doc.documentPage}
               <a
                 class="text-slate-500 underline hover:text-slate-900"
-                href={Router.cityPage(doc.pageUrl)}
+                href={doc.documentPage}
                 target="_blank"
                 rel="external noopener noreferrer"
               >

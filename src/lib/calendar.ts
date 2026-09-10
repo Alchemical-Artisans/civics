@@ -15,6 +15,21 @@ export interface MeetingDocument {
   kind: MeetingKind
   fileUrl: string | null
   pageUrl: string
+  /**
+   * The page the city published this document on, absolute, where there is one.
+   *
+   * Not `pageUrl`, which is only ever the page the link was read off. Two of
+   * the six pages the calendar draws on give a document a page of its own: the
+   * agendas-and-minutes listing puts every file behind a media page, and the
+   * events calendar gives every notice a detail page stating the body, the hour
+   * and often the room -- 361 documents between them. The other four -- the
+   * Agenda Archive, the Minutes Archive, and the Planning Board's and Zoning
+   * Board of Appeals' own pages -- are one run of links each, so all 1,874
+   * records read off them carry that single index as their `pageUrl`. Linking
+   * it from a meeting sends a reader to a board's front door to look for the
+   * agenda they already have open. Null for those; see `documentPage`.
+   */
+  documentPage: string | null
   /** The scraper's id for this document. Not a route; see `Meeting.written`. */
   docId: string | null
 }
