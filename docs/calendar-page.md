@@ -687,8 +687,12 @@ reader only as the `Expected` row — which stands where the agenda would and on
 while there is no agenda — so the day the city attached an agenda to its own
 notice, the notice stopped being linked at all. That is backwards: the agenda is
 a second document about the sitting, not a replacement for the posting that
-called it. The second link is dropped only where the record has no file, or
-where the file and the page are the same URL.
+called it. It sits on a line of its own above the document rather than trailing
+it, because it is where the document was published and so is read before the
+document, not as an afterthought to it; one per document, since each has its own
+-- the listing gives an agenda and its minutes separate media pages. Dropped
+only where the record has no file, or where the file and the page are the same
+URL.
 
 Underneath the layout, each write-up is its own static route — one directory per
 document id, holding a hand-written `+page.svelte`. Being components rather than

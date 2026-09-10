@@ -80,13 +80,16 @@ test.describe("meeting pages", () => {
       .getByRole("list", { name: /What the city published/ })
       .locator("li")
       .first()
-    const file = row.getByRole("link").first()
+    // The document itself is the second link in the row, the city's page for it
+    // being the first -- see below for why that is the order.
+    const file = row.getByRole("link").last()
     await expect(file).toHaveAttribute("target", "_blank")
     expect(await file.getAttribute("rel")).toContain("noopener")
 
-    // The page the city published the file on, beside the file itself. It went
-    // missing once already: it used to stand in the row an agenda occupies and
-    // only while there was no agenda, so publishing one took the posting away.
+    // The page the city published the file on, on a line of its own above it.
+    // It went missing once already: it used to stand in the row an agenda
+    // occupies and only while there was no agenda, so publishing one took the
+    // posting away.
     const cityPage = row.getByRole("link", { name: /City's page/ })
     await expect(cityPage).toHaveAttribute("target", "_blank")
     expect(await cityPage.getAttribute("href")).not.toEqual(await file.getAttribute("href"))

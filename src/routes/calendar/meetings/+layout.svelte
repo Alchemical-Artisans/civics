@@ -146,20 +146,13 @@
 		     are that item's source when they are not -- an item links to its own
 		     excerpt in its own text instead. -->
     {#if !data.isItem}
-      <ul class="mt-4 space-y-1 text-sm" aria-label="What the city published for this meeting">
+      <!-- `space-y-3` rather than the `space-y-1` this list had while a document
+           was one line: a row is two lines now, and the gap between documents
+           has to be clearly larger than the gap inside one, or the page above
+           a document reads as though it covered the document below it too. -->
+      <ul class="mt-4 space-y-3 text-sm" aria-label="What the city published for this meeting">
         {#each meeting.documents as doc (doc.pageUrl + doc.fileUrl)}
-          <li class="flex flex-wrap items-center gap-2">
-            <span class="rounded px-1.5 py-0.5 text-[11px] {kindClass(doc.kind)}">
-              {kindLabel(doc.kind)}
-            </span>
-            <a
-              class="text-slate-600 underline hover:text-slate-900"
-              href={doc.fileUrl ?? Router.cityPage(doc.pageUrl)}
-              target="_blank"
-              rel="external noopener noreferrer"
-            >
-              {doc.title}<span class="sr-only">, opens the city's file in a new tab</span>
-            </a>
+          <li class="flex flex-col gap-1">
             <!-- The page the city published the file on, which is not the file
                  and is not always recoverable from it. On the listing it is the
                  media page; on the events calendar it is the notice itself, and
@@ -168,7 +161,13 @@
                  agenda occupies, and only while there was no agenda -- so
                  publishing one took the notice away, which is backwards: the
                  agenda is a second document about the sitting, not a
-                 replacement for the posting that called it. -->
+                 replacement for the posting that called it.
+
+                 A line of its own above the document rather than a second link
+                 trailing it: it is where the document was published, so it is
+                 read before the document and not as an afterthought to it. One
+                 per document, because each has its own -- the listing gives an
+                 agenda and its minutes separate media pages. -->
             {#if doc.fileUrl && Router.cityPage(doc.pageUrl) !== doc.fileUrl}
               <a
                 class="text-slate-500 underline hover:text-slate-900"
@@ -181,6 +180,19 @@
                 >
               </a>
             {/if}
+            <span class="flex flex-wrap items-center gap-2">
+              <span class="rounded px-1.5 py-0.5 text-[11px] {kindClass(doc.kind)}">
+                {kindLabel(doc.kind)}
+              </span>
+              <a
+                class="text-slate-600 underline hover:text-slate-900"
+                href={doc.fileUrl ?? Router.cityPage(doc.pageUrl)}
+                target="_blank"
+                rel="external noopener noreferrer"
+              >
+                {doc.title}<span class="sr-only">, opens the city's file in a new tab</span>
+              </a>
+            </span>
           </li>
         {/each}
         <!-- What the city published saying this sitting would be held takes the
