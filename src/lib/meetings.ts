@@ -212,11 +212,34 @@ export function calendar(): Calendar {
   // than in the scrape.
   const filling = withoutSecondCopies(dated, noticeCalendar()?.url)
 
+  // One document whose file and whose page the city published in two different
+  // places, so no two URLs here match and `best` below cannot see they are one.
+  // The listing gave the Planning Board's agenda of 8 April 2026 a media page
+  // and hung no file off it -- the only listing row in the record with none --
+  // while the board's own page links the file and gives it no page at all. Two
+  // rows for one agenda, one of which opens a page about a document rather than
+  // the document.
+  //
+  // Board, date and kind are the identity, the same as `withoutSecondCopies`
+  // uses and for the same reason: the two records share no URL and no title.
+  // The record with the file is the document, and it takes the other's page as
+  // its own; the page-only record is dropped. A record with no file that
+  // nothing else covers is left alone -- it is all the city published, and its
+  // page is still the way to what there is.
+  const identity = (m: (typeof dated)[number]) => `${m.board}|${m.date}|${m.kind}`
+  const filed = new Set(filling.filter((m) => m.fileUrl).map(identity))
+  const pages = new Map(
+    filling
+      .filter((m) => !m.fileUrl && filed.has(identity(m)) && documentPage(m.pageUrl, m.source))
+      .map((m) => [identity(m), documentPage(m.pageUrl, m.source)!]),
+  )
+  const joined = filling.filter((m) => m.fileUrl || !pages.has(identity(m)))
+
   // A handful of PDFs are published under two media pages, which would
   // otherwise render the same document twice. Keep one copy, preferring the
   // record whose date the scraper did not flag.
   const best = new Map<string, (typeof dated)[number]>()
-  for (const m of filling) {
+  for (const m of joined) {
     const key = m.fileUrl ?? m.pageUrl
     const kept = best.get(key)
     if (!kept || (kept.needsReview && !m.needsReview)) best.set(key, m)
@@ -229,7 +252,7 @@ export function calendar(): Calendar {
     kind: m.kind as MeetingKind,
     fileUrl: m.fileUrl,
     pageUrl: m.pageUrl,
-    documentPage: documentPage(m.pageUrl, m.source),
+    documentPage: documentPage(m.pageUrl, m.source) ?? pages.get(identity(m)) ?? null,
     docId: m.docId,
   }))
 

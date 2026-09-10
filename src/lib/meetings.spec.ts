@@ -47,3 +47,32 @@ describe("documentPage", () => {
     }
   })
 })
+
+describe("a document whose file and page the city published apart", () => {
+  /**
+   * The Planning Board's agenda of 8 April 2026. The listing gave it a media
+   * page and hung no file off it -- the only listing row in the record with
+   * none -- while the board's own page links the file and gives it no page.
+   * They are one agenda, and were two rows until `pages` in `meetings.ts`
+   * joined them.
+   */
+  const sitting = calendar().meetings.find((m) => m.id === "planning-board-2026-04-08")
+
+  it("is one document, not two", () => {
+    expect(sitting?.documents.filter((d) => d.kind === "agenda")).toHaveLength(1)
+  })
+
+  it("opens the file, and offers the page the listing gave it", () => {
+    const agenda = sitting?.documents.find((d) => d.kind === "agenda")
+    expect(agenda?.fileUrl).toContain("planning-board-agenda-4826-revised.pdf")
+    expect(agenda?.documentPage).toContain(
+      "/document-manager/media-pages/agenda-and-minutes/planning-board-meeting-agenda-april-8-2026/",
+    )
+  })
+
+  it("leaves the same sitting's minutes without one, those having no page", () => {
+    // The board's own page is where they were read off, and that is an index
+    // rather than a page about the minutes -- the case above this one.
+    expect(sitting?.documents.find((d) => d.kind === "minutes")?.documentPage).toBeNull()
+  })
+})

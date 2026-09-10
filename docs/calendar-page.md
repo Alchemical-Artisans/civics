@@ -704,8 +704,20 @@ already have open. `documentPage` in [`meetings.ts`](../src/lib/meetings.ts)
 tells the two apart by comparing `pageUrl` against the record's own `source` --
 derived rather than listed, so a scraper reading a new page gets the right
 answer without anyone adding it, the same bargain the Sources list makes. Null
-for an index, and the row then carries no second link; also dropped where the
-record has no file of its own, the title link being the page already.
+for an index, and the row then carries no second link.
+
+**One document's file and page were published apart, and are joined here.** The
+listing gave the Planning Board's agenda of 8 April 2026 a media page and hung
+no file off it -- the only listing row in the record with none -- while the
+board's own page links the file and gives it no page at all. No two URLs match,
+so the duplicate-PDF collapse below cannot see they are one, and the sitting
+carried two agenda rows, one of which opened a page about a document rather than
+the document. Board, date and kind are the identity, the same as
+`withoutSecondCopies` uses and for the same reason: the two records share no URL
+and no title. The record with the file is the document and takes the other's
+page as its own; the page-only record is dropped. A record with no file that
+nothing else covers is left alone -- it is all the city published, and its page
+is still the way to what there is.
 
 Underneath the layout, each write-up is its own static route — one directory per
 document id, holding a hand-written `+page.svelte`. Being components rather than
