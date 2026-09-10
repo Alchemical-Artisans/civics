@@ -38,14 +38,22 @@
   )
 
   const kindLabel = (kind: MeetingDocument["kind"]) =>
-    kind === "agenda" ? "Agenda" : kind === "minutes" ? "Minutes" : "Document"
+    kind === "agenda"
+      ? "Agenda"
+      : kind === "minutes"
+        ? "Minutes"
+        : kind === "recording"
+          ? "Recording"
+          : "Document"
 
   const kindClass = (kind: MeetingDocument["kind"]) =>
     kind === "agenda"
       ? "bg-sky-100 text-sky-900"
       : kind === "minutes"
         ? "bg-emerald-100 text-emerald-900"
-        : "bg-slate-100 text-slate-900"
+        : kind === "recording"
+          ? "bg-violet-100 text-violet-900"
+          : "bg-slate-100 text-slate-900"
 </script>
 
 <svelte:head>

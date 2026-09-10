@@ -140,7 +140,9 @@
       ? "bg-sky-100 text-sky-900 hover:bg-sky-200"
       : kind === "minutes"
         ? "bg-emerald-100 text-emerald-900 hover:bg-emerald-200"
-        : "bg-slate-100 text-slate-900 hover:bg-slate-200"
+        : kind === "recording"
+          ? "bg-violet-100 text-violet-900 hover:bg-violet-200"
+          : "bg-slate-100 text-slate-900 hover:bg-slate-200"
 
   /**
    * An expected sitting is drawn as an outline rather than a filled chip: the
@@ -325,7 +327,13 @@
                                 doc.kind,
                               )}"
                             >
-                              {doc.kind === "agenda" ? "A" : doc.kind === "minutes" ? "M" : "·"}
+                              {doc.kind === "agenda"
+                                ? "A"
+                                : doc.kind === "minutes"
+                                  ? "M"
+                                  : doc.kind === "recording"
+                                    ? "▶"
+                                    : "·"}
                             </span>
                           {/each}
                         </span>
@@ -440,7 +448,7 @@
               {item.name}{#if item.pdf}<span class="ml-1 text-slate-400" aria-hidden="true"
                   >PDF</span
                 ><span class="sr-only">, PDF</span>{/if}<span class="sr-only">
-                , on the city's site, opens in a new tab</span
+                , opens in a new tab</span
               >
             </a>
           {/each}

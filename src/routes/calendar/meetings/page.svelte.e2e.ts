@@ -171,6 +171,19 @@ test.describe("meeting pages", () => {
     )
   })
 
+  test("a matched recording shows on a sitting, linking to HC Media", async ({ page }) => {
+    // The council meeting HC Media filmed the same day the city's agenda is
+    // for. A recording is only ever shown next to a sitting's own documents,
+    // so this page has both.
+    await page.goto("/calendar/meetings/city-council-2026-08-25")
+    const list = page.getByRole("list", { name: /What the city published/ })
+    const recording = list.getByRole("link", { name: /City Council Meeting.*August 25, 2026/ })
+    await expect(recording).toHaveAttribute("href", /haverhillcommunitytv\.org\/video\//)
+    await expect(recording).toHaveAttribute("target", "_blank")
+    // Labelled a recording, and after the agenda in the list.
+    await expect(list.locator("li").last()).toContainText("Recording")
+  })
+
   test("has no page for a meeting that never happened", async ({ page }) => {
     const response = await page.goto("/calendar/meetings/not-a-board-2026-01-01")
     expect(response?.status()).toBe(404)

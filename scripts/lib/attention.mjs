@@ -85,6 +85,12 @@ export function collect(meetings, linkStatus) {
       note: "The calendar sends a reader to a 404. Nothing here can fix it; the city has moved or dropped the file. `needsReview` does not apply -- the date is fine -- so silence one with `settled`.",
       records: dead.size ? meetings.filter((m) => m.fileUrl && dead.has(m.fileUrl) && live(m)) : [],
     },
+    {
+      key: "orphan-recording",
+      title: "A recording matched no sitting on the calendar",
+      note: "HC Media filmed a meeting the city has published nothing for, or the day or body in its title is wrong. Check the video, then either add the missing agenda's board to the right date -- or `settled` this to keep it off the calendar. `needsReview` does not apply; there is no date in question, only whether the sitting exists.",
+      records: meetings.filter((m) => m.kind === "recording" && m.orphan && live(m)),
+    },
   ]
   return groups.filter((g) => g.records.length)
 }
@@ -122,7 +128,7 @@ const line = (m) =>
   `  ${(m.date ?? "????-??-??").padEnd(12)}${(m.board ?? "").padEnd(28)}${m.title}\n` +
   `${" ".repeat(16)}file: ${filenameOf(m.fileUrl)}` +
   (m.filenameDate ? `  (which says ${m.filenameDate})` : "") +
-  `\n${" ".repeat(16)}${m.fileUrl ?? ""}\n` +
+  `\n${" ".repeat(16)}${m.fileUrl ?? m.pageUrl ?? ""}\n` +
   // The reviews.json key, ready to paste. It is the media page's slug and the
   // PDF's filename, and working it out by hand for each record is exactly the
   // friction that stops anyone answering these.

@@ -62,11 +62,13 @@ every write so refreshes produce readable diffs rather than reshuffled files.
 `source` names the page a record was scraped from, and **each scraper only ever
 replaces its own**:
 
-| `source`                                                       | Written by                                                    |
-| -------------------------------------------------------------- | ------------------------------------------------------------- |
-| `…/government/agendas-and-minutes/`                            | [`update-calendar.mjs`](../scripts/update-calendar.mjs)       |
-| `…/boards-committees-and-commissions/planning-board/`          | [`update-board-pages.mjs`](../scripts/update-board-pages.mjs) |
-| `…/boards-committees-and-commissions/zoning-board-of-appeals/` | the same                                                      |
+| `source`                                                       | Written by                                                              |
+| -------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| `…/government/agendas-and-minutes/`                            | [`update-calendar.mjs`](../scripts/update-calendar.mjs)                 |
+| `…/boards-committees-and-commissions/planning-board/`          | [`update-board-pages.mjs`](../scripts/update-board-pages.mjs)           |
+| `…/boards-committees-and-commissions/zoning-board-of-appeals/` | the same                                                                |
+| `https://events.haverhillma.gov/`                              | [`update-notice-documents.mjs`](../scripts/update-notice-documents.mjs) |
+| `http://haverhillcommunitytv.org/`                             | [`update-recordings.mjs`](../scripts/update-recordings.mjs)             |
 
 This is not bookkeeping. Most of the city's record is not in the listing at all:
 the listing reaches back only to 2025, and under it sit an **Agenda Archive** and
@@ -93,17 +95,17 @@ was the only source there was.
 
 ### Fields derived
 
-| Field            | Type                                                          | Notes                                                                           |
-| ---------------- | ------------------------------------------------------------- | ------------------------------------------------------------------------------- |
-| `board`          | string                                                        | From `category`, else title, else filename. Never empty.                        |
-| `kind`           | `agenda` \| `minutes` \| `other`                              | Derived from the same text.                                                     |
-| `date`           | `YYYY-MM-DD` \| null                                          | The resolved meeting date. **This drives the calendar.**                        |
-| `dateSource`     | `meeting-date` \| `title` \| `filename` \| `notice` \| `none` | Which step of the chain produced `date`. `notice` skips the chain -- see below. |
-| `rawMeetingDate` | string \| null                                                | Unmodified `Meeting Date` cell, e.g. `01/08/2025 12:00 AM`.                     |
-| `dateAdjusted`   | boolean                                                       | True if rolled back a day for the UTC rollover.                                 |
-| `dateConflict`   | boolean                                                       | True if the filename date contradicts `date`.                                   |
-| `filenameDate`   | `YYYY-MM-DD` \| null                                          | Unambiguous date read from the filename, if any.                                |
-| `needsReview`    | boolean                                                       | No date, a conflict, or an ambiguous filename split.                            |
+| Field            | Type                                                                         | Notes                                                                                              |
+| ---------------- | ---------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `board`          | string                                                                       | From `category`, else title, else filename. Never empty.                                           |
+| `kind`           | `agenda` \| `minutes` \| `recording` \| `other`                              | Derived from the same text. `recording` is set by `update-recordings.mjs`; the others are guessed. |
+| `date`           | `YYYY-MM-DD` \| null                                                         | The resolved meeting date. **This drives the calendar.**                                           |
+| `dateSource`     | `meeting-date` \| `title` \| `filename` \| `notice` \| `recording` \| `none` | Which step of the chain produced `date`. `notice` and `recording` skip the chain -- see below.     |
+| `rawMeetingDate` | string \| null                                                               | Unmodified `Meeting Date` cell, e.g. `01/08/2025 12:00 AM`.                                        |
+| `dateAdjusted`   | boolean                                                                      | True if rolled back a day for the UTC rollover.                                                    |
+| `dateConflict`   | boolean                                                                      | True if the filename date contradicts `date`.                                                      |
+| `filenameDate`   | `YYYY-MM-DD` \| null                                                         | Unambiguous date read from the filename, if any.                                                   |
+| `needsReview`    | boolean                                                                      | No date, a conflict, or an ambiguous filename split.                                               |
 
 ### An agenda read off a meeting notice
 
@@ -126,6 +128,22 @@ Four fields do not mean quite what they do on a listing row:
 `dateConflict`, `filenameDate` and `needsReview` are always false or null. There
 is no derived date here for a filename to contradict, and raising sixty
 questions that are already answered would bury the ones that are not.
+
+### A recording off Haverhill Community Television
+
+HC Media films the City Council, the School Committee and the License
+Commission and posts each meeting to its own site.
+[`update-recordings.mjs`](../scripts/update-recordings.mjs) writes these under a
+`source` of `http://haverhillcommunitytv.org/`, with `kind: "recording"`,
+`dateSource: "recording"` (the date is read from the post's slug, since the
+shown title is trimmed when it runs long), `fileUrl: null` and `pageUrl` the
+absolute `/video/` URL. `description` is empty -- the recording has no filename.
+
+One field is unique to these:
+
+| Field    | Meaning                                                                                                                                                                                                                  |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `orphan` | `true` when the recording matched no sitting the city documented -- the title's day or body is off, or the meeting was filmed and never written up. Filtered out in `meetings.ts`; listed in the run's attention report. |
 
 `kind` is `agenda` for every one of them, structurally rather than by guessing:
 the Open Meeting Law requires a notice to carry the meeting's topics, so a
@@ -191,7 +209,8 @@ The page does not use this file verbatim. At build time
 
 1. drops records with no `date`,
 2. collapses duplicate PDFs, preferring a record not flagged `needsReview`, and
-3. keeps only `title`, `date`, `board`, `kind`, `fileUrl`, `pageUrl`, `docId`.
+3. keeps only `title`, `date`, `board`, `kind`, `fileUrl`, `pageUrl`, `documentPage`, `docId`,
+   and drops any record flagged `gone` or `orphan`.
 
 `docId` is what a calendar entry links to.
 

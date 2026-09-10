@@ -6,7 +6,7 @@
  * meetings on the wrong cell for anyone west of UTC.
  */
 
-export type MeetingKind = "agenda" | "minutes" | "other"
+export type MeetingKind = "agenda" | "minutes" | "recording" | "other"
 
 export interface MeetingDocument {
   title: string
@@ -212,7 +212,9 @@ export function meetingId(board: string, date: string): string {
 }
 
 /** Agendas first, then minutes, then anything else; stable within a kind. */
-const KIND_ORDER: Record<MeetingKind, number> = { agenda: 0, minutes: 1, other: 2 }
+// Recording after minutes: it is the least of a sitting's documents to open
+// first, being a two-hour video where the others are a page.
+const KIND_ORDER: Record<MeetingKind, number> = { agenda: 0, minutes: 1, recording: 2, other: 3 }
 
 /**
  * Collapse documents into the meetings they belong to.

@@ -6,8 +6,8 @@
 npm run metadata:update    # refresh everything the site takes from the city
 ```
 
-That is the command to run. It drives the four scrapers in sequence and prints
-each one's summary under a heading, then says whether anything failed.
+That is the command to run. It drives the scrapers in sequence and prints each
+one's summary under a heading, then says whether anything failed.
 
 A failing step does not stop the ones after it, and the exit status is non-zero
 if any failed. The calendar scrape is the fragile half — it replays an Umbraco
@@ -17,8 +17,7 @@ succeeded. Whatever did succeed has already been written; the failures are
 repeated at the end so they cannot scroll past.
 
 Arguments are forwarded to every step, so `npm run metadata:update -- --prune`
-reaches the calendar. The budget and schedule scripts take no flags and ignore
-them.
+reaches the calendar. The other scripts take no flags and ignore them.
 
 ## The scripts underneath
 
@@ -31,6 +30,7 @@ npm run links:check        # HEAD every linked file; find the ones the city has 
 npm run budget:update      # re-scrape the budget and audit listing
 npm run schedule:update    # re-read the notices, rules and calendars
 npm run notices:update     # the agendas the city hangs off those notices
+npm run recordings:update  # HC Media's video of a sitting, matched to it
 ```
 
 Worth running alone while working on one of them, or when only one half needs
@@ -119,6 +119,24 @@ visible, so it is worth a glance — and adding one is a single line. See
 a PDF rather than on its page, so `schedule:update` shells out to `pdftotext`.
 It says so plainly if the binary is missing rather than reporting an empty
 parse, which would look like the city having moved the schedule.
+
+**`recordings:update` ends with the recordings it could not place.** HC Media
+films more meetings than the city documents -- the School Committee's whole run
+before mid-2026, the council's budget hearings, the odd special meeting -- and a
+recording is only ever shown beside a sitting's own city documents, so one that
+matches nothing is written with `orphan: true`, kept off the site, and listed in
+the attention report under **"a recording matched no sitting on the calendar"**.
+About 235 of ~560 are orphans, most of them meetings the city genuinely
+published nothing for; the report groups them last, after the date and link
+issues, and a person clears one either by adding the missing agenda's date or
+with `settled: true` in `reviews.json`. The scrape also writes
+`.cache/unrecognised-recordings.txt` for titles that named no body at all, the
+same opt-in `unrecognised-notices.txt` is -- a new body wants a line in
+`RECORDING_BODIES`.
+
+**`recordings:update` is slow: ~7 minutes.** It reads 64 listing pages one at a
+time with a pause between, because HC Media rate-limits. Nothing else here is
+paced that way; it is a manual scrape and the wait is deliberate.
 
 None of them touches the hand-written pages. Those live in
 `src/routes/calendar/meetings/` and `src/routes/budget/<year>/`; the scripts

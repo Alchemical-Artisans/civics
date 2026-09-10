@@ -47,6 +47,7 @@ npm run calendar:update     # scrape only documents new since the last run
 npm run calendar:rebuild    # re-scrape everything (only when scrape/date logic changed)
 npm run budget:update       # re-scrape the budget and audit listing (always full)
 npm run notices:update      # the agendas the city hangs off its meeting notices
+npm run recordings:update   # HC Media's video of a sitting, matched to it
 npm run transcribe -- <id>  # hand a sitting to Claude Code to write its page
 npm run storybook           # storybook on :6006
 ```
@@ -190,6 +191,32 @@ moment the listing caught up. A `Meeting` now carries the notice's stated
 `time`, so publishing an agenda no longer takes the hour off the page: it used
 to arrive only through `scheduled`, which is set on sittings with no documents
 at all.
+
+**Haverhill Community Television has the video of a sitting, and the city links
+it nowhere.** HC Media (`haverhillcommunitytv.org`) records the City Council,
+the School Committee and the License Commission and posts each meeting to its
+own WordPress site under `/category/government/<body>/`.
+`scripts/update-recordings.mjs` (`npm run recordings:update`, a step of
+`metadata:update`) reads those listings, one page at a time behind an honest
+`civics-calendar/1.0` user-agent -- the reverse of the city's host, which 502s
+anything without a browser string; HC Media rate-limits the browser strings.
+`kind` is a fourth value, `"recording"`, sorted after minutes and drawn as a
+violet chip. **A recording is matched to a sitting, never allowed to make
+one.** The day and body are read off a volunteer-typed title -- "March 12,
+2026", whose slug says the 13th -- so the scrape keeps a recording only where
+`meetings.json` already has that board on that date from an agenda, minutes or
+a notice; the rest are written with `orphan: true`, filtered out in
+`meetings.ts`, and counted in the run's attention report under "a recording
+matched no sitting" for a person to place or `settled`. Of ~560 recordings
+about 325 match; the gap is mostly the School Committee before mid-2026, which
+the city documented nowhere. `RECORDING_BODIES` in `scripts/lib/recordings.mjs`
+is the hand-kept title-to-board list, `BODIES`'s counterpart: HC Media titles a
+council committee "City Council Planning & Development Meeting" where the city's
+notice says "Planning and Development Committee", and a council-committee
+pattern is tried before the council's own. `pageUrl` is the `/video/` URL and
+`fileUrl` is null, so a recording links straight to HC Media and gets no
+transcription page. `Video Recordings` is one entry in the calendar's Sources,
+last, after the city's own pages.
 
 **No board's meeting schedule is a document.** Both are ordinary HTML on a page,
 which is why the calendar could not see either while it read only the listing --

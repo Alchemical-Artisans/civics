@@ -139,6 +139,9 @@ const PAGE_NAMES: Record<string, string> = {
   // leaves the hostname, and the slug fallback would title it
   // "Events.haverhillma.gov".
   "events.haverhillma.gov": "Events Calendar",
+  // Another whole host: HC Media's recordings, one origin for all three bodies
+  // it films, the way the events calendar is one page for all its notices.
+  "haverhillcommunitytv.org": "Video Recordings",
 }
 
 const slugOf = (url: string) => url.replace(/\/+$/, "").split("/").pop() ?? url
@@ -204,7 +207,16 @@ export function calendar(): Calendar {
   // city published something and has since removed it, which the footer says in
   // one line rather than 84 dead ends.
   const live = raw.meetings.filter((m) => !("gone" in m && m.gone))
-  const dated = live.filter((m) => m.date)
+
+  // A recording HC Media has that matched no sitting the city published
+  // anything for -- `update-recordings.mjs` set `orphan` because the day or
+  // body in the volunteer-typed title is wrong, or the meeting was filmed and
+  // never documented. A recording is only ever shown beside a sitting's own
+  // documents, never on its own, so an orphan is dropped here and left to the
+  // run's attention report. `settled` in reviews.json is how a person waves one
+  // off for good.
+  const placed = live.filter((m) => !("orphan" in m && m.orphan))
+  const dated = placed.filter((m) => m.date)
 
   // An agenda read off a meeting notice, where the city published the same
   // agenda in its own listing too. The listing's copy is the one kept -- see
@@ -281,9 +293,11 @@ export function calendar(): Calendar {
     return time ? { ...meeting, time } : meeting
   })
 
-  // Distinct, over `live` rather than `kept`, so a page whose every document is
-  // a duplicate of another page's still says it was read.
-  const perSource = new Set(live.map((m) => m.source))
+  // Distinct, over `placed` rather than `kept`, so a page whose every document
+  // is a duplicate of another page's still says it was read -- but a source
+  // whose every record is an orphan recording, contributing nothing the
+  // calendar shows, is not a page the calendar "comes from".
+  const perSource = new Set(placed.map((m) => m.source))
 
   // Rules and printed calendars together, by board. The City Council's rule is
   // printed above the document table on the listing page, so its URL is the
@@ -309,7 +323,16 @@ export function calendar(): Calendar {
       // read the other way round, since the archives together hold more of the
       // record than the listing they hang off does.
       documents: [...perSource]
-        .sort()
+        // The city's own hosts first, ordered by URL -- which sorts the
+        // agendas-and-minutes listing above its two archives and the board
+        // pages after, the order explained by the archives holding more of the
+        // record than the listing they hang off. Anything else -- HC Media's
+        // recordings -- after them: a supplement to the city's record, not part
+        // of it.
+        .sort((a, b) => {
+          const ours = (url: string) => (url.includes("haverhillma.gov") ? 0 : 1)
+          return ours(a) - ours(b) || a.localeCompare(b)
+        })
         .map((url) => ({ name: pageName(url), url, pdf: url.endsWith(".pdf") })),
       schedules: [
         ...(notices ? [{ name: notices.name, url: notices.url, pdf: false }] : []),

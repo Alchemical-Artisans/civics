@@ -34,6 +34,27 @@ generated from data rather than written, so there is nothing to hand-write, and
 if the data and the links ever disagree, where relying on SvelteKit's crawler
 would quietly emit fewer pages.
 
+### A recording is a fourth kind of document
+
+Haverhill Community Television records the City Council, the School Committee
+and the License Commission, and its video is the best account there is of what
+a meeting was actually like. It is on none of the city's pages, so
+`scripts/update-recordings.mjs` reads HC Media's own listings and writes each
+recording to `meetings.json` with `kind: "recording"` — sorted after minutes,
+drawn as a violet chip, linking straight to the `/video/` page with no
+transcription of its own (`fileUrl` is null).
+
+**A recording is only ever shown next to a sitting's city documents.** The day
+and body come from a volunteer-typed title — one reads "March 12, 2026" over a
+slug that says the 13th — which is weaker evidence than anything the city
+publishes. So the scrape keeps a recording only where `meetings.json` already
+has that board on that date; the rest are written `orphan: true`, filtered out
+in `meetings.ts`, and counted in the run's attention report. About 235 of ~560
+are orphans, most of them the School Committee before mid-2026, which the city
+documented nowhere — a real gap, surfaced rather than papered over with a page
+whose only content is a link off-site. `settled: true` in `reviews.json`
+silences one for good; adding the missing agenda's date rescues it.
+
 ## Sittings the city has said it will hold
 
 **None of this is a document.** All of it is ordinary HTML on a page, which is
@@ -762,11 +783,12 @@ Constraints that shaped it:
 The footer is **every page the calendar is read off**, in two groups, and one
 line saying when the scrape behind it last ran. Nothing else.
 
-The two groups are the pages the agendas and minutes come from, and the pages
-and files the expected sittings come from. Ten links today — the agendas-and-minutes listing
-with its Agenda Archive and Minutes Archive under it, the Planning Board's and
-the Zoning Board of Appeals' own pages, and the four boards' meeting schedules,
-two of which are PDFs on the city's CDN.
+The two groups are the pages the documents come from, and the pages and files
+the expected sittings come from. Eleven links today — the agendas-and-minutes
+listing with its Agenda Archive and Minutes Archive under it, the Planning
+Board's and the Zoning Board of Appeals' own pages, then Haverhill Community
+Television's recordings; and the four boards' meeting schedules, two of which
+are PDFs on the city's CDN.
 
 This replaced one link, in a sentence at the top of the page, to the listing the
 scrape started with. That was the whole answer once and had not been for a
@@ -784,12 +806,14 @@ anyone remembering to. `PAGE_NAMES` gives the city's own name for a page, keyed
 on the last path segment — the city has moved this material once already, from
 cityofhaverhill.com to haverhillma.gov, and a page that moves under a different
 parent keeps its name; anything unmapped is titled from its slug, so a new page
-appears with a reasonable name rather than not at all. Documents are ordered by
-URL, which is not arbitrary: the listing is the shortest of those paths and the
-archives sit under it, so sorting the strings puts the listing first with its
-archives beneath it and the board pages after. Ordering by how many documents
-came from each would read the other way round, since the archives together hold
-more of the record than the listing they hang off does.
+appears with a reasonable name rather than not at all. Documents are ordered
+with the city's own hosts first, by URL: the listing is the shortest of those
+paths and the archives sit under it, so sorting the strings puts the listing
+first with its archives beneath it and the board pages after, and HC Media —
+not the city's, and a supplement to its record rather than part of it — sits
+last. Ordering by how many documents came from each would read the other way
+round, since the archives together hold more of the record than the listing
+they hang off does.
 
 **The page's own `<h1>` is not drawn.** It read "Haverhill Meeting Calendar" at
 `text-3xl` above a sentence explaining that an entry is a meeting rather than a

@@ -76,3 +76,46 @@ describe("a document whose file and page the city published apart", () => {
     expect(sitting?.documents.find((d) => d.kind === "minutes")?.documentPage).toBeNull()
   })
 })
+
+describe("recordings", () => {
+  const meetings = calendar().meetings
+  const recordings = meetings.flatMap((m) => m.documents).filter((d) => d.kind === "recording")
+
+  it("attach to real sittings, and only to real sittings", () => {
+    expect(recordings.length).toBeGreaterThan(0)
+    // Every meeting carrying a recording also carries a document the city
+    // published -- an orphan recording (HC Media filmed a meeting the city
+    // documented nowhere) is dropped in meetings.ts, never shown on its own.
+    for (const m of meetings) {
+      if (!m.documents.some((d) => d.kind === "recording")) continue
+      expect(m.documents.some((d) => d.kind !== "recording")).toBe(true)
+    }
+  })
+
+  it("link to HC Media and carry no second page link", () => {
+    for (const rec of recordings) {
+      expect(rec.pageUrl).toContain("haverhillcommunitytv.org/video/")
+      expect(rec.fileUrl).toBeNull()
+    }
+  })
+
+  it("sort after the agenda and minutes in a sitting's list", () => {
+    for (const m of meetings) {
+      const kinds = m.documents.map((d) => d.kind)
+      const firstRecording = kinds.indexOf("recording")
+      if (firstRecording === -1) continue
+      expect(kinds.slice(0, firstRecording).every((k) => k !== "recording")).toBe(true)
+      expect(kinds.slice(firstRecording).every((k) => k === "recording" || k === "other")).toBe(
+        true,
+      )
+    }
+  })
+
+  it("name HC Media as a source, once, after the city's own pages", () => {
+    const docs = calendar().sources.documents
+    const hcm = docs.filter((s) => s.url.includes("haverhillcommunitytv.org"))
+    expect(hcm).toHaveLength(1)
+    expect(hcm[0].name).toBe("Video Recordings")
+    expect(docs.indexOf(hcm[0])).toBe(docs.length - 1)
+  })
+})

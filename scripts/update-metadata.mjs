@@ -20,7 +20,7 @@
  * status is non-zero if any step failed.
  *
  * Arguments are forwarded to every step, so `npm run metadata:update -- --prune`
- * reaches the calendar. The other three take no flags and ignore them.
+ * reaches the calendar. The others take no flags and ignore them.
  */
 import { spawnSync } from "node:child_process"
 import path from "node:path"
@@ -34,6 +34,9 @@ const STEPS = [
   // own in the same file, and it is a document scrape rather than a schedule
   // one however much it shares a page with the next step.
   { name: "notice documents", script: "update-notice-documents.mjs" },
+  // After every scrape that adds a city document, because it matches its
+  // recordings against them and keeps only the ones that land on a sitting.
+  { name: "recordings", script: "update-recordings.mjs" },
   { name: "budget", script: "update-budget.mjs" },
   { name: "schedule", script: "update-schedule.mjs" },
   // Last, and after everything that can add a document: it checks every link
