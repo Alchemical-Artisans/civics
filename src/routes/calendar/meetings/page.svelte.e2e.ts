@@ -146,6 +146,31 @@ test.describe("meeting pages", () => {
     await expect(page).toHaveURL(/\/calendar$/)
   })
 
+  test("a remote option that takes more than a link is a disclosure, closed", async ({ page }) => {
+    // The School Committee's: no join link, since the city emails one to
+    // whoever registers on a form six hours ahead, and the sitting is
+    // broadcast besides. Paragraphs rather than a word, so they arrive closed
+    // and the way to watch is first inside.
+    await page.goto("/calendar/meetings/school-committee-2026-09-10")
+
+    const remote = page.locator("details:has(summary:has-text('Remote Access'))")
+    await expect(remote).not.toHaveAttribute("open")
+    await expect(remote).not.toBeEmpty()
+    await remote.getByText("Remote Access").click()
+    await expect(remote).toHaveAttribute("open")
+    await expect(remote.getByRole("link", { name: /View the Live Stream/ })).toHaveAttribute(
+      "href",
+      "http://haverhillcommunitytv.org/video/channel-8-live-stream",
+    )
+    await expect(remote).toContainText("register here at least 6 hours")
+
+    // The header carries no "Remote Access" link, the document having no join
+    // link to make one from.
+    await expect(page.locator("header").getByRole("link", { name: /^Remote Access$/ })).toHaveCount(
+      0,
+    )
+  })
+
   test("has no page for a meeting that never happened", async ({ page }) => {
     const response = await page.goto("/calendar/meetings/not-a-board-2026-01-01")
     expect(response?.status()).toBe(404)

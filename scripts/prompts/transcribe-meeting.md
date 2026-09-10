@@ -73,7 +73,13 @@ export const load: PageLoad = () => ({
       // The room geocodes to nothing; hand the map the street address.
       mapQuery: "4 Summer Street, Haverhill, MA 01830",
     },
-    remote: { url: "…", meetingId: "…", passcode: "…" },
+    remote: {
+      url: "…",
+      meetingId: "…",
+      passcode: "…",
+      how: ["…"],
+      stream: "http://haverhillcommunitytv.org/video/channel-8-live-stream",
+    },
     notice: ["…"],
   },
 })
@@ -81,9 +87,33 @@ export const load: PageLoad = () => ({
 
 Every field is optional and so is the file — skip it for a set of minutes that
 states none of this. `name` is shown and is verbatim; `mapQuery` is what the map
-is handed, so drop the room and add the city. `notice` is the boilerplate an
-agenda opens with, one string per paragraph, which the layout puts behind an
-information icon rather than at the top of the write-up.
+is handed, so drop the room and add the city.
+
+**Three slots, and what goes where is decided by what a reader does with it:**
+
+- **`remote`** — how to take part or watch from elsewhere. `url` is a join
+  link, shown in the header as "Remote Access"; `meetingId` and `passcode` sit
+  beside it. Where the remote option is not a single link — a form to register
+  on ahead of time, a link emailed afterward, several paragraphs of
+  conditions — put those paragraphs in `how` (the city's words, one per
+  paragraph) and the header shows them behind a disclosure a reader opens.
+  Give `url` **only** where the document prints a working join link; a
+  shortened or malformed URL stays as text inside `how`, not a link that
+  404s. `stream` is where the sitting is broadcast live — the School
+  Committee and others are carried on Haverhill Community Television's
+  channel 8, and an agenda that says the meeting "will be broadcast over HCTV
+  and WHAV" without printing an address is pointing at that page; use the URL
+  above and drop the sentence, since the link says it better.
+- **`notice`** — standing Open Meeting Law boilerplate, one string per
+  paragraph, behind an information icon. Keep this to what turns on a choice
+  _this_ body made: that it meets in-person as its official location, say.
+  Text that is identical on every board's agenda in the city — the remote-
+  meeting act's sunset date, the wiretap statement the chair reads aloud — is
+  not about this sitting and does not go on the page at all.
+
+Do not restate in `notice` or `how` what the header already shows: the day, the
+hour and the room are the date line and the location link, so an opening
+paragraph that recites them is dropped, and any signature under it goes with it.
 
 **The time has to come from the document.** `meetings.json` carries a clock time
 and it is a mix of real times and placeholders, so nothing on the site displays

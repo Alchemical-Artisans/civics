@@ -117,14 +117,16 @@
         {/if}
         {#if details.remote}
           <span class="inline-flex flex-wrap items-center gap-x-3 gap-y-1">
-            <a
-              class="underline hover:text-slate-900"
-              href={details.remote.url}
-              target="_blank"
-              rel="external noopener noreferrer"
-            >
-              Remote Access<span class="sr-only">, joins the meeting in a new tab</span>
-            </a>
+            {#if details.remote.url}
+              <a
+                class="underline hover:text-slate-900"
+                href={details.remote.url}
+                target="_blank"
+                rel="external noopener noreferrer"
+              >
+                Remote Access<span class="sr-only">, joins the meeting in a new tab</span>
+              </a>
+            {/if}
             {#if details.remote.meetingId}
               <span class="text-slate-500">Meeting ID: {details.remote.meetingId}</span>
             {/if}
@@ -134,6 +136,56 @@
           </span>
         {/if}
       </p>
+    {/if}
+
+    <!-- A remote option that takes more than a link: the School Committee's is
+         a form to register on six hours ahead, the join link emailed after, and
+         the sitting broadcast besides. It belongs in the same part of the page
+         as a join link -- how to attend, above the record -- but it is
+         paragraphs rather than a word, so it arrives closed and opens on a
+         click.
+
+         `<details>` rather than the `Note` popover the boilerplate uses: a
+         popover is right for something a reader glances at and dismisses, and
+         this is something they read and act on. It also needs no script, so it
+         works in the served HTML before anything hydrates -- the same bargain
+         the bar's own menu makes. -->
+    {#if !data.isItem && (details?.remote?.how?.length || details?.remote?.stream)}
+      <details class="group mt-2 max-w-prose rounded-lg border border-slate-200 text-sm">
+        <summary
+          class="flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-slate-600 select-none hover:text-slate-900 [&::-webkit-details-marker]:hidden"
+        >
+          <span class="underline">Remote Access</span>
+          <span
+            aria-hidden="true"
+            class="text-slate-400 transition-transform duration-150 group-open:rotate-180"
+            >&#9662;</span
+          >
+        </summary>
+        <div class="border-t border-slate-100 px-3 pt-3 pb-1 text-slate-600">
+          <!-- The way to watch, first: it is the thing most of the people who
+               open this want, and it is one click where the rest is a form to
+               fill in six hours ahead. The city's agenda says only that the
+               sitting "will be broadcast over HCTV and WHAV" and prints no
+               address for either, so the link stands in place of that sentence
+               rather than beside it. -->
+          {#if details.remote.stream}
+            <p class="mb-3">
+              <a
+                class="underline hover:text-slate-900"
+                href={details.remote.stream}
+                target="_blank"
+                rel="external noopener noreferrer"
+              >
+                View the Live Stream<span class="sr-only">, opens in a new tab</span>
+              </a>
+            </p>
+          {/if}
+          {#each details.remote.how ?? [] as paragraph (paragraph)}
+            <p class="mb-3">{paragraph}</p>
+          {/each}
+        </div>
+      </details>
     {/if}
 
     <!-- What the city actually published for this sitting, whether or not any

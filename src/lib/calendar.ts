@@ -314,11 +314,34 @@ export interface MeetingDetails {
    * `meetingId` and `passcode` are shown beside it when the document prints
    * them, since a reader dialling in from a phone needs them and should not
    * have to dig them out of the notice.
+   *
+   * Not every board's remote option is a link. The School Committee's is a form
+   * to register on six hours ahead, after which the join link is emailed, and
+   * the sitting is broadcast besides -- several paragraphs where the
+   * Conservation Commission has a URL. Those go in `how`, one string per
+   * paragraph and the city's own words, and the header shows them in the slot
+   * the join link would occupy, behind a disclosure a reader opens: attending
+   * remotely is a thing this meeting offers whether or not it takes one click,
+   * and burying it in `notice` with the Open Meeting Law boilerplate says it is
+   * not. `url` is optional because of them; give both where a document prints
+   * a link and then qualifies it.
+   *
+   * `stream` is where a sitting can be watched live, for the boards the city
+   * broadcasts. It is the one thing here the document does not supply: an
+   * agenda says the meeting "will be broadcast over HCTV and WHAV" and prints
+   * no address for either, so a reader is told a thing exists and left to go
+   * and find it. Haverhill Community Television's channel 8 page is that
+   * address. Naming it is the same act as the rest of this file -- rearranging
+   * what the city publishes so a reader can use it -- rather than words put in
+   * the city's mouth, and the sentence claiming the broadcast is dropped in
+   * favour of the link to it.
    */
   remote?: {
-    url: string
+    url?: string
     meetingId?: string
     passcode?: string
+    how?: string[]
+    stream?: string
   }
   /**
    * Standing boilerplate from the head of the document -- Open Meeting Law

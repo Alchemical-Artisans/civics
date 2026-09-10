@@ -87,7 +87,13 @@ Everything it writes is under `.cache/`, which is gitignored and disposable.
      details: {
        time: "7:00 PM",
        location: { name: "…, 4 Summer St, Room 202", mapQuery: "4 Summer Street, Haverhill, MA" },
-       remote: { url: "https://meet.google.com/…", meetingId: "…", passcode: "…" },
+       remote: {
+         url: "https://meet.google.com/…",
+         meetingId: "…",
+         passcode: "…",
+         how: ["Register at least 6 hours ahead at …; a link is emailed after."],
+         stream: "http://haverhillcommunitytv.org/video/channel-8-live-stream",
+       },
        notice: ["The meeting is held in person as its official location under…"],
      },
    })
@@ -96,12 +102,27 @@ Everything it writes is under `.cache/`, which is gitignored and disposable.
    Every field is optional, and the file itself is optional — skip it for a set
    of minutes that states none of this. `name` is shown and should be verbatim;
    `mapQuery` is what gets handed to the map, so drop the room number and add
-   the city. `remote.meetingId` and `remote.passcode` are optional and shown
-   beside the join link when the document prints them. `notice` is the standing
-   boilerplate an agenda opens with — Open
-   Meeting Law status, recording notices — one string per paragraph; it goes
-   behind an information icon next to the title rather than into the write-up,
-   where it would push the agenda below the fold. See `MeetingDetails` in
+   the city.
+
+   `remote` is how to attend or watch from elsewhere. `url` is a join link,
+   shown as "Remote Access" with `meetingId` and `passcode` beside it — give it
+   only where the document prints a working link, since a malformed one becomes
+   a link that 404s. Where the remote option is not one link but a procedure —
+   a form to register on, a link emailed later, paragraphs of conditions — those
+   paragraphs go in `how`, verbatim, and the header shows them behind a
+   disclosure the reader opens. `stream` is where the sitting is broadcast live;
+   an agenda that says it "will be broadcast over HCTV and WHAV" without an
+   address is pointing at Haverhill Community Television's channel 8, so link
+   that and drop the sentence.
+
+   `notice` is standing Open Meeting Law boilerplate — one string per paragraph,
+   behind an information icon next to the title rather than in the write-up
+   where it would push the agenda below the fold. Keep it to what turns on a
+   choice this body made; text identical on every board's agenda (the remote-
+   meeting act's sunset, the wiretap statement read aloud) is not about this
+   sitting and is left off. Do not repeat in `notice` or `how` what the header
+   already shows — an opening paragraph reciting the day, hour and room is
+   dropped, signature and all. See `MeetingDetails` in
    [`src/lib/calendar.ts`](../src/lib/calendar.ts).
 
    The time has to come from the document. `meetings.json` has a clock time in
