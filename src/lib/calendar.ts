@@ -35,8 +35,18 @@ export interface MeetingDocument {
  * the document listing: the Council sits every Tuesday, with exceptions. It has
  * to be read into dates, and it over-generates against the schedule the Council
  * actually adopts -- see `$lib/schedule`.
+ *
+ * A `notice` is the posting the Open Meeting Law requires the body to make
+ * before it sits, filed to the city's events calendar: this body, this day,
+ * this hour. It is the strongest of the three, and the only one that is about
+ * the sitting itself rather than about a pattern the sitting falls under -- a
+ * printed calendar is a year's intention stated in January, where a notice is
+ * the meeting being called. It is also the only source most of the city's
+ * boards have: the document listing covers five of them and this covers around
+ * fifty.
  */
 export type SittingSource =
+  | { kind: "notice"; url: string; title: string }
   | { kind: "calendar"; url: string; heading: string }
   | { kind: "rule"; url: string; intro: string; exceptions: string[] }
 
@@ -53,7 +63,7 @@ export type SittingSource =
  */
 export interface ScheduledSitting {
   board: string
-  /** `YYYY-MM-DD`, a day the board's own calendar or rule names. */
+  /** `YYYY-MM-DD`, a day the city's notice, or the board's calendar or rule, names. */
   date: string
   /** Start time where the source states one, e.g. `"7:00 PM"`. */
   time?: string

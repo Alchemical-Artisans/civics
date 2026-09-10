@@ -3,6 +3,7 @@ import {
   RULE_AS_READ,
   expectedSittings,
   meetingCalendars,
+  meetingNotices,
   meetingRules,
   sittingsIn,
 } from "./schedule"
@@ -194,9 +195,16 @@ describe("expectedSittings", () => {
     // The source is the evidence for the entry, so the meeting page can show it
     // rather than paraphrasing why the sitting is there.
     for (const sitting of expectedSittings("2026-09-08")) {
-      // The city's own site, or its CDN where the source is a PDF it links.
-      expect(sitting.source.url).toMatch(/^https:\/\/(www\.haverhillma\.gov|media-\d+-us\.cdn)/)
-      if (sitting.source.kind === "rule") {
+      // The city's own site, its events calendar, or its CDN where the source
+      // is a PDF it links.
+      expect(sitting.source.url).toMatch(
+        /^https:\/\/(www\.haverhillma\.gov|events\.haverhillma\.gov|media-\d+-us\.cdn)/,
+      )
+      if (sitting.source.kind === "notice") {
+        // The notice's own title, which is where the city writes the sitting's
+        // character -- "Special Meeting", "Executive Session", "Revised".
+        expect(sitting.source.title).toBeTruthy()
+      } else if (sitting.source.kind === "rule") {
         expect(sitting.board).toBe("City Council")
         expect(sitting.time).toBe("7:00 PM")
         expect(sitting.source.intro).toBe(RULE_AS_READ.intro)
@@ -215,7 +223,11 @@ describe("expectedSittings", () => {
     // thing to check is that every date it prints and nothing else comes back.
     for (const calendar of meetingCalendars()) {
       const mine = expectedSittings("2026-09-08")
-        .filter((s) => s.board === calendar.board)
+        // This board's entries from *its own printed list*. Four of these
+        // boards also have notices posted for the coming weeks, which name
+        // some of the same days; `withScheduled` keeps the notice, being the
+        // better statement, and either way it is not this list's doing.
+        .filter((s) => s.board === calendar.board && s.source.kind === "calendar")
         .map((s) => s.date)
       expect(mine).toEqual(calendar.sittings.map((s) => s.date).filter((d) => d >= "2026-09-08"))
     }
@@ -231,15 +243,76 @@ describe("expectedSittings", () => {
   it("puts every board's sittings in one list, in date order", () => {
     const sittings = expectedSittings("2026-09-08")
     expect(sittings.map((s) => s.date)).toEqual([...sittings.map((s) => s.date)].sort())
-    expect(new Set(sittings.map((s) => s.board))).toEqual(
-      new Set([
-        "City Council",
-        "Conservation Commission",
-        "License Commission",
-        "Planning Board",
-        "Zoning Board of Appeals",
-      ]),
-    )
+    // Every board here is one of the three sources' own, and no others. Derived
+    // rather than written out: the notices bring a different set of boards each
+    // time the scrape runs -- whichever ones have posted for the coming weeks
+    // -- and pinning that list would fail on the city's posting schedule rather
+    // than on anything this file does.
+    const known = new Set([
+      ...meetingNotices().map((n) => n.board),
+      ...meetingCalendars().map((c) => c.board),
+      ...meetingRules().map((r) => r.board),
+    ])
+    for (const sitting of sittings) expect(known).toContain(sitting.board)
+    // The five with a printed calendar or a rule are always there: their dates
+    // do not depend on the city having posted a notice for anything.
+    const present = new Set(sittings.map((s) => s.board))
+    for (const board of [
+      "City Council",
+      "Conservation Commission",
+      "License Commission",
+      "Planning Board",
+      "Zoning Board of Appeals",
+    ]) {
+      expect(present).toContain(board)
+    }
+  })
+
+  it("prefers a posted notice to a printed calendar for the same day", () => {
+    // Both are the city's, and both are right; the notice is the later and
+    // more specific word, and it is the one whose title the meeting page
+    // quotes. `withScheduled` keeps the first of a duplicate, so the order
+    // this list comes back in is what decides it.
+    const sittings = expectedSittings("2026-09-08")
+    for (const notice of meetingNotices().filter((n) => n.date >= "2026-09-08")) {
+      const mine = sittings.filter((s) => s.board === notice.board && s.date === notice.date)
+      expect(mine[0].source.kind, `${notice.board} ${notice.date}`).toBe("notice")
+    }
+  })
+
+  it("carries the hour and the notice's own title onto a posted sitting", () => {
+    const posted = expectedSittings("2026-09-08").filter((s) => s.source.kind === "notice")
+    expect(posted.length).toBeGreaterThan(0)
+    for (const sitting of posted) {
+      const notice = meetingNotices().find(
+        (n) => n.board === sitting.board && n.date === sitting.date,
+      )!
+      expect(sitting.time).toBe(notice.time)
+      if (sitting.source.kind === "notice") expect(sitting.source.title).toBe(notice.title)
+    }
+  })
+
+  it("stops projecting the rule across the days the board has posted", () => {
+    // The rule says every Tuesday and the Council skips roughly one a month, so
+    // running it alongside the notices would put sittings on the calendar the
+    // Council has not called -- indistinguishable, to a reader, from the ones
+    // it has. Inside the posted range the notices are the schedule; the rule
+    // picks up beyond it, where a projection beats an empty calendar again.
+    const sittings = expectedSittings("2026-09-08")
+    const posted = sittings.filter((s) => s.board === "City Council" && s.source.kind === "notice")
+    const projected = sittings.filter((s) => s.source.kind === "rule")
+    expect(posted.length).toBeGreaterThan(0)
+    const last = posted.at(-1)!.date
+    for (const sitting of projected) expect(sitting.date > last).toBe(true)
+    // And every Tuesday the rule names inside that range is gone, not merely
+    // shadowed: this is what keeps 13 October off the calendar.
+    const ruleDates = new Set(sittingsIn(2026))
+    const inRange = [...ruleDates].filter((d) => d >= "2026-09-08" && d <= last)
+    expect(inRange.length).toBeGreaterThan(0)
+    for (const date of inRange) {
+      const projectedHere = projected.some((s) => s.date === date)
+      expect(projectedHere, date).toBe(false)
+    }
   })
 
   it("is empty once every published date is behind us", () => {

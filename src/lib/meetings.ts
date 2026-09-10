@@ -15,7 +15,7 @@ import {
   type MeetingDocument,
   type MeetingKind,
 } from "./calendar"
-import { expectedSittings, meetingCalendars, meetingRules } from "./schedule"
+import { expectedSittings, meetingCalendars, meetingRules, noticeCalendar } from "./schedule"
 
 /**
  * The meetings somebody has written up by hand.
@@ -77,7 +77,16 @@ export interface Source {
 export interface Sources {
   /** Where the agendas and minutes were read off, most documents first. */
   documents: Source[]
-  /** Where the expected sittings were read off, by board. */
+  /**
+   * Where the expected sittings were read off: the city's events calendar
+   * first, then the four boards that publish a schedule of their own, by
+   * board.
+   *
+   * The calendar is one page for every board that posts a notice to it, where
+   * the others are one board's own page each -- so it is named for itself and
+   * listed once, rather than repeated under each of the thirteen boards whose
+   * sittings it currently accounts for.
+   */
   schedules: Source[]
 }
 
@@ -206,6 +215,11 @@ export function calendar(): Calendar {
     ...meetingCalendars().map((calendar) => ({ board: calendar.board, url: calendar.source })),
   ].sort((a, b) => a.board.localeCompare(b.board))
 
+  // The events calendar ahead of them, named for itself. It is where most of
+  // the boards on the calendar come from, and it is one page rather than one
+  // per board.
+  const notices = noticeCalendar()
+
   return {
     meetings,
     generatedAt: raw.generatedAt,
@@ -219,11 +233,14 @@ export function calendar(): Calendar {
       documents: [...perSource]
         .sort()
         .map((url) => ({ name: pageName(url), url, pdf: url.endsWith(".pdf") })),
-      schedules: schedules.map(({ board, url }) => ({
-        name: board,
-        url,
-        pdf: url.endsWith(".pdf"),
-      })),
+      schedules: [
+        ...(notices ? [{ name: notices.name, url: notices.url, pdf: false }] : []),
+        ...schedules.map(({ board, url }) => ({
+          name: board,
+          url,
+          pdf: url.endsWith(".pdf"),
+        })),
+      ],
     },
     today: BUILT_ON,
   }

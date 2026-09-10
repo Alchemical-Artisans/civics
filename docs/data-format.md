@@ -298,13 +298,33 @@ by [`update-schedule.mjs`](../scripts/update-schedule.mjs).
 No board's schedule is a document in the listing. All are ordinary HTML on a
 page — which is why the calendar could not see any of them while it read only
 the listing; the scraper fetched one of those very pages for its antiforgery
-token and threw the rest away. Rules and calendars are kept apart in this file
-because they are different kinds of thing: one has to be read, the other is
-already dates.
+token and threw the rest away. Notices, rules and calendars are kept apart in
+this file because they are three different kinds of thing: one names a sitting,
+one has to be read, one is already dates.
 
 ```json
 {
   "generatedAt": "2026-09-08T14:33:02.118Z",
+  "noticeCalendar": {
+    "name": "Events Calendar",
+    "url": "https://events.haverhillma.gov/"
+  },
+  "notices": [
+    {
+      "board": "City Council",
+      "date": "2026-09-15",
+      "title": "City Council Meeting",
+      "url": "https://events.haverhillma.gov/default/Detail/2026-09-15-1900-City-Council-Meeting2",
+      "time": "7:00 PM"
+    }
+  ],
+  "cancelled": [
+    {
+      "board": "School Committee",
+      "date": "2026-02-24",
+      "title": "CANCELED-Haverhill School Committee & High School Student Council Mtg"
+    }
+  ],
   "rules": [
     {
       "board": "City Council",
@@ -340,6 +360,43 @@ already dates.
   ]
 }
 ```
+
+### `notices` — one posting, one sitting
+
+| Field   | Meaning                                                                                                                                      |
+| ------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `board` | What `classifyNotice` filed the title under. Must match `meetings.json`'s `board` wherever that board is already there.                      |
+| `date`  | Read off the notice's own URL, which states it, rather than off the calendar cell, which only numbers the day.                               |
+| `title` | The notice as posted, verbatim. The meeting page quotes it: this is where the city writes "Special Meeting", "Executive Session", "Revised". |
+| `url`   | The notice's own page on the events calendar.                                                                                                |
+| `time`  | The hour it states, e.g. `7:00 PM`. Absent on an all-day posting, which the calendar records as `12:00 am` and no board sits at.             |
+
+Only the current month to the end of the year is fetched — the same horizon the
+Council's rule is projected to — one plain `GET` per month, no session and no
+token handshake. The origin sits behind Azure Front Door, which answers a
+request with no browser `User-Agent` with a **502** rather than a 403; the
+project's usual `USER_AGENT` is not optional here.
+
+Two entries for one board on one day are collapsed to one, because the city
+posts an original and a "Revised" reissue often enough to matter.
+
+`noticeCalendar` names the page itself, recorded by the scrape rather than
+rebuilt out of a notice's URL: the footer lists it once however many boards its
+notices account for, and what the city calls it is not in a URL.
+
+**Only titles `BODIES` recognises are here at all.** Everything else goes to
+`.cache/unrecognised-notices.txt` — see
+[calendar-page.md](./calendar-page.md#which-notices-are-haverhills-is-a-judgement-not-a-rule).
+
+### `cancelled` — postings that say the sitting is off
+
+The city writes this into the title rather than taking the entry down —
+`CANCELED-…`, `CANCELLATION…`, `…-POSTPONED`. Those days are dropped from
+`notices` and recorded here instead, the same shape and for the same reason as
+`calendars[].cancelled`: a parser that quietly lost dates would look exactly
+like a body that scheduled fewer. Nothing on the site draws them. "Revised" and
+"Amended" are **not** this — they mean the notice was reissued and the sitting
+stands.
 
 ### `rules` — a standing statement, which has to be read
 
@@ -381,12 +438,15 @@ sittings — the `column` naming the one that does. See
 instead needs its wording read into dates by hand in `schedule.ts`; there is no
 guessing at one.
 
-Every run replaces the file; there is no incremental mode. An empty parse of
-either half is treated as a failure rather than written, because it means a
-page's markup has changed shape — and a file written from it would empty the
-calendar of every upcoming sitting.
+Every run replaces the file; there is no incremental mode. An empty parse of the
+rules or the calendars is treated as a failure rather than written, because it
+means a page's markup has changed shape — and a file written from it would empty
+the calendar of every upcoming sitting. The notices are guarded a little
+differently: zero of them is ordinary in a quiet December, so the failure is zero
+notices **and** nothing unrecognised, which means the parse found no entries at
+all.
 
 See
 [calendar-page.md](./calendar-page.md#sittings-the-city-has-said-it-will-hold)
-for what the calendar does with it, and in particular why both are projected
-forward only.
+for what the calendar does with it — in particular why all three are projected
+forward only, and why a posted notice caps the rule.

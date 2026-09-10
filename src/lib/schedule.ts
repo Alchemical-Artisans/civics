@@ -1,7 +1,16 @@
 /**
  * What the city publishes about when its boards sit, turned into dates.
  *
- * Two boards say so, and they say it differently.
+ * Three kinds of statement, and they are not equally good.
+ *
+ * **The city posts a notice before each sitting.** Its events calendar is
+ * where the Open Meeting Law postings go: this body, this day, this hour, and
+ * often the room. That is the strongest evidence there is short of an agenda
+ * -- it is about the sitting itself rather than about a pattern the sitting
+ * falls under -- and it is the only thing the site has for most of the city's
+ * boards, since the document listing covers five and the notices cover around
+ * fifty. So a notice wins wherever one exists, and it caps the Council's rule:
+ * see `expectedSittings`.
  *
  * **Three boards publish their dates.** The License Commission's page carries a
  * table headed "CALENDAR OF MEETINGS FOR 2026" listing all twelve; the
@@ -51,6 +60,26 @@ export interface MeetingRule {
   source: string
   intro: string
   exceptions: string[]
+}
+
+/**
+ * One posted notice, exactly as `update-schedule.mjs` read it off the city's
+ * events calendar.
+ *
+ * `board` is the name `scripts/lib/notices.mjs` filed the notice under, which
+ * is `meetings.json`'s spelling wherever the board is already there -- that is
+ * what lets a notice merge with the agenda the city later publishes for the
+ * same day rather than sit beside it.
+ */
+export interface MeetingNotice {
+  board: string
+  date: string
+  /** The notice's own title, as posted. Quoted on the meeting page. */
+  title: string
+  /** The notice's page on the events calendar. */
+  url: string
+  /** The hour it states, e.g. `7:00 PM`. Absent on an all-day posting. */
+  time?: string
 }
 
 /** A board's own printed list of dates, exactly as scraped. */
@@ -191,6 +220,23 @@ export function meetingRules(): MeetingRule[] {
   return raw.rules as MeetingRule[]
 }
 
+/**
+ * The events calendar itself: what the city calls it, and where it is.
+ *
+ * The footer lists it once however many boards its notices account for, so
+ * unlike a printed calendar -- which is one board's own page -- this is one
+ * page for all of them, and is recorded by the scrape rather than rebuilt out
+ * of a notice's URL.
+ */
+export function noticeCalendar(): { name: string; url: string } | null {
+  return raw.noticeCalendar ?? null
+}
+
+/** The posted notices as scraped, oldest first. */
+export function meetingNotices(): MeetingNotice[] {
+  return (raw.notices ?? []) as MeetingNotice[]
+}
+
 /** The printed calendars as scraped, oldest year first. */
 export function meetingCalendars(): MeetingCalendar[] {
   return raw.calendars as MeetingCalendar[]
@@ -199,10 +245,28 @@ export function meetingCalendars(): MeetingCalendar[] {
 /**
  * Every sitting a board has said it will hold, from `today` onwards.
  *
- * A printed calendar contributes the dates it prints; the Council's rule
- * contributes the Tuesdays it names in the year `today` falls in, which is as
- * far as a projection is worth carrying. Both are cut at `today`: nothing here
- * ever speaks about a day that has already happened.
+ * A posted notice contributes the day it names; a printed calendar the dates
+ * it prints; the Council's rule the Tuesdays it names in the year `today`
+ * falls in, which is as far as a projection is worth carrying. All three are
+ * cut at `today`: nothing here ever speaks about a day that has already
+ * happened.
+ *
+ * **A notice beats a rule outright, and silences it while it lasts.** The
+ * Council's rule says every Tuesday; the Council actually skips roughly one a
+ * month, and the notices are the days it has posted. Left to run alongside
+ * them, the rule would put six sittings on the rest of 2026 that the Council
+ * has not called -- 13 October, three Tuesdays in November, two in December --
+ * each of them looking exactly like the ten it has. So for a board that has
+ * posted any notice, the rule is capped at the last posted date and picks up
+ * only beyond it, where the postings run out and a projection is again better
+ * than an empty calendar.
+ *
+ * That cap assumes the postings are complete as far as they go, which is true
+ * of the only board this touches: the Council posts its year as a recurring
+ * series, so the last notice is December's rather than next week's. A board
+ * that posted one date far ahead and nothing between would have its rule
+ * suppressed across the gap -- worth knowing if a second rule is ever read
+ * into dates, and `schedule.spec.ts` pins the behaviour either way.
  *
  * `today` is the build date -- the site is prerendered, so this is resolved
  * once when the calendar is built rather than in the reader's browser. A build
@@ -210,6 +274,29 @@ export function meetingCalendars(): MeetingCalendar[] {
  * every push rebuilds, so in practice the horizon moves with the deploy.
  */
 export function expectedSittings(today: string): ScheduledSitting[] {
+  const fromNotices = meetingNotices()
+    .filter((notice) => notice.date >= today)
+    .map((notice) => ({
+      board: notice.board,
+      date: notice.date,
+      // The hour the notice itself states. Absent on an all-day posting, which
+      // is what the events calendar records a legal notice as -- and an event
+      // with no time is an all-day one rather than one given an invented hour.
+      ...(notice.time ? { time: notice.time } : {}),
+      source: {
+        kind: "notice" as const,
+        url: notice.url,
+        title: notice.title,
+      },
+    }))
+
+  // The last day each board has posted a notice for. A rule is capped here.
+  const postedThrough = new Map<string, string>()
+  for (const notice of fromNotices) {
+    const last = postedThrough.get(notice.board)
+    if (!last || notice.date > last) postedThrough.set(notice.board, notice.date)
+  }
+
   const fromCalendars = meetingCalendars().flatMap((calendar) =>
     calendar.sittings
       .filter((sitting) => sitting.date >= today)
@@ -239,6 +326,10 @@ export function expectedSittings(today: string): ScheduledSitting[] {
     rule.board === RULE_AS_READ.board
       ? sittingsIn(year)
           .filter((date) => date >= today)
+          // Only past the last day this board has posted a notice for. Inside
+          // that range the city has said which days it sits, and the rule's
+          // guess at the same range would contradict it.
+          .filter((date) => date > (postedThrough.get(rule.board) ?? ""))
           .map((date) => ({
             board: rule.board,
             date,
@@ -255,11 +346,13 @@ export function expectedSittings(today: string): ScheduledSitting[] {
         [],
   )
 
-  // Printed dates first, so that a board publishing both a calendar and a rule
-  // has the calendar win in `withScheduled`, which keeps the first of any
-  // duplicate. Nothing does today, but the better evidence should be the one
-  // that survives if one ever does.
-  return [...fromCalendars, ...fromRules].sort(
+  // Best evidence first, so that a board saying the same thing twice has the
+  // better statement win in `withScheduled`, which keeps the first of any
+  // duplicate. A notice is about this sitting; a printed calendar is a year's
+  // intention stated in advance; a rule is a pattern the day falls under.
+  // Four boards publish both a notice and a calendar, and the notice is what
+  // the meeting page should quote.
+  return [...fromNotices, ...fromCalendars, ...fromRules].sort(
     (a, b) => a.date.localeCompare(b.date) || a.board.localeCompare(b.board),
   )
 }

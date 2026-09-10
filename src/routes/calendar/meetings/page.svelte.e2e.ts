@@ -16,7 +16,15 @@ const documented = new Set(
 )
 const expected = expectedSittings(easternDate())
   .filter((s) => !documented.has(`${s.board}::${s.date}`))
-  .map((s) => ({ id: meetingId(s.board, s.date), source: s.source, related: s.related }))
+  .map((s) => ({
+    id: meetingId(s.board, s.date),
+    source: s.source,
+    related: s.related,
+    // The hour the source stated, where it stated one. What decides whether
+    // the sitting is added to a reader's calendar as an event at a time or an
+    // all-day one -- see below.
+    time: s.time,
+  }))
 
 /**
  * The meetings somebody has written up: one route directory each, named for
@@ -133,10 +141,11 @@ test.describe("meeting pages", () => {
     test.skip(expected.length === 0, "no expected sittings left in the year")
 
     test("an expected sitting shows the evidence it rests on", async ({ page }) => {
-      // Both kinds, since they do not say the same thing: a board that prints
-      // its dates has stated this one, where a rule states a pattern the day
-      // falls under. One of each is on the calendar today.
-      for (const kind of ["calendar", "rule"] as const) {
+      // All three kinds, since they do not say the same thing: the city has
+      // posted a notice calling this sitting, a board that prints its dates
+      // has stated it in advance, a rule states a pattern the day falls under.
+      // One of each is on the calendar today.
+      for (const kind of ["notice", "calendar", "rule"] as const) {
         const sitting = expected.find((s) => s.source.kind === kind)
         if (!sitting) continue
         await page.goto(`/calendar/meetings/${sitting.id}`)
@@ -148,6 +157,10 @@ test.describe("meeting pages", () => {
           await expect(article).toContainText(sitting.source.intro)
           for (const clause of sitting.source.exceptions)
             await expect(article).toContainText(clause)
+        } else if (sitting.source.kind === "notice") {
+          // The notice's own title, which is where the city writes whether the
+          // sitting is a special meeting, an executive session or a reissue.
+          await expect(article).toContainText(sitting.source.title)
         } else {
           await expect(article).toContainText(sitting.source.heading)
           // The other dated columns of the sitting's own row, under the board's
@@ -174,8 +187,12 @@ test.describe("meeting pages", () => {
     test("an expected sitting can be added to a reader's own calendar", async ({ page }) => {
       // The point of showing a sitting before its agenda exists. A source that
       // states the hour pins the event to it; one that prints only dates gets
-      // an all-day event rather than an invented time.
-      for (const kind of ["calendar", "rule"] as const) {
+      // an all-day event rather than an invented time. Which of the two a
+      // sitting is depends on what its own source said, not on which kind of
+      // source it was: the Council's rule and the city's notices state an hour,
+      // the Conservation Commission's page states one, the License
+      // Commission's prints bare dates.
+      for (const kind of ["notice", "calendar", "rule"] as const) {
         const sitting = expected.find((s) => s.source.kind === kind)
         if (!sitting) continue
         await page.goto(`/calendar/meetings/${sitting.id}`)
@@ -184,14 +201,14 @@ test.describe("meeting pages", () => {
           .locator("header")
           .last()
           .getByText(/^[A-Z][a-z]+day, [A-Z][a-z]+ \d/)
-        await expect(when).toContainText(kind === "rule" ? "at 7:00 PM" : /\d{4}$/)
+        await expect(when).toContainText(sitting.time ? `at ${sitting.time}` : /\d{4}$/)
 
         await page.getByRole("button", { name: "Add to calendar" }).click()
         const href = new URL(
           (await page.getByRole("link", { name: /Google Calendar/ }).getAttribute("href"))!,
         )
         expect(href.searchParams.get("dates")).toMatch(
-          kind === "rule" ? /^\d{8}T\d{6}\/\d{8}T\d{6}$/ : /^\d{8}\/\d{8}$/,
+          sitting.time ? /^\d{8}T\d{6}\/\d{8}T\d{6}$/ : /^\d{8}\/\d{8}$/,
         )
       }
     })

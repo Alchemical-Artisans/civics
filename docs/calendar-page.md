@@ -36,9 +36,28 @@ would quietly emit fewer pages.
 
 ## Sittings the city has said it will hold
 
-**Neither board's schedule is a document.** Both are ordinary HTML on a page,
-which is why the calendar could not see either while it read only the listing —
-and the two say it in quite different ways.
+**None of this is a document.** All of it is ordinary HTML on a page, which is
+why the calendar could see none of it while it read only the listing — and the
+three kinds say it in quite different ways, one of them a good deal better than
+the other two.
+
+**The city posts a notice before each sitting.**
+[events.haverhillma.gov](https://events.haverhillma.gov) is where Haverhill
+files what the Open Meeting Law requires it to post: a body, a day, an hour, and
+often a room. It is not a document listing — there are no minutes on it and only
+a handful of entries carry an agenda PDF — so it feeds `schedule.json` rather
+than `meetings.json`.
+
+It is the strongest evidence short of an agenda, because it is about _this
+sitting_ rather than about a pattern the sitting falls under: a printed calendar
+is a year's intention stated in January, a rule is a standing habit, and a notice
+is the meeting being called. It is also the only source most of the city's boards
+have at all. The listing and its two archives cover five boards between them;
+the notices cover around fifty, including every one the site could previously say
+nothing whatever about — the School Committee and its subcommittees, the Housing
+Authority, the Retirement Board, the Library Trustees, the three historic
+district commissions, the Council's own standing committees, eleven schools'
+site councils.
 
 **Two boards print their dates**, and each prints them differently.
 
@@ -84,21 +103,25 @@ published is blank from today forward — which is precisely the part a reader
 wanting to attend one needs. It is the only part of this data that is not
 retrospective.
 
-`scripts/update-schedule.mjs` scrapes all three pages into
-[`schedule.json`](../src/lib/data/schedule.json) — `rules` and `calendars`, kept
-apart because they are different kinds of thing;
-[`schedule.ts`](../src/lib/schedule.ts) turns both into dates; `withScheduled()`
-in `calendar.ts` adds a `Meeting` with `documents: []` for every one no document
-covers. Board and date are the identity, exactly as for a document, so a date
-the city has since published an agenda for is an ordinary meeting and is left
-alone — and a document for a date no calendar or rule named, like those special
-meetings and postponements, is unaffected.
+`scripts/update-schedule.mjs` scrapes every one of these pages into
+[`schedule.json`](../src/lib/data/schedule.json) — `notices`, `rules` and
+`calendars`, kept apart because they are different kinds of thing;
+[`schedule.ts`](../src/lib/schedule.ts) turns all three into dates;
+`withScheduled()` in `calendar.ts` adds a `Meeting` with `documents: []` for
+every one no document covers. Board and date are the identity, exactly as for a
+document, so a date the city has since published an agenda for is an ordinary
+meeting and is left alone — and a document for a date nothing named, like those
+special meetings and postponements, is unaffected.
 
-A `ScheduledSitting` carries its evidence as a discriminated `source`, `calendar`
-or `rule`, and the meeting page shows the two differently: a board that prints
-its dates has stated _this_ one, where a rule states a pattern the day falls
-under. Flattening that into one sentence would overstate the Council or
-understate the Commission.
+A `ScheduledSitting` carries its evidence as a discriminated `source`, `notice`,
+`calendar` or `rule`, and the meeting page shows the three differently: the city
+has posted a notice calling _this_ sitting, a board that prints its dates has
+stated it in advance, a rule states a pattern the day falls under. Flattening
+that into one sentence would overstate the Council or understate the notice.
+Where two of them name the same day, the notice wins — it is the later and more
+specific word, and its own title is what the meeting page quotes, because that
+is where the city writes whether the sitting is a special meeting, an executive
+session or a reissue.
 
 ### Forward only, and why
 
@@ -125,6 +148,32 @@ That is also why these entries are called **expected** rather than scheduled.
 The city has announced nothing about a particular Tuesday. The Council has said
 which Tuesdays it means to sit on, and this is that statement applied to a date.
 
+A notice is the exception that proves it. The city _has_ announced that day, so
+a notice-backed entry is expected only in the sense that the sitting has not
+happened yet.
+
+### The rule stops where the notices start
+
+Once the notices arrived, the rule and the city's own postings could contradict
+each other on the same calendar, and the rule would lose every time. On 10
+September 2026 the Council had posted ten sittings for the rest of the year — 15,
+22 and 29 September, 6, 20 and 27 October, 17 November, 1, 8 and 15 December —
+and the rule names six Tuesdays inside that range that the Council is not
+holding: 13 October, 3, 10 and 24 November, 22 and 29 December. Drawn beside the
+posted ones, each would look exactly like a sitting a reader could turn up to.
+
+So **for a board that has posted any notice, the rule is capped at the last
+posted date** and picks up only beyond it, where the postings run out and a
+projection is again better than an empty calendar. On that day the rule
+contributed two sittings instead of fourteen.
+
+The cap assumes the postings are complete as far as they go, which is true of
+the only board it touches: the Council posts its year as one recurring series,
+so the last notice is December's rather than next week's. A board that posted one
+date far ahead and nothing in between would have its rule suppressed across the
+gap. Worth knowing if a second rule is ever read into dates;
+`schedule.spec.ts` pins the behaviour either way.
+
 ### Adding a board
 
 A board that prints its dates is one entry in `CALENDAR_PAGES` in
@@ -143,6 +192,51 @@ guessing would put filing deadlines on the calendar as sittings.
 
 A board that prints a **rule** instead needs its wording read into dates by hand
 in `schedule.ts`, as the Council's was. There is no guessing at one.
+
+A board that only **posts notices** is one entry in `BODIES` in
+[`scripts/lib/notices.mjs`](../scripts/lib/notices.mjs): the board's name and a
+pattern that recognises it. That list is the decision, and **a person makes it**
+— see below.
+
+### Which notices are Haverhill's is a judgement, not a rule
+
+Nothing the events calendar publishes says whether an entry is a city board, a
+regional authority that happens to meet here, or a utility hearing. A notice
+carries a title, a date, an hour and a category, and the category vocabulary is
+two words deep: `Meetings` and `Events`. The city's own
+[roster of boards and commissions](https://www.haverhillma.gov/government/boards-committees-and-commissions/)
+does not settle it either — it names thirteen bodies and omits the Board of
+Assessors, the Board of Health, the Harbor Commission, the three historic
+district commissions, the Housing Authority, the Retirement Board and the Library
+Trustees, every one of which posts notices.
+
+So `BODIES` is not a rule the scrape derives. It is a list somebody wrote after
+reading eighteen months of postings, and **a title it does not recognise does not
+reach the calendar at all** — it is written to `.cache/unrecognised-notices.txt`
+instead, and the run says how many. Inclusion is opt-in, the way `CALENDAR_PAGES`
+is. Against the full eighteen months, the list recognises 77% of the `Meetings`
+entries; almost everything it declines is a National Grid rate hearing, the
+Merrimack Valley Planning Commission, MassHire, CREST, an election notice or a
+legal notice — none of which is Haverhill sitting.
+
+Two things follow from doing it this way. A city body nobody has filed yet is
+invisible until someone reads the report, which is the cost of not guessing. And
+the patterns have to name a body and nothing else: `policy subcommittee` alone
+matched CREST's policy subcommittee as well as the School Committee's, and a
+school's name alone would have claimed that school's building committee along
+with its site council. `notices.spec.mjs` pins both, and fails when one pattern
+starts claiming another body's notices.
+
+Bodies are also **named apart where they sit apart**. A sitting is identified by
+its board and its date, so folding the School Committee's negotiating
+subcommittee under "School Committee" would silently drop one of the two
+meetings they hold on the same evening most weeks. The same goes for the eleven
+schools' site councils, which are eleven bodies rather than one. Where a board is
+already in `meetings.json`, the notice must arrive under **that** spelling — which
+is why the Board of Health's notices are filed as `Health Department` and the
+water abatement board's as `Water Department`, those being the names the
+listing's own categories gave them. Otherwise the notice would sit beside the
+agenda the city later publishes for the same day rather than merging with it.
 
 ### Two clauses of the rule have to be read against the evidence
 

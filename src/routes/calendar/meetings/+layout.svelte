@@ -164,9 +164,10 @@
         <!-- What the city published saying this sitting would be held takes the
              place of the documents when there are none: it is the only thing
              bearing on the day at all, so it belongs in the row the agenda
-             would occupy, linked to the page it is printed on. The board's own
-             heading for its list of dates where it prints one; otherwise the
-             rule, named for what it is. -->
+             would occupy, linked to the page it is printed on. The city's own
+             notice where it has posted one, named as the city titled it; else
+             the board's own heading for its list of dates; else the rule,
+             named for what it is. -->
         {#if expected}
           <li class="flex flex-wrap items-center gap-2">
             <span
@@ -180,9 +181,11 @@
               target="_blank"
               rel="external noopener noreferrer"
             >
-              {expected.source.kind === "calendar"
-                ? expected.source.heading
-                : `The ${meeting.board}'s meeting rule`}<span class="sr-only">
+              {expected.source.kind === "notice"
+                ? expected.source.title
+                : expected.source.kind === "calendar"
+                  ? expected.source.heading
+                  : `The ${meeting.board}'s meeting rule`}<span class="sr-only">
                 , opens the city's page in a new tab</span
               >
             </a>

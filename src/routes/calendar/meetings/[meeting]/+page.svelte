@@ -23,12 +23,25 @@
        what it said is the whole content of the page -- it is the evidence, and
        it is the city's own wording, so it is quoted rather than paraphrased.
 
-       Which evidence it is matters. A board that prints its dates has stated
-       this one; a board that prints a rule has stated a pattern this day falls
-       under, which is a good deal weaker -- so the two do not say the same
+       Which evidence it is matters. The city has posted a notice calling
+       this sitting; a board that prints its dates has stated this one in
+       advance; a board that prints a rule has stated a pattern this day falls
+       under, which is a good deal weaker -- so the three do not say the same
        thing here. -->
   {@const source = data.meeting.scheduled.source}
-  {#if source.kind === "calendar"}
+  {#if source.kind === "notice"}
+    <!-- The strongest of the three, and the only one about this sitting rather
+         than about a pattern it falls under: the city has posted the meeting.
+         The notice's own title is quoted because the city writes the sitting's
+         character into it -- "Special Meeting", "Executive Session", "Revised"
+         -- and none of that is anywhere else in the data. -->
+    <p>
+      The city has published no agenda for this sitting yet. It is on the calendar because the city
+      has posted a notice of it, as
+      <a href={source.url} target="_blank" rel="external noopener noreferrer">{source.title}</a>.
+    </p>
+    <p>An agenda is usually published a few days beforehand. Check again nearer the day.</p>
+  {:else if source.kind === "calendar"}
     <p>
       The city has published no agenda for this sitting yet. It is on the calendar because the
       {data.meeting.board}'s own

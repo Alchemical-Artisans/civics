@@ -124,6 +124,41 @@ build-time load. `src/lib/meetings.ts` turns `meetings.json` into what the site
 shows: it drops undated records, collapses PDFs published under two media pages,
 trims to the fields the UI needs, and groups the documents into meetings.
 
+**The city posts a notice before every sitting, and that is the best evidence
+there is short of an agenda.** `events.haverhillma.gov` is where Haverhill files
+its Open Meeting Law postings -- body, day, hour, often a room -- and it is the
+only source most of the city's boards have: the listing and its archives cover
+five boards, the notices cover around fifty, including the School Committee and
+its subcommittees, the Housing Authority, the Retirement Board, the Library
+Trustees, three historic district commissions, the Council's own standing
+committees and eleven schools' site councils. `scripts/lib/notices.mjs` reads
+one plain `GET` per month from this month to the end of the year -- no session,
+no token handshake, but the origin is behind Azure Front Door and answers a
+request with no browser `User-Agent` with a **502**, so `USER_AGENT` is not
+optional. **Nothing in a notice says whether the body is Haverhill's**: a notice
+carries a title, a date, an hour and a category, the category vocabulary is
+`Meetings` and `Events`, and the city's own roster of boards names thirteen
+bodies while omitting the Board of Assessors, the Board of Health, the Harbor
+Commission and half a dozen more that post here. So `BODIES` is a hand-kept list
+a person wrote after reading eighteen months of postings, **a title it does not
+recognise never reaches the calendar**, and the run writes those to
+`.cache/unrecognised-notices.txt` -- inclusion opt-in, the way `CALENDAR_PAGES`
+is. It recognises 77% of `Meetings` entries; what it declines is National Grid
+hearings, MVPC, MassHire, CREST, election and legal notices. Patterns must name
+a body and nothing else (`policy subcommittee` alone caught CREST's as well as
+the School Committee's), and bodies are **named apart where they sit apart** --
+a sitting is board-and-date, so folding the School Committee's negotiating
+subcommittee into "School Committee" would drop one of the two meetings they
+hold on the same evening most weeks. Where a board is already in
+`meetings.json`, the notice arrives under **that** spelling, which is why the
+Board of Health's notices are `Health Department` and the water abatement
+board's are `Water Department`. A title saying the sitting is off (`CANCELED-`,
+`POSTPONED`) is dropped and recorded in `cancelled`; "Revised" means the notice
+was reissued and the sitting stands. **A notice caps the rule.** The Council's
+rule names six Tuesdays the Council is not holding inside the range it has
+posted, so for a board with any notice the rule resumes only past the last
+posted date -- two projected sittings today where there were fourteen.
+
 **No board's meeting schedule is a document.** Both are ordinary HTML on a page,
 which is why the calendar could not see either while it read only the listing --
 the scraper already fetched one of those very pages for its antiforgery token
@@ -149,17 +184,19 @@ postponements. **The City Council prints a rule** above the document table:
 every Tuesday at 7:00 PM, with exceptions for June, the summer, and the return
 to weekly meetings in September -- which has to be read into dates.
 `scripts/update-schedule.mjs` (`npm run schedule:update`, and a step of
-`metadata:update`) scrapes both; `src/lib/schedule.ts` turns both into dates;
-`withScheduled()` in `calendar.ts` adds a `Meeting` with `documents: []` for
+`metadata:update`) scrapes all of them; `src/lib/schedule.ts` turns them into
+dates; `withScheduled()` in `calendar.ts` adds a `Meeting` with `documents: []` for
 each one no document covers, on the same board-and-date identity, so a date the
 city has since published an agenda for is an ordinary meeting. This is what
 shows a sitting **before** an agenda exists -- the only part of the site's data
 that is not retrospective. A `ScheduledSitting` carries its evidence as a
-discriminated `source`, `calendar` or `rule`, and the meeting page shows the two
-differently: a board that prints its dates has stated _this_ one, where a rule
-states a pattern the day falls under. An hour the source states pins the "add to
-calendar" event; the Commission prints only dates, so those are all-day rather
-than given an invented time. To add another board that prints its dates, add it
+discriminated `source`, `notice`, `calendar` or `rule`, and the meeting page
+shows the three differently: the city has posted a notice calling _this_
+sitting, a board that prints its dates has stated it in advance, a rule states a
+pattern the day falls under. Where two name the same day the notice wins, being
+the later and more specific word, and the page quotes its own title. An hour the
+source states pins the "add to calendar" event; the Commission prints only
+dates, so those are all-day rather than given an invented time. To add another board that prints its dates, add it
 to `CALENDAR_PAGES` in `scripts/lib/schedule.mjs` -- URL, a `heading` pattern
 capturing the year, and a `column` where the table holds more than sittings;
 naming a column that is not there yields nothing rather than a guess. One that
@@ -226,13 +263,16 @@ wall of small type around the one thing at the foot of the page worth reading.
 `scripts/` counts every one of them on every run and `printAttention` says so to
 whoever can act on it, which is where that disclosure belongs; `Calendar` in
 `meetings.ts` no longer carries any of them. What is left is
-`Sources`: the ten pages the calendar actually comes from, in two groups --
+`Sources`: the eleven pages the calendar actually comes from, in two groups --
 documents (the agendas-and-minutes listing, its Agenda Archive and Minutes
 Archive, the Planning Board's and the Zoning Board of Appeals' own pages) and
-meeting schedules (the four boards that publish one, two of them PDFs on the
-city's CDN). Derived in `src/lib/meetings.ts` from the distinct `source` on the
-records and the `source` on each rule and printed calendar, so a scrape reading
-a new page lists it without anyone remembering to; `PAGE_NAMES` there gives the
+meeting schedules (the city's events calendar, then the four boards that publish
+one, two of them PDFs on the city's CDN). Derived in `src/lib/meetings.ts` from
+the distinct `source` on the records and the `source` on each rule and printed
+calendar, so a scrape reading a new page lists it without anyone remembering to.
+The events calendar is the one entry named for itself rather than for a board:
+it is one page for all thirteen boards whose notices it currently accounts for,
+where the others are one board's own page each, so it is listed once and first; `PAGE_NAMES` there gives the
 city's own name for a page, keyed on the last path segment so a page that moves
 keeps its name, with a slug-derived fallback. Documents are ordered by URL,
 which puts the listing first with its archives under it and the board pages

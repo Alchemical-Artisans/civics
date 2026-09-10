@@ -90,10 +90,12 @@ scripts/
   lib/budget.spec.mjs      unit tests for that parser
   lib/schedule.mjs         what the city prints about when its boards sit
   lib/schedule.spec.mjs    unit tests for those parsers
+  lib/notices.mjs          the meeting notices the city posts to its events calendar
+  lib/notices.spec.mjs     unit tests for that parser, and for the list of bodies
   rebuild-calendar.mjs     full re-scrape
   update-calendar.mjs      incremental refresh
   update-budget.mjs        re-scrape the budget and audit listing
-  update-schedule.mjs      re-read those rules and calendars off their pages
+  update-schedule.mjs      re-read the notices, rules and calendars off their pages
   lib/board-pages.mjs      agendas and minutes kept on a board's own page
   lib/board-pages.spec.mjs unit tests for that parser
   lib/cache.mjs            local copies of the city's files, for checking by hand
@@ -116,7 +118,7 @@ src/lib/
   calendar.ts              pure date/grouping helpers used by the page
   calendar.spec.ts         unit tests for those helpers
   meetings.ts              meetings.json plus the expected sittings, as shown
-  schedule.ts              those rules and calendars, read into future dates
+  schedule.ts              those notices, rules and calendars, read into future dates
   schedule.spec.ts         unit tests for it, and the pin on the rule's wording
   router.ts                every internal URL the site builds, in one place
   router.spec.ts           unit tests for it
@@ -125,7 +127,7 @@ src/lib/
   data/meetings.json       the committed meeting dataset
   data/budget.json         the committed budget and audit listing
   data/reviews.json        human corrections, overlaid onto the meetings
-  data/schedule.json       the meeting rules and calendars the city publishes
+  data/schedule.json       the notices, rules and calendars the city publishes
 
 src/routes/
   +page.svelte             `/`, the landing page: a card to each half

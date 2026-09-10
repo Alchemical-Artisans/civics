@@ -29,7 +29,7 @@ npm run boards:update      # re-scrape the board pages and the city's two archiv
 npm run cache -- --review  # download the flagged documents so a date can be checked
 npm run links:check        # HEAD every linked file; find the ones the city has broken
 npm run budget:update      # re-scrape the budget and audit listing
-npm run schedule:update    # re-read the boards' meeting rules and calendars
+npm run schedule:update    # re-read the notices, rules and calendars
 ```
 
 Worth running alone while working on one of them, or when only one half needs
@@ -67,6 +67,37 @@ Any half coming back empty is a hard failure rather than a written file: it
 means a page's markup moved, and a file written from it would empty the calendar
 of every upcoming sitting. `planning-board:update` fails the same way and for
 the same reason.
+
+**`schedule:update` ends with the notices it could not place.** The city's
+events calendar carries every board that posts a meeting notice — and also
+National Grid rate hearings, the regional planning commission, MassHire, CREST,
+election notices and legal notices, none of which is Haverhill sitting. Nothing
+in a notice says which it is, so a hand-kept list in
+[`scripts/lib/notices.mjs`](../scripts/lib/notices.mjs) decides, and **a title
+it does not recognise never reaches the calendar**. The run prints how many and
+writes the lot to `.cache/unrecognised-notices.txt`:
+
+```
+──────────────────────────────────────────────────────────────────────────
+  5 notice(s) under 5 title(s) matched no body.
+  Most will be utility hearings, regional authorities and legal notices,
+  which belong nowhere on this site. Any that is a city board wants a line
+  in BODIES in scripts/lib/notices.mjs, or its sittings never reach the
+  calendar at all.
+
+      1x  State Primary Election Day
+      1x  NEMMC District Board of Commissioner's Meeting
+      1x  Merrimack Valley Workforce Board - MASSHIRE -Special Meeting
+      1x  CREST - Collaborative for Regional Educational Services & Trai
+      1x  Merrimack Valley Planning Commission Monthly Hybrid Meeting
+    .cache/unrecognised-notices.txt
+──────────────────────────────────────────────────────────────────────────
+```
+
+**This is a list to skim, not to work through.** Most runs have nothing in it
+worth acting on. But it is the only way a newly-posting city board becomes
+visible, so it is worth a glance — and adding one is a single line. See
+[calendar-page.md](./calendar-page.md#which-notices-are-haverhills-is-a-judgement-not-a-rule).
 
 **Reading a schedule PDF needs poppler.** The Planning Board's dates are inside
 a PDF rather than on its page, so `schedule:update` shells out to `pdftotext`.
