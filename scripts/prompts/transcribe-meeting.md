@@ -201,7 +201,26 @@ about the Common Victualler amendment and one following "9.1" about the alcohol
 change, and say in the item's `+page.ts` comment which agenda items it stands
 for.
 
-Worked examples, in increasing order of complexity:
+**A bucket line's own sub-items share one page too, even when each is a
+different matter.** "11.1 Confirming Appointments" is not itself a matter —
+it is a category heading with two unrelated appointments listed under it,
+"11.1.1" and "11.1.2", each naming a different person and commission. These
+do not each get their own page: write one page for the bucket
+(`confirming-appointments`, titled "Confirming Appointments" after the
+heading, the same rule as an ordinary title), with both appointments'
+paragraphs and every excerpt on it. Excerpts that were two separate people's
+mayor's letters and resumes move under the one item slug too, told apart by
+filename (`mary-grise-resume.pdf`, `wendy-sczechowicz-resume.pdf`) rather
+than by directory. On the outline, each sub-item keeps its own numbered
+entry and its own short link text — a reader following "11.1.1" should
+still land on Mary Grise's paragraph rather than Wendy Sczechowicz's — but
+both entries' links point at the same slug. `tag-days` and
+`event-applications` on this same meeting are the same pattern one level
+up: a whole bucket ("12.6 Tag Days", "12.4 Amusement/Event Application")
+rather than a numbered sub-item, several unrelated applicants listed under
+it, one page for all of them.
+
+**Two agenda lines can be the same matter.** The License Commission's own
 `src/routes/calendar/meetings/planning-board-2026-09-09/` (four items, no
 packet), `city-council-2026-08-25/` (twenty items, each with pages cut out of
 the packet behind it), and `license-commission-2026-09-14/99-restaurant-hours`

@@ -119,15 +119,11 @@
     <ul>
       <li>
         <strong>11.1.1</strong>
-        <a href={Router.meetingItem(MEETING, "mary-grise-historic-shoe-district")}>
-          Washington Street Historic Shoe District Commission, Mary Grise
-        </a>
+        <a href={Router.meetingItem(MEETING, "confirming-appointments")}> Mary Grise </a>
       </li>
       <li>
         <strong>11.1.2</strong>
-        <a href={Router.meetingItem(MEETING, "wendy-sczechowicz-historical-commission")}>
-          Haverhill Historical Commission, Wendy Sczechowicz
-        </a>
+        <a href={Router.meetingItem(MEETING, "confirming-appointments")}> Wendy Sczechowicz </a>
       </li>
     </ul>
   </li>
