@@ -17,10 +17,7 @@
 <ul>
   <li>
     <strong>5.1</strong>
-    <a href={Router.meetingItem(MEETING, "drought-emergency-update")}>
-      Mayor Barrett wishes to introduce Robert Ward, Director of Water/ Wastewater to provide an
-      update on the Drought Emergency
-    </a>
+    <a href={Router.meetingItem(MEETING, "drought-emergency-update")}> Drought Emergency Update </a>
   </li>
 </ul>
 
@@ -30,17 +27,13 @@
   <li>
     <strong>6.1</strong>
     <a href={Router.meetingItem(MEETING, "haverhill-exchange-club-big-e-award")}>
-      Councilors Lewandowski, LePage, Toohey, and Basiliere wish to recognize President Craig
-      Bourgeois and Immediate Past President Suzanne Gates of the <em>Haverhill Exchange Club</em> for
-      being honored with the prestigious &ldquo;Big E Award&rdquo;, the Exchange Club&rsquo;s highest
-      national honor earned by very strict service, education, and auditing criteria
+      Haverhill Exchange Club, Big E Award
     </a>
   </li>
   <li>
     <strong>6.2</strong>
     <a href={Router.meetingItem(MEETING, "haverhill-community-playground-update")}>
-      President Jordan and Councilors LePage and Ferreira request to introduce members of the
-      <em>Haverhill Community Playground</em> to provide an update on the progress and status of the project
+      Haverhill Community Playground Update
     </a>
   </li>
 </ul>
@@ -53,40 +46,33 @@
   <li>
     <strong>8.1</strong>
     <a href={Router.meetingItem(MEETING, "fy2027-tax-classification-hearing")}>
-      Chris Loughnane, <em>City Assessor</em>, announces FY2027 Tax Classification hearing for
-      November 17, 2026
+      FY2027 Tax Classification Hearing
     </a>
   </li>
   <li>
     <strong>8.2</strong>
     <a href={Router.meetingItem(MEETING, "monthly-abatement-report")}>
-      Chris Loughnane, <em>City Assessor</em>, submits monthly abatement report for the month of
-      August
+      Monthly Abatement Report, August
     </a>
   </li>
   <li>
     <strong>8.3</strong>
     <a href={Router.meetingItem(MEETING, "road-opening-628-main-st")}>
-      EROM-26-20 - Lisa DeMeo, <em>City Engineer</em>, requests approval to open the roadway to
-      allow for a gas leak repair at 628 Main St, which requires National Grid to excavate in the
-      right of way
+      Road Opening, 628 Main St, EROM-26-20
     </a>
   </li>
   <li><strong>8.3.1</strong> Order- Approve request to excavate at 628 Main St</li>
   <li>
     <strong>8.4</strong>
     <a href={Router.meetingItem(MEETING, "road-opening-1-macon-ave")}>
-      EROM-26-21 - Lisa DeMeo, <em>City Engineer,</em> requests approval to open the roadway to allow
-      for a gas leak repair at 1 Macon Ave, which requires National Grid to excavate in the right of way
+      Road Opening, 1 Macon Ave, EROM-26-21
     </a>
   </li>
   <li><strong>8.4.1</strong> Order- Approve request to excavate at 1 Macon Ave</li>
   <li>
     <strong>8.5</strong>
     <a href={Router.meetingItem(MEETING, "road-opening-36-arlington-st")}>
-      EROM-26-22 - Lisa DeMeo, <em>City Engineer</em>, requests approval to open the roadway to
-      allow for a gas cut off at the main due to exposed plastic at 36 Arlington St, which requires
-      National Grid to excavate in the right of way
+      Road Opening, 36 Arlington St, EROM-26-22
     </a>
   </li>
   <li><strong>8.5.1</strong> Order- Approve request to excavate at 36 Arlington St</li>
@@ -98,8 +84,7 @@
   <li>
     <strong>9.1</strong>
     <a href={Router.meetingItem(MEETING, "joint-pole-emerson-st")}>
-      Doc 7-J - Petition from National Grid and Verizon, requesting a joint pole location for
-      Emerson St WR#31224561
+      Joint Pole Location, Emerson St
     </a>
   </li>
 </ul>
@@ -110,11 +95,7 @@
   <li>
     <strong>10.1</strong>
     <a href={Router.meetingItem(MEETING, "marshland-st-special-permit")}>
-      Doc 21-J- CCSP-26-7 &ndash;Matt Silva for Sterling Commonwealth Builders requests approval to
-      demolish existing single-family residence and construct three (3) attached townhouse
-      condominium units on a single parcel at 27 Marshland St in the RH (Residential High) Zone.
-      Each unit is proposed to contain three (3) bedrooms, 2 and one-half bathrooms, and an attached
-      two-car garage
+      Special Permit, 27 Marshland St
     </a>
     <p>
       <em
@@ -125,10 +106,7 @@
   <li>
     <strong>10.2</strong>
     <a href={Router.meetingItem(MEETING, "merrimack-st-special-permit")}>
-      Doc 21-A - CCSP-26-1; Jony Perez of Davinci Mini Apartments, LLC and Davinci Child Center, LLC
-      requesting to convert a currently unoccupied building to a daycare program on first floor
-      (allowed by right in Zoning Code) and 12 apartments units (six two-bedrooms and six
-      one-bedrooms) on the top three floors at 121 Merrimack St in the Waterfront (WD-C) District
+      Special Permit, 121 Merrimack St
     </a>
     <p>
       <em
@@ -140,16 +118,7 @@
   <li>
     <strong>10.3</strong>
     <a href={Router.meetingItem(MEETING, "battery-energy-storage-systems-ordinance")}>
-      Doc 21-B - Planning Director, Jacki Byerley, requests a hearing for the following Zoning
-      Amendment &ndash; Battery Energy Storage Systems Ordinance: re: Amend Chapter 255 Zoning
-      Ordinance and Zoning Map &ndash; Battery Energy Storage Systems Overlay District (BESS)&ndash;
-      by inserting a new section 7.9 Battery Energy Storage Systems, amending section 3.1.3 Table of
-      Use and Parking regulations by allowing a Tier 1, Tier 2 and Tier 3 BESS and amending the
-      Zoning Map to include the BESS Overlay District. The overlay district will be creating
-      regulations for the installation and use of free-standing battery energy storage systems
-      (&ldquo;BESS&rdquo;), adding to the table the overlay district with the allowed Tiers and
-      updating the zoning map to include the BESS Overlay District, or take any other action related
-      to
+      Battery Energy Storage Systems Ordinance
     </a>
     <p class="text-right"><strong>Continued from August 25, 2026</strong></p>
   </li>
@@ -164,15 +133,13 @@
       <li>
         <strong>11.1.1</strong>
         <a href={Router.meetingItem(MEETING, "mary-grise-historic-shoe-district")}>
-          <em>Washington Street Historic Shoe District Commission,</em> Mary Grise, 18 Essex Street, expires
-          September 30, 2028
+          Washington Street Historic Shoe District Commission, Mary Grise
         </a>
       </li>
       <li>
         <strong>11.1.2</strong>
         <a href={Router.meetingItem(MEETING, "wendy-sczechowicz-historical-commission")}>
-          <em>Haverhill Historical Commission,</em> Wendy Sczechowicz, 40 Locke Street, expires September
-          30, 2029
+          Haverhill Historical Commission, Wendy Sczechowicz
         </a>
       </li>
     </ul>
@@ -186,8 +153,7 @@
   <li>
     <strong>12.1</strong>
     <a href={Router.meetingItem(MEETING, "chapter-255-zoning-amendments")}>
-      Jacki Byerley, <em>Planning Director</em>, submits proposed amendments to Chapter 255, Zoning,
-      for review and consideration
+      Proposed Amendments to Chapter 255, Zoning
     </a>
     <p><em>Related communication from Jacki Byerley, Planning Director</em></p>
     <p class="text-right"><strong>Hearing for October 27, 2026</strong></p>
@@ -304,8 +270,7 @@
   <li>
     <strong>14.1</strong>
     <a href={Router.meetingItem(MEETING, "parking-ordinance-12-blaisdell-st")}>
-      Ordinance re: Vehicles and Traffic; Amend Ch 24; be further amended by <strong>ADDING</strong> the
-      following to &sect; 240-85 Schedule B: Parking Restrictions and Prohibitions:
+      12 Blaisdell St &ndash; No Parking Ordinance
     </a>
     <table>
       <thead>
@@ -328,8 +293,7 @@
   <li>
     <strong>14.2</strong>
     <a href={Router.meetingItem(MEETING, "parking-ordinance-16-forest-ave")}>
-      Ordinance re: Vehicles and Traffic; Amend Ch 24; be further amended by <strong>ADDING</strong> the
-      following to &sect; 240-85 Schedule B: Parking Restrictions and Prohibitions:
+      16 Forest Ave &ndash; No Parking Ordinance
     </a>
     <table>
       <thead>
@@ -352,9 +316,7 @@
   <li>
     <strong>14.3</strong>
     <a href={Router.meetingItem(MEETING, "parking-ordinance-9-varnum-st")}>
-      Ordinance re: Vehicles and Traffic; Amend Ch 24; be further amended by <strong
-        >DELETING</strong
-      > the following to &sect; 240-85 Schedule B: Parking Restrictions and Prohibitions:
+      9 Varnum St &ndash; No Parking Ordinance (Deletion)
     </a>
     <table>
       <thead>
@@ -382,8 +344,7 @@
   <li>
     <strong>15.1</strong>
     <a href={Router.meetingItem(MEETING, "planning-development-committee-summary")}>
-      Vice President Michitson submits the summary of minutes and recommendations of the Planning
-      and Development Committee held on August 24, 2026 for acceptance and approval
+      Planning and Development Committee Summary
     </a>
   </li>
 </ul>
@@ -394,8 +355,7 @@
   <li>
     <strong>16.1</strong>
     <a href={Router.meetingItem(MEETING, "south-mill-street-loan-order")}>
-      Doc 32-N- Mayor Barrett submits a loan order appropriating $26,190,000.000 for the engineering
-      and construction of improvements to the South Mill Street Pumping Station and Force Main
+      Loan Order &ndash; South Mill Street Pumping Station and Force Main Improvements
     </a>
     <ul>
       <li>
@@ -412,8 +372,7 @@
   <li>
     <strong>16.2</strong>
     <a href={Router.meetingItem(MEETING, "mohawk-trail-no-parking")}>
-      Doc 10-P- Ordinance re: Vehicles and Traffic; Amend Ch 24; be further amended by
-      <strong>ADDING</strong> the following to &sect; 240-85 Schedule B: Parking Restrictions and Prohibitions:
+      Mohawk Trail &ndash; No Parking Ordinance
     </a>
     <table>
       <thead>

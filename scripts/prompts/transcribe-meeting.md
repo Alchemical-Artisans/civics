@@ -128,19 +128,28 @@ bookmark straight to it:
   that item's text verbatim.
 - Beside it, `+page.ts` returning `{ item: { title } }`. The layout titles the
   page after the item and points the back-link at the agenda.
-- On the meeting page the item's text is **replaced by a link** to it, built
-  with `Router.meetingItem(MEETING, "<item slug>")` — never a path written out
-  by hand, and never SvelteKit's `resolve()`.
+- On the meeting page the item's full text is **replaced by a link** to it,
+  built with `Router.meetingItem(MEETING, "<item slug>")` — never a path
+  written out by hand, and never SvelteKit's `resolve()`.
 
-The title is the document's own name for the item — the phrase an agenda
-underlines or numbers — as printed. The slug is that title slugged: lowercase,
-everything outside `a-z0-9` collapsed to a single dash. Where the printed name
-says nothing about which land or which party ("Amend Chapter 255 Zoning
-Ordinance and Zoning Map" is what the Planning Board calls every such petition),
-name the directory for the matter instead and keep the printed title, and where
-the same matter is already written up under another board use that board's slug
-so a reader following one to the other gets the same word. Say why in the
-`+page.ts` comment.
+The title is the document's own name for the item where the agenda gives it
+one — the phrase an agenda underlines or numbers — as printed. Most agenda
+lines do not: a communication or a road-opening request is a full sentence
+("Mayor Barrett wishes to introduce Robert Ward, Director of Water/
+Wastewater to provide an update on the Drought Emergency") with no shorter
+name printed anywhere. There the title is a summary of a few words naming
+what the item is about — "Drought Emergency Update" — not a copy of the
+sentence. **The link text on the meeting page is always this title, never the
+full sentence.** A reader scanning the outline wants to know what an item is
+about, not to read the whole thing twice on the way to reading it once; the
+sentence itself stays, verbatim, only on the item's own page. The slug is the
+title slugged: lowercase, everything outside `a-z0-9` collapsed to a single
+dash. Where the printed name says nothing about which land or which party
+("Amend Chapter 255 Zoning Ordinance and Zoning Map" is what the Planning
+Board calls every such petition), name the directory for the matter instead
+and keep the printed title, and where the same matter is already written up
+under another board use that board's slug so a reader following one to the
+other gets the same word. Say why in the `+page.ts` comment.
 
 **What does not get a page:** a bare heading with nothing under it, a ceremonial
 line ("Opening Prayer", "Adjourn"), and a line that is only a date ("Approval of
