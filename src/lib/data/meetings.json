@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-09-11T16:31:13.286Z",
+  "generatedAt": "2026-09-11T19:00:13.431Z",
   "source": "https://www.haverhillma.gov/government/agendas-and-minutes/",
-  "count": 3085,
+  "count": 3086,
   "meetings": [
     {
       "title": "SEPAC - Special Education Parental Advisory Council Meeting",
@@ -110,6 +110,24 @@
       "needsReview": false,
       "source": "https://events.haverhillma.gov/",
       "docId": "2026-09-16-1830-haverhill-cultural-council-meeting-47fe76aa"
+    },
+    {
+      "title": "City Council Agenda - September 15, 2026",
+      "pageUrl": "/document-manager/media-pages/agenda-and-minutes/city-council-agenda-september-15-2026/",
+      "fileUrl": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/hi1pz5zc/comp-agenda-sept-15-2026.pdf",
+      "category": "City Council Agendas",
+      "description": "September 15, 2026",
+      "board": "City Council",
+      "kind": "agenda",
+      "date": "2026-09-15",
+      "dateSource": "meeting-date",
+      "rawMeetingDate": "09/15/2026 11:00 PM",
+      "dateAdjusted": false,
+      "dateConflict": false,
+      "filenameDate": "2026-09-15",
+      "needsReview": false,
+      "source": "https://www.haverhillma.gov/government/agendas-and-minutes/",
+      "docId": "city-council-agenda-september-15-2026-e69d1f6e"
     },
     {
       "title": "Natural Resources and Public Property Committee Meeting-REVISED",
