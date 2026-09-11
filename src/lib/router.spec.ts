@@ -7,9 +7,20 @@ import { Router } from "./router"
 describe("Router", () => {
   it("builds the site's routes", () => {
     expect(Router.home()).toBe("/")
-    expect(Router.calendar()).toBe("/calendar")
     expect(Router.demo()).toBe("/demo")
     expect(Router.demoPlaywright()).toBe("/demo/playwright")
+  })
+
+  it("builds a month of the calendar", () => {
+    expect(Router.calendarMonth("2026-08")).toBe("/calendar/2026/08")
+  })
+
+  it("resolves the bare calendar link to whatever month is current", () => {
+    // There is no bare `/calendar` page any more, the same as there is no bare
+    // `/budget` -- `now` is a parameter rather than the real clock so this does
+    // not need to mock a global, the same reason `easternDate` itself takes it.
+    expect(Router.calendar(new Date("2026-09-15T12:00:00Z"))).toBe("/calendar/2026/09")
+    expect(Router.calendar(new Date("2026-01-01T12:00:00Z"))).toBe("/calendar/2026/01")
   })
 
   it("builds a meeting page from a meeting id", () => {

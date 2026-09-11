@@ -14,7 +14,7 @@
  * every page but the one that populated it.
  */
 import { base } from "$app/paths"
-import { TIMEZONE } from "./calendar"
+import { TIMEZONE, easternDate } from "./calendar"
 
 /** Join the base path to a root-relative path, e.g. `/calendar`. */
 const path = (route: `/${string}`): string => `${base}${route}`
@@ -25,9 +25,27 @@ export class Router {
     return path("/")
   }
 
-  /** The month calendar of agendas and minutes. */
-  static calendar(): string {
-    return path("/calendar")
+  /**
+   * The month calendar of agendas and minutes, on whichever month is current.
+   *
+   * There is no bare `/calendar` page any more, the same way there is no bare
+   * `/budget` — a reader wants a month, not an index, and the one worth
+   * landing on by default is this one. `now` defaults to the real clock and
+   * exists only so a test can pin a date rather than mocking the global one,
+   * the same reason `easternDate` itself takes it.
+   */
+  static calendar(now: Date = new Date()): string {
+    return Router.calendarMonth(easternDate(now).slice(0, 7))
+  }
+
+  /**
+   * One month of the calendar. `key` is `monthKey`'s `YYYY-MM`, the format
+   * every date helper in `calendar.ts` already uses — split into the two path
+   * segments here rather than carried as a dash all the way through the app.
+   */
+  static calendarMonth(key: string): string {
+    const [year, month] = key.split("-")
+    return path(`/calendar/${year}/${month}`)
   }
 
   /**

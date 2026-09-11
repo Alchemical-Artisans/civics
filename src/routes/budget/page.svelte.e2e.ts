@@ -2,6 +2,10 @@ import { expect, test } from "@playwright/test"
 import { existsSync, readdirSync } from "node:fs"
 import { join } from "node:path"
 import { fileURLToPath } from "node:url"
+import { easternDate, monthKey } from "../../lib/calendar"
+
+/** The current month's own page -- there is no bare `/calendar` any more. */
+const CALENDAR = `/calendar/${monthKey(easternDate()).replace("-", "/")}`
 
 /**
  * The budget books somebody has written up, and the sections beneath the first
@@ -1512,7 +1516,7 @@ test.describe("budget pages", () => {
     }
 
     // Nowhere else. It is this book's own page 13, not the site's furniture.
-    await page.goto("/calendar")
+    await page.goto(CALENDAR)
     await expect(page.locator(".budget-timeline")).toHaveCount(0)
   })
 

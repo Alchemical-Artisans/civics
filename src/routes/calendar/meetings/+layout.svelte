@@ -3,7 +3,12 @@
   import Note from "$lib/Note.svelte"
   import AddToCalendar from "$lib/AddToCalendar.svelte"
   import { Router } from "$lib/router"
-  import { formatLongDate, type MeetingDetails, type MeetingDocument } from "$lib/calendar"
+  import {
+    formatLongDate,
+    monthKey,
+    type MeetingDetails,
+    type MeetingDocument,
+  } from "$lib/calendar"
 
   let { data, children } = $props()
 
@@ -76,7 +81,13 @@
         &larr; {meeting.board}, {formatLongDate(meeting.date)}
       </a>
     {:else}
-      <a class="text-sm text-slate-600 underline hover:text-slate-900" href={Router.calendar()}>
+      <!-- The meeting's own month, not whichever one is current: the calendar
+           is one page per month now, and a meeting from last spring has no
+           business sending a reader back to today's. -->
+      <a
+        class="text-sm text-slate-600 underline hover:text-slate-900"
+        href={Router.calendarMonth(monthKey(meeting.date))}
+      >
         &larr; Back to the calendar
       </a>
     {/if}

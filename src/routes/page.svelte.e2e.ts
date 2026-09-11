@@ -2,6 +2,10 @@ import { expect, test } from "@playwright/test"
 import { existsSync, readdirSync } from "node:fs"
 import { join } from "node:path"
 import { fileURLToPath } from "node:url"
+import { easternDate, monthKey } from "../lib/calendar"
+
+/** The current month's own page -- there is no bare `/calendar` any more. */
+const CALENDAR = `/calendar/${monthKey(easternDate()).replace("-", "/")}`
 
 /**
  * The most recent budget book written up: route directories under `budget/`
@@ -38,7 +42,7 @@ test.describe("the site root", () => {
     const main = page.getByRole("navigation", { name: "The two halves" })
     await expect(main.getByRole("link", { name: /Meeting calendar/ })).toHaveAttribute(
       "href",
-      /\/calendar$/,
+      new RegExp(`${CALENDAR}$`),
     )
     await expect(main.getByRole("link", { name: /Budget/ })).toHaveAttribute(
       "href",
@@ -52,7 +56,7 @@ test.describe("the site root", () => {
       .getByRole("navigation", { name: "The two halves" })
       .getByRole("link", { name: /Meeting calendar/ })
       .click()
-    await expect(page).toHaveURL("/calendar")
+    await expect(page).toHaveURL(CALENDAR)
   })
 
   test("draws the week the build ran in, a day to a row", async ({ page }) => {
@@ -105,7 +109,7 @@ test.describe("the site root", () => {
 
 test.describe("the site's attribution line", () => {
   test("is the last thing on a calendar page", async ({ page }) => {
-    await page.goto("/calendar")
+    await page.goto(CALENDAR)
     await expect(
       page.getByRole("contentinfo").getByText("Created by Alchemical Artisans"),
     ).toBeVisible()
@@ -135,7 +139,7 @@ test.describe("the site's attribution line", () => {
 
 test.describe("the site header", () => {
   test("carries the mark and both sections on every kind of page", async ({ page }) => {
-    for (const at of ["/", "/calendar", `/budget/${newest}`, `/budget/${newest}/${section}`]) {
+    for (const at of ["/", CALENDAR, `/budget/${newest}`, `/budget/${newest}/${section}`]) {
       await page.goto(at)
       const header = page.getByRole("banner")
       // Located as an element, not by role: the mark is decorative (`alt=""`)
@@ -151,7 +155,7 @@ test.describe("the site header", () => {
   test("the word Budget opens this year's book", async ({ page }) => {
     // The same destination `/` forwards to. It is a link and not the thing you
     // press to see the years, because a word that navigates cannot be both.
-    await page.goto("/calendar")
+    await page.goto(CALENDAR)
     await page.getByRole("banner").getByRole("link", { name: "Budget", exact: true }).click()
     await expect(page).toHaveURL(`/budget/${newest}`)
   })
@@ -159,7 +163,7 @@ test.describe("the site header", () => {
   test("hovering Budget lists every fiscal year the city publishes", async ({ page }) => {
     // Everything the deleted `/budget` page used to list, under the pointer
     // instead of behind a page of its own.
-    await page.goto("/calendar")
+    await page.goto(CALENDAR)
     const header = page.getByRole("banner")
     const years = header.locator("#budget-years")
 
@@ -174,7 +178,7 @@ test.describe("the site header", () => {
   })
 
   test("a year with no page here opens the city's own file", async ({ page }) => {
-    await page.goto("/calendar")
+    await page.goto(CALENDAR)
     const header = page.getByRole("banner")
     await header.getByRole("link", { name: "Budget", exact: true }).hover()
 
@@ -188,7 +192,7 @@ test.describe("the site header", () => {
   })
 
   test("picking a year opens its book, and the menu closes behind itself", async ({ page }) => {
-    await page.goto("/calendar")
+    await page.goto(CALENDAR)
     const header = page.getByRole("banner")
     await header.getByRole("link", { name: "Budget", exact: true }).hover()
     await header.getByRole("link", { name: `FY${newest.slice(2)}` }).click()
@@ -200,7 +204,7 @@ test.describe("the site header", () => {
   })
 
   test("closes the budget menu on Escape", async ({ page }) => {
-    await page.goto("/calendar")
+    await page.goto(CALENDAR)
     const header = page.getByRole("banner")
     const years = header.locator("#budget-years")
 
@@ -215,11 +219,11 @@ test.describe("the site header", () => {
   test("its calendar link opens the calendar", async ({ page }) => {
     await page.goto(`/budget/${newest}`)
     await page.getByRole("banner").getByRole("link", { name: "Calendar", exact: true }).click()
-    await expect(page).toHaveURL("/calendar")
+    await expect(page).toHaveURL(CALENDAR)
   })
 
   test("the mark goes to the front page", async ({ page }) => {
-    await page.goto("/calendar")
+    await page.goto(CALENDAR)
     await page.getByRole("link", { name: "Meetinghouse" }).click()
     await expect(page).toHaveURL("/")
     await expect(page.getByRole("heading", { level: 1, name: "Meetinghouse" })).toBeVisible()
@@ -241,7 +245,7 @@ test.describe("the site header", () => {
       return link?.[1].replace(/<[^>]*>/g, "").trim() ?? null
     }
 
-    expect(await marked("/calendar")).toBe("Calendar")
+    expect(await marked(CALENDAR)).toBe("Calendar")
     expect(await marked(`/budget/${newest}`)).toBe("Budget")
     // Three levels down still marks its half of the site.
     expect(await marked(`/budget/${newest}/${section}`)).toBe("Budget")
@@ -253,7 +257,7 @@ test.describe("the site header", () => {
   test("marks which section the reader is in", async ({ page }) => {
     const header = page.getByRole("banner")
 
-    await page.goto("/calendar")
+    await page.goto(CALENDAR)
     await expect(header.getByRole("link", { name: "Calendar", exact: true })).toHaveAttribute(
       "aria-current",
       "page",
@@ -286,7 +290,7 @@ test.describe("the site header on a touch screen", () => {
   test.use({ hasTouch: true, isMobile: true, viewport: { width: 390, height: 800 } })
 
   test("the caret opens the menu, and closes it again", async ({ page }) => {
-    await page.goto("/calendar")
+    await page.goto(CALENDAR)
     const header = page.getByRole("banner")
     const caret = header.getByRole("button", { name: "Every fiscal year" })
     const years = header.locator("#budget-years")
@@ -303,14 +307,14 @@ test.describe("the site header on a touch screen", () => {
   })
 
   test("tapping the word opens this year's book instead", async ({ page }) => {
-    await page.goto("/calendar")
+    await page.goto(CALENDAR)
     const header = page.getByRole("banner")
     await header.getByRole("link", { name: "Budget", exact: true }).tap()
     await expect(page).toHaveURL(`/budget/${newest}`)
   })
 
   test("a tap outside puts the menu away", async ({ page }) => {
-    await page.goto("/calendar")
+    await page.goto(CALENDAR)
     const header = page.getByRole("banner")
     const years = header.locator("#budget-years")
 
@@ -330,7 +334,7 @@ test.describe("the site header with no script", () => {
   test.use({ javaScriptEnabled: false })
 
   test("still opens the budget menu on hover", async ({ page }) => {
-    await page.goto("/calendar")
+    await page.goto(CALENDAR)
     const header = page.getByRole("banner")
     const years = header.locator("#budget-years")
 

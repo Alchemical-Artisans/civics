@@ -1,12 +1,22 @@
 # The calendar page
 
-Route: `/calendar`. Files:
-[`+page.ts`](../src/routes/calendar/+page.ts) (build-time data),
-[`+page.svelte`](../src/routes/calendar/+page.svelte) (UI),
+Route: `/calendar/<year>/<month>` — one page per month, e.g.
+`/calendar/2026/09`. There is no bare `/calendar`, the same way there is no
+bare `/budget`: `Router.calendar()` resolves to whichever month is current.
+Files:
+[`+page.server.ts`](../src/routes/calendar/[year]/[month]/+page.server.ts)
+(build-time data, one month's worth),
+[`+page.svelte`](../src/routes/calendar/[year]/[month]/+page.svelte) (UI),
 [`src/lib/meetings.ts`](../src/lib/meetings.ts) (turning `meetings.json` into
 what the site shows), [`src/lib/schedule.ts`](../src/lib/schedule.ts) (the
 sittings a published schedule lists), and
 [`src/lib/calendar.ts`](../src/lib/calendar.ts) (pure helpers).
+
+**This used to be one page holding the whole record**, with the reader's
+chosen month kept in client-side state and Prev/Next reshuffling the same
+page's data. See [Payload](#payload) for why that stopped fitting comfortably
+on one page, and [routing](#routing-one-page-per-month) for how the split
+works.
 
 ## One entry per meeting, not per document
 
@@ -328,27 +338,52 @@ that has not happened.
 
 The footer says how many are shown and what the number does and does not mean.
 
+### Routing: one page per month
+
+`src/routes/calendar/[year]/[month]/` is a route with two parameters, the same
+pattern as `calendar/meetings/[meeting]/`: the site is fully prerendered, so
+`+page.server.ts` exports `entries()` naming every month up front —
+`monthsCovered()` run over `calendar()`'s own meetings, from the earliest
+document to the end of the year the Council's rule projects to — rather than
+relying on SvelteKit's crawler to discover them by following links.
+
+`$lib/meetings` exports `calendarMonth(key)`, which runs `calendar()` in full
+and then slices it to one `YYYY-MM`: that month's meetings, the adjacent
+months for Prev/Next (`null` at either end of the range), and everything
+else — sources, `generatedAt`, `today`, the full-history board list for the
+filter — carried through unchanged. `null` where `key` names a month outside
+the range, which the route turns into a 404: the only way there is a typo,
+since `entries()` above is what decides which months exist.
+
+**Prev and Next are real links to real pages**, `Router.calendarMonth(key)`,
+not a client-side reshuffle of one page's data — see [Payload](#payload) for
+why that matters. A month at either end of the range draws the same disabled
+look it always has, but as a `<span>` rather than a `<button disabled>`: there
+is nothing left for a script to enable, before or after hydration.
+
 ### The month it opens on
 
-**The calendar opens on the month we are in.** It used to open on the newest
-month it covered, on the reasoning that a prerendered page cannot know the
-reader's date without a hydration mismatch. Two things changed that: the rule
-now projects sittings to the end of the year, so the newest month covered is
-December and opening there would land every reader in a month of empty
-Tuesdays; and the mismatch is avoidable.
+**The calendar opens on the month we are in.** `Router.calendar()` is what
+makes that true: there is no bare page for it to open, so it resolves to
+`Router.calendarMonth(key)` for whichever month `easternDate()` currently
+names, and that is the address the header's "Calendar" link, the front page's
+calendar card, and everywhere else on the site that means "the calendar" all
+point at. It used to be a `chosen` month held in client-side state, clamped
+into range and defaulting to `null` on the page that held every month at
+once; there is no state to hold any more; which month a reader lands on is
+just which URL they opened.
 
-`calendar()` returns the build's own date as `today`, so the served HTML already
-carries the right month and its today mark — a reader running no script gets the
-current month, not the oldest one. The component holds the reader's date in
-`inTheBrowser`, unset in both the server render and the client's first render,
-so the two agree; `onMount` fills it in, which is an ordinary reactive change
-rather than a mismatch. This is the same bargain
-[`BudgetTimeline`](../src/lib/BudgetTimeline.svelte) makes for its today mark.
-A build older than the month it ran in serves a stale month for one frame and
-corrects itself.
-
-The month is clamped into the months the calendar covers, because `step()` and
-the Prev/Next buttons work off `months.indexOf(month)` and need a real index.
+**Today's own cell is still a client-side correction**, because that is a
+question of the reader's clock rather than of which page they are on.
+`calendarMonth()` returns the build's own date as `today`, so the served HTML
+already carries a today mark where it belongs — a reader running no script
+still gets it, on whichever month the build happened to be current for. The
+component holds the reader's date in `inTheBrowser`, unset in both the server
+render and the client's first render, so the two agree; `onMount` fills it in,
+which is an ordinary reactive change rather than a mismatch. This is the same
+bargain [`BudgetTimeline`](../src/lib/BudgetTimeline.svelte) makes for its own
+today mark. A build older than the month it ran in serves a stale ring for one
+frame and corrects itself.
 
 ## Prerendering
 
@@ -359,13 +394,24 @@ export const prerender = true
 ```
 
 That is required by `@sveltejs/adapter-static`, which refuses to build if any
-route is dynamic. The practical consequence for this page: **`+page.ts` runs at
-build time, not on request**, so the meeting data is baked into the output.
+route is dynamic. The practical consequence for this page: **`+page.server.ts`
+runs at build time, not on request**, so a month's meeting data is baked into
+its own page's output rather than fetched at all.
+
+**`+page.server.ts`, not `+page.ts`.** A universal load ships to the browser
+so client-side navigation can re-run it — which here would mean bundling all
+of `$lib/meetings`, and the dataset it reads, into client JS just to filter it
+down to one month again on every Prev or Next. A server load runs only at
+build time; SvelteKit's client-side router fetches this page's own prerendered
+`__data.json` instead, the same file a script-free visit never even needs. See
+[Payload](#payload) for the numbers this avoids.
 
 ## Loading and trimming
 
-`+page.ts` imports `meetings.json` directly. Vite inlines it, so there is no
-runtime fetch. It then does three things.
+`$lib/meetings` imports `meetings.json` directly. Vite inlines it, so there is
+no runtime fetch — `calendar()` builds the whole record and `calendarMonth()`
+slices one month out of it, both at build time. `calendar()` itself does three
+things.
 
 **Drops undated records.** A record with no `date` cannot be placed on a
 calendar. The count is passed through as `undated` and disclosed in the footer
@@ -396,17 +442,30 @@ meeting page needs the same list built the same way.
 
 ## Payload
 
-The dataset ships as a route-level JS chunk, loaded only when someone visits
-`/calendar`. It grew a great deal when the city's two archives and the two
-boards that keep their own pages were added: from ~276 documents to ~2,200, and
-from ~16KB gzipped to **~81KB** (1.2MB raw). The prerendered HTML is ~42KB,
-containing the current month's markup.
+**This is why the calendar is one page per month rather than one page for
+everything.** The dataset used to ship as a single route-level JS chunk,
+loaded whenever someone visited `/calendar` — every month at once, filtered
+client-side. It grew a great deal when the city's two archives and the two
+boards that keep their own pages were added: from ~276 documents to ~2,200,
+and from ~16KB gzipped to ~81KB (1.2MB raw). That was still small enough to
+keep comfortable, but it was the number to watch, and the answer written down
+here at the time was to split by year once it doubled again rather than to
+drop months — the archive being the point of having it.
 
-That is still small enough to keep every month client-side, which is what makes
-month navigation and filtering instant with no further requests — but it is no
-longer negligible, and it is the number to watch. If it doubles again the answer
-is to split the payload by year rather than to drop months: the archive is the
-point of having it.
+It doubled again. Splitting by month rather than by year turned out to cost
+nothing extra: `calendarMonth()` already had to compute the whole `calendar()`
+to slice one month out of it, so there was no reason to stop at a coarser
+grain. A month's own `__data.json` runs **2–4KB gzipped**, not ~81KB, because
+`+page.server.ts` means the slicing happens at build time and the client never
+sees the unsliced dataset at all — see [Prerendering](#prerendering). The
+prerendered HTML for a typical month is ~15–75KB depending how much it has on
+it, same as before.
+
+The root page and the meeting pages still load the whole dataset client-side —
+`src/routes/+page.ts` and `calendar/meetings/+layout.ts` are universal loads,
+for reasons that have nothing to do with this page — so the ~81KB chunk has
+not left the site. It has just stopped being something every month page pays
+for on top of its own data.
 
 ## Date handling
 
@@ -426,13 +485,18 @@ trimming any trailing week that falls entirely outside the month.
 
 Svelte 5 runes, in a small amount of state:
 
-| State                         | Purpose                                                      |
-| ----------------------------- | ------------------------------------------------------------ |
-| `chosen`                      | the month the reader navigated to, or `null` for the default |
-| `activeBoards`                | a `SvelteSet` of board filters; empty means all              |
-| `showAgendas` / `showMinutes` | document-kind toggles                                        |
-| `showExpected`                | whether sittings the Council's rule expects are shown        |
-| `inTheBrowser`                | the reader's own date, filled in after mount                 |
+| State                         | Purpose                                                                    |
+| ----------------------------- | -------------------------------------------------------------------------- |
+| `activeBoards`                | a plain array of board filters, bound to the multi-select; empty means all |
+| `showAgendas` / `showMinutes` | document-kind toggles                                                      |
+| `showExpected`                | whether sittings the Council's rule expects are shown                      |
+| `inTheBrowser`                | the reader's own date, filled in after mount                               |
+
+There is no state for which month is showing any more — that used to be
+`chosen`, the month the reader had navigated to, or `null` for the default.
+Each month is its own route now, so the month is just `data.month`, and
+Prev/Next are links rather than something that reassigns it. See
+[Routing](#routing-one-page-per-month).
 
 Two details are deliberate:
 
@@ -515,9 +579,17 @@ Every internal URL on the site is built by `Router` in
 
 ```svelte
 <a href={Router.calendar()}>…</a>
+<a href={Router.calendarMonth(key)}>…</a>
 <a href={Router.meeting(m.id)}>…</a>
 <a href={Router.meetingItem(m.id, item)}>…</a>
 ```
+
+`Router.calendar()` is `Router.calendarMonth()` for whichever month
+`easternDate()` currently names — see [the month it opens
+on](#the-month-it-opens-on). The meeting layout's own back link uses
+`Router.calendarMonth(monthKey(meeting.date))` rather than `Router.calendar()`,
+deliberately: a meeting from last spring has no business sending a reader back
+to today's month.
 
 This replaces SvelteKit's `resolve()` from `$app/paths`, which the site used
 until it was set up for deployment. Two reasons:
@@ -849,27 +921,29 @@ built to avoid.
 
 ## Tests
 
-[`page.svelte.e2e.ts`](../src/routes/calendar/page.svelte.e2e.ts) runs against
-the production build and covers: the month heading renders, every entry links to
-a meeting and is same-tab, month navigation works, board filtering narrows
-results, unchecking agendas drops the document count without dropping the
-meetings that still have minutes, the calendar opens on the current month (with
-a case running `javaScriptEnabled: false`, so the served bytes are what is
-checked) and rings today's cell by Haverhill's date rather than UTC's, and an
-expected sitting is drawn as an outline and hidden by its own toggle. Which sitting that is comes from
-`expectedSittings()` against `meetings.json` — the same derivation the site
-makes — so the test follows the data rather than pinning a date the city may
-publish an agenda for tomorrow.
+[`[year]/[month]/page.svelte.e2e.ts`](../src/routes/calendar/[year]/[month]/page.svelte.e2e.ts)
+runs against the production build and covers: the month heading renders, every
+entry links to a meeting and is same-tab, month navigation is a real
+navigation to `Router.calendarMonth()`'s URL, board filtering narrows results,
+unchecking agendas drops the document count without dropping the meetings that
+still have minutes, the calendar opens on the current month (with a case
+running `javaScriptEnabled: false`, so the served bytes are what is checked)
+and rings today's cell by Haverhill's date rather than UTC's, a month outside
+the calendar's range 404s, and an expected sitting is drawn as an outline and
+hidden by its own toggle. Which sitting that is comes from `expectedSittings()`
+against `meetings.json` — the same derivation the site makes — so the test
+follows the data rather than pinning a date the city may publish an agenda for
+tomorrow.
 
 [`meetings/page.svelte.e2e.ts`](../src/routes/calendar/meetings/page.svelte.e2e.ts)
 covers the meeting pages, enumerating the written ones from the route
 directories that exist: a written meeting is what the calendar lands on and has
 a transcription on it, the board and date render with the city's files beside
 them, a meeting nobody wrote up still lists its files, an item page sits beneath
-its meeting and returns to it, the back link reaches the calendar, an unknown id
-returns a 404, and an expected sitting quotes the rule it rests on in place of
-files, states the hour the rule gives, and can be added to a reader's own
-calendar.
+its meeting and returns to it, the back link reaches the meeting's own month
+rather than whichever one is current, an unknown id returns a 404, and an
+expected sitting quotes the rule it rests on in place of files, states the hour
+the rule gives, and can be added to a reader's own calendar.
 
 [`src/routes/page.svelte.e2e.ts`](../src/routes/page.svelte.e2e.ts) covers the
 root and the header: `/` is a landing page the reader stays on, with a card to

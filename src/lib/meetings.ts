@@ -8,8 +8,11 @@
  */
 import raw from "./data/meetings.json"
 import {
+  boardsOf,
   easternDate,
   groupIntoMeetings,
+  monthKey,
+  monthsCovered,
   withScheduled,
   withoutSecondCopies,
   type Meeting,
@@ -352,5 +355,55 @@ export function calendar(): Calendar {
       ],
     },
     today: BUILT_ON,
+  }
+}
+
+/** What a month's own page needs beyond `calendar()` itself. */
+export interface MonthCalendar extends Omit<Calendar, "meetings"> {
+  /** `YYYY-MM`, `monthKey`'s format -- the month this page is. */
+  month: string
+  /** Only this month's meetings, not the whole record. */
+  meetings: Meeting[]
+  /**
+   * Every board the calendar has ever carried, alphabetical -- not just the
+   * ones sitting this month. The board filter is the same control on every
+   * month's page, and a reader who has picked one does not want it to lose an
+   * option, or gain one that quietly means something different, when Prev or
+   * Next moves them to a quieter month.
+   */
+  boards: string[]
+  /** The adjacent month, or `null` at either end of the calendar's range. */
+  prevMonth: string | null
+  nextMonth: string | null
+}
+
+/**
+ * One month of the calendar -- `calendar()` sliced to a single `YYYY-MM`, plus
+ * what a month's own page needs to filter and navigate that `calendar()` has
+ * no reason to carry on its own.
+ *
+ * Split out once the calendar stopped fitting comfortably on one page: see
+ * docs/calendar-page.md#payload. A month's page ships only that month's
+ * meetings rather than the whole ~2,200-document record, and Prev/Next are
+ * real links between real pages rather than a client-side reshuffle of one
+ * page's data.
+ *
+ * `null` where `key` names a month outside the calendar's range -- before its
+ * earliest document or past the year the Council's rule projects to -- which
+ * the route turns into a 404 rather than an empty page, the same as an
+ * unrecognised meeting id.
+ */
+export function calendarMonth(key: string): MonthCalendar | null {
+  const full = calendar()
+  const months = monthsCovered(full.meetings)
+  const at = months.indexOf(key)
+  if (at === -1) return null
+  return {
+    ...full,
+    month: key,
+    meetings: full.meetings.filter((m) => monthKey(m.date) === key),
+    boards: boardsOf(full.meetings),
+    prevMonth: at > 0 ? months[at - 1] : null,
+    nextMonth: at < months.length - 1 ? months[at + 1] : null,
   }
 }

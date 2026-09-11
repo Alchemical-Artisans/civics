@@ -355,11 +355,28 @@ rings the wrong cell and jumps a month at dinnertime on the last day of one.
 `router.ts` take it from there. Stored dates stay UTC-parsed `YYYY-MM-DD`
 strings -- that is what stops one sliding a day; the zone only decides which day
 _now_ is. The default month used to be the newest month covered, which the
-forward projection turned into December; `calendar()` now returns the build's
-date as `today` so the served HTML carries the right month and its mark, and the
-component's `inTheBrowser` -- unset in both the server render and the client's
-first -- fills in on mount as an ordinary reactive change rather than a
-mismatch, the same bargain `BudgetTimeline` makes.
+forward projection turned into December; `calendar()` returns the build's date
+as `today`, and the component's `inTheBrowser` -- unset in both the server
+render and the client's first -- fills in on mount as an ordinary reactive
+change rather than a mismatch, the same bargain `BudgetTimeline` makes.
+
+**The calendar is one page per month, `/calendar/<year>/<month>`, not one page
+holding the whole record.** It used to be: every month client-side, filtered
+and paged through with `chosen` state, Prev/Next reshuffling the same page's
+~2,200-document dataset. That dataset had already been flagged as the number
+to watch, and splitting it once it grew further turned out to cost nothing extra
+-- `calendarMonth()` in `meetings.ts` already had to build the whole `calendar()`
+to slice one month out of it. **There is no bare `/calendar`**, the same way
+there is no bare `/budget`: `Router.calendar()` resolves to
+`Router.calendarMonth()` for whichever month is current. The route's own load
+is `+page.server.ts` rather than `+page.ts` -- a universal load ships to the
+browser so client-side Prev/Next could re-run it, which would mean bundling
+the whole dataset into client JS just to filter it down to one month again; a
+server load runs only at build time, and SvelteKit serves this page's own tiny
+prerendered `__data.json` for client-side navigation instead. A meeting's own
+"back to the calendar" link goes to `Router.calendarMonth(monthKey(meeting.date))`,
+its own month, not whichever one happens to be current. See
+[docs/calendar-page.md](docs/calendar-page.md#payload).
 
 **The calendar names every page it is read off, and heads itself with none.**
 The page opened with a `text-3xl` "Haverhill Meeting Calendar" over a sentence

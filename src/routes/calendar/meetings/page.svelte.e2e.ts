@@ -3,8 +3,12 @@ import { existsSync, readdirSync, readFileSync } from "node:fs"
 import { join } from "node:path"
 import { fileURLToPath } from "node:url"
 import meetingsData from "../../../lib/data/meetings.json" with { type: "json" }
-import { easternDate, meetingId } from "../../../lib/calendar"
+import { easternDate, meetingId, monthKey } from "../../../lib/calendar"
 import { expectedSittings } from "../../../lib/schedule"
+
+/** The current month's own page -- there is no bare `/calendar` any more. */
+const TODAY = easternDate()
+const CALENDAR = `/calendar/${monthKey(TODAY).replace("-", "/")}`
 
 /**
  * The sittings the Council's rule expects that no document covers, derived the
@@ -14,7 +18,7 @@ import { expectedSittings } from "../../../lib/schedule"
 const documented = new Set(
   meetingsData.meetings.filter((m) => m.date).map((m) => `${m.board}::${m.date}`),
 )
-const expected = expectedSittings(easternDate())
+const expected = expectedSittings(TODAY)
   .filter((s) => !documented.has(`${s.board}::${s.date}`))
   .map((s) => ({
     id: meetingId(s.board, s.date),
@@ -53,7 +57,7 @@ test.describe("meeting pages", () => {
   test("a written meeting is what the calendar lands on", async ({ page }) => {
     // The whole point of merging the two: clicking a meeting shows the agenda,
     // not a list with one link on it.
-    await page.goto("/calendar")
+    await page.goto(CALENDAR)
     const entry = page.locator(`a[href*="/calendar/meetings/${written[0]}"]`)
     if (await entry.count()) await entry.first().click()
     else await page.goto(`/calendar/meetings/${written[0]}`)
@@ -96,7 +100,7 @@ test.describe("meeting pages", () => {
   })
 
   test("a meeting nobody has written up still lists its files", async ({ page }) => {
-    await page.goto("/calendar")
+    await page.goto(CALENDAR)
     for (const link of await page.locator("table a").all()) {
       const href = (await link.getAttribute("href"))!
       if (written.some((id) => href.endsWith(id))) continue
@@ -140,10 +144,14 @@ test.describe("meeting pages", () => {
     expect(ics).toContain(`UID:${written[0]}@`)
   })
 
-  test("returns to the calendar", async ({ page }) => {
+  test("returns to the calendar, on the meeting's own month", async ({ page }) => {
+    // Not whichever month is current: the calendar is one page per month now,
+    // and a meeting from another month has no business sending a reader back
+    // to today's.
+    const date = written[0].slice(-10)
     await page.goto(`/calendar/meetings/${written[0]}`)
     await page.getByRole("link", { name: "Back to the calendar" }).click()
-    await expect(page).toHaveURL(/\/calendar$/)
+    await expect(page).toHaveURL(`/calendar/${monthKey(date).replace("-", "/")}`)
   })
 
   test("a remote option that takes more than a link is a disclosure, closed", async ({ page }) => {

@@ -1,13 +1,17 @@
 import { expect, test } from "@playwright/test"
-import meetings from "../../lib/data/meetings.json" with { type: "json" }
-import { easternDate, meetingId } from "../../lib/calendar"
-import { expectedSittings, meetingCalendars, meetingRules } from "../../lib/schedule"
+import meetings from "../../../../lib/data/meetings.json" with { type: "json" }
+import { addMonths, easternDate, meetingId, monthKey } from "../../../../lib/calendar"
+import { expectedSittings, meetingCalendars, meetingRules } from "../../../../lib/schedule"
 
 const rules = meetingRules()
 const calendars = meetingCalendars()
 
 /** Today in Haverhill, the same day the build resolved. */
 const TODAY = easternDate()
+
+/** `/calendar/2026/09` for today, `/calendar/<year>/<month>` for any other. */
+const monthUrl = (key: string) => `/calendar/${key.replace("-", "/")}`
+const CALENDAR = monthUrl(monthKey(TODAY))
 
 /**
  * The sittings the Council's rule expects that no document covers -- derived
@@ -32,20 +36,9 @@ const monthHeading = (date: string) =>
     timeZone: "UTC",
   })
 
-/** Step the calendar to a month, which is client-side and needs no reload. */
-async function goToMonth(page: import("@playwright/test").Page, name: string) {
-  const heading = page.getByRole("heading", { level: 2 })
-  for (let i = 0; i < 120 && (await heading.textContent()) !== name; i++) {
-    const next = page.getByRole("button", { name: "Next month" })
-    if (await next.isDisabled()) break
-    await next.click()
-  }
-  await expect(heading).toHaveText(name)
-}
-
 test.describe("meeting calendar", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/calendar")
+    await page.goto(CALENDAR)
   })
 
   test("renders the calendar with a month heading", async ({ page }) => {
@@ -121,10 +114,11 @@ test.describe("meeting calendar", () => {
     }
   })
 
-  test("navigates to the previous month", async ({ page }) => {
+  test("navigates to the previous month, a real page rather than a reshuffle", async ({ page }) => {
     const heading = page.getByRole("heading", { level: 2 })
     const start = await heading.textContent()
-    await page.getByRole("button", { name: "Previous month" }).click()
+    await page.getByRole("link", { name: "Previous month" }).click()
+    await expect(page).toHaveURL(monthUrl(addMonths(monthKey(TODAY), -1)))
     await expect(heading).not.toHaveText(start!)
   })
 
@@ -175,10 +169,11 @@ test.describe("meeting calendar", () => {
 
   test("serves the month in the HTML, before any script runs", async ({ browser }) => {
     // A reader with no script still gets the current month rather than the
-    // oldest one, because the build's own date is baked into the page.
+    // oldest one, because the build's own date decides which page this is --
+    // no client-side state to fill in at all any more.
     const context = await browser.newContext({ javaScriptEnabled: false })
     const bare = await context.newPage()
-    await bare.goto("/calendar")
+    await bare.goto(CALENDAR)
     await expect(bare.getByRole("heading", { level: 2 })).toHaveText(monthHeading(TODAY))
     await context.close()
   })
@@ -192,6 +187,14 @@ test.describe("meeting calendar", () => {
     await expect(cell).toContainText(String(Number(TODAY.slice(8))))
   })
 
+  test("a month outside the calendar's range has no page", async ({ page }) => {
+    // `entries()` names every month from the earliest document to the end of
+    // the year the Council's rule projects to; nothing here is dynamic, so a
+    // month before or after that range is a 404 rather than an empty grid.
+    const response = await page.goto("/calendar/1999/01")
+    expect(response?.status()).toBe(404)
+  })
+
   // Nested, so the skip below governs only these two. A group-level `test.skip`
   // applies to every test in its describe wherever it is written, which in the
   // outer one would take the rest of the suite with it.
@@ -202,7 +205,7 @@ test.describe("meeting calendar", () => {
 
     test("shows a sitting the Council's rule expects, with no agenda yet", async ({ page }) => {
       const { id, date } = expected[0]
-      await goToMonth(page, monthHeading(date))
+      await page.goto(monthUrl(monthKey(date)))
 
       const entry = page.locator(`table a[href$="/calendar/meetings/${id}"]`)
       await expect(entry).toHaveCount(1)
@@ -214,7 +217,7 @@ test.describe("meeting calendar", () => {
 
     test("the Expected toggle hides those sittings and nothing else", async ({ page }) => {
       const { id, date } = expected[0]
-      await goToMonth(page, monthHeading(date))
+      await page.goto(monthUrl(monthKey(date)))
 
       const entries = page.locator("table a")
       const before = await entries.count()

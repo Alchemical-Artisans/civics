@@ -1,15 +1,11 @@
 <script lang="ts">
   import {
     WEEKDAYS,
-    addMonths,
-    boardsOf,
     buildMonthGrid,
     formatLongDate,
     formatMonth,
     groupByDate,
     easternDate,
-    monthKey,
-    monthsCovered,
     type Meeting,
     type MeetingKind,
   } from "$lib/calendar"
@@ -40,45 +36,24 @@
     { label: "Meeting schedules", items: data.sources.schedules },
   ])
 
-  const all = $derived(data.meetings as Meeting[])
-  const months = $derived(monthsCovered(all))
-  const boards = $derived(boardsOf(all))
+  const month = $derived(data.month)
+  const boards = $derived(data.boards)
 
   /**
    * Today in Haverhill -- the build's date in the served HTML, the reader's own
    * once the browser has it.
    *
-   * Falls back to the load's date rather than to nothing, because the calendar
-   * now opens on the current month and a reader running no script should still
-   * get one. Both renders agree at hydration, since the client's first render
-   * has `inTheBrowser` unset too; `onMount` then fills it in as an ordinary
-   * reactive change rather than a mismatch. A build older than the month it ran
-   * in therefore serves a stale month for one frame and corrects itself -- the
-   * same bargain `BudgetTimeline` makes for its today mark.
+   * Falls back to the load's date rather than to nothing, so a reader running
+   * no script still gets today's cell ringed correctly. Both renders agree at
+   * hydration, since the client's first render has `inTheBrowser` unset too;
+   * `onMount` then fills it in as an ordinary reactive change rather than a
+   * mismatch. The same bargain `BudgetTimeline` makes for its today mark.
    */
   let inTheBrowser = $state<string | null>(null)
   onMount(() => {
     inTheBrowser = easternDate()
   })
   const today = $derived(inTheBrowser ?? data.today)
-
-  /**
-   * Until the reader picks a month, show the one we are in.
-   *
-   * Clamped into the months the calendar actually covers, so `step()` and the
-   * Prev/Next buttons -- which work off `months.indexOf(month)` -- always have
-   * a real index to move from. In practice the current month is always covered:
-   * the Council's rule projects sittings to the end of the year.
-   */
-  let chosen = $state<string | null>(null)
-  const month = $derived(chosen ?? clamp(monthKey(today)))
-
-  function clamp(key: string): string {
-    if (!months.length) return key
-    if (key < months[0]) return months[0]
-    if (key > months.at(-1)!) return months.at(-1)!
-    return key
-  }
 
   // A plain array rather than a `SvelteSet`, so it can bind directly to the
   // multi-select below -- Svelte's two-way binding for `<select multiple>`
@@ -111,7 +86,7 @@
     kind === "agenda" ? showAgendas : kind === "minutes" ? showMinutes : showAgendas || showMinutes
 
   const meetings = $derived(
-    all
+    (data.meetings as Meeting[])
       .filter((m) => !activeBoards.length || activeBoards.includes(m.board))
       .map((m) => ({ ...m, documents: m.documents.filter((d) => wanted(d.kind)) }))
       // An expected sitting has no documents at all, so the kind toggles have
@@ -131,15 +106,6 @@
   const monthDocuments = $derived(
     monthDays.reduce((n, d) => n + d.items.reduce((k, m) => k + m.documents.length, 0), 0),
   )
-
-  const index = $derived(months.indexOf(month))
-  const canPrev = $derived(index > 0)
-  const canNext = $derived(index >= 0 && index < months.length - 1)
-
-  function step(delta: number) {
-    const next = addMonths(month, delta)
-    if (months.includes(next)) chosen = next
-  }
 
   const kindClass = (kind: MeetingKind) =>
     kind === "agenda"
@@ -169,10 +135,12 @@
 </script>
 
 <svelte:head>
-  <title>Haverhill Meeting Calendar</title>
+  <title>{formatMonth(month)} - Haverhill Meeting Calendar</title>
   <meta
     name="description"
-    content="Calendar of Haverhill, MA public meeting agendas and minutes, linked to the source documents."
+    content="Haverhill, MA public meeting agendas and minutes for {formatMonth(
+      month,
+    )}, linked to the source documents."
   />
 </svelte:head>
 
@@ -184,21 +152,22 @@
       month's name over it -- a 3xl heading repeating all three was the largest
       thing on the page and the least informative. The heading itself stays for
       a reader moving by headings, and so the page has one.
-
-      The sentence under it is gone outright. It explained that an entry is a
-      meeting rather than a document, which the grid demonstrates in less time
-      than it takes to read, and it named the city's listing as the source --
-      true once, and not the whole truth for a while now. What replaces it is
-      every page the calendar is actually read off.
     -->
   <h1 class="sr-only">Haverhill Meeting Calendar</h1>
 
   <!-- Filters + month navigation, sharing one row: filtering is an adjustment
        to what the same three controls already browse, not a separate concern
-       above it. The toggle is icon-only, the same weight as an arrow button
+       above it. The toggle is icon-only, the same weight as an arrow link
        rather than a wide labelled one, so it unbalances the row as little as
        possible while still leaving Prev, the month, and Next reading as they
-       did before it existed. -->
+       did before it existed.
+
+       Prev and Next are real links to real pages now, not a client-side
+       reshuffle of one page's data -- each month is its own route, so moving
+       between them is an ordinary navigation. A month at either end of the
+       calendar's range draws the same disabled look as before, but as a
+       `<span>` rather than a `<button disabled>`: there is nothing here for a
+       script to enable, before or after hydration. -->
   <div class="mb-4">
     <div class="flex items-center justify-between gap-4">
       <div class="flex items-center gap-2">
@@ -230,15 +199,22 @@
           {/if}
         </button>
 
-        <button
-          type="button"
-          onclick={() => step(-1)}
-          disabled={!canPrev}
-          class="rounded-md px-3 py-2 text-sm font-medium ring-1 ring-slate-300 transition enabled:hover:bg-slate-100 disabled:opacity-40"
-        >
-          &larr; <span class="sr-only">Previous month</span>
-          <span aria-hidden="true">Prev</span>
-        </button>
+        {#if data.prevMonth}
+          <a
+            href={Router.calendarMonth(data.prevMonth)}
+            class="rounded-md px-3 py-2 text-sm font-medium ring-1 ring-slate-300 transition hover:bg-slate-100"
+          >
+            &larr; <span class="sr-only">Previous month</span>
+            <span aria-hidden="true">Prev</span>
+          </a>
+        {:else}
+          <span
+            aria-disabled="true"
+            class="rounded-md px-3 py-2 text-sm font-medium text-slate-400 opacity-40 ring-1 ring-slate-300"
+          >
+            &larr; <span aria-hidden="true">Prev</span>
+          </span>
+        {/if}
       </div>
 
       <div class="text-center">
@@ -251,15 +227,22 @@
         </p>
       </div>
 
-      <button
-        type="button"
-        onclick={() => step(1)}
-        disabled={!canNext}
-        class="rounded-md px-3 py-2 text-sm font-medium ring-1 ring-slate-300 transition enabled:hover:bg-slate-100 disabled:opacity-40"
-      >
-        <span aria-hidden="true">Next</span>
-        <span class="sr-only">Next month</span> &rarr;
-      </button>
+      {#if data.nextMonth}
+        <a
+          href={Router.calendarMonth(data.nextMonth)}
+          class="rounded-md px-3 py-2 text-sm font-medium ring-1 ring-slate-300 transition hover:bg-slate-100"
+        >
+          <span aria-hidden="true">Next</span>
+          <span class="sr-only">Next month</span> &rarr;
+        </a>
+      {:else}
+        <span
+          aria-disabled="true"
+          class="rounded-md px-3 py-2 text-sm font-medium text-slate-400 opacity-40 ring-1 ring-slate-300"
+        >
+          <span aria-hidden="true">Next</span> &rarr;
+        </span>
+      {/if}
     </div>
 
     {#if filtersOpen}
@@ -471,26 +454,9 @@
     <!--
       Where all of this comes from, in full.
 
-      One link used to stand for the lot, to the listing the scrape started
-      with. That listing reaches back only to 2025 -- two archives hold the
-      ~1,620 documents before it -- the Planning Board and the Zoning Board of
-      Appeals keep theirs on their own pages, and none of the four boards that
-      publish a meeting schedule publishes it on any of those. A reader checking
-      this calendar against what the city posted was being pointed at a fraction
-      of it.
-
       Built from the data rather than written out here, so a scrape that starts
       reading a new page lists it without anyone remembering to: see `Sources`
       in `$lib/meetings`.
-
-      The four paragraphs of counts that used to sit under this are gone --
-      documents indexed, records with no date, duplicates collapsed, dates the
-      scraper flagged, documents the city has taken down, sittings projected.
-      They kept the site honest about data it knows to be imperfect and they
-      are all still true; what they were not was anything a reader came for,
-      and they made the foot of the page a wall of small type around the one
-      thing here worth reading. `scripts/` still counts every one of them, and
-      says so to whoever can act on them.
     -->
     <section aria-label="Sources" class="space-y-1 text-xs text-slate-500">
       {#each sources as group (group.label)}
