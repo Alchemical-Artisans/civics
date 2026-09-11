@@ -22,7 +22,7 @@
 <ul>
   <li>
     <strong>7.1</strong>
-    <a href={Router.meetingItem(MEETING, "99-restaurant-common-victualler-amendment")}>
+    <a href={Router.meetingItem(MEETING, "99-restaurant-hours")}>
       The 99 Restaurant &ndash; Amendment of Common Victualler License
     </a>
   </li>
@@ -35,7 +35,7 @@
 <ul>
   <li>
     <strong>9.1</strong>
-    <a href={Router.meetingItem(MEETING, "99-restaurant-alcohol-hours")}>
+    <a href={Router.meetingItem(MEETING, "99-restaurant-hours")}>
       The 99 Restaurant &ndash; Change of Hours, Alcohol/ABCC License
     </a>
   </li>

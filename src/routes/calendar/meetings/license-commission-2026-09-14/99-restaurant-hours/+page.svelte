@@ -6,6 +6,11 @@
 </p>
 
 <p>
+  Application for Amendment of Common Victualler license &ndash; Change of Hours on Sunday from
+  12PM-1AM to 10AM-1AM
+</p>
+
+<p>
   Application for Change of Hours on Sunday from 12PM-1AM to 10AM-1AM<br />
   Pending ABCC approval
 </p>

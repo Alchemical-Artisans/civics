@@ -17,6 +17,12 @@ export const load: PageLoad = () => ({
       url: "https://meet.google.com/cst-ewyg-ncs",
       meetingId: "cst-ewyg-ncs",
       how: ["Dial in (audio only): (US) +1 669-238-0471 PIN: 728 125 672#"],
+      // The agenda itself says nothing about a broadcast -- unlike the
+      // Council's or the School Committee's, which name HCTV outright -- but
+      // Haverhill Community Television carries channel 8 live, and it is
+      // worth a link for a reader to find out for themselves whether this
+      // sitting is on it.
+      stream: "http://haverhillcommunitytv.org/video/channel-8-live-stream",
     },
     notice: [
       "This meeting/hearing of Haverhill License Commission will be held in-person at the location provided on this notice. Members of the public are welcome to attend this in-person meeting. Please note that while an option for remote attendance and/or participation is being provided as a courtesy to the public, the meeting/hearing will not be suspended or terminated if technological problems interrupt the virtual broadcast, unless otherwise required by law. Members of the public with particular interest in any specific item on this agenda should make plans for in-person vs. virtual attendance accordingly.",
