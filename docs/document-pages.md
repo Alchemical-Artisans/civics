@@ -113,7 +113,9 @@ Everything it writes is under `.cache/`, which is gitignored and disposable.
    disclosure the reader opens. `stream` is where the sitting is broadcast live;
    an agenda that says it "will be broadcast over HCTV and WHAV" without an
    address is pointing at Haverhill Community Television's channel 8, so link
-   that and drop the sentence.
+   that and drop the sentence. Write it in freely — `npm run streams:prune`, a
+   step of `metadata:update`, removes it on its own once the meeting's date has
+   passed, since a live stream link is meaningless after the sitting is over.
 
    `notice` is standing Open Meeting Law boilerplate — one string per paragraph,
    behind an information icon next to the title rather than in the write-up

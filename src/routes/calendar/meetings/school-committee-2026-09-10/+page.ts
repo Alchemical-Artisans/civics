@@ -39,14 +39,6 @@ export const load: PageLoad = () => ({
     // carries no link annotation to recover the real one from, so it stays the
     // text the city printed rather than becoming a link that 404s.
     remote: {
-      // Haverhill Community Television's channel 8. The agenda says twice that
-      // the sitting "will be broadcast over HCTV and WHAV" and prints no
-      // address for either, so both of those sentences are gone and this is
-      // what stands in their place. The two paragraphs left are the letter's,
-      // which say how to take part rather than how to watch; the agenda's own
-      // restatement of them on page 2 carried the broadcast claim in the same
-      // breath and is dropped with it.
-      stream: "http://haverhillcommunitytv.org/video/channel-8-live-stream",
       how: [
         "In order to register to participate in public comment (virtual only) during the school committee meeting, please register here at least 6 hours prior to meeting: google.com/forms/d/17Z87UgL. No AI Notetakers allowed in meeting.",
         "A link to the public comment sessions of the meeting will be emailed to you at the address you supply prior to the start of the meeting. In-person public comment will be held in the City Council Chambers.",

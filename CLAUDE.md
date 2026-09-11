@@ -48,6 +48,7 @@ npm run calendar:rebuild    # re-scrape everything (only when scrape/date logic 
 npm run budget:update       # re-scrape the budget and audit listing (always full)
 npm run notices:update      # the agendas the city hangs off its meeting notices
 npm run recordings:update   # HC Media's video of a sitting, matched to it
+npm run streams:prune       # drop a meeting's live-stream link once the sitting is over
 npm run transcribe -- <id>  # hand a sitting to Claude Code to write its page
 npm run storybook           # storybook on :6006
 ```
@@ -223,6 +224,24 @@ pattern is tried before the council's own. `pageUrl` is the `/video/` URL and
 `fileUrl` is null, so a recording links straight to HC Media and gets no
 transcription page. `Video Recordings` is one entry in the calendar's Sources,
 last, after the city's own pages.
+
+**A live stream is not a recording, and stops being useful the moment the
+sitting ends.** `MeetingDetails.remote.stream`, on a hand-written meeting
+page, names Haverhill Community Television's channel 8 -- what an agenda means
+by "will be broadcast over HCTV and WHAV" without printing an address --
+because that is the whole record for a sitting that has not happened yet.
+Once it has, the link points at whatever channel 8 is airing that day rather
+than at anything about the meeting, and the actual video, if HC Media posts
+one, arrives on its own through `update-recordings.mjs` above. `scripts/prune-live-streams.mjs`
+(`npm run streams:prune`, a step of `metadata:update`) drops `stream` from
+every write-up whose date -- read off the meeting id itself, the same
+`meetingId()` rule as everywhere else, so no store lookup is needed -- is
+before today in the city's own timezone. Write-ups are hand-written, so this
+edits `+page.ts` source directly rather than `meetings.json`, and takes the
+comment sitting over `stream` with it: one field, one comment, is this
+codebase's convention, so leaving the comment behind would describe a link
+that is no longer there. `scripts/lib/streams.mjs` holds the text surgery,
+tested in `streams.spec.mjs` against a string rather than a file on disk.
 
 **The School Committee keeps its record on its own site, and nothing else in the
 pipeline touches that body.** The listing and its archives cover five boards and

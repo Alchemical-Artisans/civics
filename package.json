@@ -26,6 +26,7 @@
     "notices:update": "node scripts/update-notice-documents.mjs",
     "hps:update": "node scripts/update-hps-documents.mjs",
     "recordings:update": "node scripts/update-recordings.mjs",
+    "streams:prune": "node scripts/prune-live-streams.mjs",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "glossary:check": "node scripts/check-glossary.mjs",

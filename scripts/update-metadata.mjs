@@ -41,6 +41,12 @@ const STEPS = [
   // After every scrape that adds a city document, because it matches its
   // recordings against them and keeps only the ones that land on a sitting.
   { name: "recordings", script: "update-recordings.mjs" },
+  // Right after recordings, so a sitting that gets both in the same run loses
+  // its stale live-stream link and gains the real video together. No scrape
+  // and no `source` of its own -- it only compares each write-up's own date
+  // against today's -- so it could run anywhere in this list without changing
+  // what it does.
+  { name: "live streams", script: "prune-live-streams.mjs" },
   { name: "budget", script: "update-budget.mjs" },
   { name: "schedule", script: "update-schedule.mjs" },
   // Last, and after everything that can add a document: it checks every link
