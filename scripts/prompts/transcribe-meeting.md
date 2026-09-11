@@ -163,7 +163,28 @@ packet), `city-council-2026-08-25/` (twenty items, each with pages cut out of
 the packet behind it), and `license-commission-2026-09-14/99-restaurant-hours`
 (one item page standing for two agenda lines).
 
-## 5. Excerpts, where there is a packet
+## 5. Cross-references to other meetings
+
+A document sometimes names another sitting's business without printing it — a
+council "Doc." number, "refer ... for further discussion", "continued from",
+an applicant or address that turns up on more than one board's agenda. Before
+finishing the page, search the rest of the site for it:
+
+```sh
+grep -ril "<name, doc number, or subject>" src/routes/calendar/meetings/
+```
+
+Where that turns up an item page for the thing being referred to, link the
+reference to it with `Router.meetingItem(id, slug)` — wrap the printed words
+themselves in the link, the way a shared matter's second agenda line is linked
+in §4, rather than adding a sentence of your own explaining the connection.
+Where nothing on the site answers it, leave the number or name as printed
+rather than guessing at what it points to. See
+`natural-resources-and-public-property-committee-2026-09-14/+page.svelte`,
+whose "Doc. 41-a" links to the City Council item that referred the matter to
+it.
+
+## 6. Excerpts, where there is a packet
 
 An item resting on a letter or a plan can link to just those pages rather than a
 packet running to hundreds. Cut them out of the cached PDF and commit them:
@@ -182,7 +203,7 @@ the link to the full document as well — the city's complete file stays the
 record. A sideways scan is rotated with `pypdf`, which only writes `/Rotate` and
 leaves the scan alone; `docs/document-pages.md` has that snippet.
 
-## 6. The rules that bite
+## 7. The rules that bite
 
 - **Transcribe verbatim.** Do not paraphrase, summarise, correct, or tidy. The
   city's spelling, punctuation and slips stay as printed — "dover use" for Dover
@@ -195,7 +216,7 @@ leaves the scan alone; `docs/document-pages.md` has that snippet.
 - **Read what you paste.** A PDF can be copied out of, and markup pasted without
   being read is somebody else's script tag in the build.
 
-## 7. Check it
+## 8. Check it
 
 ```sh
 npx prettier --write src/routes/calendar/meetings/<meeting id>/
@@ -212,7 +233,7 @@ the budget book defines without linking it. The build is what proves the new
 routes prerender — check `build/calendar/meetings/<meeting id>/` holds one file
 per item page.
 
-## 8. Commit, and report
+## 9. Commit, and report
 
 Commit directly to `main`, in the repo's voice: what changed and **why**, not a
 list of files. Do not push, and do not open a pull request.
