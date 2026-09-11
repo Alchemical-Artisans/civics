@@ -200,8 +200,29 @@ cut along those seams into
 with `Router.excerpt(id, "<item slug>/<document slug>")`; `pdfseparate` writes
 one file per page, so stitch a multi-page document back with `pdfunite`. Keep
 the link to the full document as well — the city's complete file stays the
-record. A sideways scan is rotated with `pypdf`, which only writes `/Rotate` and
-leaves the scan alone; `docs/document-pages.md` has that snippet.
+record.
+
+**Before committing any excerpt, open the cut pages and check their
+orientation** — a wide sheet (a chart, a plan, a table landscape on the
+original) is often scanned sideways, and cutting it out does not fix that; it
+just makes a smaller sideways PDF. Do not commit one un-rotated on the
+assumption a reader will tilt their head. Poppler cannot turn a page and
+`qpdf` is not installed here; `pip install --user pypdf` and set the rotation,
+which costs nothing in quality because it only writes `/Rotate` into the page
+and leaves the scan alone:
+
+```python
+from pypdf import PdfReader, PdfWriter
+
+reader, writer = PdfReader(path), PdfWriter()
+for page in reader.pages:
+    page.rotate(90)  # clockwise; 270 for a sheet lying the other way
+    writer.add_page(page)
+writer.write(open(path, "wb"))
+```
+
+Check the result renders upright (`pdftoppm -r 100 -png <path> /tmp/check`
+and read the image) before moving on — 90 and 270 are easy to swap.
 
 ## 7. The rules that bite
 
@@ -215,6 +236,8 @@ leaves the scan alone; `docs/document-pages.md` has that snippet.
   city come from `meetings.json` through the layout.
 - **Read what you paste.** A PDF can be copied out of, and markup pasted without
   being read is somebody else's script tag in the build.
+- **Check every excerpt's orientation before committing it.** A sideways scan
+  cut out of a packet is still sideways; §6 has the rotation snippet.
 
 ## 8. Check it
 
