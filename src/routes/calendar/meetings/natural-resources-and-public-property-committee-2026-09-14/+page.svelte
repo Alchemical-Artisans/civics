@@ -1,3 +1,7 @@
+<script lang="ts">
+  import { Router } from "$lib/router"
+</script>
+
 <p>The purpose of the meeting is to discuss and review the following:</p>
 
 <ul>
@@ -5,7 +9,9 @@
     Doc. 12-c Motion by Councilor McGonagle to refer fixed vendor locations for further discussion
   </li>
   <li>
-    Doc. 41-a Motion by Councilor Ferreira to send for further discussion an overview of the
-    city&rsquo;s vegetation management plan
+    <a href={Router.meetingItem("city-council-2026-08-25", "vegetation-management-plan")}>
+      Doc. 41-a Motion by Councilor Ferreira to send for further discussion an overview of the
+      city&rsquo;s vegetation management plan</a
+    >
   </li>
 </ul>
