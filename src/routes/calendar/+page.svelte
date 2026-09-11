@@ -15,7 +15,6 @@
   } from "$lib/calendar"
   import { Router } from "$lib/router"
   import { onMount } from "svelte"
-  import { SvelteSet } from "svelte/reactivity"
 
   let { data } = $props()
 
@@ -81,7 +80,10 @@
     return key
   }
 
-  const activeBoards = new SvelteSet<string>()
+  // A plain array rather than a `SvelteSet`, so it can bind directly to the
+  // multi-select below -- Svelte's two-way binding for `<select multiple>`
+  // reads and writes an array of the selected options' values.
+  let activeBoards = $state<string[]>([])
   let showAgendas = $state(true)
   let showMinutes = $state(true)
   // Expected sittings are a third thing on the grid rather than a third kind of
@@ -89,6 +91,15 @@
   // a sitting the city has published nothing for has no document kind to filter
   // on.
   let showExpected = $state(true)
+
+  // The filters start out of the way -- thirty-four boards as controls would
+  // otherwise be the first and largest thing on the page, ahead of any meeting.
+  // `filtersActive` marks the toggle button so a reader who closes the panel
+  // with something changed still sees that the calendar is filtered.
+  let filtersOpen = $state(false)
+  const filtersActive = $derived(
+    !showAgendas || !showMinutes || !showExpected || activeBoards.length > 0,
+  )
 
   /**
    * The kind toggles still hide documents, not meetings, so a meeting with an
@@ -101,7 +112,7 @@
 
   const meetings = $derived(
     all
-      .filter((m) => !activeBoards.size || activeBoards.has(m.board))
+      .filter((m) => !activeBoards.length || activeBoards.includes(m.board))
       .map((m) => ({ ...m, documents: m.documents.filter((d) => wanted(d.kind)) }))
       // An expected sitting has no documents at all, so the kind toggles have
       // nothing to say about it and its own toggle decides on its own.
@@ -128,11 +139,6 @@
   function step(delta: number) {
     const next = addMonths(month, delta)
     if (months.includes(next)) chosen = next
-  }
-
-  function toggleBoard(board: string) {
-    if (activeBoards.has(board)) activeBoards.delete(board)
-    else activeBoards.add(board)
   }
 
   const kindClass = (kind: MeetingKind) =>
@@ -187,90 +193,143 @@
     -->
   <h1 class="sr-only">Haverhill Meeting Calendar</h1>
 
-  <!-- Filters -->
-  <section aria-label="Filters" class="mb-6 rounded-lg border border-slate-200 bg-slate-50 p-4">
-    <div class="mb-3 flex flex-wrap items-center gap-4">
-      <span class="text-sm font-semibold text-slate-700">Show</span>
-      <label class="flex items-center gap-2 text-sm text-slate-700">
-        <input type="checkbox" bind:checked={showAgendas} class="rounded border-slate-300" />
-        <span class="inline-flex items-center gap-1">
-          <span class="h-2.5 w-2.5 rounded-full bg-sky-500" aria-hidden="true"></span> Agendas
-        </span>
-      </label>
-      <label class="flex items-center gap-2 text-sm text-slate-700">
-        <input type="checkbox" bind:checked={showMinutes} class="rounded border-slate-300" />
-        <span class="inline-flex items-center gap-1">
-          <span class="h-2.5 w-2.5 rounded-full bg-emerald-500" aria-hidden="true"></span> Minutes
-        </span>
-      </label>
-      <label class="flex items-center gap-2 text-sm text-slate-700">
-        <input type="checkbox" bind:checked={showExpected} class="rounded border-slate-300" />
-        <span class="inline-flex items-center gap-1">
-          <span
-            class="h-2.5 w-2.5 rounded-full border border-dashed border-slate-500"
-            aria-hidden="true"
-          ></span> Expected
-        </span>
-      </label>
-    </div>
-
-    <div class="flex flex-wrap items-center gap-2">
-      <span class="mr-1 text-sm font-semibold text-slate-700">Boards</span>
-      <button
-        type="button"
-        onclick={() => activeBoards.clear()}
-        class="rounded-full px-3 py-1 text-sm font-medium transition {activeBoards.size === 0
-          ? 'bg-slate-900 text-white'
-          : 'bg-white text-slate-700 ring-1 ring-slate-300 hover:bg-slate-100'}"
-      >
-        All
-      </button>
-      {#each boards as board (board)}
+  <!-- Filters + month navigation, sharing one row: filtering is an adjustment
+       to what the same three controls already browse, not a separate concern
+       above it. The toggle is icon-only, the same weight as an arrow button
+       rather than a wide labelled one, so it unbalances the row as little as
+       possible while still leaving Prev, the month, and Next reading as they
+       did before it existed. -->
+  <div class="mb-4">
+    <div class="flex items-center justify-between gap-4">
+      <div class="flex items-center gap-2">
         <button
           type="button"
-          aria-pressed={activeBoards.has(board)}
-          onclick={() => toggleBoard(board)}
-          class="rounded-full px-3 py-1 text-sm font-medium transition {activeBoards.has(board)
-            ? 'bg-slate-900 text-white'
-            : 'bg-white text-slate-700 ring-1 ring-slate-300 hover:bg-slate-100'}"
+          onclick={() => (filtersOpen = !filtersOpen)}
+          aria-expanded={filtersOpen}
+          aria-controls="filters-panel"
+          class="relative rounded-md p-2 ring-1 ring-slate-300 transition hover:bg-slate-100"
         >
-          {board}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+            class="h-4 w-4 text-slate-700"
+            aria-hidden="true"
+          >
+            <path
+              d="M3 3.5a1 1 0 0 1 1-1h12a1 1 0 0 1 .8 1.6l-4.8 6.4v4.867a1 1 0 0 1-.553.894l-2 1A1 1 0 0 1 8 16.367V10.5L3.2 4.1a1 1 0 0 1-.2-.6Z"
+            />
+          </svg>
+          <span class="sr-only">Filters</span>
+          {#if filtersActive}
+            <span
+              class="absolute -top-1 -right-1 h-2.5 w-2.5 rounded-full bg-sky-500"
+              aria-hidden="true"
+            ></span>
+            <span class="sr-only">, filters active</span>
+          {/if}
         </button>
-      {/each}
+
+        <button
+          type="button"
+          onclick={() => step(-1)}
+          disabled={!canPrev}
+          class="rounded-md px-3 py-2 text-sm font-medium ring-1 ring-slate-300 transition enabled:hover:bg-slate-100 disabled:opacity-40"
+        >
+          &larr; <span class="sr-only">Previous month</span>
+          <span aria-hidden="true">Prev</span>
+        </button>
+      </div>
+
+      <div class="text-center">
+        <h2 class="text-xl font-semibold text-slate-900">{formatMonth(month)}</h2>
+        <p class="text-sm text-slate-500">
+          {monthCount}
+          {monthCount === 1 ? "meeting" : "meetings"},
+          {monthDocuments}
+          {monthDocuments === 1 ? "document" : "documents"}
+        </p>
+      </div>
+
+      <button
+        type="button"
+        onclick={() => step(1)}
+        disabled={!canNext}
+        class="rounded-md px-3 py-2 text-sm font-medium ring-1 ring-slate-300 transition enabled:hover:bg-slate-100 disabled:opacity-40"
+      >
+        <span aria-hidden="true">Next</span>
+        <span class="sr-only">Next month</span> &rarr;
+      </button>
     </div>
-  </section>
 
-  <!-- Month navigation -->
-  <div class="mb-4 flex items-center justify-between gap-4">
-    <button
-      type="button"
-      onclick={() => step(-1)}
-      disabled={!canPrev}
-      class="rounded-md px-3 py-2 text-sm font-medium ring-1 ring-slate-300 transition enabled:hover:bg-slate-100 disabled:opacity-40"
-    >
-      &larr; <span class="sr-only">Previous month</span>
-      <span aria-hidden="true">Prev</span>
-    </button>
+    {#if filtersOpen}
+      <section
+        id="filters-panel"
+        aria-label="Filters"
+        class="mt-2 rounded-lg border border-slate-200 bg-slate-50 p-3"
+      >
+        <div class="mb-3 flex flex-wrap items-center gap-3">
+          <span class="text-xs font-semibold text-slate-700">Show</span>
+          <label class="flex items-center gap-1.5 text-xs text-slate-700">
+            <input type="checkbox" bind:checked={showAgendas} class="rounded border-slate-300" />
+            <span class="inline-flex items-center gap-1">
+              <span class="h-2 w-2 rounded-full bg-sky-500" aria-hidden="true"></span> Agendas
+            </span>
+          </label>
+          <label class="flex items-center gap-1.5 text-xs text-slate-700">
+            <input type="checkbox" bind:checked={showMinutes} class="rounded border-slate-300" />
+            <span class="inline-flex items-center gap-1">
+              <span class="h-2 w-2 rounded-full bg-emerald-500" aria-hidden="true"></span> Minutes
+            </span>
+          </label>
+          <label class="flex items-center gap-1.5 text-xs text-slate-700">
+            <input type="checkbox" bind:checked={showExpected} class="rounded border-slate-300" />
+            <span class="inline-flex items-center gap-1">
+              <span
+                class="h-2 w-2 rounded-full border border-dashed border-slate-500"
+                aria-hidden="true"
+              ></span> Expected
+            </span>
+          </label>
+        </div>
 
-    <div class="text-center">
-      <h2 class="text-xl font-semibold text-slate-900">{formatMonth(month)}</h2>
-      <p class="text-sm text-slate-500">
-        {monthCount}
-        {monthCount === 1 ? "meeting" : "meetings"},
-        {monthDocuments}
-        {monthDocuments === 1 ? "document" : "documents"}
-      </p>
-    </div>
-
-    <button
-      type="button"
-      onclick={() => step(1)}
-      disabled={!canNext}
-      class="rounded-md px-3 py-2 text-sm font-medium ring-1 ring-slate-300 transition enabled:hover:bg-slate-100 disabled:opacity-40"
-    >
-      <span aria-hidden="true">Next</span>
-      <span class="sr-only">Next month</span> &rarr;
-    </button>
+        <div class="max-w-xs">
+          <div class="mb-1 flex items-center justify-between">
+            <label for="board-filter" class="text-xs font-semibold text-slate-700">Boards</label>
+            {#if activeBoards.length}
+              <button
+                type="button"
+                onclick={() => (activeBoards = [])}
+                class="text-xs text-slate-500 underline hover:text-slate-900"
+              >
+                Clear
+              </button>
+            {/if}
+          </div>
+          <!-- A native multi-select rather than a row of badges: thirty-four
+               boards as buttons wrapped over half a dozen lines whatever their
+               size, where a scrolling list holds all of them in the space of a
+               handful of rows and needs no toggle logic of its own -- Svelte's
+               two-way binding for `<select multiple>` is the array directly. -->
+          <select
+            id="board-filter"
+            multiple
+            bind:value={activeBoards}
+            size={8}
+            class="w-full rounded-md border border-slate-300 bg-white p-1 text-xs text-slate-700"
+          >
+            {#each boards as board (board)}
+              <option value={board}>{board}</option>
+            {/each}
+          </select>
+          <p class="mt-1 text-[11px] text-slate-500">
+            {activeBoards.length
+              ? `${activeBoards.length} of ${boards.length} boards`
+              : "All boards"}
+          </p>
+        </div>
+      </section>
+    {/if}
   </div>
 
   <!-- Calendar grid (wide screens) -->

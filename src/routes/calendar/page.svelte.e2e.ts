@@ -128,10 +128,22 @@ test.describe("meeting calendar", () => {
     await expect(heading).not.toHaveText(start!)
   })
 
+  test("the filters panel starts collapsed and opens on click", async ({ page }) => {
+    const toggle = page.getByRole("button", { name: "Filters" })
+    const panel = page.getByRole("region", { name: "Filters" })
+    await expect(panel).not.toBeAttached()
+    await expect(toggle).toHaveAttribute("aria-expanded", "false")
+
+    await toggle.click()
+    await expect(panel).toBeVisible()
+    await expect(toggle).toHaveAttribute("aria-expanded", "true")
+  })
+
   test("filtering by board narrows the visible meetings", async ({ page }) => {
     const entries = page.locator("table a")
     const before = await entries.count()
-    await page.getByRole("button", { name: "Conservation Commission", exact: true }).click()
+    await page.getByRole("button", { name: "Filters" }).click()
+    await page.getByLabel("Boards").selectOption("Conservation Commission")
     await expect(entries).not.toHaveCount(before)
     expect(await entries.count()).toBeLessThan(before)
   })
@@ -146,6 +158,7 @@ test.describe("meeting calendar", () => {
     const read = async () => (await summary.textContent())!.match(/(\d+)\s+meetings?,\s+(\d+)/)!
     const [, meetingsBefore, documentsBefore] = await read()
 
+    await page.getByRole("button", { name: "Filters" }).click()
     await page.getByRole("checkbox", { name: "Agendas" }).uncheck()
 
     const [, meetingsAfter, documentsAfter] = await read()
@@ -207,6 +220,7 @@ test.describe("meeting calendar", () => {
       const before = await entries.count()
       const entry = page.locator(`table a[href$="/calendar/meetings/${id}"]`)
 
+      await page.getByRole("button", { name: "Filters" }).click()
       await page.getByRole("checkbox", { name: "Expected" }).uncheck()
       await expect(entry).toHaveCount(0)
       // A sitting with documents is untouched: the kind toggles govern those.
