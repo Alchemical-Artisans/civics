@@ -18,7 +18,7 @@ import { LISTING_URL } from "./lib/haverhill.mjs"
 import { HPS_PAGE, fetchSchoolCommitteeDocuments } from "./lib/hps.mjs"
 import { loadStore, saveStore, printSummary } from "./lib/store.mjs"
 import { printAttention } from "./lib/attention.mjs"
-import { assignIds, pagesWritten } from "./lib/documents.mjs"
+import { assignIds, newMeetingIds, pagesWritten, printNewMeetings } from "./lib/documents.mjs"
 import {
   applyReviews,
   loadReviews,
@@ -56,6 +56,8 @@ syncReviews(meetings, reviews)
 applyReviews(meetings, reviews)
 await saveReviews(reviews)
 
+const newIds = newMeetingIds(store.meetings, meetings)
+
 assignIds(meetings)
 await saveStore(meetings, { source: LISTING_URL })
 
@@ -66,6 +68,7 @@ if (skippedHeadings.length) {
   console.log(`\n  headings that name no single sitting, skipped:`)
   for (const s of skippedHeadings) console.log(`    - ${s.heading}  (${s.files} file(s))`)
 }
+printNewMeetings(newIds)
 printSummary(meetings, await pagesWritten())
 summarizeReviews(reviews)
 

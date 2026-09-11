@@ -22,7 +22,7 @@ import {
 } from "./lib/haverhill.mjs"
 import { loadStore, saveStore, printSummary, DATA_FILE } from "./lib/store.mjs"
 import { printAttention } from "./lib/attention.mjs"
-import { assignIds, pagesWritten } from "./lib/documents.mjs"
+import { assignIds, newMeetingIds, pagesWritten, printNewMeetings } from "./lib/documents.mjs"
 import {
   applyReviews,
   loadReviews,
@@ -79,6 +79,8 @@ const addedReviews = syncReviews(meetings, reviews)
 applyReviews(meetings, reviews)
 await saveReviews(reviews)
 
+const newIds = newMeetingIds(store.meetings, meetings)
+
 assignIds(meetings)
 
 await saveStore(meetings, { source: LISTING_URL })
@@ -89,6 +91,7 @@ if (added.length) {
   if (added.length > 20) console.log(`    ... and ${added.length - 20} more`)
 }
 if (prune) console.log(`  pruned ${removed} entry(ies) no longer in the listing`)
+printNewMeetings(newIds)
 printSummary(meetings, await pagesWritten())
 reportReviews(reviews, addedReviews)
 console.log(`\n  wrote ${DATA_FILE}`)

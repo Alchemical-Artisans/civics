@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest"
-import { assignIds, documentId, summarizeDocuments } from "./documents.mjs"
+import { assignIds, documentId, newMeetingIds, summarizeDocuments } from "./documents.mjs"
 
 const record = (over = {}) => ({
   title: "City Council Agenda",
@@ -148,5 +148,52 @@ describe("summarizeDocuments", () => {
     const meetings = [record({ date: null })]
     assignIds(meetings)
     expect(summarizeDocuments(meetings, new Set()).meetings).toBe(0)
+  })
+})
+
+// Which meeting ids a run's console output should point a person to run
+// `npm run transcribe --` against.
+describe("newMeetingIds", () => {
+  it("names a sitting that was not there before", () => {
+    const before = [record({ board: "City Council", date: "2026-08-25" })]
+    const after = [...before, record({ board: "Planning Board", date: "2026-08-26" })]
+    expect(newMeetingIds(before, after)).toEqual(["planning-board-2026-08-26"])
+  })
+
+  it("does not name a sitting that already had a document", () => {
+    // A second document -- minutes landing beside an agenda -- is not a new
+    // meeting, just a fuller one.
+    const before = [record({ board: "City Council", date: "2026-08-25", kind: "agenda" })]
+    const after = [
+      ...before,
+      record({ board: "City Council", date: "2026-08-25", kind: "minutes" }),
+    ]
+    expect(newMeetingIds(before, after)).toEqual([])
+  })
+
+  it("ignores an undated record, which the calendar cannot place", () => {
+    const after = [record({ date: null })]
+    expect(newMeetingIds([], after)).toEqual([])
+  })
+
+  it("ignores a record the city has taken down", () => {
+    const after = [record({ board: "City Council", date: "2026-08-25", gone: true })]
+    expect(newMeetingIds([], after)).toEqual([])
+  })
+
+  it("ignores an orphan recording, which the calendar does not show", () => {
+    const after = [record({ board: "City Council", date: "2026-08-25", orphan: true })]
+    expect(newMeetingIds([], after)).toEqual([])
+  })
+
+  it("sorts the result", () => {
+    const after = [
+      record({ board: "Zoning Board of Appeals", date: "2026-08-25" }),
+      record({ board: "Board of Assessors", date: "2026-08-25" }),
+    ]
+    expect(newMeetingIds([], after)).toEqual([
+      "board-of-assessors-2026-08-25",
+      "zoning-board-of-appeals-2026-08-25",
+    ])
   })
 })

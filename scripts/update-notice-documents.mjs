@@ -29,7 +29,7 @@ import { LISTING_URL } from "./lib/haverhill.mjs"
 import { NOTICE_CALENDAR, fetchNoticeDocuments, writeUnrecognised } from "./lib/notices.mjs"
 import { loadStore, saveStore, printSummary } from "./lib/store.mjs"
 import { printAttention } from "./lib/attention.mjs"
-import { assignIds, pagesWritten } from "./lib/documents.mjs"
+import { assignIds, newMeetingIds, pagesWritten, printNewMeetings } from "./lib/documents.mjs"
 import {
   applyReviews,
   loadReviews,
@@ -114,12 +114,15 @@ syncReviews(meetings, reviews)
 applyReviews(meetings, reviews)
 await saveReviews(reviews)
 
+const newIds = newMeetingIds(store.meetings, meetings)
+
 assignIds(meetings)
 await saveStore(meetings, { source: LISTING_URL })
 
 const boards = new Set(scraped.map((m) => m.board))
 console.log(`\n  ${scraped.length} agendas across ${boards.size} boards`)
 console.log(`  ${before} replaced, ${others.length} records from elsewhere untouched`)
+printNewMeetings(newIds)
 printSummary(meetings, await pagesWritten())
 summarizeReviews(reviews)
 

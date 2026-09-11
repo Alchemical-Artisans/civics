@@ -155,6 +155,33 @@ export const meetingIdOf = (record) =>
     .replace(/^-|-$/g, "")}-${record.date}`
 
 /**
+ * Meeting ids reaching the calendar after this run that were not there before
+ * it -- a board sitting on a date nothing else already covered, ready to pass
+ * straight to `npm run transcribe --`.
+ *
+ * Compares ids rather than counting new records, which is what makes this "a
+ * meeting" and not "a document": a second document landing on a sitting that
+ * already had one is not new. A record counts once it has a date and is not
+ * `gone` -- and, the one field only a recording carries, not `orphan` -- the
+ * same three tests the site itself applies before grouping records into
+ * meetings, so this does not announce a sitting the calendar will not show.
+ */
+export function newMeetingIds(before, after) {
+  const onCalendar = (r) => Boolean(r.date) && !r.gone && !r.orphan
+  const had = new Set(before.filter(onCalendar).map(meetingIdOf))
+  const now = new Set(after.filter(onCalendar).map(meetingIdOf))
+  return [...now].filter((id) => !had.has(id)).sort()
+}
+
+/** Print `newMeetingIds`' result, if there is any, for the run summary. */
+export function printNewMeetings(ids) {
+  if (!ids.length) return
+  console.log(`\n  ${ids.length} new meeting(s) on the calendar:`)
+  for (const id of ids) console.log(`    ${id}`)
+  console.log(`  npm run transcribe -- <id>`)
+}
+
+/**
  * How many documents there are, and how many sittings have a page, for the run
  * summary.
  *
