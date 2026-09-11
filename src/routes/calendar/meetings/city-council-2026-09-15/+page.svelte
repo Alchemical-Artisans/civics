@@ -61,21 +61,18 @@
       Road Opening, 628 Main St, EROM-26-20
     </a>
   </li>
-  <li><strong>8.3.1</strong> Order- Approve request to excavate at 628 Main St</li>
   <li>
     <strong>8.4</strong>
     <a href={Router.meetingItem(MEETING, "road-opening-1-macon-ave")}>
       Road Opening, 1 Macon Ave, EROM-26-21
     </a>
   </li>
-  <li><strong>8.4.1</strong> Order- Approve request to excavate at 1 Macon Ave</li>
   <li>
     <strong>8.5</strong>
     <a href={Router.meetingItem(MEETING, "road-opening-36-arlington-st")}>
       Road Opening, 36 Arlington St, EROM-26-22
     </a>
   </li>
-  <li><strong>8.5.1</strong> Order- Approve request to excavate at 36 Arlington St</li>
 </ul>
 
 <h2>9. Utility Public Hearing(s) and Related Order(s)</h2>
@@ -357,16 +354,6 @@
     <a href={Router.meetingItem(MEETING, "south-mill-street-loan-order")}>
       Loan Order &ndash; South Mill Street Pumping Station and Force Main Improvements
     </a>
-    <ul>
-      <li>
-        <strong>16.1.1</strong> Order-That Twenty-Six Million One Hundred and Ninety Thousand Dollars
-        ($26,190,000) is appropriated for the purpose of financing the costs of engineering and construction
-        of improvements to the South Mill Street Pumping Station and Force Main, including the payment
-        of all costs incidental or related thereto, and including without limitation all costs thereof
-        as defined in Section 1 of Chapter 29C of the General Laws, as most recently amended (&quot;Chapter
-        29C&quot;)
-      </li>
-    </ul>
     <p class="text-right"><strong>Filed August 26, 2026</strong></p>
   </li>
   <li>

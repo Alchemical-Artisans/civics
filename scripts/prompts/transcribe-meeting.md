@@ -155,6 +155,15 @@ other gets the same word. Say why in the `+page.ts` comment.
 line ("Opening Prayer", "Adjourn"), and a line that is only a date ("Approval of
 minutes: August 12, 2026"). Those stay on the meeting page as they are printed.
 
+**A sub-item moves to its parent's page entirely — it does not stay behind
+on the outline too.** "8.3" on a City Council agenda is the request to open a
+roadway; "8.3.1" underneath it is the order approving that same request. Once
+8.3 has its own page, 8.3.1 is transcribed there, under it, and nowhere else —
+delete it from the meeting page rather than leaving a copy standing next to
+the link. The outline should read as a link and nothing under it, the way
+every other linked item does; a sub-item left behind is the one thing on the
+page still duplicating text the reader is about to click through to.
+
 **Two agenda lines can be the same matter.** The License Commission's own
 agenda puts one applicant's request under two headings — a Common Victualler
 amendment and an Alcohol/ABCC application for the same change of hours — because
