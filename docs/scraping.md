@@ -112,3 +112,39 @@ and carry nothing useful in the title either, so classification falls back to th
 PDF filename, which is often the only place the owning board is named:
 `boa-mtg-min-4212026.pdf` identifies the Board of Assessors. Without that
 fallback, seven records land in an `Other` bucket.
+
+## The School Committee's own page
+
+The School Committee is the one major Haverhill body none of the above reaches:
+it is not in the listing or its archives, the events-calendar notices carry a
+School Committee agenda only from mid-2026, and HC Media has just the video. What
+the committee takes in — the clerk's posting, the agenda, the "portfolio" packet
+of materials, presentations, warrants, minutes — it publishes on the Haverhill
+Public Schools site,
+<https://www.haverhill-ps.org/meeting-schedule-and-agenda-packet>, and nowhere
+else. [`scripts/lib/hps.mjs`](../scripts/lib/hps.mjs) reads it;
+[`update-hps-documents.mjs`](../scripts/update-hps-documents.mjs)
+(`npm run hps:update`, a step of `metadata:update`) writes the records.
+
+The page is a run of dated sections, one per sitting, back to 2023. The heading
+is the sitting's date and under it is that sitting's document list, in one of two
+markup shapes — a newer `ss-document-list` carrying a posted date and an
+`aria-label` per item, and an older `stack-links-container` of bare `<a>` text.
+Every document link is a PDF on `files.smartsites.parentsquare.com`; Google Forms
+and Drive links are ignored.
+
+- **The heading is the date.** Records are built directly, not run through
+  `resolveDocument` — the same reasoning as the notice agendas. A heading that
+  names no single day (prose, a bare year, "Week of February 23-27, 2026") is
+  skipped and counted. A dateless heading that is plainly a spillover of the
+  block above it ("Due to the volume of materials…") carries that date forward.
+- **One agenda per sitting.** The city posts the agenda several times — the
+  clerk's posting, "Final for Posting", then "Updated" reissues. One is kept (a
+  "Final for Posting" copy, else the most recently posted); the rest are dropped
+  and counted.
+- **The board is `School Committee`, stated not guessed** — `classify` would read
+  "boa" or "planning" out of an attached policy's filename.
+- **`kind` is from the label**: the clerk's posting and the agenda are `agenda`,
+  the minutes `minutes`, and the packet and everything else `other`.
+- **An empty parse throws**, so a markup change fails the run rather than
+  emptying the file.

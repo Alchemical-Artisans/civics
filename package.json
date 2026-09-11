@@ -24,6 +24,7 @@
     "budget:update": "node scripts/update-budget.mjs",
     "schedule:update": "node scripts/update-schedule.mjs",
     "notices:update": "node scripts/update-notice-documents.mjs",
+    "hps:update": "node scripts/update-hps-documents.mjs",
     "recordings:update": "node scripts/update-recordings.mjs",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",

@@ -218,6 +218,34 @@ pattern is tried before the council's own. `pageUrl` is the `/video/` URL and
 transcription page. `Video Recordings` is one entry in the calendar's Sources,
 last, after the city's own pages.
 
+**The School Committee keeps its record on its own site, and nothing else in the
+pipeline touches that body.** The listing and its archives cover five boards and
+the committee is not one; the events-calendar notices carry a School Committee
+agenda only from mid-2026 and never the packet; HC Media has the video alone.
+What the committee actually takes in -- the clerk's posting, the agenda, the
+"portfolio" packet, presentations, warrants, minutes -- it publishes on the
+Haverhill Public Schools site,
+`haverhill-ps.org/meeting-schedule-and-agenda-packet`, a different host on a
+different CMS. `scripts/update-hps-documents.mjs` (`npm run hps:update`, a step
+of `metadata:update`) reads it, on the same terms as the board pages and the
+notice agendas: a `source` of its own, replacing only its own records. The page
+is dated sections, one per sitting back to 2023, each heading a meeting date over
+that sitting's document list in one of two markup shapes. **The heading is the
+date** -- records are built directly, `dateSource: "schedule-page"`, the chain
+not walked, the same as a notice's date; a heading naming no single day (prose, a
+bare year, a week range) is skipped and counted, and a plain spillover block
+("Due to the volume of materials...") carries the date above it forward. **The
+board is `School Committee`, stated not guessed.** **`kind` is from the label** --
+the clerk's posting and the agenda are `agenda`, the packet and the loose
+presentations and warrants `other` -- and among a sitting's several agenda copies
+(the clerk's posting, "Final for Posting", "Updated" reissues) **one is kept**, a
+"Final for Posting" copy or else the most recently posted, the rest dropped and
+counted. Where the committee also has a notice agenda for the day,
+`withoutSecondCopies` drops the notice's copy at build. In the Sources list the
+page sits after the city's `haverhillma.gov` pages and before Video Recordings:
+the city's record of a body haverhillma.gov omits, so part of it, but a step
+removed.
+
 **No board's meeting schedule is a document.** Both are ordinary HTML on a page,
 which is why the calendar could not see either while it read only the listing --
 the scraper already fetched one of those very pages for its antiforgery token

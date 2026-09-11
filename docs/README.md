@@ -92,11 +92,14 @@ scripts/
   lib/schedule.spec.mjs    unit tests for those parsers
   lib/notices.mjs          the meeting notices the city posts to its events calendar
   lib/notices.spec.mjs     unit tests for that parser, and for the list of bodies
+  lib/hps.mjs              the School Committee's own agendas, minutes and packets
+  lib/hps.spec.mjs         unit tests for that parser
   rebuild-calendar.mjs     full re-scrape
   update-calendar.mjs      incremental refresh
   update-budget.mjs        re-scrape the budget and audit listing
   update-schedule.mjs      re-read the notices, rules and calendars off their pages
   update-notice-documents.mjs  the agendas the city hangs off those notices
+  update-hps-documents.mjs     the School Committee's own meeting page
   lib/board-pages.mjs      agendas and minutes kept on a board's own page
   lib/board-pages.spec.mjs unit tests for that parser
   lib/cache.mjs            local copies of the city's files, for checking by hand

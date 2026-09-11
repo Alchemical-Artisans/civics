@@ -30,6 +30,7 @@ npm run links:check        # HEAD every linked file; find the ones the city has 
 npm run budget:update      # re-scrape the budget and audit listing
 npm run schedule:update    # re-read the notices, rules and calendars
 npm run notices:update     # the agendas the city hangs off those notices
+npm run hps:update         # the School Committee's own agendas, minutes and packets
 npm run recordings:update  # HC Media's video of a sitting, matched to it
 ```
 
@@ -83,6 +84,15 @@ It sweeps **every month the calendar carries**, back to April 2025, where
 share a page and want different windows: an expected sitting is only ever a
 future one, but these are documents, and the document half of this site is
 entirely retrospective.
+
+**`hps:update` is one request, and replaces only its own records.** The School
+Committee is the one major body nothing else in the pipeline covers; it publishes
+on the Haverhill Public Schools site rather than `haverhillma.gov`. The scrape
+reads one page — dated sections back to 2023, each heading a sitting's date over
+its document list — and builds records directly, the heading being the date. It
+prints the headings it skipped (a bare year, a week range) and how many
+duplicate agenda copies it dropped. An empty parse is a hard failure, the same as
+the others. See [scraping.md](./scraping.md#the-school-committees-own-page).
 
 **`schedule:update` ends with the notices it could not place.** The city's
 events calendar carries every board that posts a meeting notice — and also

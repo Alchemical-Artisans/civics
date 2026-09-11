@@ -135,6 +135,9 @@ const PAGE_NAMES: Record<string, string> = {
   "minutes-archive": "Minutes Archive",
   "planning-board": "Planning Board",
   "zoning-board-of-appeals": "Zoning Board of Appeals",
+  // The School Committee's own page on the Haverhill Public Schools site, where
+  // the committee publishes its agendas, minutes and meeting packets.
+  "meeting-schedule-and-agenda-packet": "School Committee",
   // A whole host rather than a page under one, so the "last path segment" rule
   // leaves the hostname, and the slug fallback would title it
   // "Events.haverhillma.gov".
@@ -326,12 +329,15 @@ export function calendar(): Calendar {
         // The city's own hosts first, ordered by URL -- which sorts the
         // agendas-and-minutes listing above its two archives and the board
         // pages after, the order explained by the archives holding more of the
-        // record than the listing they hang off. Anything else -- HC Media's
-        // recordings -- after them: a supplement to the city's record, not part
-        // of it.
+        // record than the listing they hang off. Then the School Committee's
+        // own page on the Haverhill Public Schools site: the city's record of a
+        // body haverhillma.gov omits, so part of it, but a step removed. Then
+        // anything else -- HC Media's recordings -- last: a supplement, not part
+        // of the city's record.
         .sort((a, b) => {
-          const ours = (url: string) => (url.includes("haverhillma.gov") ? 0 : 1)
-          return ours(a) - ours(b) || a.localeCompare(b)
+          const rank = (url: string) =>
+            url.includes("haverhillma.gov") ? 0 : url.includes("haverhill-ps.org") ? 1 : 2
+          return rank(a) - rank(b) || a.localeCompare(b)
         })
         .map((url) => ({ name: pageName(url), url, pdf: url.endsWith(".pdf") })),
       schedules: [

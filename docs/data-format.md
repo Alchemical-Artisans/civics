@@ -62,13 +62,14 @@ every write so refreshes produce readable diffs rather than reshuffled files.
 `source` names the page a record was scraped from, and **each scraper only ever
 replaces its own**:
 
-| `source`                                                       | Written by                                                              |
-| -------------------------------------------------------------- | ----------------------------------------------------------------------- |
-| `…/government/agendas-and-minutes/`                            | [`update-calendar.mjs`](../scripts/update-calendar.mjs)                 |
-| `…/boards-committees-and-commissions/planning-board/`          | [`update-board-pages.mjs`](../scripts/update-board-pages.mjs)           |
-| `…/boards-committees-and-commissions/zoning-board-of-appeals/` | the same                                                                |
-| `https://events.haverhillma.gov/`                              | [`update-notice-documents.mjs`](../scripts/update-notice-documents.mjs) |
-| `http://haverhillcommunitytv.org/`                             | [`update-recordings.mjs`](../scripts/update-recordings.mjs)             |
+| `source`                                                          | Written by                                                              |
+| ----------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| `…/government/agendas-and-minutes/`                               | [`update-calendar.mjs`](../scripts/update-calendar.mjs)                 |
+| `…/boards-committees-and-commissions/planning-board/`             | [`update-board-pages.mjs`](../scripts/update-board-pages.mjs)           |
+| `…/boards-committees-and-commissions/zoning-board-of-appeals/`    | the same                                                                |
+| `https://events.haverhillma.gov/`                                 | [`update-notice-documents.mjs`](../scripts/update-notice-documents.mjs) |
+| `https://www.haverhill-ps.org/meeting-schedule-and-agenda-packet` | [`update-hps-documents.mjs`](../scripts/update-hps-documents.mjs)       |
+| `http://haverhillcommunitytv.org/`                                | [`update-recordings.mjs`](../scripts/update-recordings.mjs)             |
 
 This is not bookkeeping. Most of the city's record is not in the listing at all:
 the listing reaches back only to 2025, and under it sit an **Agenda Archive** and
@@ -95,17 +96,17 @@ was the only source there was.
 
 ### Fields derived
 
-| Field            | Type                                                                         | Notes                                                                                              |
-| ---------------- | ---------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
-| `board`          | string                                                                       | From `category`, else title, else filename. Never empty.                                           |
-| `kind`           | `agenda` \| `minutes` \| `recording` \| `other`                              | Derived from the same text. `recording` is set by `update-recordings.mjs`; the others are guessed. |
-| `date`           | `YYYY-MM-DD` \| null                                                         | The resolved meeting date. **This drives the calendar.**                                           |
-| `dateSource`     | `meeting-date` \| `title` \| `filename` \| `notice` \| `recording` \| `none` | Which step of the chain produced `date`. `notice` and `recording` skip the chain -- see below.     |
-| `rawMeetingDate` | string \| null                                                               | Unmodified `Meeting Date` cell, e.g. `01/08/2025 12:00 AM`.                                        |
-| `dateAdjusted`   | boolean                                                                      | True if rolled back a day for the UTC rollover.                                                    |
-| `dateConflict`   | boolean                                                                      | True if the filename date contradicts `date`.                                                      |
-| `filenameDate`   | `YYYY-MM-DD` \| null                                                         | Unambiguous date read from the filename, if any.                                                   |
-| `needsReview`    | boolean                                                                      | No date, a conflict, or an ambiguous filename split.                                               |
+| Field            | Type                                                                                            | Notes                                                                                                           |
+| ---------------- | ----------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `board`          | string                                                                                          | From `category`, else title, else filename. Never empty.                                                        |
+| `kind`           | `agenda` \| `minutes` \| `recording` \| `other`                                                 | Derived from the same text. `recording` is set by `update-recordings.mjs`; the others are guessed.              |
+| `date`           | `YYYY-MM-DD` \| null                                                                            | The resolved meeting date. **This drives the calendar.**                                                        |
+| `dateSource`     | `meeting-date` \| `title` \| `filename` \| `notice` \| `schedule-page` \| `recording` \| `none` | Which step of the chain produced `date`. `notice`, `schedule-page` and `recording` skip the chain -- see below. |
+| `rawMeetingDate` | string \| null                                                                                  | Unmodified `Meeting Date` cell, e.g. `01/08/2025 12:00 AM`.                                                     |
+| `dateAdjusted`   | boolean                                                                                         | True if rolled back a day for the UTC rollover.                                                                 |
+| `dateConflict`   | boolean                                                                                         | True if the filename date contradicts `date`.                                                                   |
+| `filenameDate`   | `YYYY-MM-DD` \| null                                                                            | Unambiguous date read from the filename, if any.                                                                |
+| `needsReview`    | boolean                                                                                         | No date, a conflict, or an ambiguous filename split.                                                            |
 
 ### An agenda read off a meeting notice
 
@@ -128,6 +129,33 @@ Four fields do not mean quite what they do on a listing row:
 `dateConflict`, `filenameDate` and `needsReview` are always false or null. There
 is no derived date here for a filename to contradict, and raising sixty
 questions that are already answered would bury the ones that are not.
+
+### A document off the School Committee's own page
+
+The School Committee publishes its agendas, minutes and meeting packets on the
+Haverhill Public Schools site, not on `haverhillma.gov` -- nothing else in the
+pipeline covers that body. Written by
+[`update-hps-documents.mjs`](../scripts/update-hps-documents.mjs), under a
+`source` of `https://www.haverhill-ps.org/meeting-schedule-and-agenda-packet`,
+which is also every record's `pageUrl`: there is no per-document page on this
+host, so `documentPage()` in `meetings.ts` sees the two match and the calendar
+links straight to the PDF.
+
+| Field                          | On one of these                                                                                                                                                                                  |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `board`                        | Always `School Committee` -- one body, named rather than guessed. `classify` would read "boa" or "planning" out of an attached policy's filename and misfile it.                                 |
+| `kind`                         | From the link's own label. The clerk's posting and the agenda are `agenda`, the minutes `minutes`; the "portfolio" packet, presentations, warrants and P-card reports are all `other`.           |
+| `dateSource`                   | `schedule-page`. **The chain is not walked**: the page groups a sitting's documents under its date as a heading, which is better evidence than a filename -- the same reasoning as `notice`.     |
+| `description`                  | The city's filename for the PDF, the only other name it has.                                                                                                                                     |
+| `dateConflict` / `needsReview` | Set only where one PDF is listed under two date headings and neither matches its filename date -- rare. A single-heading document is trusted against the heading, filename disagreement and all. |
+
+The city posts each agenda several times over -- the clerk's posting, a "Final
+for Posting" copy, then "Updated" reissues. **One is kept per sitting** (a "Final
+for Posting" copy, else the most recently posted); the rest are dropped in the
+scrape and counted. Minutes and `other` documents are all kept. Where the
+committee also has a notice agenda for the same day, `withoutSecondCopies` drops
+the notice's copy at build time, board/date/kind matching, the same as it does
+for the two archives.
 
 ### A recording off Haverhill Community Television
 
