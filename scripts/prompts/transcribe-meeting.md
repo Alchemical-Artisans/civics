@@ -221,13 +221,34 @@ paragraphs and every excerpt on it. Excerpts that were two separate people's
 mayor's letters and resumes move under the one item slug too, told apart by
 filename (`mary-grise-resume.pdf`, `wendy-sczechowicz-resume.pdf`) rather
 than by directory. On the outline, each sub-item keeps its own numbered
-entry and its own short link text — a reader following "11.1.1" should
-still land on Mary Grise's paragraph rather than Wendy Sczechowicz's — but
-both entries' links point at the same slug. `tag-days` and
-`event-applications` on this same meeting are the same pattern one level
-up: a whole bucket ("12.6 Tag Days", "12.4 Amusement/Event Application")
-rather than a numbered sub-item, several unrelated applicants listed under
-it, one page for all of them.
+entry and its own short link text — the §4 title rule applies here exactly
+as it does to any other item, so "EVNT-26-23- Kathy McCormick for Rocks
+Village Memorial Association, Inc request to hold an Art Show to coincide
+with Essex Heritage Trails and Sails on September 12th & 13th..." is
+"Art Show, Rocks Village Memorial Association" on the outline, never the
+full sentence. A reader following "11.1.1" should still land on Mary
+Grise's paragraph rather than Wendy Sczechowicz's — but both entries' links
+point at the same slug. `tag-days` and `event-applications` on this same
+meeting are the same pattern one level up: a whole bucket ("12.6 Tag Days",
+"12.4 Amusement/Event Application") rather than a numbered sub-item,
+several unrelated applicants listed under it, one page for all of them.
+
+**But where a bucket's sub-items are mostly bare category headers with
+nothing under them, the whole numbered list moves to the page, not just
+the sub-items' content.** "12.8 Annual License Renewals" has eighteen
+sub-items and only one, "12.8.6.1", names an actual applicant — the other
+seventeen are category labels with no renewal filed against them this
+sitting, exactly the "bare heading with nothing under it" this section
+already says does not get a page of its own. A numbered list that is
+seventeen empty categories and one real entry has no reader value split
+across the outline; write the whole thing — every sub-item, numbered as
+printed, the one with content included — on the bucket's own page, and
+collapse the outline to a single "12.8" entry linking to it, the same as
+any other single-page item. The test is not the bucket's size but whether
+its sub-items are individually substantive (an applicant, an appointee) or
+mostly placeholders: `confirming-appointments`, `tag-days`, and
+`event-applications` are all of the first kind and keep their sub-items on
+the outline; `annual-license-renewals` is the second kind and does not.
 
 **Two agenda lines can be the same matter.** The License Commission's own
 `src/routes/calendar/meetings/planning-board-2026-09-09/` (four items, no

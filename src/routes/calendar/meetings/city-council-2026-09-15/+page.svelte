@@ -146,27 +146,19 @@
       <li>
         <strong>12.4.1</strong>
         <a href={Router.meetingItem(MEETING, "event-applications")}>
-          EVNT-26-23- Kathy McCormick for <em>Rocks Village Memorial Association, Inc</em> request
-          to hold an Art Show to coincide with Essex Heritage Trails and Sails on September 12th
-          &amp; 13th, September 19th &amp; 20<sup>th</sup>, September 26th &amp; 27st, and October 3
-          &amp; 4 from 10 AM to 5 PM
+          Art Show, Rocks Village Memorial Association
         </a>
       </li>
       <li>
         <strong>12.4.2</strong>
         <a href={Router.meetingItem(MEETING, "event-applications")}>
-          EVNT-26-25- Jennifer Silva for <em>Fresh Start Brew Co. DBA Aroma Joe&rsquo;s</em> requests
-          to hold a Free Fall Event for all on October 30th from 3:30 &ndash; 8 PM at 727 South Main St
-          in the building and parking lot
+          Free Fall Event, Fresh Start Brew Co.
         </a>
       </li>
       <li>
         <strong>12.4.3</strong>
         <a href={Router.meetingItem(MEETING, "event-applications")}>
-          EVNT-26-27- Devon Allen for <em>Vintage Bazaar New England</em> requesting to hold the Vintage
-          Bazaar Fall Festival at Crescent Farm for a vintage and craft show with live music and food
-          to be held on Saturday October 3rd from 8:30 AM to 4 PM and Sunday October 4th from 10 AM to
-          3 PM.
+          Vintage Bazaar Fall Festival, Vintage Bazaar New England
         </a>
       </li>
     </ul>
@@ -193,51 +185,8 @@
     <strong>12.7 One Day Liquor License</strong> &ndash;with Police and License Commission approval
   </li>
   <li>
-    <strong>12.8 Annual License Renewals:</strong>
-    <ul>
-      <li>
-        <strong>12.8.1 Hawker Peddlers License- Fixed location</strong> &ndash;
-        <em>w/Police approval</em>
-      </li>
-      <li>
-        <strong>12.8.2 Coin-Op License <em>Renewals</em></strong> &ndash;
-        <em>with Police approval</em>
-      </li>
-      <li><strong>12.8.3 Christmas Tree Vendor</strong> &ndash; <em>with Police approval</em></li>
-      <li><strong>12.8.4 Taxi Driver Licenses:</strong> <em>with Police approval</em></li>
-      <li><strong>12.8.5 Taxi/Limousine License</strong> <em>with Police approval</em></li>
-      <li>
-        <strong>12.8.6 Junk Dealer /Collector License</strong> - <em>with Police approval</em>
-        <ul>
-          <li>
-            <strong>12.8.6.1</strong>
-            <a href={Router.meetingItem(MEETING, "annual-license-renewals")}>
-              Junk-26-3- Jack Gouldsbrough, T&amp;R Salvage <strong>(Renewal)</strong> 99 Newark St
-            </a>
-          </li>
-        </ul>
-      </li>
-      <li><strong>12.8.7 Pool/Billiard</strong></li>
-      <li><strong>12.8.8 Bowling</strong></li>
-      <li><strong>12.8.9 Sunday Bowling</strong></li>
-      <li>
-        <strong>12.8.10 Buy &amp; Sell Secondhand Articles</strong> <em>with Police approval</em>
-      </li>
-      <li>
-        <strong>12.8.11 Buy &amp; Sell Secondhand Clothing</strong> <em>with Police approval</em>
-      </li>
-      <li><strong>12.8.12 Pawnbroker license</strong> - <em>with police approval</em></li>
-      <li><strong>12.8.13 Fortune Teller</strong> <em>with - Police approval</em></li>
-      <li>
-        <strong>12.8.14 Buy &amp; Sell Old Gold</strong> &ndash; <em>with Police approval</em>
-      </li>
-      <li><strong>12.8.15 Roller Skating Rink</strong></li>
-      <li><strong>12.8.16 Sunday Skating</strong></li>
-      <li><strong>12.8.17 Exterior Vending Machines/Redbox Automated Retail, LLC</strong></li>
-      <li>
-        <strong>12.8.18 Limousine/Livery License/Chair Cars</strong> <em>with Police approval</em>
-      </li>
-    </ul>
+    <strong>12.8</strong>
+    <a href={Router.meetingItem(MEETING, "annual-license-renewals")}> Annual License Renewals </a>
   </li>
 </ul>
 
