@@ -214,10 +214,12 @@ export function calendar(): Calendar {
   // A recording HC Media has that matched no sitting the city published
   // anything for -- `update-recordings.mjs` set `orphan` because the day or
   // body in the volunteer-typed title is wrong, or the meeting was filmed and
-  // never documented. A recording is only ever shown beside a sitting's own
-  // documents, never on its own, so an orphan is dropped here and left to the
-  // run's attention report. `settled` in reviews.json is how a person waves one
-  // off for good.
+  // never documented. The scrape never shows one on its own, so an orphan is
+  // dropped here and left to the run's attention report, unless a person has
+  // overridden `orphan` to `false` in reviews.json -- a considered decision
+  // that this recording does name a real sitting, which is what lets a meeting
+  // reach the calendar carrying nothing but a recording. `settled` in
+  // reviews.json is how a person waves an orphan off instead, for good.
   const placed = live.filter((m) => !("orphan" in m && m.orphan))
   const dated = placed.filter((m) => m.date)
 

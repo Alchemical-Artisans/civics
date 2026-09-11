@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest"
 import { calendar } from "./meetings"
+import reviews from "./data/reviews.json"
 
 const documents = calendar().meetings.flatMap((m) => m.documents)
 
@@ -81,14 +82,21 @@ describe("recordings", () => {
   const meetings = calendar().meetings
   const recordings = meetings.flatMap((m) => m.documents).filter((d) => d.kind === "recording")
 
-  it("attach to real sittings, and only to real sittings", () => {
+  it("stands alone only where a person has confirmed it in reviews.json", () => {
     expect(recordings.length).toBeGreaterThan(0)
-    // Every meeting carrying a recording also carries a document the city
-    // published -- an orphan recording (HC Media filmed a meeting the city
-    // documented nowhere) is dropped in meetings.ts, never shown on its own.
-    for (const m of meetings) {
-      if (!m.documents.some((d) => d.kind === "recording")) continue
-      expect(m.documents.some((d) => d.kind !== "recording")).toBe(true)
+    // An orphan recording (HC Media filmed a meeting the city documented
+    // nowhere) is dropped in meetings.ts and never shown -- unless a person
+    // reads the volunteer-typed title, decides it does name a real sitting,
+    // and overrides `orphan` to `false` in reviews.json. So a meeting whose
+    // only document is a recording did not slip past that filter; it is one
+    // a person put there on purpose, and this checks the record proving it.
+    const solo = meetings.filter(
+      (m) => m.documents.length === 1 && m.documents[0].kind === "recording",
+    )
+    expect(solo.length).toBeGreaterThan(0)
+    for (const m of solo) {
+      const slug = m.documents[0].pageUrl.replace(/\/+$/, "").split("/").pop()
+      expect((reviews as Record<string, { orphan?: boolean }>)[`${slug}::none`]?.orphan).toBe(false)
     }
   })
 

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-10T13:37:37.158Z",
+  "generatedAt": "2026-09-11T16:31:17.777Z",
   "rules": [
     {
       "board": "City Council",
@@ -334,7 +334,11 @@
           "date": "2026-12-09"
         }
       ],
-      "cancelled": ["2026-01-14", "2026-06-10", "2026-11-11"]
+      "cancelled": [
+        "2026-01-14",
+        "2026-06-10",
+        "2026-11-11"
+      ]
     },
     {
       "board": "Zoning Board of Appeals",
@@ -373,7 +377,10 @@
           "date": "2026-12-16"
         }
       ],
-      "cancelled": ["2026-02-18", "2026-09-16"]
+      "cancelled": [
+        "2026-02-18",
+        "2026-09-16"
+      ]
     }
   ],
   "noticeCalendar": {
@@ -471,6 +478,20 @@
       "title": "Haverhill Conservation Commission Meeting",
       "url": "https://events.haverhillma.gov/default/Detail/2026-09-17-1915-Haverhill-Conservation-Commission-Meeting",
       "time": "7:15 PM"
+    },
+    {
+      "board": "Housing Authority",
+      "date": "2026-09-17",
+      "title": "Haverhill Housing Authority Meeting",
+      "url": "https://events.haverhillma.gov/default/Detail/2026-09-17-1000-Haverhill-Housing-Authority-Meeting2",
+      "time": "10:00 AM"
+    },
+    {
+      "board": "Library Board of Trustees",
+      "date": "2026-09-17",
+      "title": "Haverhill Public Library Board of Trustees Meeting",
+      "url": "https://events.haverhillma.gov/default/Detail/2026-09-17-0930-Haverhill-Public-Library-Board-of-Trustees-Meeting",
+      "time": "9:30 AM"
     },
     {
       "board": "City Council",

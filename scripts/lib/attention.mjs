@@ -88,7 +88,7 @@ export function collect(meetings, linkStatus) {
     {
       key: "orphan-recording",
       title: "A recording matched no sitting on the calendar",
-      note: "HC Media filmed a meeting the city has published nothing for, or the day or body in its title is wrong. Check the video, then either add the missing agenda's board to the right date -- or `settled` this to keep it off the calendar. `needsReview` does not apply; there is no date in question, only whether the sitting exists.",
+      note: "HC Media filmed a meeting the city has published nothing for, or the day or body in its title is wrong. Check the video, then either add the missing agenda's board to the right date, `settled` this to keep it off the calendar, or -- if the title is right and the city just never documented the sitting -- set `\"orphan\": false` to let the recording stand as the meeting's only document. `needsReview` does not apply; there is no date in question, only whether the sitting exists.",
       records: meetings.filter((m) => m.kind === "recording" && m.orphan && live(m)),
     },
   ]

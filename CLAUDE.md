@@ -202,14 +202,20 @@ own WordPress site under `/category/government/<body>/`.
 anything without a browser string; HC Media rate-limits the browser strings.
 `kind` is a fourth value, `"recording"`, sorted after minutes and drawn as a
 violet chip. **A recording is matched to a sitting, never allowed to make
-one.** The day and body are read off a volunteer-typed title -- "March 12,
-2026", whose slug says the 13th -- so the scrape keeps a recording only where
-`meetings.json` already has that board on that date from an agenda, minutes or
-a notice; the rest are written with `orphan: true`, filtered out in
+one -- by the scrape.** The day and body are read off a volunteer-typed title --
+"March 12, 2026", whose slug says the 13th -- so the scrape keeps a recording
+only where `meetings.json` already has that board on that date from an agenda,
+minutes or a notice; the rest are written with `orphan: true`, filtered out in
 `meetings.ts`, and counted in the run's attention report under "a recording
-matched no sitting" for a person to place or `settled`. Of ~560 recordings
-about 325 match; the gap is mostly the School Committee before mid-2026, which
-the city documented nowhere. `RECORDING_BODIES` in `scripts/lib/recordings.mjs`
+matched no sitting" for a person to place, `settled` off, or promote by hand:
+`"orphan": false` in `reviews.json` (`applyReviews` overlays any field, this
+one included) says a person has decided the title's day and body are right even
+with nothing else on the calendar for it, and that is what makes the meeting a
+bare recording with no other document. Of ~560 recordings about 325 match; the
+gap is mostly the School Committee before mid-2026, which the city documented
+nowhere; on 2026-09-11 every recording orphaned at the time (236) was promoted
+this way, at the site owner's direction rather than a scrape decision.
+`RECORDING_BODIES` in `scripts/lib/recordings.mjs`
 is the hand-kept title-to-board list, `BODIES`'s counterpart: HC Media titles a
 council committee "City Council Planning & Development Meeting" where the city's
 notice says "Planning and Development Committee", and a council-committee

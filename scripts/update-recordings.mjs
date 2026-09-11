@@ -8,14 +8,17 @@
  * the city's pages -- so without this the calendar links an agenda and its
  * minutes and never the thing itself.
  *
- * **A recording is attached to a sitting the calendar already has, never
- * allowed to create one.** The day and body are read off a title a volunteer
- * typed, which is weaker evidence than a city document; a recording is worth
- * carrying beside an agenda and not worth standing on its own. So this matches
- * each one against the rest of `meetings.json` on board and date, keeps the
- * matches, and writes the rest with `orphan: true` -- off the site, and in the
- * run's attention report for a person to place or wave off. It runs after the
- * scrapes that add city documents, so the thing it matches against is current.
+ * **A recording is attached to a sitting the calendar already has, never left
+ * to create one on its own say-so.** The day and body are read off a title a
+ * volunteer typed, which is weaker evidence than a city document; a recording
+ * is worth carrying beside an agenda and not, by default, worth standing on
+ * its own. So this matches each one against the rest of `meetings.json` on
+ * board and date, keeps the matches, and writes the rest with `orphan: true`
+ * -- off the site, and in the run's attention report for a person to place,
+ * wave off, or -- `"orphan": false` in reviews.json -- promote by hand once
+ * they judge the title names a real, if undocumented, sitting. It runs after
+ * the scrapes that add city documents, so the thing it matches against is
+ * current.
  *
  * `source` keeps it from colliding with those scrapes: like the board pages and
  * the notice documents, every record here names this scrape and each run
