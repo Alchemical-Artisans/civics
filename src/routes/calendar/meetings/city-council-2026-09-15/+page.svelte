@@ -100,14 +100,12 @@
     <a href={Router.meetingItem(MEETING, "merrimack-st-special-permit")}>
       Withdraw Special Permit Application for 121 Merrimack St
     </a>
-    <p class="text-right"><strong>Continued from July 14, 2026</strong></p>
   </li>
   <li>
     <strong>10.3</strong>
     <a href={Router.meetingItem(MEETING, "battery-energy-storage-systems-ordinance")}>
       Battery Energy Storage Systems Ordinance
     </a>
-    <p class="text-right"><strong>Continued from August 25, 2026</strong></p>
   </li>
 </ul>
 
@@ -138,7 +136,6 @@
     <a href={Router.meetingItem(MEETING, "chapter-255-zoning-amendments")}>
       Proposed Amendments to Chapter 255, Zoning
     </a>
-    <p class="text-right"><strong>Hearing for October 27, 2026</strong></p>
   </li>
   <li><strong>12.2</strong></li>
   <li><strong>12.3 Applications Handicap Parking Sign:</strong> <em>with Police approval</em></li>
@@ -254,69 +251,18 @@
     <a href={Router.meetingItem(MEETING, "parking-ordinance-12-blaisdell-st")}>
       12 Blaisdell St &ndash; No Parking Ordinance
     </a>
-    <table>
-      <thead>
-        <tr>
-          <th scope="col">Location</th>
-          <th scope="col">Regulation</th>
-          <th scope="col">Hours/ Days</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>12 Blaisdell St</td>
-          <td>No Parking<br />(except for 1 24- hours Handicap parking space)</td>
-          <td>24 hrs</td>
-        </tr>
-      </tbody>
-    </table>
-    <p class="text-right"><strong>File 10 Days</strong></p>
   </li>
   <li>
     <strong>14.2</strong>
     <a href={Router.meetingItem(MEETING, "parking-ordinance-16-forest-ave")}>
       16 Forest Ave &ndash; No Parking Ordinance
     </a>
-    <table>
-      <thead>
-        <tr>
-          <th scope="col">Location</th>
-          <th scope="col">Regulation</th>
-          <th scope="col">Hours/ Days</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>16 Forest Ave</td>
-          <td>No Parking<br />(except for 1 24- hours Handicap parking space)</td>
-          <td>24 hrs</td>
-        </tr>
-      </tbody>
-    </table>
-    <p class="text-right"><strong>File 10 Days</strong></p>
   </li>
   <li>
     <strong>14.3</strong>
     <a href={Router.meetingItem(MEETING, "parking-ordinance-9-varnum-st")}>
       9 Varnum St &ndash; No Parking Ordinance (Deletion)
     </a>
-    <table>
-      <thead>
-        <tr>
-          <th scope="col">Location</th>
-          <th scope="col">Regulation</th>
-          <th scope="col">Hours/ Days</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>9 Varnum St</td>
-          <td>No Parking<br />(except for 1 24- hours Handicap parking space)</td>
-          <td>24 hrs</td>
-        </tr>
-      </tbody>
-    </table>
-    <p class="text-right"><strong>File 10 Days</strong></p>
   </li>
 </ul>
 
@@ -339,30 +285,12 @@
     <a href={Router.meetingItem(MEETING, "south-mill-street-loan-order")}>
       Loan Order &ndash; South Mill Street Pumping Station and Force Main Improvements
     </a>
-    <p class="text-right"><strong>Filed August 26, 2026</strong></p>
   </li>
   <li>
     <strong>16.2</strong>
     <a href={Router.meetingItem(MEETING, "mohawk-trail-no-parking")}>
       Mohawk Trail &ndash; No Parking Ordinance
     </a>
-    <table>
-      <thead>
-        <tr>
-          <th scope="col">Location</th>
-          <th scope="col">Regulation</th>
-          <th scope="col">Hours/ Days</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Mohawk Trail<br />Both sides, entire length</td>
-          <td>No Parking</td>
-          <td>24 hrs</td>
-        </tr>
-      </tbody>
-    </table>
-    <p class="text-right"><strong>Filed August 26, 2026</strong></p>
   </li>
 </ul>
 

@@ -184,11 +184,20 @@ written up separately under both the 8/25 and 9/15 meetings with the same
 title in each). Where the note names a sender but reports no new
 development ("Related communication from Jacki Byerley, Planning Director",
 who is already the item's own submitter), it has nothing to add over the
-plain title — drop the note and leave the link text as the title. A bold,
-right-aligned line printed under an item ("File 10 Days", "Continued from
-July 14, 2026", "Filed August 26, 2026") is a different thing: the agenda's
-own procedural stamp, not a description of an attached document, and it
-stays on the outline as printed.
+plain title — drop the note and leave the link text as the title.
+
+**This is the general rule, not a special case for one kind of note: once an
+item has its own page, everything under its outline entry belongs there
+instead, not in both places.** A bold, right-aligned procedural stamp
+("File 10 Days", "Continued from July 14, 2026", "Filed August 26, 2026")
+is still the agenda's own words rather than the transcriber's, but it is
+transcribed onto the item's page along with the rest of the item, and that
+means it comes off the outline the same as a sub-item or a related-
+communication note does — an ordinance's outline entry does not need
+"File 10 Days" under it any more than it needs the parking-restriction
+table repeated under it when that table is already on the page the link
+goes to. The outline is a table of contents; the page it points to is where
+an item's content — table, stamp, sub-item, or note — actually lives.
 
 **Two agenda lines can be the same matter.** The License Commission's own
 agenda puts one applicant's request under two headings — a Common Victualler
