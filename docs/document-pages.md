@@ -149,6 +149,18 @@ the back-link at the agenda rather than at the calendar.
 Because the whole meeting header would repeat on every item, the layout shows
 the time, room, remote link and notice only on the document page itself.
 
+Two lines on an agenda can be the same matter rather than two: the License
+Commission's own agenda puts one applicant's request under two headings, a
+Common Victualler amendment and an Alcohol/ABCC application, because that is
+two different licenses even though it is one restaurant asking for one change
+of hours. Write one item page rather than two that would say the same thing
+twice, and link both list entries to it with the same
+`Router.meetingItem(id, slug)` call — see
+[`license-commission-2026-09-14/99-restaurant-hours`](../src/routes/calendar/meetings/license-commission-2026-09-14/99-restaurant-hours/+page.svelte).
+Keep each entry's own link text as the agenda prints it over that entry, so a
+reader arriving from either one still recognises the item they clicked, and say
+in the page's `+page.ts` comment which agenda items it stands for.
+
 ### Excerpting the PDF
 
 An item that rests on a letter or a plan can link to just those pages instead of

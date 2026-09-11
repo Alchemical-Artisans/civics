@@ -146,10 +146,22 @@ so a reader following one to the other gets the same word. Say why in the
 line ("Opening Prayer", "Adjourn"), and a line that is only a date ("Approval of
 minutes: August 12, 2026"). Those stay on the meeting page as they are printed.
 
+**Two agenda lines can be the same matter.** The License Commission's own
+agenda puts one applicant's request under two headings — a Common Victualler
+amendment and an Alcohol/ABCC application for the same change of hours — because
+that is two different licenses even though it is one restaurant asking for one
+thing. Write one page, not two that would say the same thing twice, and link
+both list entries to it with the same slug. Keep each entry's own link text as
+the agenda prints it over that entry, so a reader following "7.1" still reads
+about the Common Victualler amendment and one following "9.1" about the alcohol
+change, and say in the item's `+page.ts` comment which agenda items it stands
+for.
+
 Worked examples, in increasing order of complexity:
 `src/routes/calendar/meetings/planning-board-2026-09-09/` (four items, no
-packet) and `city-council-2026-08-25/` (twenty items, each with pages cut out of
-the packet behind it).
+packet), `city-council-2026-08-25/` (twenty items, each with pages cut out of
+the packet behind it), and `license-commission-2026-09-14/99-restaurant-hours`
+(one item page standing for two agenda lines).
 
 ## 5. Excerpts, where there is a packet
 
