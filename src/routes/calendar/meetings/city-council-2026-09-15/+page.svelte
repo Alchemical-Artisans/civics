@@ -92,24 +92,14 @@
   <li>
     <strong>10.1</strong>
     <a href={Router.meetingItem(MEETING, "marshland-st-special-permit")}>
-      Special Permit, 27 Marshland St
+      Continue Hearing for 27 Marshland St to October 6, 2026
     </a>
-    <p>
-      <em
-        >Related communication from applicant requesting to continue hearing until October 6, 2026</em
-      >
-    </p>
   </li>
   <li>
     <strong>10.2</strong>
     <a href={Router.meetingItem(MEETING, "merrimack-st-special-permit")}>
-      Special Permit, 121 Merrimack St
+      Withdraw Special Permit Application for 121 Merrimack St
     </a>
-    <p>
-      <em
-        >Related communication from applicant requesting to withdraw the special permit application</em
-      >
-    </p>
     <p class="text-right"><strong>Continued from July 14, 2026</strong></p>
   </li>
   <li>
@@ -152,7 +142,6 @@
     <a href={Router.meetingItem(MEETING, "chapter-255-zoning-amendments")}>
       Proposed Amendments to Chapter 255, Zoning
     </a>
-    <p><em>Related communication from Jacki Byerley, Planning Director</em></p>
     <p class="text-right"><strong>Hearing for October 27, 2026</strong></p>
   </li>
   <li><strong>12.2</strong></li>

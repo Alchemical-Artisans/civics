@@ -164,6 +164,32 @@ the link. The outline should read as a link and nothing under it, the way
 every other linked item does; a sub-item left behind is the one thing on the
 page still duplicating text the reader is about to click through to.
 
+**A "Related communication" note belongs on the item's page, not the
+outline, and where it states a new development the link text says so
+instead of the item's plain title.** A City Council agenda often adds a line
+under a hearing item naming an attached letter — "Related communication from
+applicant requesting to continue hearing until October 6, 2026" — the same
+duplication problem as a sub-item: it is prose about a document the item
+page already links to and quotes, so it stays there and comes off the
+outline entirely. Where the note reports something happening to the matter
+at _this_ sitting — a continuance to a new date, a withdrawal — put that in
+the outline's link text in place of the item's usual title, since that is
+the news this agenda actually has for a reader scanning it: "Continue
+Hearing for 27 Marshland St to October 6, 2026" links 10.1 of
+`city-council-2026-09-15`, not "Special Permit, 27 Marshland St". The item's
+own `+page.ts` title is unaffected — it names the matter, not this sitting's
+turn of it, which is why the same matter keeps one title of its own across
+every meeting it comes back to (see `battery-energy-storage-systems-ordinance`,
+written up separately under both the 8/25 and 9/15 meetings with the same
+title in each). Where the note names a sender but reports no new
+development ("Related communication from Jacki Byerley, Planning Director",
+who is already the item's own submitter), it has nothing to add over the
+plain title — drop the note and leave the link text as the title. A bold,
+right-aligned line printed under an item ("File 10 Days", "Continued from
+July 14, 2026", "Filed August 26, 2026") is a different thing: the agenda's
+own procedural stamp, not a description of an attached document, and it
+stays on the outline as printed.
+
 **Two agenda lines can be the same matter.** The License Commission's own
 agenda puts one applicant's request under two headings — a Common Victualler
 amendment and an Alcohol/ABCC application for the same change of hours — because
