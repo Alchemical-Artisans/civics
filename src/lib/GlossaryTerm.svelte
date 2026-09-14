@@ -37,7 +37,7 @@
 <!-- Not the prose link's colour and underline: a definition is not somewhere
      the reader is being sent, it is a word with something behind it. -->
 <a
-  class="glossary-term text-inherit no-underline [border-bottom:1px_dotted_var(--color-slate-400)] hover:[border-bottom-color:var(--color-slate-900)]"
+  class="glossary-term text-inherit no-underline [border-bottom:1px_dotted_var(--color-slate-500)] hover:[border-bottom-color:var(--color-slate-900)]"
   href={Router.glossaryTerm(book.id, termSlug(term))}
 >
   {#if children}{@render children()}{:else}{term}{/if}

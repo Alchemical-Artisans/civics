@@ -181,7 +181,7 @@
           ok: boolean,
           label: string,
         )}
-          <span class="text-xs font-medium text-slate-400 tabular-nums">Policy #{number}</span>
+          <span class="text-xs font-medium text-slate-500 tabular-nums">Policy #{number}</span>
           <h2 class="m-0 flex-1 text-sm font-semibold text-slate-900">{name}</h2>
           {#if figure}
             <span class="font-normal text-slate-600 tabular-nums">{figure}</span>

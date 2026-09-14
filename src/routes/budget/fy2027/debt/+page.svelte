@@ -150,7 +150,7 @@
           -->
           <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
           <div
-            class="cursor-default transition-opacity outline-none"
+            class="cursor-default transition-opacity outline-none focus-visible:ring-2 focus-visible:ring-sky-700 focus-visible:ring-inset"
             style="height: {(part.amount / compositionTotal) *
               100}%; background: {part.colour}; opacity: {active === null || active === part.label
               ? 1
@@ -241,7 +241,7 @@
           ok: boolean,
           label: string,
         )}
-          <span class="text-xs font-medium text-slate-400 tabular-nums">Policy #{number}</span>
+          <span class="text-xs font-medium text-slate-500 tabular-nums">Policy #{number}</span>
           <h2 class="m-0 flex-1 text-sm font-semibold text-slate-900">{name}</h2>
           <span class="font-normal text-slate-600 tabular-nums">{figure}</span>
           <span

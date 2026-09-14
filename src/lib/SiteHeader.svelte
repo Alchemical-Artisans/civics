@@ -258,7 +258,7 @@
                 <!-- The city's page prints the year with nothing behind it, as
                      it does for FY2022 and FY2023. Saying so beats a row the
                      reader has to work out is dead. -->
-                <span class="text-slate-400"
+                <span class="text-slate-500"
                   >FY{year.year}<span class="sr-only"> — no budget file</span></span
                 >
               {/if}

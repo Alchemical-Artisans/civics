@@ -205,7 +205,7 @@
               -->
               <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
               <div
-                class="w-full cursor-default transition-opacity outline-none"
+                class="w-full cursor-default transition-opacity outline-none focus-visible:ring-2 focus-visible:ring-sky-700 focus-visible:ring-inset"
                 style="height: {part.depth}%; background: {part.colour}; opacity: {lit(
                   column.label,
                   part.label,

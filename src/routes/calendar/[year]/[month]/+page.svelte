@@ -125,13 +125,39 @@
    */
   const entryClass = (m: Meeting) =>
     m.scheduled
-      ? "border border-dashed border-slate-400 text-slate-600 hover:bg-slate-100"
+      ? "border border-dashed border-slate-500 text-slate-600 hover:bg-slate-100"
       : "bg-slate-100 text-slate-900 hover:bg-slate-200"
 
   const entryTitle = (m: Meeting) =>
     m.scheduled
       ? `${m.board} — expected; no agenda published yet`
       : `${m.board} — ${m.documents.length} document${m.documents.length === 1 ? "" : "s"}`
+
+  const KIND_NAME: Record<MeetingKind, string> = {
+    agenda: "agenda",
+    minutes: "minutes",
+    recording: "recording",
+    other: "document",
+  }
+
+  /**
+   * The same breakdown the "A"/"M"/"▶" letters give a sighted reader, in
+   * words: a screen reader hears "1 agenda, 1 minutes" rather than a bare
+   * count, which is all the letters carried before -- a sighted reader could
+   * see at a glance that a meeting had both an agenda and minutes, and a
+   * screen reader user could not.
+   */
+  const KIND_ORDER: MeetingKind[] = ["agenda", "minutes", "recording", "other"]
+
+  const documentSummary = (m: Meeting) =>
+    KIND_ORDER.map((kind) => ({ kind, n: m.documents.filter((doc) => doc.kind === kind).length }))
+      .filter(({ n }) => n > 0)
+      .map(({ kind, n }) => {
+        const name = KIND_NAME[kind]
+        const plural = kind === "minutes" ? name : n === 1 ? name : `${name}s`
+        return `${n} ${plural}`
+      })
+      .join(", ")
 </script>
 
 <svelte:head>
@@ -382,11 +408,7 @@
                         {#if m.scheduled}
                           <span class="sr-only">, expected; no agenda published yet</span>
                         {:else}
-                          <span class="sr-only">
-                            , {m.documents.length} document{m.documents.length === 1
-                              ? ""
-                              : "s"}</span
-                          >
+                          <span class="sr-only">, {documentSummary(m)}</span>
                         {/if}
                       </a>
                     </li>
@@ -427,7 +449,7 @@
                     {/each}
                     {#if m.scheduled}
                       <span
-                        class="ml-2 rounded border border-dashed border-slate-400 px-1.5 py-0.5 text-[11px] text-slate-600"
+                        class="ml-2 rounded border border-dashed border-slate-500 px-1.5 py-0.5 text-[11px] text-slate-600"
                       >
                         expected
                       </span>

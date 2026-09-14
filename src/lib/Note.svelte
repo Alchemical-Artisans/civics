@@ -59,7 +59,7 @@
   aria-expanded={open}
   aria-controls={id}
   onclick={() => (open = !open)}
-  class="inline-flex cursor-pointer items-center rounded-full text-slate-400 transition-colors hover:text-slate-700 focus-visible:ring-2 focus-visible:ring-sky-700 focus-visible:outline-none {open
+  class="inline-flex cursor-pointer items-center rounded-full text-slate-500 transition-colors hover:text-slate-700 focus-visible:ring-2 focus-visible:ring-sky-700 focus-visible:outline-none {open
     ? 'text-slate-700'
     : ''}"
 >

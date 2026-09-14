@@ -178,7 +178,7 @@
             -->
             <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
             <div
-              class="cursor-default transition-opacity outline-none"
+              class="cursor-default transition-opacity outline-none focus-visible:ring-2 focus-visible:ring-sky-700 focus-visible:ring-inset"
               style="width: {part.width}%; background: {part.colour}; opacity: {lit(
                 bar.label,
                 part.label,

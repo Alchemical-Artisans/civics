@@ -246,7 +246,7 @@
                one thing either way. -->
             <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
             <li
-              class="m-0 rounded-md px-2 py-1.5 text-center transition-shadow outline-none {status ===
+              class="m-0 rounded-md px-2 py-1.5 text-center transition-shadow outline-none focus-visible:ring-2 focus-visible:ring-sky-700 {status ===
               'ahead'
                 ? 'bg-white ring-1 ring-slate-200'
                 : status === 'current'
@@ -260,7 +260,7 @@
             >
               <span
                 class="block text-xs font-medium {status === 'ahead'
-                  ? 'text-slate-400'
+                  ? 'text-slate-500'
                   : 'text-slate-900'}"
               >
                 {step.date}
@@ -272,7 +272,7 @@
                 class="mt-0.5 block text-xs leading-snug break-normal {status === 'current'
                   ? 'text-slate-800'
                   : status === 'ahead'
-                    ? 'text-slate-400'
+                    ? 'text-slate-500'
                     : 'text-slate-600'}"
               >
                 {step.summary}

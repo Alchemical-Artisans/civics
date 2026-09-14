@@ -17,8 +17,21 @@
 
 <svelte:head><link rel="icon" href={favicon} /></svelte:head>
 
+<!-- First focusable thing on every page, for a keyboard user who does not want
+     to tab through the mark, the breadcrumb trail and the budget year menu to
+     reach the page itself. Invisible until it holds focus, the ordinary
+     skip-link pattern. -->
+<a
+  href="#main"
+  class="sr-only rounded-md bg-white px-3 py-2 text-sm font-medium text-slate-900 ring-2 ring-sky-700 focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50"
+>
+  Skip to content
+</a>
+
 <SiteHeader years={data.budgetYears} />
-{@render children()}
+<main id="main">
+  {@render children()}
+</main>
 {#if !onBudget}<SiteFooter />{/if}
 
 <div style="display:none">

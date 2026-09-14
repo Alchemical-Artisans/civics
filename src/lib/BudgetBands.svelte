@@ -126,7 +126,7 @@
       -->
       <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
       <div
-        class="budget-band relative h-full w-20 cursor-default bg-slate-50 outline-none"
+        class="budget-band relative h-full w-20 cursor-default bg-slate-50 outline-none focus-visible:ring-2 focus-visible:ring-sky-700 focus-visible:ring-inset"
         role="img"
         aria-label="{row.label}: {row.actual.label} {row.actual.cell}, {row.minimum.label} {row
           .minimum.cell}{row.maximum ? `, ${row.maximum.label} ${row.maximum.cell}` : ''}"

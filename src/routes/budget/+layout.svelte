@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onMount } from "svelte"
   import { page } from "$app/state"
   import { headingOf } from "$lib/heading"
   import SiteFooter from "$lib/SiteFooter.svelte"
@@ -13,10 +14,12 @@
   // Every page of a book ends in two footers fixed to the bottom of the window
   // -- the budget calendar, and the site's attribution line under it -- which
   // are out of the flow and so cannot push anything out from under themselves.
-  // The padding is what keeps the last line of the page clear of both: 9.5rem
-  // against a calendar that is 84px at its shortest and 101 at its tallest,
-  // plus the 40px of attribution beneath it. Clearance rather than a margin,
-  // and the same 11px of slack the 7rem here used to leave the calendar alone.
+  // `pb-38` is the padding that keeps the last line of the page clear of both,
+  // a fallback for a reader running no script; `clearance` below measures the
+  // two footers themselves once mounted, since a hand-tuned constant is only
+  // ever right for the one text size and zoom it was tuned against -- larger
+  // text wraps a budget-calendar box onto an extra line and grows both footers
+  // past a fixed guess.
   //
   // The attribution used to sit in that clearance instead, at the end of the
   // flow, which put it *above* the calendar: the one line of the site's own
@@ -36,6 +39,19 @@
   // It keeps a reading measure on the prose itself rather than on the page.
   const wide = $derived(!data.isSection || page.data.wide === true)
   const column = $derived(wide ? "max-w-none pb-38" : "max-w-3xl pb-38")
+
+  let clearance = $state<number | null>(null)
+
+  onMount(() => {
+    const footers = () => Array.from(document.querySelectorAll<HTMLElement>("[data-budget-footer]"))
+    const measure = () => {
+      clearance = footers().reduce((sum, el) => sum + el.offsetHeight, 0)
+    }
+    measure()
+    const observer = new ResizeObserver(measure)
+    footers().forEach((el) => observer.observe(el))
+    return () => observer.disconnect()
+  })
 </script>
 
 <svelte:head>
@@ -43,7 +59,10 @@
   <title>{headingOf(page.data)} - City of Haverhill</title>
 </svelte:head>
 
-<div class="mx-auto px-4 pt-4 pb-8 {column}">
+<div
+  class="mx-auto px-4 pt-4 pb-8 {column}"
+  style={clearance !== null ? `padding-bottom: ${clearance}px` : undefined}
+>
   <!-- Little padding at the top and more at the bottom, because there is
        nothing above the page any more: with the heading and the "back" line
        gone, an even `py-8` left the first pie hanging under a band of empty
@@ -69,7 +88,7 @@
      calendar directly above it. `bottom-10` on that calendar is this element's
      own 40px, which is why `SiteFooter` fixes its height rather than letting
      its one line size it. Opaque, because the page scrolls underneath. -->
-<div class="fixed inset-x-0 bottom-0 z-40 bg-white">
+<div class="fixed inset-x-0 bottom-0 z-40 bg-white" data-budget-footer>
   <SiteFooter />
 </div>
 
