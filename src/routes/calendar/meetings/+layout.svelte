@@ -154,6 +154,22 @@
             {/if}
           </span>
         {/if}
+        <!-- Watching is not joining: a stream is one click for anyone, where
+             `remote` above is for someone the document expects to register or
+             dial in. Burying it behind the same disclosure as `how` read as
+             though watching took the same commitment as attending remotely, so
+             it stands beside Remote Access instead, at the level a reader sees
+             without opening anything. -->
+        {#if details.remote?.stream}
+          <a
+            class="underline hover:text-slate-900"
+            href={details.remote.stream}
+            target="_blank"
+            rel="external noopener noreferrer"
+          >
+            View the Live Stream<span class="sr-only">, opens in a new tab</span>
+          </a>
+        {/if}
       </p>
     {/if}
 
@@ -169,12 +185,12 @@
          this is something they read and act on. It also needs no script, so it
          works in the served HTML before anything hydrates -- the same bargain
          the bar's own menu makes. -->
-    {#if !data.isItem && (details?.remote?.how?.length || details?.remote?.stream)}
+    {#if !data.isItem && details?.remote?.how?.length}
       <details class="group mt-2 max-w-prose rounded-lg border border-slate-200 text-sm">
         <summary
           class="flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-slate-600 select-none hover:text-slate-900 [&::-webkit-details-marker]:hidden"
         >
-          <span class="underline">Remote Access</span>
+          <span class="underline">How to Attend Remotely</span>
           <span
             aria-hidden="true"
             class="text-slate-400 transition-transform duration-150 group-open:rotate-180"
@@ -182,25 +198,7 @@
           >
         </summary>
         <div class="border-t border-slate-100 px-3 pt-3 pb-1 text-slate-600">
-          <!-- The way to watch, first: it is the thing most of the people who
-               open this want, and it is one click where the rest is a form to
-               fill in six hours ahead. The city's agenda says only that the
-               sitting "will be broadcast over HCTV and WHAV" and prints no
-               address for either, so the link stands in place of that sentence
-               rather than beside it. -->
-          {#if details.remote.stream}
-            <p class="mb-3">
-              <a
-                class="underline hover:text-slate-900"
-                href={details.remote.stream}
-                target="_blank"
-                rel="external noopener noreferrer"
-              >
-                View the Live Stream<span class="sr-only">, opens in a new tab</span>
-              </a>
-            </p>
-          {/if}
-          {#each details.remote.how ?? [] as paragraph (paragraph)}
+          {#each details.remote.how as paragraph (paragraph)}
             <p class="mb-3">{paragraph}</p>
           {/each}
         </div>

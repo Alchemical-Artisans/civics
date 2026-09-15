@@ -156,20 +156,15 @@ test.describe("meeting pages", () => {
 
   test("a remote option that takes more than a link is a disclosure, closed", async ({ page }) => {
     // The School Committee's: no join link, since the city emails one to
-    // whoever registers on a form six hours ahead, and the sitting is
-    // broadcast besides. Paragraphs rather than a word, so they arrive closed
-    // and the way to watch is first inside.
+    // whoever registers on a form six hours ahead. Paragraphs rather than a
+    // word, so they arrive closed.
     await page.goto("/calendar/meetings/school-committee-2026-09-10")
 
-    const remote = page.locator("details:has(summary:has-text('Remote Access'))")
+    const remote = page.locator("details:has(summary:has-text('How to Attend Remotely'))")
     await expect(remote).not.toHaveAttribute("open")
     await expect(remote).not.toBeEmpty()
-    await remote.getByText("Remote Access").click()
+    await remote.getByText("How to Attend Remotely").click()
     await expect(remote).toHaveAttribute("open")
-    await expect(remote.getByRole("link", { name: /View the Live Stream/ })).toHaveAttribute(
-      "href",
-      "http://haverhillcommunitytv.org/video/channel-8-live-stream",
-    )
     await expect(remote).toContainText("register here at least 6 hours")
 
     // The header carries no "Remote Access" link, the document having no join
@@ -177,6 +172,19 @@ test.describe("meeting pages", () => {
     await expect(page.locator("header").getByRole("link", { name: /^Remote Access$/ })).toHaveCount(
       0,
     )
+  })
+
+  test("a live stream link sits at the top level, not behind a disclosure", async ({ page }) => {
+    // Watching is one click for anyone, unlike the remote-access disclosure
+    // above, which is for someone the document expects to register or dial in
+    // -- so the stream sits beside Remote Access in the header rather than
+    // inside a `<details>`.
+    await page.goto("/calendar/meetings/city-council-2026-09-15")
+
+    await expect(
+      page.locator("header").getByRole("link", { name: /View the Live Stream/ }),
+    ).toHaveAttribute("href", "http://haverhillcommunitytv.org/video/channel-8-live-stream")
+    await expect(page.locator("header details")).toHaveCount(0)
   })
 
   test("a matched recording shows on a sitting, linking to HC Media", async ({ page }) => {

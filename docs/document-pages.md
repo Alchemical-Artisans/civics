@@ -110,11 +110,15 @@ Everything it writes is under `.cache/`, which is gitignored and disposable.
    a link that 404s. Where the remote option is not one link but a procedure —
    a form to register on, a link emailed later, paragraphs of conditions — those
    paragraphs go in `how`, verbatim, and the header shows them behind a
-   disclosure the reader opens. `stream` is where the sitting is broadcast live;
-   an agenda that says it "will be broadcast over HCTV and WHAV" without an
-   address is pointing at Haverhill Community Television's channel 8, so link
-   that and drop the sentence. Write it in freely — `npm run streams:prune`, a
-   step of `metadata:update`, removes it on its own once the meeting's date has
+   disclosure the reader opens. `stream` is where the sitting is broadcast
+   live; an agenda that says it "will be broadcast over HCTV and WHAV" without
+   an address is pointing at Haverhill Community Television's channel 8, so
+   link that and drop the sentence. It sits beside "Remote Access" in the
+   header rather than behind the `how` disclosure — watching is one click for
+   anyone, where the disclosure is for someone the document expects to
+   register or dial in, so burying the two together overstates what watching
+   takes. Write it in freely — `npm run streams:prune`, a step of
+   `metadata:update`, removes it on its own once the meeting's date has
    passed, since a live stream link is meaningless after the sitting is over.
 
    `notice` is standing Open Meeting Law boilerplate — one string per paragraph,
