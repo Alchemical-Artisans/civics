@@ -86,12 +86,39 @@ export const RECORDING_BODIES = [
     board: "Public Health, Safety & Works Committee",
     match: /\bcity council\b.*\bpublic (health|safety)\b/,
   },
+  {
+    board: "Natural Resources and Public Property Committee",
+    match: /\bcity council\b.*\bnatural resources?\b.*\bpublic property\b/,
+  },
+  // Two more from years back the lookahead below caught as unrecognised rather
+  // than silently tying to the council. Named for what HC Media's own titles
+  // call them -- there is no other document under either to check the wording
+  // against.
+  {
+    board: "Citizen Outreach Committee",
+    match: /\bcity council\b.*\bcitizen outreach\b.*\bcommittee\b/,
+  },
+  {
+    board: "Joint Ward Districts Committee",
+    match: /\bcity council\b.*\bjoint ward districts\b.*\bcommittee\b/,
+  },
   // Budget hearings and emergency meetings are the council itself, sitting on a
   // day of their own. Left as "City Council" so they match a council sitting on
   // that date if there is one, and orphan cleanly if there is not. One year HC
   // Media titled the budget hearings "Haverhill City Budget Meeting", with no
   // "Council" in it at all.
-  { board: "City Council", match: /\bcity council\b|\bhaverhill city budget\b/ },
+  //
+  // The lookahead is what keeps this from being a catch-all: a title naming a
+  // council committee this list has not learned yet still says "committee",
+  // and matching it here anyway would tie that recording to the plain
+  // council -- a different sitting, silently wrong. Failing to match instead
+  // leaves it unrecognised, where a person can teach this list the real
+  // board, the way this file itself got taught about Natural Resources and
+  // Public Property.
+  {
+    board: "City Council",
+    match: /\bcity council\b(?!.*\bcommittee\b)|\bhaverhill city budget\b/,
+  },
   { board: "School Committee", match: /\bschool committee\b/ },
   { board: "License Commission", match: /\blicense commission\b/ },
 ]

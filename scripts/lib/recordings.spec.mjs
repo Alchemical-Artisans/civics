@@ -30,6 +30,12 @@ describe("classifyRecording", () => {
     expect(
       classifyRecording("Haverhill City Council Public Safety Committee Meeting on E-Bikes"),
     ).toBe("Public Health, Safety & Works Committee")
+    expect(
+      classifyRecording("City Council Citizen Outreach Committee Meeting - March 30, 2022"),
+    ).toBe("Citizen Outreach Committee")
+    expect(
+      classifyRecording("Haverhill City Council Joint Ward Districts Committee - November 2"),
+    ).toBe("Joint Ward Districts Committee")
   })
 
   it("keeps a budget hearing and an emergency meeting as the council itself", () => {
@@ -46,6 +52,12 @@ describe("classifyRecording", () => {
   it("returns null for a title that names no board", () => {
     expect(classifyRecording("Haverhill Inauguration Ceremony 2026")).toBeNull()
     expect(classifyRecording("Minute with the Mayor – September 2026")).toBeNull()
+  })
+
+  it("leaves an unlisted committee unrecognised rather than the plain council", () => {
+    expect(
+      classifyRecording("Haverhill City Council Rules and Regulations Committee Meeting"),
+    ).toBeNull()
   })
 })
 
