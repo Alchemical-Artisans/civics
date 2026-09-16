@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-09-11T19:00:13.431Z",
+  "generatedAt": "2026-09-16T01:10:56.395Z",
   "source": "https://www.haverhillma.gov/government/agendas-and-minutes/",
-  "count": 3086,
+  "count": 3089,
   "meetings": [
     {
       "title": "SEPAC - Special Education Parental Advisory Council Meeting",
@@ -112,6 +112,24 @@
       "docId": "2026-09-16-1830-haverhill-cultural-council-meeting-47fe76aa"
     },
     {
+      "title": "Washington Street Shoe Historic District Commission Meeting",
+      "description": "wash. st. shoe historic 26.pdf",
+      "pageUrl": "https://events.haverhillma.gov/default/Detail/2026-09-16-1800-Washington-Street-Shoe-Historic-District-Commissio",
+      "fileUrl": "https://events.haverhillma.gov/default/Detail/2026-09-16-1800-Washington-Street-Shoe-Historic-District-Commissio/f24ec7f3-5a1e-439b-9565-b4c500ffa70f",
+      "date": "2026-09-16",
+      "board": "Washington Street Shoe Historic District Commission",
+      "kind": "agenda",
+      "category": "Washington Street Shoe Historic District Commission Agendas",
+      "dateSource": "notice",
+      "rawMeetingDate": null,
+      "dateAdjusted": false,
+      "dateConflict": false,
+      "filenameDate": null,
+      "needsReview": false,
+      "source": "https://events.haverhillma.gov/",
+      "docId": "2026-09-16-1800-washington-street-shoe-historic-district-commissio-b11fa083"
+    },
+    {
       "title": "City Council Agenda - September 15, 2026",
       "pageUrl": "/document-manager/media-pages/agenda-and-minutes/city-council-agenda-september-15-2026/",
       "fileUrl": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/hi1pz5zc/comp-agenda-sept-15-2026.pdf",
@@ -128,6 +146,44 @@
       "needsReview": false,
       "source": "https://www.haverhillma.gov/government/agendas-and-minutes/",
       "docId": "city-council-agenda-september-15-2026-e69d1f6e"
+    },
+    {
+      "title": "Haverhill City Council Natural Resource & Public Property Meeting &",
+      "description": "",
+      "pageUrl": "http://haverhillcommunitytv.org/video/haverhill-city-council-natural-resource-public-property-meeting-september-14-2026",
+      "fileUrl": null,
+      "date": "2026-09-14",
+      "board": "City Council",
+      "kind": "recording",
+      "category": "City Council Recordings",
+      "dateSource": "recording",
+      "rawMeetingDate": null,
+      "dateAdjusted": false,
+      "dateConflict": false,
+      "filenameDate": null,
+      "needsReview": false,
+      "orphan": true,
+      "source": "http://haverhillcommunitytv.org/",
+      "docId": null
+    },
+    {
+      "title": "Haverhill License Commission Special Meeting - September 14, 2026",
+      "description": "",
+      "pageUrl": "http://haverhillcommunitytv.org/video/haverhill-license-commission-special-meeting-september-14-2026",
+      "fileUrl": null,
+      "date": "2026-09-14",
+      "board": "License Commission",
+      "kind": "recording",
+      "category": "License Commission Recordings",
+      "dateSource": "recording",
+      "rawMeetingDate": null,
+      "dateAdjusted": false,
+      "dateConflict": false,
+      "filenameDate": null,
+      "needsReview": false,
+      "orphan": false,
+      "source": "http://haverhillcommunitytv.org/",
+      "docId": null
     },
     {
       "title": "Natural Resources and Public Property Committee Meeting-REVISED",

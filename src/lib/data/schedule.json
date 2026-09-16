@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-11T19:00:17.686Z",
+  "generatedAt": "2026-09-16T01:11:01.271Z",
   "rules": [
     {
       "board": "City Council",
@@ -334,7 +334,11 @@
           "date": "2026-12-09"
         }
       ],
-      "cancelled": ["2026-01-14", "2026-06-10", "2026-11-11"]
+      "cancelled": [
+        "2026-01-14",
+        "2026-06-10",
+        "2026-11-11"
+      ]
     },
     {
       "board": "Zoning Board of Appeals",
@@ -373,7 +377,10 @@
           "date": "2026-12-16"
         }
       ],
-      "cancelled": ["2026-02-18", "2026-09-16"]
+      "cancelled": [
+        "2026-02-18",
+        "2026-09-16"
+      ]
     }
   ],
   "noticeCalendar": {
@@ -464,6 +471,13 @@
       "title": "Haverhill Cultural Council Meeting",
       "url": "https://events.haverhillma.gov/default/Detail/2026-09-16-1830-Haverhill-Cultural-Council-Meeting",
       "time": "6:30 PM"
+    },
+    {
+      "board": "Washington Street Shoe Historic District Commission",
+      "date": "2026-09-16",
+      "title": "Washington Street Shoe Historic District Commission Meeting",
+      "url": "https://events.haverhillma.gov/default/Detail/2026-09-16-1800-Washington-Street-Shoe-Historic-District-Commissio",
+      "time": "6:00 PM"
     },
     {
       "board": "Conservation Commission",
