@@ -28,6 +28,7 @@ import { LISTING_URL } from "./lib/haverhill.mjs"
 import { RECORDINGS_ORIGIN, RECORDING_BODIES, fetchRecordings } from "./lib/recordings.mjs"
 import { loadStore, saveStore, printSummary } from "./lib/store.mjs"
 import { printAttention } from "./lib/attention.mjs"
+import { createLog } from "./lib/log.mjs"
 import { assignIds, pagesWritten } from "./lib/documents.mjs"
 import {
   applyReviews,
@@ -48,9 +49,10 @@ if (!store) {
 /** The one `source` this script owns. */
 const SOURCE = `${RECORDINGS_ORIGIN}/`
 
+const log = createLog("recordings")
 console.log("  reading Haverhill Community Television...")
 const { records, unrecognised, pagesRead } = await fetchRecordings()
-console.log(`  ${pagesRead} listing pages read, ${records.length} recordings placed to a body`)
+log.write(`  ${pagesRead} listing pages read, ${records.length} recordings placed to a body`)
 
 // An empty sweep is a markup change at HC Media, not every recording vanishing.
 // Writing the file from it would drop every record this scrape owns.
@@ -98,11 +100,12 @@ await saveStore(meetings, { source: LISTING_URL })
 
 const orphans = scraped.filter((m) => m.orphan)
 const boards = new Set(scraped.map((m) => m.board))
-console.log(`\n  ${scraped.length} recordings across ${boards.size} bodies`)
-console.log(`  ${scraped.length - orphans.length} matched a sitting, ${orphans.length} did not`)
-console.log(`  ${before} replaced, ${others.length} records from elsewhere untouched`)
-printSummary(meetings, await pagesWritten())
+log.write(`\n  ${scraped.length} recordings across ${boards.size} bodies`)
+log.write(`  ${scraped.length - orphans.length} matched a sitting, ${orphans.length} did not`)
+log.write(`  ${before} replaced, ${others.length} records from elsewhere untouched`)
+printSummary(meetings, await pagesWritten(), log.write)
 summarizeReviews(reviews)
+console.log(`  full run detail: ${log.file}`)
 
 // The titles that named no body at all. Opt-in the way the notices' own
 // unrecognised list is: a recording reaches the calendar only once someone has

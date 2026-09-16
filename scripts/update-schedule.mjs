@@ -20,6 +20,7 @@ import { writeFile, mkdir, readFile } from "node:fs/promises"
 import path from "node:path"
 import { fetchMeetingCalendars, fetchMeetingRules } from "./lib/schedule.mjs"
 import { NOTICE_CALENDAR, fetchNotices, writeUnrecognised } from "./lib/notices.mjs"
+import { createLog } from "./lib/log.mjs"
 
 // The city's day, not the machine's. `en-CA` is the locale that formats a date
 // as `YYYY-MM-DD`, which is the form everything here keeps dates in; the zone
@@ -37,9 +38,11 @@ const before = await readFile(DATA_FILE, "utf8")
     throw err
   })
 
+const log = createLog("schedule")
+console.log("  reading meeting rules, calendars and the events calendar...")
+
 const rules = await fetchMeetingRules()
 const calendars = await fetchMeetingCalendars()
-console.log("  reading the city's events calendar...")
 const { notices, cancelled, unrecognised } = await fetchNotices({ today })
 
 // An empty parse means a page's markup moved, not that the city stopped saying
@@ -81,17 +84,16 @@ await writeFile(
   ) + "\n",
 )
 
-console.log()
-for (const rule of rules)
-  console.log(`  ${rule.board}: a rule, ${rule.exceptions.length} exceptions`)
-for (const c of calendars) console.log(`  ${c.board}: ${c.sittings.length} dates for ${c.year}`)
+for (const rule of rules) log.write(`  ${rule.board}: a rule, ${rule.exceptions.length} exceptions`)
+for (const c of calendars) log.write(`  ${c.board}: ${c.sittings.length} dates for ${c.year}`)
 
 const boards = new Set(notices.map((n) => n.board))
-console.log(`\n  Events calendar: ${notices.length} notices across ${boards.size} boards`)
+log.write(`\n  Events calendar: ${notices.length} notices across ${boards.size} boards`)
 if (cancelled.length) {
-  console.log(`  ${cancelled.length} of them say the sitting is off, and are not carried:`)
-  for (const c of cancelled) console.log(`    ${c.date}  ${c.title}`)
+  log.write(`  ${cancelled.length} of them say the sitting is off, and are not carried:`)
+  for (const c of cancelled) log.write(`    ${c.date}  ${c.title}`)
 }
+console.log(`  full run detail: ${log.file}`)
 
 // The same bargain the calendar scrape's own "needs your attention" block
 // makes: a count and a path here, the full list where it can be read beside

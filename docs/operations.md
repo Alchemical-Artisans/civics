@@ -6,8 +6,8 @@
 npm run metadata:update    # refresh everything the site takes from the city
 ```
 
-That is the command to run. It drives the scrapers in sequence and prints each
-one's summary under a heading, then says whether anything failed.
+That is the command to run. It drives the scrapers in sequence under a heading
+for each, and says whether anything failed.
 
 A failing step does not stop the ones after it, and the exit status is non-zero
 if any failed. The calendar scrape is the fragile half — it replays an Umbraco
@@ -18,6 +18,16 @@ repeated at the end so they cannot scroll past.
 
 Arguments are forwarded to every step, so `npm run metadata:update -- --prune`
 reaches the calendar. The other scripts take no flags and ignore them.
+
+**Each step prints one line saying what it is doing, then only what wants a
+person's attention.** The rest — document counts, what a scrape read off each
+page, the routine detail nobody reads unless something looks wrong — goes to
+its own file under `.cache/logs/`, named for the step (`.cache/logs/calendar.log`,
+`.cache/logs/schedule.log`, and so on) and rewritten fresh each time that step
+runs, whether run through `metadata:update` or on its own. A step's own last
+console line names its file. This is the same bargain `needs-attention.txt` and
+the unrecognised-title files already make — see below — carried to every step
+rather than just the ones that already wrote one.
 
 ## The scripts underneath
 

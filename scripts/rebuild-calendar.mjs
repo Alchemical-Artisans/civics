@@ -15,6 +15,7 @@
  */
 import { fetchListing, resolveDocument, mapLimit, LISTING_URL } from "./lib/haverhill.mjs"
 import { saveStore, printSummary, DATA_FILE } from "./lib/store.mjs"
+import { createLog } from "./lib/log.mjs"
 import { assignIds, pagesWritten } from "./lib/documents.mjs"
 import {
   applyReviews,
@@ -26,8 +27,11 @@ import {
 
 const CONCURRENCY = 6
 
+const log = createLog("calendar-rebuild")
+console.log("  reading the agendas-and-minutes listing...")
+
 const docs = await fetchListing()
-console.log(`Listing returned ${docs.length} documents. Resolving dates...`)
+log.write(`Listing returned ${docs.length} documents. Resolving dates...`)
 
 let done = 0
 const meetings = await mapLimit(docs, CONCURRENCY, async (doc) => {
@@ -46,14 +50,15 @@ await saveReviews(reviews)
 assignIds(meetings)
 
 await saveStore(meetings, { source: LISTING_URL })
-printSummary(meetings, await pagesWritten())
+printSummary(meetings, await pagesWritten(), log.write)
 reportReviews(reviews, addedReviews)
-console.log(`\n  wrote ${DATA_FILE}`)
+log.write(`\n  wrote ${DATA_FILE}`)
+console.log(`  full run detail: ${log.file}`)
 
 function reportReviews(reviews, added) {
   const s = summarizeReviews(reviews)
   if (added.length) console.log(`  ${added.length} new entry(ies) in reviews.json to look at`)
-  console.log(
+  log.write(
     `  reviews: ${s.outstanding} outstanding, ${s.total - s.outstanding} signed off, ` +
       `${s.corrected} carrying corrections`,
   )

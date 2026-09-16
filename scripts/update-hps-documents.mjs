@@ -18,6 +18,7 @@ import { LISTING_URL } from "./lib/haverhill.mjs"
 import { HPS_PAGE, fetchSchoolCommitteeDocuments } from "./lib/hps.mjs"
 import { loadStore, saveStore, printSummary } from "./lib/store.mjs"
 import { printAttention } from "./lib/attention.mjs"
+import { createLog } from "./lib/log.mjs"
 import { assignIds, newMeetingIds, pagesWritten, printNewMeetings } from "./lib/documents.mjs"
 import {
   applyReviews,
@@ -36,15 +37,16 @@ if (!store) {
 /** The one `source` this script owns. Everything else is left exactly as it is. */
 const SOURCE = HPS_PAGE
 
+const log = createLog("hps-documents")
 console.log("  reading the School Committee's meeting page...")
 const { documents, sections, skippedHeadings, carriedHeadings, droppedAgendas } =
   await fetchSchoolCommitteeDocuments()
-console.log(
+log.write(
   `  ${sections} sections, ${skippedHeadings.length} with no readable date, ` +
     `${documents.length} documents (${droppedAgendas} superseded agenda copies dropped)`,
 )
 for (const c of carriedHeadings) {
-  console.log(`  "${c.heading}" -> ${c.date} (continuation of the block above, ${c.files} file(s))`)
+  log.write(`  "${c.heading}" -> ${c.date} (continuation of the block above, ${c.files} file(s))`)
 }
 
 const others = store.meetings.filter((m) => m.source !== SOURCE)
@@ -62,14 +64,15 @@ assignIds(meetings)
 await saveStore(meetings, { source: LISTING_URL })
 
 const dates = new Set(documents.map((m) => m.date))
-console.log(`\n  ${documents.length} documents across ${dates.size} sittings`)
-console.log(`  ${before} replaced, ${others.length} records from elsewhere untouched`)
+log.write(`\n  ${documents.length} documents across ${dates.size} sittings`)
+log.write(`  ${before} replaced, ${others.length} records from elsewhere untouched`)
 if (skippedHeadings.length) {
-  console.log(`\n  headings that name no single sitting, skipped:`)
-  for (const s of skippedHeadings) console.log(`    - ${s.heading}  (${s.files} file(s))`)
+  log.write(`\n  headings that name no single sitting, skipped:`)
+  for (const s of skippedHeadings) log.write(`    - ${s.heading}  (${s.files} file(s))`)
 }
 printNewMeetings(newIds)
-printSummary(meetings, await pagesWritten())
+printSummary(meetings, await pagesWritten(), log.write)
 summarizeReviews(reviews)
+console.log(`  full run detail: ${log.file}`)
 
 printAttention(meetings)

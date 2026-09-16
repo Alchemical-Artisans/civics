@@ -18,6 +18,7 @@
 import { loadStore } from "./lib/store.mjs"
 import { mapLimit, USER_AGENT } from "./lib/haverhill.mjs"
 import { loadLinkStatus, printAttention, saveLinkStatus } from "./lib/attention.mjs"
+import { createLog } from "./lib/log.mjs"
 
 const recheck = process.argv.includes("--recheck")
 const CONCURRENCY = 10
@@ -29,12 +30,14 @@ if (!store) {
   process.exit(1)
 }
 
+const log = createLog("links")
 const previous = (!recheck && loadLinkStatus()?.urls) || {}
 const urls = [...new Set(store.meetings.map((m) => m.fileUrl).filter(Boolean))]
 const todo = urls.filter((u) => !(u in previous))
 
 console.log(
-  `${urls.length} distinct files; ${todo.length} to check, ${urls.length - todo.length} already known`,
+  `  checking links: ${urls.length} distinct files, ${todo.length} to check, ` +
+    `${urls.length - todo.length} already known`,
 )
 
 const status = { ...previous }
@@ -53,7 +56,7 @@ await mapLimit(todo, CONCURRENCY, async (url) => {
     ok = false
   }
   status[url] = ok ? "ok" : "dead"
-  if (++done % 200 === 0 || done === todo.length) console.log(`  ${done}/${todo.length}`)
+  if (++done % 200 === 0 || done === todo.length) log.write(`  ${done}/${todo.length}`)
 })
 
 // Anything no longer linked stops being interesting.
@@ -63,6 +66,7 @@ saveLinkStatus({ checkedAt: new Date().toISOString(), urls: status })
 
 const dead = Object.entries(status).filter(([, v]) => v === "dead")
 console.log(`\n  ${urls.length - dead.length} live, ${dead.length} dead`)
+if (todo.length) console.log(`  full run detail: ${log.file}`)
 if (dead.length) {
   // Grouped by host, because a whole retired domain is one problem and not
   // fifty-nine: haverhill's old cityofhaverhill.com is exactly that case.

@@ -22,6 +22,7 @@ import {
 } from "./lib/haverhill.mjs"
 import { loadStore, saveStore, printSummary, DATA_FILE } from "./lib/store.mjs"
 import { printAttention } from "./lib/attention.mjs"
+import { createLog } from "./lib/log.mjs"
 import { assignIds, newMeetingIds, pagesWritten, printNewMeetings } from "./lib/documents.mjs"
 import {
   applyReviews,
@@ -40,18 +41,21 @@ if (!store) {
   process.exit(1)
 }
 
+const log = createLog("calendar")
+console.log("  reading the agendas-and-minutes listing...")
+
 const existing = new Map(store.meetings.map((m) => [documentKey(m), m]))
 const docs = await fetchListing()
 const fresh = docs.filter((d) => !existing.has(documentKey(d)))
 
-console.log(`Listing returned ${docs.length} documents; ${existing.size} already stored.`)
+log.write(`Listing returned ${docs.length} documents; ${existing.size} already stored.`)
 
 let added = []
 if (fresh.length) {
-  console.log(`Resolving ${fresh.length} new document(s)...`)
+  log.write(`Resolving ${fresh.length} new document(s)...`)
   added = await mapLimit(fresh, CONCURRENCY, (doc) => resolveDocument(doc))
 } else {
-  console.log("No new documents in the listing.")
+  log.write("No new documents in the listing.")
 }
 
 // Everything stored, with its provenance filled in where a record predates the
@@ -86,20 +90,20 @@ assignIds(meetings)
 await saveStore(meetings, { source: LISTING_URL })
 
 if (added.length) {
-  console.log(`\n  added ${added.length}:`)
-  for (const m of added.slice(0, 20)) console.log(`    + ${m.date ?? "????-??-??"}  ${m.title}`)
-  if (added.length > 20) console.log(`    ... and ${added.length - 20} more`)
+  log.write(`\n  added ${added.length}:`)
+  for (const m of added) log.write(`    + ${m.date ?? "????-??-??"}  ${m.title}`)
 }
-if (prune) console.log(`  pruned ${removed} entry(ies) no longer in the listing`)
+if (prune) log.write(`  pruned ${removed} entry(ies) no longer in the listing`)
 printNewMeetings(newIds)
-printSummary(meetings, await pagesWritten())
+printSummary(meetings, await pagesWritten(), log.write)
 reportReviews(reviews, addedReviews)
-console.log(`\n  wrote ${DATA_FILE}`)
+log.write(`\n  wrote ${DATA_FILE}`)
+console.log(`  full run detail: ${log.file}`)
 
 function reportReviews(reviews, added) {
   const s = summarizeReviews(reviews)
   if (added.length) console.log(`  ${added.length} new entry(ies) in reviews.json to look at`)
-  console.log(
+  log.write(
     `  reviews: ${s.outstanding} outstanding, ${s.total - s.outstanding} signed off, ` +
       `${s.corrected} carrying corrections`,
   )

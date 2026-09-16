@@ -24,6 +24,7 @@ import { BOARD_PAGES, fetchBoardDocuments } from "./lib/board-pages.mjs"
 import { ARCHIVE_PAGES, fetchArchives } from "./lib/archives.mjs"
 import { loadStore, saveStore, printSummary } from "./lib/store.mjs"
 import { printAttention } from "./lib/attention.mjs"
+import { createLog } from "./lib/log.mjs"
 import { assignIds, newMeetingIds, pagesWritten, printNewMeetings } from "./lib/documents.mjs"
 import {
   applyReviews,
@@ -44,6 +45,9 @@ const OWNED = new Set([
   ...BOARD_PAGES.map((p) => p.url),
   ...ARCHIVE_PAGES.map((p) => ORIGIN + p.path),
 ])
+
+const log = createLog("board-pages")
+console.log("  reading the Planning Board, Zoning Board and the archives...")
 
 const links = await fetchBoardDocuments()
 const archived = await fetchArchives()
@@ -80,20 +84,21 @@ assignIds(meetings)
 await saveStore(meetings, { source: LISTING_URL })
 
 printNewMeetings(newIds)
-console.log(
+log.write(
   `\n  ${scraped.length} documents: ${links.length} from ${BOARD_PAGES.length} board pages, ` +
     `${archived.documents.length} from ${ARCHIVE_PAGES.length} archives`,
 )
-console.log(
+log.write(
   `  ${archived.reattributed.length} archived documents filed under the board their own ` +
     `title names rather than the heading above them`,
 )
 if (archived.skipped.length) {
-  console.log(`  ${archived.skipped.length} archived links skipped, no readable date:`)
-  for (const s of archived.skipped.slice(0, 5)) console.log(`    - ${s.title.slice(0, 60)}`)
+  log.write(`  ${archived.skipped.length} archived links skipped, no readable date:`)
+  for (const s of archived.skipped) log.write(`    - ${s.title.slice(0, 60)}`)
 }
-console.log(`  ${before} replaced, ${others.length} records from elsewhere untouched`)
-printSummary(meetings, await pagesWritten())
+log.write(`  ${before} replaced, ${others.length} records from elsewhere untouched`)
+printSummary(meetings, await pagesWritten(), log.write)
 summarizeReviews(reviews)
+console.log(`  full run detail: ${log.file}`)
 
 printAttention(meetings)

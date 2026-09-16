@@ -53,18 +53,18 @@ export function summarize(meetings) {
   }
 }
 
-export function printSummary(meetings, written = new Set()) {
+export function printSummary(meetings, written = new Set(), write = console.log) {
   const s = summarize(meetings)
-  console.log(`\n  ${s.total} meetings, ${s.dated} with a resolved date`)
-  if (s.range) console.log(`  range: ${s.range[0]} -> ${s.range[1]}`)
-  console.log(
+  write(`\n  ${s.total} meetings, ${s.dated} with a resolved date`)
+  if (s.range) write(`  range: ${s.range[0]} -> ${s.range[1]}`)
+  write(
     `  date sources: ${Object.entries(s.bySource)
       .map(([k, v]) => `${k}=${v}`)
       .join(", ")}`,
   )
   const docs = summarizeDocuments(meetings, written)
   if (docs.documents) {
-    console.log(
+    write(
       `  documents: ${docs.documents} across ${docs.meetings} sittings, ` +
         `${docs.withPage} written up here, ${docs.withoutPage} linking straight to the city's PDF`,
     )

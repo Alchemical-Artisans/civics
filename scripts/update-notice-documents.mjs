@@ -29,6 +29,7 @@ import { LISTING_URL } from "./lib/haverhill.mjs"
 import { NOTICE_CALENDAR, fetchNoticeDocuments, writeUnrecognised } from "./lib/notices.mjs"
 import { loadStore, saveStore, printSummary } from "./lib/store.mjs"
 import { printAttention } from "./lib/attention.mjs"
+import { createLog } from "./lib/log.mjs"
 import { assignIds, newMeetingIds, pagesWritten, printNewMeetings } from "./lib/documents.mjs"
 import {
   applyReviews,
@@ -52,9 +53,10 @@ const SOURCE = `${NOTICE_CALENDAR.origin}/`
 // a month that does not exist yet on 31 December.
 const today = new Date().toLocaleDateString("en-CA", { timeZone: "America/New_York" })
 
+const log = createLog("notice-documents")
 console.log("  reading the city's events calendar...")
 const { documents, notices, fetched, unrecognised } = await fetchNoticeDocuments({ today })
-console.log(`  ${notices} meeting notices, ${fetched} pages read, ${documents.length} files`)
+log.write(`  ${notices} meeting notices, ${fetched} pages read, ${documents.length} files`)
 
 // An empty sweep is a markup change rather than the city having taken every
 // agenda down, and a file written from it would drop every record this script
@@ -120,11 +122,12 @@ assignIds(meetings)
 await saveStore(meetings, { source: LISTING_URL })
 
 const boards = new Set(scraped.map((m) => m.board))
-console.log(`\n  ${scraped.length} agendas across ${boards.size} boards`)
-console.log(`  ${before} replaced, ${others.length} records from elsewhere untouched`)
+log.write(`\n  ${scraped.length} agendas across ${boards.size} boards`)
+log.write(`  ${before} replaced, ${others.length} records from elsewhere untouched`)
 printNewMeetings(newIds)
-printSummary(meetings, await pagesWritten())
+printSummary(meetings, await pagesWritten(), log.write)
 summarizeReviews(reviews)
+console.log(`  full run detail: ${log.file}`)
 
 // The same list `schedule:update` writes, from the same sweep -- a body nobody
 // has filed in BODIES has its agendas passed over here as well as its sittings.

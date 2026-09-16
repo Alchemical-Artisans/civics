@@ -21,6 +21,7 @@
 import { readdirSync, readFileSync, writeFileSync } from "node:fs"
 import path from "node:path"
 import { meetingDateOf, withoutStream } from "./lib/streams.mjs"
+import { createLog } from "./lib/log.mjs"
 
 const MEETINGS_DIR = path.join(import.meta.dirname, "..", "src", "routes", "calendar", "meetings")
 
@@ -28,6 +29,9 @@ const MEETINGS_DIR = path.join(import.meta.dirname, "..", "src", "routes", "cale
 // machine's own UTC date is already tomorrow, which would call tonight's
 // sitting over before it has happened. See update-schedule.mjs.
 const today = new Date().toLocaleDateString("en-CA", { timeZone: "America/New_York" })
+
+const log = createLog("live-streams")
+console.log("  checking write-ups for stale live-stream links...")
 
 let changed = 0
 
@@ -51,11 +55,12 @@ for (const entry of readdirSync(MEETINGS_DIR, { withFileTypes: true })) {
 
   writeFileSync(file, after)
   changed++
-  console.log(`  ${entry.name}: dropped the live-stream link (met ${date})`)
+  log.write(`  ${entry.name}: dropped the live-stream link (met ${date})`)
 }
 
 console.log(
   changed
-    ? `\n  ${changed} live-stream link${changed === 1 ? "" : "s"} removed; review the diff before committing`
+    ? `  ${changed} live-stream link${changed === 1 ? "" : "s"} removed; review the diff before committing`
     : "  no stale live-stream links",
 )
+if (changed) console.log(`  full run detail: ${log.file}`)
