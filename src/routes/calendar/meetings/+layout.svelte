@@ -315,14 +315,9 @@
 
   <footer class="mt-8 border-t border-slate-200 pt-4 text-xs text-slate-500">
     <p>
-      {#if meeting.written}
-        Written up by hand from the city's documents. It may summarise, condense or omit &mdash; the
-        city's own files, linked above, are the record.
-      {:else if expected}
+      {#if expected}
         Nothing has been published for this sitting. What the {meeting.board} itself published about the
         days it sits, linked above, is why it is on the calendar.
-      {:else}
-        The city's own files, linked above, are the record.
       {/if}
     </p>
   </footer>
