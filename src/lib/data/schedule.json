@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-16T14:58:20.816Z",
+  "generatedAt": "2026-09-20T14:14:19.052Z",
   "rules": [
     {
       "board": "City Council",
@@ -334,7 +334,11 @@
           "date": "2026-12-09"
         }
       ],
-      "cancelled": ["2026-01-14", "2026-06-10", "2026-11-11"]
+      "cancelled": [
+        "2026-01-14",
+        "2026-06-10",
+        "2026-11-11"
+      ]
     },
     {
       "board": "Zoning Board of Appeals",
@@ -373,7 +377,10 @@
           "date": "2026-12-16"
         }
       ],
-      "cancelled": ["2026-02-18", "2026-09-16"]
+      "cancelled": [
+        "2026-02-18",
+        "2026-09-16"
+      ]
     }
   ],
   "noticeCalendar": {
@@ -475,8 +482,8 @@
     {
       "board": "Conservation Commission",
       "date": "2026-09-17",
-      "title": "Haverhill Conservation Commission Meeting",
-      "url": "https://events.haverhillma.gov/default/Detail/2026-09-17-1915-Haverhill-Conservation-Commission-Meeting",
+      "title": "Haverhill Conservation Commission Meeting - REVISED",
+      "url": "https://events.haverhillma.gov/default/Detail/2026-09-17-1915-Haverhill-Conservation-Commission-Meeting-REVISED",
       "time": "7:15 PM"
     },
     {
@@ -492,6 +499,13 @@
       "title": "Haverhill Public Library Board of Trustees Meeting",
       "url": "https://events.haverhillma.gov/default/Detail/2026-09-17-0930-Haverhill-Public-Library-Board-of-Trustees-Meeting",
       "time": "9:30 AM"
+    },
+    {
+      "board": "Board of Assessors",
+      "date": "2026-09-22",
+      "title": "Board of Assessors Public Meeting",
+      "url": "https://events.haverhillma.gov/default/Detail/2026-09-22-1000-Board-of-Assessors-Public-Meeting",
+      "time": "10:00 AM"
     },
     {
       "board": "City Council",
@@ -519,6 +533,13 @@
       "date": "2026-10-06",
       "title": "City Council Meeting",
       "url": "https://events.haverhillma.gov/default/Detail/2026-10-06-1900-City-Council-Meeting2",
+      "time": "7:00 PM"
+    },
+    {
+      "board": "Special Education Parent Advisory Council",
+      "date": "2026-10-15",
+      "title": "SEPAC",
+      "url": "https://events.haverhillma.gov/default/Detail/2026-10-15-1900-SEPAC",
       "time": "7:00 PM"
     },
     {
