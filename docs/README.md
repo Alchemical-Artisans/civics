@@ -129,6 +129,17 @@ src/lib/
   router.spec.ts           unit tests for it
   budget.ts                the budget listing, section slugs and book contents
   budget.spec.ts           unit tests for it
+  water.ts                 hand-read drought/conservation figures, cited by source
+  water.spec.ts            unit tests for it, pinning the transcribed figures
+  WaterCalculator.svelte   the household-vs-target calculator on /water
+  WaterCalculator.svelte.spec.ts  browser tests for it
+  DroughtScale.svelte      the four-stage drought scale, on /water and the front page
+  DroughtScale.svelte.spec.ts     browser tests for it
+  drought-colours.ts       its one-hue ordinal ramp, validated with the dataviz skill
+  rainfall.ts              NOAA statewide precipitation, cited by API URL and access date
+  rainfall.spec.ts         unit tests for it
+  RainfallChart.svelte     fifteen years of it, as a diverging bar against the normal
+  RainfallChart.svelte.spec.ts    browser tests for it
   data/meetings.json       the committed meeting dataset
   data/budget.json         the committed budget and audit listing
   data/reviews.json        human corrections, overlaid onto the meetings
@@ -155,6 +166,9 @@ src/routes/calendar/
   documents/<id>/+page.ts      its time, room and remote link, where stated
   documents/<id>/<item>/       a page for a single agenda item, where one earns it
   documents/page.svelte.e2e.ts end-to-end tests for them
+
+src/routes/water/
+  +page.svelte             the whole page: usage, restrictions, and the calculator
 
 static/
   excerpts/<id>/*.pdf      pages cut out of a document's PDF for one item

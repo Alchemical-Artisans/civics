@@ -43,13 +43,24 @@
 <script lang="ts">
   import { COLOURS } from "$lib/chart-colours"
 
-  let { rows }: { rows: Series[] } = $props()
-
-  const money = new Intl.NumberFormat("en-US", {
+  const MONEY = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
     maximumFractionDigits: 0,
   })
+
+  let {
+    rows,
+    /**
+     * How a part's amount is printed, both on the bar's own total and on each
+     * segment's name. Defaults to dollars, since every bar on the site so far
+     * has been one -- `/water`'s usage split is the first that isn't, and
+     * passes its own formatter rather than this component gaining a second,
+     * money-shaped idea of what a number is.
+     */
+    format = (n: number) => MONEY.format(n),
+  }: { rows: Series[]; format?: (n: number) => string } = $props()
+
   const percent = new Intl.NumberFormat("en-US", {
     style: "percent",
     minimumFractionDigits: 1,
@@ -157,7 +168,7 @@
         {:else}
           <span class="font-medium text-slate-900">{bar.label}</span>
         {/if}
-        <span class="text-slate-600 tabular-nums">{money.format(bar.total)}</span>
+        <span class="text-slate-600 tabular-nums">{format(bar.total)}</span>
       </p>
 
       <!-- `gap` rather than borders between the segments: two fills meeting
@@ -186,7 +197,7 @@
                 ? 1
                 : 0.4}"
               role="img"
-              aria-label="{bar.label}, {part.label}, {money.format(part.amount)}, {part.share}"
+              aria-label="{bar.label}, {part.label}, {format(part.amount)}, {part.share}"
               tabindex="0"
               onpointerenter={(event) => show(bar.label, part.label, event.currentTarget)}
               onpointerleave={() => (active = null)}
@@ -198,7 +209,7 @@
       </div>
 
       {#each bar.parts.filter((part) => part.width <= 0) as part (part.label)}
-        <p class="sr-only">{bar.label}, {part.label}, {money.format(part.amount)}</p>
+        <p class="sr-only">{bar.label}, {part.label}, {format(part.amount)}</p>
       {/each}
     </div>
   {/each}
@@ -218,7 +229,7 @@
     >
       <span class="block font-medium text-slate-900">{shown.label}</span>
       <span class="block text-slate-600 tabular-nums">
-        {money.format(shown.amount)} &middot; {shown.share}
+        {format(shown.amount)} &middot; {shown.share}
       </span>
     </div>
   {/if}

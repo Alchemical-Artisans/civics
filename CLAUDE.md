@@ -14,6 +14,13 @@ It also republishes the city's budget and audit reports, where the current
 budget book is readable a section at a time rather than as one PDF running to
 hundreds of pages.
 
+A third section, `/water`, covers Haverhill's drought emergency -- not scraped
+at all, since nothing here scrapes the city's general informational pages.
+`src/lib/water.ts` holds every figure by hand, each cited to the page it came
+off and the date it was read, in the same spirit as the scraped halves but
+without a scraper to keep it honest automatically. See
+[docs/water-pages.md](docs/water-pages.md).
+
 **The point is not a faithful copy of the book in web form.** It is to
 rearrange what the city publishes so a reader can see what the government is
 doing, so the structure here is deliberately not the book's: sections are

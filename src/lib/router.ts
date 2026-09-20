@@ -202,6 +202,17 @@ export class Router {
   }
 
   /**
+   * The drought and water-conservation page -- a third half, alongside the
+   * calendar and the budget, with nothing scraped behind it. A bare page
+   * rather than a landing method with a default sub-page: there is exactly
+   * one of it so far, the way `/calendar` and `/budget` had many pages to
+   * choose a default from and this does not yet.
+   */
+  static water(): string {
+    return path("/water")
+  }
+
+  /**
    * A route on this site as a full URL on the canonical domain, for the few
    * places that need one a reader can carry elsewhere -- the `URL` and body of
    * an "add to calendar" event, say. `base` is deliberately not applied: this

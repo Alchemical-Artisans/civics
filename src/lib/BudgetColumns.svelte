@@ -49,12 +49,27 @@
 <script lang="ts">
   import { COLOURS } from "$lib/chart-colours"
 
+  const MONEY = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    maximumFractionDigits: 0,
+  })
+
   let {
     rows,
     order,
     minHeight = 256,
+    /**
+     * How a part's amount is printed, on both a column's own total and each
+     * segment's name. Defaults to dollars, since every column drawn here so
+     * far has been one -- `/water`'s calculator is the first that isn't, and
+     * hands its own formatter rather than this component growing a second,
+     * money-shaped idea of what a number is.
+     */
+    format = (n: number) => MONEY.format(n),
   }: {
     rows: Column[]
+    format?: (n: number) => string
     /**
      * A fixed label order to stack and colour every column by, instead of
      * each column sorting and colouring its own parts independently. A
@@ -76,11 +91,6 @@
     minHeight?: number
   } = $props()
 
-  const money = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    maximumFractionDigits: 0,
-  })
   const percent = new Intl.NumberFormat("en-US", {
     style: "percent",
     minimumFractionDigits: 1,
@@ -184,15 +194,29 @@
 
 <!-- `h-full` and a growing plot, so the chart fills whatever height it is given
      -- the front page hands it the window, less the fixed footer, and makes it
-     stick. Where nothing sets a height, `minHeight` keeps it drawable. -->
+     stick. Where nothing sets a height, `minHeight` keeps it drawable.
+
+     The row below relies on the default `align-items: stretch`, not
+     `items-end`: a column's own height is a percentage of *its* box, and a
+     percentage height only resolves against a box whose own height was
+     itself set by an explicit value -- `min-height` on this row doesn't
+     count, however real the pixels it produces, so a column sized by
+     `h-full` (100%) against it silently collapsed to zero everywhere this
+     component sits in ordinary flowing content rather than under a page
+     that already hands some ancestor a definite height (the front page's
+     viewport-pinned layout is why it never showed up there). Stretch sizes
+     a column to the row's real cross size directly, no percentage math
+     involved, so a column left with its own height unset (`auto`) fills it
+     correctly either way -- which is also why the column below no longer
+     carries `h-full` itself. -->
 <div class="budget-columns not-prose relative flex h-full flex-col" bind:this={root}>
   <!-- The columns are as wide as the words under them and no wider. A column
        carries one number; the width past that is width spent saying nothing,
        and two narrow columns side by side are easier to compare than two broad
        ones. -->
-  <div class="flex flex-1 items-end gap-6" style="min-height: {minHeight}px">
+  <div class="flex flex-1 gap-6" style="min-height: {minHeight}px">
     {#each columns as column (column.label)}
-      <div class="budget-column flex h-full w-24 flex-col justify-end">
+      <div class="budget-column flex w-24 flex-col justify-end">
         <!-- `flex-col-reverse`, so the largest part sits on the ground and the
              columns are read against each other from the same baseline. -->
         <div class="flex flex-col-reverse gap-px overflow-hidden" style="height: {column.height}%">
@@ -213,7 +237,7 @@
                   ? 1
                   : 0.4}"
                 role="img"
-                aria-label="{column.label}, {part.label}, {money.format(part.amount)}, {part.share}"
+                aria-label="{column.label}, {part.label}, {format(part.amount)}, {part.share}"
                 tabindex="0"
                 onpointerenter={(event) => show(column.label, part.label, event.currentTarget)}
                 onpointerleave={() => (active = null)}
@@ -243,7 +267,7 @@
           <span class="font-semibold text-slate-900">{column.label}</span>
         {/if}
         <span class="mt-0.5 block whitespace-nowrap text-slate-600 tabular-nums">
-          {money.format(column.total)}
+          {format(column.total)}
         </span>
       </p>
     {/each}
@@ -259,7 +283,7 @@
     >
       <span class="block font-medium text-slate-900">{shown.label}</span>
       <span class="block text-slate-600 tabular-nums">
-        {money.format(shown.amount)} &middot; {shown.share}
+        {format(shown.amount)} &middot; {shown.share}
       </span>
     </div>
   {/if}

@@ -47,6 +47,7 @@
   const current = $derived({
     projects: within("/projects") || within("/budget"),
     calendar: within("/calendar"),
+    water: within("/water"),
   })
 
   const bar = $derived(barOf(page.data))
@@ -252,6 +253,16 @@
         aria-current={current.calendar ? "page" : undefined}
       >
         Calendar
+      </a>
+
+      <a
+        class="underline decoration-slate-300 hover:decoration-slate-900 {current.water
+          ? 'font-medium text-slate-900'
+          : 'text-slate-600'}"
+        href={Router.water()}
+        aria-current={current.water ? "page" : undefined}
+      >
+        Water
       </a>
     </nav>
   </div>
