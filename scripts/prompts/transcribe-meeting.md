@@ -295,14 +295,27 @@ one file per page, so stitch a multi-page document back with `pdfunite`. Keep
 the link to the full document as well — the city's complete file stays the
 record.
 
-**Before committing any excerpt, open the cut pages and check their
-orientation** — a wide sheet (a chart, a plan, a table landscape on the
-original) is often scanned sideways, and cutting it out does not fix that; it
-just makes a smaller sideways PDF. Do not commit one un-rotated on the
-assumption a reader will tilt their head. Poppler cannot turn a page and
-`qpdf` is not installed here; `pip install --user pypdf` and set the rotation,
-which costs nothing in quality because it only writes `/Rotate` into the page
-and leaves the scan alone:
+**Every excerpt is rendered and looked at before it is committed. Not the ones
+that look like they might be sideways — every one.** This is a step of cutting
+an excerpt, the same as `pdfseparate` is, and it is the step that gets skipped,
+because a wide sheet scanned sideways is invisible in `pdfinfo` (the page is
+still 612 x 792 with `Page rot: 0`; it is the scan inside it that is turned)
+and invisible in `pdftotext` (a scan has no text layer to come out crooked).
+The only thing that shows it is the image:
+
+```sh
+pdftoppm -r 100 -png static/excerpts/<meeting id>/<item slug>/<doc>.pdf /tmp/check
+```
+
+Read every `/tmp/check-*.png` with the Read tool. A chart, a plan, a budget
+table — anything the city printed landscape — is likely to be lying on its
+side, and cutting it out of the packet does not fix that; it just makes a
+smaller sideways PDF. Do not commit one un-rotated on the assumption a reader
+will tilt their head.
+
+Poppler cannot turn a page and `qpdf` is not installed here;
+`pip install --user pypdf` and set the rotation, which costs nothing in quality
+because it only writes `/Rotate` into the page and leaves the scan alone:
 
 ```python
 from pypdf import PdfReader, PdfWriter
@@ -314,10 +327,53 @@ for page in reader.pages:
 writer.write(open(path, "wb"))
 ```
 
-Check the result renders upright (`pdftoppm -r 100 -png <path> /tmp/check`
-and read the image) before moving on — 90 and 270 are easy to swap.
+Then render and read it again — 90 and 270 are easy to swap, and a page turned
+the wrong way is no more readable than one left alone. Which way to turn is
+read off the render: find the table's own first column or the letter's
+signature, and ask where it would be if the sheet were upright. A heading
+running up the left edge, with the letters' tops pointing left, has been turned
+anticlockwise and wants `rotate(90)`; running down the right edge, `rotate(270)`.
 
-## 7. An order that replaces text already on the books
+## 7. A document that is a table
+
+Some of what the city attaches is not prose with a table in it — it _is_ a
+table: the Auditor's monthly revenue and expense reports, a fee schedule, a
+list of bills. **Those tables are transcribed onto the item's page, in full,
+the same as an ordinance's text is.** The excerpt link stays underneath, but a
+link to a scanned PDF is not a transcription: a reader cannot search it, a
+screen reader cannot read it, and no figure in it can be linked to or quoted.
+The page is the write-up; a page whose whole write-up is three links to
+scans has not been written up.
+
+- **Every row, every column, in the document's own order.** Not the rows that
+  seem interesting, not a summary of them, and not the totals alone. A hundred
+  rows of department appropriations is a hundred `<tr>`s.
+- **Semantic markup, and nothing more**: `<caption>`, `<thead>` with
+  `<th scope="col">`, a `<tbody>` per group the document rules off, and
+  `<th scope="row">` on a total row. Column widths and scrolling are handled
+  site-wide in `src/routes/layout.css`; a page does not style its own table.
+- **Return `wide: true`** from the item's `+page.ts` where the table runs to
+  more than three or four columns — the same knob the ordinance comparison
+  uses, and for the same reason.
+- **What is a drawing is not transcribed.** These reports carry a "Trendline"
+  column of sparklines and a column of Harvey balls beside each percentage;
+  there is nothing in either to copy, and the figure beside them already says
+  it. Leave the column out rather than inventing words for a picture.
+- **Cells keep what the document prints**, including its accounting notation:
+  a deficit in parentheses stays `$(110,390,272)`, a zero printed as a dash
+  stays `$-`, and a cell the report leaves blank stays empty. The city's own
+  slips stay too — "Motor Vehcile Excise" and "Fines & Forefits" are in the
+  Auditor's report exactly so.
+- **Where a caption has to be ours, keep it to a handle.** Use the document's
+  own heading over a table where it prints one ("Year to Year Comparison",
+  "Collections as a Percent of Budget"); where it prints none, name what the
+  block is and stop.
+
+`city-council-2026-09-22/revenue-and-expense-reports/` is the worked example:
+five tables, the two reports' own headings as `<h2>`s, and the scans still
+linked at the foot.
+
+## 8. An order that replaces text already on the books
 
 An order that amends, repeals or replaces something the city already has in
 force -- an article of the Code, a policy, a fee schedule, a set of
@@ -360,13 +416,13 @@ Labels down the comparison are the city's words or none. Where the two
 versions letter a list differently and no shared label exists that either
 document actually prints, leave the row unlabelled and let each side carry its
 own numbering in its own text -- a handle invented to span them would be my
-words sitting in the record's typeface, which §8 bars.
+words sitting in the record's typeface, which §9 bars.
 
 `city-council-2026-09-22/water-use-restriction-ordinance/` is the worked
 example: `ordinances.ts` holds both transcriptions and the pairing,
 `ordinances.spec.ts` pins the flags and the figures the order moves.
 
-## 8. The rules that bite
+## 9. The rules that bite
 
 - **Transcribe verbatim.** Do not paraphrase, summarise, correct, or tidy. The
   city's spelling, punctuation and slips stay as printed — "dover use" for Dover
@@ -378,10 +434,13 @@ example: `ordinances.ts` holds both transcriptions and the pairing,
   city come from `meetings.json` through the layout.
 - **Read what you paste.** A PDF can be copied out of, and markup pasted without
   being read is somebody else's script tag in the build.
-- **Check every excerpt's orientation before committing it.** A sideways scan
-  cut out of a packet is still sideways; §6 has the rotation snippet.
+- **A table gets transcribed, not linked.** A page whose write-up is a list of
+  links to scans is not a write-up; §7.
+- **Render every excerpt and look at it before committing it.** A sideways scan
+  cut out of a packet is still sideways, and nothing but the image will tell
+  you; §6 has the render and the rotation snippet.
 
-## 9. Check it
+## 10. Check it
 
 ```sh
 npx prettier --write src/routes/calendar/meetings/<meeting id>/
@@ -398,7 +457,7 @@ the budget book defines without linking it. The build is what proves the new
 routes prerender — check `build/calendar/meetings/<meeting id>/` holds one file
 per item page.
 
-## 10. Commit, and report
+## 11. Commit, and report
 
 Commit directly to `main`, in the repo's voice: what changed and **why**, not a
 list of files. Do not push, and do not open a pull request.

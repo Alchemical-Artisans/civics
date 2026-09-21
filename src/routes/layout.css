@@ -37,3 +37,22 @@
   margin-top: 1rem;
   font-size: 0.875rem;
 }
+
+/*
+ * A transcribed table can be wider than the page it sits on. The Auditor's
+ * monthly expense report is five columns of figures over a hundred rows and
+ * the revenue report is six; a phone gives a reading column about a third of
+ * what either needs, and a table that simply overflows takes the whole page
+ * sideways with it -- the heading, the source links, the site's own bar.
+ *
+ * `display: block` makes the table its own scrolling box instead: the rows
+ * inside still lay out as a table, the browser rebuilding the anonymous one
+ * around them, and only the table scrolls. Site-wide rather than a wrapper
+ * around each one, because every table transcribed off the city's paper has
+ * the same problem and none of them should have to solve it again.
+ */
+.prose table:not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+}
