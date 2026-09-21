@@ -317,7 +317,56 @@ writer.write(open(path, "wb"))
 Check the result renders upright (`pdftoppm -r 100 -png <path> /tmp/check`
 and read the image) before moving on — 90 and 270 are easy to swap.
 
-## 7. The rules that bite
+## 7. An order that replaces text already on the books
+
+An order that amends, repeals or replaces something the city already has in
+force -- an article of the Code, a policy, a fee schedule, a set of
+regulations -- says almost nothing on the agenda line: "repeal and replace
+Chapter 250, Article VI ... in its entirety, with the following revised
+ordinance". The packet then attaches both, and a reader who wants to know what
+the Council is actually voting on has to hold seven scanned pages against five
+and find the changed words by eye. Nobody does that. **Transcribe both
+versions and show them side by side with the differences marked.**
+
+The pieces are already here:
+
+- `$lib/word-diff.ts` marks the words that moved between two versions of one
+  passage, as runs, both ways round -- struck on the side that loses a word,
+  solid on the side that gains one.
+- `$lib/OrdinanceComparison.svelte` draws a whole comparison: two columns on a
+  wide screen, stacked and labelled in place on a narrow one.
+- A `+page.ts` returning `wide: true` gives the item page the window's width
+  instead of a reading column, the same knob a budget section has.
+
+What the transcription has to carry beyond the words is the **pairing**: which
+provision of the old text answers which of the new. That cannot be derived --
+an order that replaces an article in its entirety renumbers most of what it
+keeps, so § 250-25 becoming § 250-25.1 is invisible to any matching on
+numbers -- so the data file gives every provision a `key` and the two sides
+meet on it. A provision only one version has simply has one side. Each version
+keeps its **own** number, title and lettering on its own side of the page:
+printing one number over both columns would say the two agree when the whole
+point is that they do not.
+
+The one judgement to make by hand is `rewritten`: two different sentences
+about the same subject rather than one sentence with words changed. A word
+diff of a rewritten provision marks nearly every word, which tells a reader
+nothing, so those are drawn plain and side by side with a "Rewritten" note
+instead. Pin the judgement in a spec against `similarity()`, so a
+transcription corrected later cannot quietly leave a rewrite drawn as an
+amendment.
+
+Labels down the comparison are the city's words or none. Where the two
+versions letter a list differently and no shared label exists that either
+document actually prints, leave the row unlabelled and let each side carry its
+own numbering in its own text -- a handle invented to span them would be my
+words sitting in the record's typeface, which §8 bars.
+
+`city-council-2026-09-22/water-use-restriction-ordinance/` is the worked
+example: `ordinances.ts` holds both transcriptions and the pairing,
+`ordinances.spec.ts` pins the flags and the figures the order moves.
+
+## 8. The rules that bite
 
 - **Transcribe verbatim.** Do not paraphrase, summarise, correct, or tidy. The
   city's spelling, punctuation and slips stay as printed — "dover use" for Dover
@@ -332,7 +381,7 @@ and read the image) before moving on — 90 and 270 are easy to swap.
 - **Check every excerpt's orientation before committing it.** A sideways scan
   cut out of a packet is still sideways; §6 has the rotation snippet.
 
-## 8. Check it
+## 9. Check it
 
 ```sh
 npx prettier --write src/routes/calendar/meetings/<meeting id>/
@@ -349,7 +398,7 @@ the budget book defines without linking it. The build is what proves the new
 routes prerender — check `build/calendar/meetings/<meeting id>/` holds one file
 per item page.
 
-## 9. Commit, and report
+## 10. Commit, and report
 
 Commit directly to `main`, in the repo's voice: what changed and **why**, not a
 list of files. Do not push, and do not open a pull request.

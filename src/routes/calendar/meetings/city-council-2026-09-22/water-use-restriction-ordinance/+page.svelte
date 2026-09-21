@@ -1,5 +1,7 @@
 <script lang="ts">
   import { Router } from "$lib/router"
+  import OrdinanceComparison from "$lib/OrdinanceComparison.svelte"
+  import { COMPARISON, HEADING } from "./ordinances"
 
   const MEETING = "city-council-2026-09-22"
   const ITEM = "water-use-restriction-ordinance"
@@ -56,3 +58,20 @@
     </a>
   </li>
 </ul>
+
+<hr />
+
+<!-- The order and the article it would replace, transcribed out of the two
+     PDFs linked above and set against each other provision by provision. The
+     order says only "in its entirety", and the packet leaves a reader to hold
+     seven scanned pages against five; which words actually move is the whole
+     question in front of the Council. See `ordinances.ts` for how the two are
+     paired and `$lib/word-diff` for what marks the words. -->
+<h2>{HEADING.article}, {HEADING.title}</h2>
+<p class="text-sm text-slate-600">{HEADING.adopted}</p>
+
+<OrdinanceComparison
+  parts={COMPARISON}
+  nowLabel="In the Code now"
+  proposedLabel="As the order would read"
+/>

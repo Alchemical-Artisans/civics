@@ -36,6 +36,17 @@
   const item = $derived(page.data.item)
   const heading = $derived(item?.title ?? meeting.board)
 
+  // A write-up is prose and keeps a reading column. One can ask for the
+  // window's width instead by returning `wide` from its own load, the same
+  // knob a budget section has: the water restriction ordinance is a
+  // two-column comparison of the article an order would replace against the
+  // one it would put in its place, and a 48rem strip has nowhere to put two
+  // columns of legal prose. It widens the whole page, chrome included: what
+  // sits above the article is a back link, a heading and a list of the city's
+  // own documents, all of them short and left-aligned, so a wider column
+  // leaves them where they were rather than stretching a line of reading.
+  const column = $derived(page.data.wide === true ? "max-w-6xl" : "max-w-3xl")
+
   const when = $derived(
     details?.time
       ? `${formatLongDate(meeting.date)} at ${details.time}`
@@ -71,7 +82,7 @@
   />
 </svelte:head>
 
-<div class="mx-auto max-w-3xl px-4 py-8">
+<div class="mx-auto px-4 py-8 {column}">
   <nav class="mb-6">
     {#if data.isItem}
       <a
