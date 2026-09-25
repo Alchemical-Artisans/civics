@@ -95,6 +95,24 @@
       "docId": "meeting-schedule-and-agenda-packet-b942e036"
     },
     {
+      "title": "Haverhill School Committee Meeting Revised",
+      "description": "school comm rev-002.pdf",
+      "pageUrl": "https://events.haverhillma.gov/default/Detail/2026-09-23-1900-Haverhill-School-Committee-Meeting-Revised",
+      "fileUrl": "https://events.haverhillma.gov/default/Detail/2026-09-23-1900-Haverhill-School-Committee-Meeting-Revised/3f7fb495-ce56-414b-9901-b4ce013ea8b8",
+      "date": "2026-09-24",
+      "board": "School Committee",
+      "kind": "agenda",
+      "category": "School Committee Agendas",
+      "dateSource": "notice",
+      "rawMeetingDate": null,
+      "dateAdjusted": false,
+      "dateConflict": false,
+      "filenameDate": null,
+      "needsReview": false,
+      "source": "https://events.haverhillma.gov/",
+      "docId": "2026-09-23-1900-haverhill-school-committee-meeting-revised-09997ceb"
+    },
+    {
       "title": "Haverhill School Committee Portfolio Meeting Materials 09.24.26",
       "description": "hsc_portfolio_meeting_materials_092426.pdf",
       "pageUrl": "https://www.haverhill-ps.org/meeting-schedule-and-agenda-packet",
@@ -111,24 +129,6 @@
       "needsReview": false,
       "source": "https://www.haverhill-ps.org/meeting-schedule-and-agenda-packet",
       "docId": "meeting-schedule-and-agenda-packet-10c36e14"
-    },
-    {
-      "title": "Haverhill School Committee Meeting Revised",
-      "description": "school comm rev-002.pdf",
-      "pageUrl": "https://events.haverhillma.gov/default/Detail/2026-09-23-1900-Haverhill-School-Committee-Meeting-Revised",
-      "fileUrl": "https://events.haverhillma.gov/default/Detail/2026-09-23-1900-Haverhill-School-Committee-Meeting-Revised/3f7fb495-ce56-414b-9901-b4ce013ea8b8",
-      "date": "2026-09-23",
-      "board": "School Committee",
-      "kind": "agenda",
-      "category": "School Committee Agendas",
-      "dateSource": "notice",
-      "rawMeetingDate": null,
-      "dateAdjusted": false,
-      "dateConflict": false,
-      "filenameDate": null,
-      "needsReview": false,
-      "source": "https://events.haverhillma.gov/",
-      "docId": "2026-09-23-1900-haverhill-school-committee-meeting-revised-09997ceb"
     },
     {
       "title": "Board of Assessors Public Meeting",
