@@ -1,5 +1,8 @@
 <script lang="ts">
   import { Router } from "$lib/router"
+
+  /** This page's own directory name, which is the sitting's id. */
+  const MEETING = "school-committee-2026-09-24"
 </script>
 
 <p>Updated Posting 09.23.26 @ 3:00 pm</p>
@@ -19,11 +22,16 @@
 
 <ul>
   <li>
-    <strong>A)</strong> Dr. Grannemann: Continued discussion of Focus Areas for District Improvement.
+    <strong>A)</strong>
+    <a href={Router.meetingItem(MEETING, "focus-areas-for-district-improvement")}>
+      Focus Areas for District Improvement
+    </a>
   </li>
   <li>
-    <strong>B)</strong> Dr. Grannemann: Elect delegate to Massachusetts Association of School Committees
-    2026 Delegate Assembly.
+    <strong>B)</strong>
+    <a href={Router.meetingItem(MEETING, "masc-2026-delegate-assembly")}>
+      MASC 2026 Delegate Assembly
+    </a>
   </li>
 </ul>
 
@@ -31,9 +39,10 @@
 
 <ul>
   <li>
-    <strong>A)</strong> Mrs. Sapienza Donais: Policy Subcommittee Update, which includes a revision
-    to Policy JLIDA Powered Micromobility Device. This policy is presented for a
-    <strong>third reading</strong>, which includes an action item (vote) approval or rejection.
+    <strong>A)</strong>
+    <a href={Router.meetingItem(MEETING, "policy-jlida-powered-micromobility-device")}>
+      Policy JLIDA Powered Micromobility Device
+    </a>
   </li>
   <li>
     <strong>B)</strong> Dr. Grannemann: Appointment of subcommittee members (recommendation &amp; vote).
@@ -46,8 +55,10 @@
 
 <ul>
   <li>
-    <strong>A)</strong> Superintendent&rsquo;s Recommendation for approval of Warrant Number EV020260925
-    totaling $7,098,919.36, as indicated in the agenda material.
+    <strong>A)</strong>
+    <a href={Router.meetingItem(MEETING, "warrant-number-ev020260925")}>
+      Warrant Number EV020260925
+    </a>
   </li>
 </ul>
 
@@ -55,14 +66,14 @@
 
 <ul>
   <li>
-    <strong>A)</strong> Superintendent&rsquo;s Recommendation for approval of the
-    <a href={Router.meeting("school-committee-2026-09-10")}
-      >Hybrid Regular Meeting Minutes of September 10, 2026</a
-    >, as indicated in the agenda material.
+    <strong>A)</strong>
+    <a href={Router.meetingItem(MEETING, "hybrid-regular-meeting-minutes-september-10-2026")}>
+      Hybrid Regular Meeting Minutes of September 10, 2026
+    </a>
   </li>
   <li>
-    <strong>B)</strong> Superintendent&rsquo;s Recommendation for approval of use of facilities as indicated
-    in the agenda material.
+    <strong>B)</strong>
+    <a href={Router.meetingItem(MEETING, "use-of-facilities")}>Use of Facilities</a>
   </li>
 </ul>
 
