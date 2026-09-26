@@ -64,6 +64,18 @@ describe("Router", () => {
     expect(Router.glossaryTerm("fy2027", "free-cash")).toBe("/budget/fy2027/glossary#free-cash")
   })
 
+  it("builds an OpenStreetMap embed around a point", () => {
+    expect(Router.osmEmbed(42.7747118, -71.0913454)).toBe(
+      "https://www.openstreetmap.org/export/embed.html?bbox=-71.0931454,42.7729118,-71.0895454,42.7765118&layer=mapnik&marker=42.7747118,-71.0913454",
+    )
+  })
+
+  it("builds a full-size OpenStreetMap link to the same point", () => {
+    expect(Router.osmView(42.7747118, -71.0913454)).toBe(
+      "https://www.openstreetmap.org/?mlat=42.7747118&mlon=-71.0913454#map=18/42.7747118/-71.0913454",
+    )
+  })
+
   it("opens an outside PDF at a page", () => {
     expect(Router.pdfPage("https://cdn.example/budget.pdf", 17)).toBe(
       "https://cdn.example/budget.pdf#page=17",

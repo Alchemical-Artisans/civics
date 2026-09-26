@@ -221,6 +221,43 @@ the city's numbering kept verbatim, and `<table>` for the genuinely tabular
 parts. A City Council agenda PDF is usually a handful of outline pages followed
 by a packet running to hundreds; only the outline is transcribed.
 
+### Mapping an address
+
+Where an item names a specific street address -- a parking ordinance, a
+special permit, a road-opening request -- add a map under the table or
+paragraph that states it, with `$lib/AddressMap.svelte`:
+
+```svelte
+<AddressMap address="12 Blaisdell St, Haverhill, MA" lat={42.7747118} lon={-71.0913454} />
+```
+
+OpenStreetMap's own embeddable widget needs a point to centre on, not a
+string to search, so `lat`/`lon` are looked up once by hand rather than
+geocoded at build time -- the build stays offline, the same reason the
+calendar half never talks to the city's servers at read time. One lookup,
+respecting Nominatim's usage policy (a real user agent, no more than one
+request a second):
+
+```sh
+curl -A "civics-calendar/1.0 (github.com/alchemical-artisans/civics)" \
+  "https://nominatim.openstreetmap.org/search?format=json&limit=1&q=12+Blaisdell+St%2C+Haverhill%2C+MA+01830"
+```
+
+Use the first result's `lat`/`lon` only where it resolves to the actual
+address -- a building, a house number. Where the document names a place with
+no street number of its own (a pumping station, a park with no numbered
+frontage) and the lookup only turns up the street or neighbourhood it sits
+on, leave the map off rather than centring it on an approximation and
+calling it the place: this is the same rule as §5 of the transcribe prompt --
+nothing here is guessed at, and a map is a stronger claim of precision than a
+sentence naming the street.
+
+A meeting's own `location.mapQuery` (§3 above) is a different thing and
+keeps its own Google Maps search link -- that is where the sitting is held,
+not a place named inside what it is discussing, and a search string is
+enough for a reader who is about to go there in person rather than looking at
+a picture of somewhere else.
+
 ## Why a route rather than a data file
 
 These pages used to be HTML fragments under `src/lib/data/documents/`, loaded by

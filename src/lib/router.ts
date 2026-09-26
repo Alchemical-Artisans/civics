@@ -238,6 +238,38 @@ export class Router {
   static map(query: string): string {
     return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`
   }
+
+  /**
+   * OpenStreetMap's own embeddable widget for one point -- an address named
+   * inside an agenda item, rather than the meeting's own location, which
+   * `map` above already links out to. The widget takes a bounding box, not an
+   * address, so the caller hands it coordinates rather than a query string;
+   * `AddressMap.svelte` is where those get looked up once, by hand, and pinned
+   * beside the transcription.
+   *
+   * The box is a fixed ~0.2 km on a side around the point -- tight enough to
+   * read as one building or block, the scale an agenda item is usually about,
+   * without a caller having to pick a zoom.
+   */
+  static osmEmbed(lat: number, lon: number): string {
+    const delta = 0.0018
+    // Floating-point subtraction on typical geocoded coordinates (7ish decimal
+    // places) can spill into a trailing .99999... digit; rounding to the same
+    // precision keeps the URL as clean as the inputs.
+    const round = (n: number) => Math.round(n * 1e7) / 1e7
+    const bbox = [
+      round(lon - delta),
+      round(lat - delta),
+      round(lon + delta),
+      round(lat + delta),
+    ].join(",")
+    return `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${lat},${lon}`
+  }
+
+  /** The same point on OpenStreetMap's own site, full-size, for `osmEmbed`'s "larger map" link. */
+  static osmView(lat: number, lon: number): string {
+    return `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lon}#map=18/${lat}/${lon}`
+  }
 }
 
 /** Origin of the City of Haverhill's site, where every source document lives. */
