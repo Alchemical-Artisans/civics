@@ -256,7 +256,50 @@ packet), `city-council-2026-08-25/` (twenty items, each with pages cut out of
 the packet behind it), and `license-commission-2026-09-14/99-restaurant-hours`
 (one item page standing for two agenda lines).
 
-## 5. Cross-references to other meetings
+## 5. An address named in the document
+
+Where an item names a specific street address -- a parking ordinance, a
+special permit, a road-opening request, a property the Council is voting to
+take or dispose of -- add a map under the table or paragraph that states it:
+
+```svelte
+<script lang="ts">
+  import AddressMap from "$lib/AddressMap.svelte"
+</script>
+
+<AddressMap address="12 Blaisdell St, Haverhill, MA" lat={42.7747118} lon={-71.0913454} />
+```
+
+`AddressMap` hands OpenStreetMap's own embeddable widget a point to centre
+on, so look the address up once, by hand, before writing the page -- the
+widget cannot take an address string the way `Router.map` (a meeting's own
+"where this is held" link) can:
+
+```sh
+curl -A "civics-calendar/1.0 (github.com/alchemical-artisans/civics)" \
+  "https://nominatim.openstreetmap.org/search?format=json&limit=1&q=<street>%2C+Haverhill%2C+MA"
+```
+
+One request, not a loop over every address in the packet at once --
+Nominatim's usage policy caps this at one request a second, and the user
+agent above is required, not optional.
+
+Use the result only where it resolves to the actual address printed --
+a building, a house number, the type in the response is `"building"` or
+similarly specific. Where the document names a place with no street number
+of its own (a pumping station, a park with no numbered frontage) and the
+lookup only turns up the street or the neighbourhood it sits on, **leave the
+map off** rather than centring it on an approximation and calling it the
+place -- the same rule as §10's "do not guess": a map is a stronger claim of
+precision than a sentence naming the street, and this codebase does not make
+claims the document does not support. Say in your report which addresses got
+a map and which were left out, and why.
+
+This is for a place the document is _about_ -- not the sitting's own
+location, which is a different thing (§3's `mapQuery`) with its own Google
+Maps search link.
+
+## 6. Cross-references to other meetings
 
 A document sometimes names another sitting's business without printing it — a
 council "Doc." number, "refer ... for further discussion", "continued from",
@@ -277,7 +320,7 @@ rather than guessing at what it points to. See
 whose "Doc. 41-a" links to the City Council item that referred the matter to
 it.
 
-## 6. Excerpts, where there is a packet
+## 7. Excerpts, where there is a packet
 
 An item resting on a letter or a plan can link to just those pages rather than a
 packet running to hundreds. Cut them out of the cached PDF and commit them:
@@ -334,7 +377,7 @@ signature, and ask where it would be if the sheet were upright. A heading
 running up the left edge, with the letters' tops pointing left, has been turned
 anticlockwise and wants `rotate(90)`; running down the right edge, `rotate(270)`.
 
-## 7. A document that is a table
+## 8. A document that is a table
 
 Some of what the city attaches is not prose with a table in it — it _is_ a
 table: the Auditor's monthly revenue and expense reports, a fee schedule, a
@@ -373,7 +416,7 @@ scans has not been written up.
 five tables, the two reports' own headings as `<h2>`s, and the scans still
 linked at the foot.
 
-## 8. An order that replaces text already on the books
+## 9. An order that replaces text already on the books
 
 An order that amends, repeals or replaces something the city already has in
 force -- an article of the Code, a policy, a fee schedule, a set of
@@ -416,13 +459,13 @@ Labels down the comparison are the city's words or none. Where the two
 versions letter a list differently and no shared label exists that either
 document actually prints, leave the row unlabelled and let each side carry its
 own numbering in its own text -- a handle invented to span them would be my
-words sitting in the record's typeface, which §9 bars.
+words sitting in the record's typeface, which §10 bars.
 
 `city-council-2026-09-22/water-use-restriction-ordinance/` is the worked
 example: `ordinances.ts` holds both transcriptions and the pairing,
 `ordinances.spec.ts` pins the flags and the figures the order moves.
 
-## 9. The rules that bite
+## 10. The rules that bite
 
 - **Transcribe verbatim.** Do not paraphrase, summarise, correct, or tidy. The
   city's spelling, punctuation and slips stay as printed — "dover use" for Dover
@@ -435,12 +478,12 @@ example: `ordinances.ts` holds both transcriptions and the pairing,
 - **Read what you paste.** A PDF can be copied out of, and markup pasted without
   being read is somebody else's script tag in the build.
 - **A table gets transcribed, not linked.** A page whose write-up is a list of
-  links to scans is not a write-up; §7.
+  links to scans is not a write-up; §8.
 - **Render every excerpt and look at it before committing it.** A sideways scan
   cut out of a packet is still sideways, and nothing but the image will tell
-  you; §6 has the render and the rotation snippet.
+  you; §7 has the render and the rotation snippet.
 
-## 10. Check it
+## 11. Check it
 
 ```sh
 npx prettier --write src/routes/calendar/meetings/<meeting id>/
@@ -457,7 +500,7 @@ the budget book defines without linking it. The build is what proves the new
 routes prerender — check `build/calendar/meetings/<meeting id>/` holds one file
 per item page.
 
-## 11. Commit, and report
+## 12. Commit, and report
 
 Commit directly to `main`, in the repo's voice: what changed and **why**, not a
 list of files. Do not push, and do not open a pull request.

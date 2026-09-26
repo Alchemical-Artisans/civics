@@ -980,6 +980,12 @@ rules that bite:
   in the prose, and only when the document states them. It is `details` and not
   `meeting` because a `Meeting` is a sitting, with documents under it. Clock
   times from `meetings.json` are unreliable and are never displayed.
+- Where an item names a specific street address, add `$lib/AddressMap.svelte`
+  under the table or paragraph that states it, with coordinates looked up once
+  by hand against Nominatim (see docs/document-pages.md#mapping-an-address) —
+  never for the meeting's own location, which keeps `mapQuery`'s plain search
+  link, and never where the lookup only resolves to a street rather than the
+  address itself.
 - An item page's `+page.ts` returns `{ item: { title } }`.
 - PDF pages cut out for one item are committed under `static/excerpts/<id>/`
   and linked with `Router.excerpt(...)`; `.cache/` is gitignored, so re-cutting

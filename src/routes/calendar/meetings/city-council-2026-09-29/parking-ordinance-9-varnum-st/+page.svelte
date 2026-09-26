@@ -1,5 +1,6 @@
 <script lang="ts">
   import { Router } from "$lib/router"
+  import AddressMap from "$lib/AddressMap.svelte"
 
   const MEETING = "city-council-2026-09-29"
   const ITEM = "parking-ordinance-9-varnum-st"
@@ -26,6 +27,8 @@
     </tr>
   </tbody>
 </table>
+
+<AddressMap address="9 Varnum St, Haverhill, MA" lat={42.7678179} lon={-71.0943473} />
 
 <p class="text-right"><strong>Filed September 16, 2026</strong></p>
 
