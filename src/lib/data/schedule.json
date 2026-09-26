@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-25T00:16:18.294Z",
+  "generatedAt": "2026-09-26T04:21:02.449Z",
   "rules": [
     {
       "board": "City Council",
@@ -543,11 +543,25 @@
       "time": "7:00 PM"
     },
     {
+      "board": "Historic Commission",
+      "date": "2026-09-30",
+      "title": "Haverhill Historic Commission Meeting",
+      "url": "https://events.haverhillma.gov/default/Detail/2026-09-30-1800-Haverhill-Historic-Commission-Meeting",
+      "time": "6:00 PM"
+    },
+    {
       "board": "City Council",
       "date": "2026-10-06",
       "title": "City Council Meeting",
       "url": "https://events.haverhillma.gov/default/Detail/2026-10-06-1900-City-Council-Meeting2",
       "time": "7:00 PM"
+    },
+    {
+      "board": "Conservation Commission",
+      "date": "2026-10-08",
+      "title": "Haverhill Conservation Commission Meeting",
+      "url": "https://events.haverhillma.gov/default/Detail/2026-10-08-1915-Haverhill-Conservation-Commission-Meeting",
+      "time": "7:15 PM"
     },
     {
       "board": "City Council",

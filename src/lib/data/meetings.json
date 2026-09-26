@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-09-25T00:16:10.721Z",
+  "generatedAt": "2026-09-26T04:20:57.080Z",
   "source": "https://www.haverhillma.gov/government/agendas-and-minutes/",
-  "count": 3104,
+  "count": 3110,
   "meetings": [
     {
       "title": "Special Education Parental Advisory Council Meeting (SEPAC)",
@@ -20,6 +20,78 @@
       "needsReview": false,
       "source": "https://events.haverhillma.gov/",
       "docId": "2026-11-09-1830-special-education-parental-advisory-council-meetin-a2891901"
+    },
+    {
+      "title": "2026-10-08 Conservation Commission Agenda",
+      "pageUrl": "/document-manager/media-pages/agenda-and-minutes/2026-10-08-conservation-commission-agenda/",
+      "fileUrl": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/bkqj2pxm/20261008_hccagenda.pdf",
+      "category": "Conservation Commission Agendas",
+      "description": "",
+      "board": "Conservation Commission",
+      "kind": "agenda",
+      "date": "2026-10-08",
+      "dateSource": "meeting-date",
+      "rawMeetingDate": "10/08/2026 07:15 PM",
+      "dateAdjusted": false,
+      "dateConflict": false,
+      "filenameDate": null,
+      "needsReview": false,
+      "source": "https://www.haverhillma.gov/government/agendas-and-minutes/",
+      "docId": "2026-10-08-conservation-commission-agenda-7881d959"
+    },
+    {
+      "title": "Haverhill Conservation Commission Meeting",
+      "description": "conservation 26-013.pdf",
+      "pageUrl": "https://events.haverhillma.gov/default/Detail/2026-10-08-1915-Haverhill-Conservation-Commission-Meeting",
+      "fileUrl": "https://events.haverhillma.gov/default/Detail/2026-10-08-1915-Haverhill-Conservation-Commission-Meeting/03e4c15f-9b2f-432b-8196-b4d0010d1966",
+      "date": "2026-10-08",
+      "board": "Conservation Commission",
+      "kind": "agenda",
+      "category": "Conservation Commission Agendas",
+      "dateSource": "notice",
+      "rawMeetingDate": null,
+      "dateAdjusted": false,
+      "dateConflict": false,
+      "filenameDate": null,
+      "needsReview": false,
+      "source": "https://events.haverhillma.gov/",
+      "docId": "2026-10-08-1915-haverhill-conservation-commission-meeting-65e572af"
+    },
+    {
+      "title": "Haverhill Historic Commission Meeting",
+      "description": "haverhill historic 26.pdf",
+      "pageUrl": "https://events.haverhillma.gov/default/Detail/2026-09-30-1800-Haverhill-Historic-Commission-Meeting",
+      "fileUrl": "https://events.haverhillma.gov/default/Detail/2026-09-30-1800-Haverhill-Historic-Commission-Meeting/fdca9f82-2dc4-4e32-95ff-b4d0010d591a",
+      "date": "2026-09-30",
+      "board": "Historic Commission",
+      "kind": "agenda",
+      "category": "Historic Commission Agendas",
+      "dateSource": "notice",
+      "rawMeetingDate": null,
+      "dateAdjusted": false,
+      "dateConflict": false,
+      "filenameDate": null,
+      "needsReview": false,
+      "source": "https://events.haverhillma.gov/",
+      "docId": "2026-09-30-1800-haverhill-historic-commission-meeting-83e44acd"
+    },
+    {
+      "title": "City Council Agenda - September 29, 2026",
+      "pageUrl": "/document-manager/media-pages/agenda-and-minutes/city-council-agenda-september-29-2026/",
+      "fileUrl": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/yq5dbphe/comp-agenda-092926.pdf",
+      "category": "City Council Agendas",
+      "description": "September 29, 2026",
+      "board": "City Council",
+      "kind": "agenda",
+      "date": "2026-09-29",
+      "dateSource": "meeting-date",
+      "rawMeetingDate": "09/29/2026 11:00 PM",
+      "dateAdjusted": false,
+      "dateConflict": false,
+      "filenameDate": "2026-09-29",
+      "needsReview": false,
+      "source": "https://www.haverhillma.gov/government/agendas-and-minutes/",
+      "docId": "city-council-agenda-september-29-2026-e15b50e6"
     },
     {
       "title": "Haverhill Board of Assessors Public Meeting",
@@ -93,6 +165,25 @@
       "needsReview": false,
       "source": "https://www.haverhill-ps.org/meeting-schedule-and-agenda-packet",
       "docId": "meeting-schedule-and-agenda-packet-b942e036"
+    },
+    {
+      "title": "Haverhill School Committee Meeting - September 24, 2026",
+      "description": "",
+      "pageUrl": "http://haverhillcommunitytv.org/video/haverhill-school-committee-meeting-september-24-2026",
+      "fileUrl": null,
+      "date": "2026-09-24",
+      "board": "School Committee",
+      "kind": "recording",
+      "category": "School Committee Recordings",
+      "dateSource": "recording",
+      "rawMeetingDate": null,
+      "dateAdjusted": false,
+      "dateConflict": false,
+      "filenameDate": null,
+      "needsReview": false,
+      "orphan": false,
+      "source": "http://haverhillcommunitytv.org/",
+      "docId": null
     },
     {
       "title": "Haverhill School Committee Meeting Revised",
@@ -332,6 +423,24 @@
       "needsReview": false,
       "source": "https://www.haverhillma.gov/government/agendas-and-minutes/",
       "docId": "city-council-agenda-september-15-2026-e69d1f6e"
+    },
+    {
+      "title": "CityCouncil_9.15.26_minutes",
+      "pageUrl": "/document-manager/media-pages/agenda-and-minutes/citycouncil_91526_minutes/",
+      "fileUrl": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/2j5duc1t/citycouncil_91526_minutes.pdf",
+      "category": "City Council Minutes",
+      "description": "",
+      "board": "City Council",
+      "kind": "minutes",
+      "date": "2026-09-15",
+      "dateSource": "meeting-date",
+      "rawMeetingDate": "09/15/2026 12:00 PM",
+      "dateAdjusted": false,
+      "dateConflict": false,
+      "filenameDate": "2026-09-15",
+      "needsReview": false,
+      "source": "https://www.haverhillma.gov/government/agendas-and-minutes/",
+      "docId": "citycouncil-91526-minutes-4a9a8fe8"
     },
     {
       "title": "Haverhill City Council Meeting - September 15, 2026",
@@ -7886,10 +7995,10 @@
       "docId": null
     },
     {
-      "title": "Meeting has been canceled; Cancelation \u2013 City Clerk Posting with agenda Remote Regular Meeting 111325",
-      "description": "meeting_has_been_canceled;_cancelation_\u2013_city_clerk_posting_with_agenda_remote_regular_meeting_111325.pdf",
+      "title": "Meeting has been canceled; Cancelation – City Clerk Posting with agenda Remote Regular Meeting 111325",
+      "description": "meeting_has_been_canceled;_cancelation_–_city_clerk_posting_with_agenda_remote_regular_meeting_111325.pdf",
       "pageUrl": "https://www.haverhill-ps.org/meeting-schedule-and-agenda-packet",
-      "fileUrl": "https://files.smartsites.parentsquare.com/10015/meeting_has_been_canceled;_cancelation_\u2013_city_clerk_posting_with_agenda_remote_regular_meeting_111325.pdf",
+      "fileUrl": "https://files.smartsites.parentsquare.com/10015/meeting_has_been_canceled;_cancelation_–_city_clerk_posting_with_agenda_remote_regular_meeting_111325.pdf",
       "board": "School Committee",
       "kind": "agenda",
       "category": "School Committee Agendas",
@@ -13505,7 +13614,7 @@
       "docId": "meeting-schedule-and-agenda-packet-7524b746"
     },
     {
-      "title": "SIP Links School Improvement Plans are available electronically on individual school\u2019s web pages due to volume",
+      "title": "SIP Links School Improvement Plans are available electronically on individual school’s web pages due to volume",
       "description": "sip_links_school_improvement_plans_are_available_electronically_on_individual_schools_web_pages_due_to_volume.pdf",
       "pageUrl": "https://www.haverhill-ps.org/meeting-schedule-and-agenda-packet",
       "fileUrl": "https://files.smartsites.parentsquare.com/10015/sip_links_school_improvement_plans_are_available_electronically_on_individual_schools_web_pages_due_to_volume.pdf",
@@ -14438,10 +14547,10 @@
       "docId": "minutes-archive-086c0522"
     },
     {
-      "title": "Additional Presentations Super Report Grants, Slides on Enrollments as of 10 21 24 \u2013 SC",
-      "description": "additional_presentations_-_super_report_grants_slides_on_enrollments_as_of_10_21_24_\u2013_sc.pdf",
+      "title": "Additional Presentations Super Report Grants, Slides on Enrollments as of 10 21 24 – SC",
+      "description": "additional_presentations_-_super_report_grants_slides_on_enrollments_as_of_10_21_24_–_sc.pdf",
       "pageUrl": "https://www.haverhill-ps.org/meeting-schedule-and-agenda-packet",
-      "fileUrl": "https://files.smartsites.parentsquare.com/10015/additional_presentations_-_super_report_grants_slides_on_enrollments_as_of_10_21_24_\u2013_sc.pdf",
+      "fileUrl": "https://files.smartsites.parentsquare.com/10015/additional_presentations_-_super_report_grants_slides_on_enrollments_as_of_10_21_24_–_sc.pdf",
       "board": "School Committee",
       "kind": "other",
       "category": "School Committee Documents",
@@ -26296,7 +26405,7 @@
       "docId": null
     },
     {
-      "title": "School Committee and HEA Open Bargaining Session #5 \u2013 September 13, 2022",
+      "title": "School Committee and HEA Open Bargaining Session #5 – September 13, 2022",
       "description": "",
       "pageUrl": "http://haverhillcommunitytv.org/video/school-committee-and-hea-open-bargaining-session-5-august-13-2022",
       "fileUrl": null,
@@ -26516,7 +26625,7 @@
       "docId": "agenda-archive-1b154f4a"
     },
     {
-      "title": "School Committee and HEA Open Bargaining Session #4 \u2013 August 04, 2022",
+      "title": "School Committee and HEA Open Bargaining Session #4 – August 04, 2022",
       "description": "",
       "pageUrl": "http://haverhillcommunitytv.org/video/school-committee-and-hea-open-bargaining-session-4-august-04-2022",
       "fileUrl": null,
@@ -26663,7 +26772,7 @@
       "docId": "zoning-board-of-appeals-1ee50fcb"
     },
     {
-      "title": "School Committee and HEA Open Bargaining Session #3 \u2013 July 19, 2022",
+      "title": "School Committee and HEA Open Bargaining Session #3 – July 19, 2022",
       "description": "",
       "pageUrl": "http://haverhillcommunitytv.org/video/school-committee-and-hea-open-bargaining-session-3-july-19-2022",
       "fileUrl": null,
@@ -26737,7 +26846,7 @@
       "docId": "agenda-archive-beca369a"
     },
     {
-      "title": "Haverhill City Council Meeting \u2013 July 12, 2022",
+      "title": "Haverhill City Council Meeting – July 12, 2022",
       "description": "",
       "pageUrl": "http://haverhillcommunitytv.org/video/haverhill-city-council-meeting-july-12-2022",
       "fileUrl": null,
@@ -27508,7 +27617,7 @@
       "docId": "minutes-archive-1b3d25f0"
     },
     {
-      "title": "Haverhill City Council Budget Meeting \u2013 May 23, 2022",
+      "title": "Haverhill City Council Budget Meeting – May 23, 2022",
       "description": "",
       "pageUrl": "http://haverhillcommunitytv.org/video/haverhill-city-council-budget-meeting-may-23-2022",
       "fileUrl": null,
@@ -34822,7 +34931,7 @@
       "docId": "minutes-archive-3b851437"
     },
     {
-      "title": "Haverhill School Committee Meeting \u2013 December 29, 2020",
+      "title": "Haverhill School Committee Meeting – December 29, 2020",
       "description": "",
       "pageUrl": "http://haverhillcommunitytv.org/video/haverhill-school-committee-meeting-december-29-2020",
       "fileUrl": null,
@@ -39150,7 +39259,7 @@
       "docId": "minutes-archive-48d9362d"
     },
     {
-      "title": "Haverhill City Council Administration and Finance Meeting \u2013 February 16,",
+      "title": "Haverhill City Council Administration and Finance Meeting – February 16,",
       "description": "",
       "pageUrl": "http://haverhillcommunitytv.org/video/haverhill-city-council-administration-and-finance-meeting-february-16-2020",
       "fileUrl": null,
@@ -41595,7 +41704,7 @@
       "docId": "minutes-archive-f46d6159"
     },
     {
-      "title": "Haverhill City Council Meeting \u2013 July 23, 2019",
+      "title": "Haverhill City Council Meeting – July 23, 2019",
       "description": "",
       "pageUrl": "http://haverhillcommunitytv.org/video/haverhill-city-council-meeting-july-23-2019",
       "fileUrl": null,
