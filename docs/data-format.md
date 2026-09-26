@@ -25,6 +25,22 @@ website.
 Records are sorted newest date first, then by title. That ordering is applied on
 every write so refreshes produce readable diffs rather than reshuffled files.
 
+**Every committed data file is written through
+[`scripts/lib/data-file.mjs`](../scripts/lib/data-file.mjs)**, which formats it
+with the project's own Prettier config before it lands —
+`meetings.json`, `reviews.json`, `budget.json` and `schedule.json` alike.
+`JSON.stringify(value, null, 2)` and Prettier agree about almost everything and
+disagree about one thing: a short array of scalars, which Prettier puts on one
+line where it fits. Nothing here had ever tripped that, so the scrapes wrote a
+lint-clean file by luck until the schedule scrape started recording the dates a
+board has called off — and three short dates of `cancelled` failed
+`npm run lint` the moment they were scraped. These files are committed and read
+in diffs like any other source, so they are formatted like any other source, and
+the config is read from disk rather than restated so the writer and the lint
+cannot drift apart. The caches under `.cache/` are not written this way: they are
+gitignored, nobody reads them in a diff, and formatting a six-hundred-entry
+notice cache would cost a second for nothing.
+
 ## A record
 
 ```json

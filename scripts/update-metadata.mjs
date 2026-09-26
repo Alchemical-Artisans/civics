@@ -21,9 +21,18 @@
  *
  * Arguments are forwarded to every step, so `npm run metadata:update -- --prune`
  * reaches the calendar. The others take no flags and ignore them.
+ *
+ * The run ends by handing each newly-discovered sitting to `transcribe-meeting.mjs`,
+ * which is the one part of this that wants a person: a scrape says the Planning
+ * Board sat on the 9th, and writing that meeting up is what turns the row into a
+ * page. Doing it here is only what a person did by hand anyway -- every scrape
+ * already printed the ids and the command to paste them into. `--no-transcribe`
+ * skips it, for a run that is only meant to refresh the data.
  */
 import { spawnSync } from "node:child_process"
 import path from "node:path"
+import { loadStore } from "./lib/store.mjs"
+import { meetingsToTranscribe, pagesWritten } from "./lib/documents.mjs"
 
 const STEPS = [
   { name: "calendar", script: "update-calendar.mjs" },
@@ -56,25 +65,53 @@ const STEPS = [
 
 const args = process.argv.slice(2)
 const failed = []
+let attempted = 0
 
-for (const [i, step] of STEPS.entries()) {
-  console.log(`${i ? "\n" : ""}${"=".repeat(60)}\n  ${step.name}\n${"=".repeat(60)}`)
+/** Run one script to completion with its output going straight to the terminal. */
+function step(name, script, extra = []) {
+  attempted++
+  console.log(`${attempted > 1 ? "\n" : ""}${"=".repeat(60)}\n  ${name}\n${"=".repeat(60)}`)
 
   const { status, error } = spawnSync(
     process.execPath,
-    [path.join(import.meta.dirname, step.script), ...args],
+    [path.join(import.meta.dirname, script), ...extra, ...args],
     { stdio: "inherit" },
   )
 
-  if (error) failed.push(`${step.name}: ${error.message}`)
-  else if (status !== 0) failed.push(`${step.name}: exited ${status}`)
+  if (error) failed.push(`${name}: ${error.message}`)
+  else if (status !== 0) failed.push(`${name}: exited ${status}`)
+}
+
+// What the calendar held before any of this ran, so the new sittings can be
+// named at the end. Read here rather than diffed step by step because a sitting
+// is board-and-date: the notices scrape and the recordings scrape can both land
+// on the same new meeting, and each on its own would call it new.
+const before = (await loadStore())?.meetings ?? []
+const written = await pagesWritten()
+
+for (const { name, script } of STEPS) step(name, script)
+
+// After the attention report rather than before it: transcribing is the part
+// that stops and waits for a person, and a block of counts printed above an
+// hour of writing is a block nobody reads.
+if (!args.includes("--no-transcribe")) {
+  const after = (await loadStore())?.meetings ?? []
+  const fresh = meetingsToTranscribe(before, after, written)
+  if (fresh.length) {
+    console.log(
+      `\n${"=".repeat(60)}\n  ${fresh.length} new sitting(s) to write up\n${"=".repeat(60)}`,
+    )
+    for (const id of fresh) console.log(`    ${id}`)
+    console.log("  Each opens a Claude Code session in turn; --no-transcribe skips them.")
+    for (const id of fresh) step(`transcribe ${id}`, "transcribe-meeting.mjs", [id])
+  }
 }
 
 console.log(`\n${"=".repeat(60)}`)
 if (failed.length) {
-  console.log(`  ${failed.length} of ${STEPS.length} steps failed:`)
+  console.log(`  ${failed.length} of ${attempted} steps failed:`)
   for (const f of failed) console.log(`    - ${f}`)
   console.log("  Anything that did succeed has already been written.")
   process.exit(1)
 }
-console.log(`  all ${STEPS.length} steps finished; review the diff before committing`)
+console.log(`  all ${attempted} steps finished; review the diff before committing`)

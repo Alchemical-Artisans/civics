@@ -29,6 +29,7 @@ import { RECORDINGS_ORIGIN, RECORDING_BODIES, fetchRecordings } from "./lib/reco
 import { loadStore, saveStore, printSummary } from "./lib/store.mjs"
 import { printAttention } from "./lib/attention.mjs"
 import { createLog } from "./lib/log.mjs"
+import { bar, progress, remaining } from "./lib/progress.mjs"
 import { assignIds, pagesWritten } from "./lib/documents.mjs"
 import {
   applyReviews,
@@ -51,7 +52,35 @@ const SOURCE = `${RECORDINGS_ORIGIN}/`
 
 const log = createLog("recordings")
 console.log("  reading Haverhill Community Television...")
-const { records, unrecognised, pagesRead } = await fetchRecordings()
+
+/**
+ * The one step here worth drawing a bar for: ~64 listing pages read one at a
+ * time with a pause between, which is seven minutes of a run that otherwise
+ * said nothing at all between the line above and the summary. The estimate is
+ * paced off this run's own pages -- a listing's page count is only printed from
+ * its second page on, so the first page of each of the three draws an empty
+ * rail and names no time.
+ */
+const ui = progress()
+const startedAt = Date.now()
+const { records, unrecognised, pagesRead } = await fetchRecordings({
+  onProgress: ({ category, index, categories, page, pages, pagesRead, found, done }) => {
+    const label = category.padEnd(18)
+    if (done) {
+      const pageCount = `${page} page${page === 1 ? "" : "s"}`
+      ui.settle(`  ${label}  ${pageCount}, ${found} recording${found === 1 ? "" : "s"}`)
+      return
+    }
+    const left = pages
+      ? remaining((pages - page) * ((Date.now() - startedAt) / 1000 / pagesRead))
+      : null
+    ui.update(
+      `  ${index}/${categories} ${label}  [${bar(page, pages, 16)}]  ` +
+        `${String(page).padStart(2)}/${pages ?? "?"}  ${found} found` +
+        (left ? `  ~${left} left` : ""),
+    )
+  },
+})
 log.write(`  ${pagesRead} listing pages read, ${records.length} recordings placed to a body`)
 
 // An empty sweep is a markup change at HC Media, not every recording vanishing.

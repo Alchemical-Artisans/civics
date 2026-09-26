@@ -179,16 +179,40 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
  * The host rate-limits, so the pages are fetched one at a time with a pause
  * between -- `retrying` covers a stray 403, and the honest `USER_AGENT` above
  * is what keeps them rare.
+ *
+ * That pause is why this is the one scrape here that takes minutes, and why it
+ * reports as it goes: `onProgress` is called after every page read and once
+ * more as each category finishes, with the page count where WordPress has
+ * printed one and `pages: null` until it has. `update-recordings.mjs` draws it;
+ * nothing here knows what it looks like, the same division `cacheAll` makes.
  */
-export async function fetchRecordings({ delayMs = 1500, maxPages = 80 } = {}) {
+export async function fetchRecordings({ delayMs = 1500, maxPages = 80, onProgress } = {}) {
   const records = []
   const unrecognised = new Map()
   let pagesRead = 0
 
-  for (const category of RECORDING_CATEGORIES) {
+  for (const [index, category] of RECORDING_CATEGORIES.entries()) {
     const base = `${RECORDINGS_ORIGIN}/category/government/${category}`
     let page = 1
     let last = maxPages
+    // What the listing says it holds, which page 1 does not say. Kept apart
+    // from `last` so a cap of `maxPages` is never reported as a known total.
+    let total = null
+    let read = 0
+    // `found` is this category's own; `pagesRead` is the run's, which is what
+    // gives a caller a pace to estimate the rest of the sweep from.
+    const before = records.length
+    const report = (done) =>
+      onProgress?.({
+        category,
+        index: index + 1,
+        categories: RECORDING_CATEGORIES.length,
+        page: read,
+        pages: done ? read : total,
+        pagesRead,
+        found: records.length - before,
+        done,
+      })
 
     while (page <= last) {
       const url = page === 1 ? `${base}/` : `${base}/page/${page}/`
@@ -200,10 +224,13 @@ export async function fetchRecordings({ delayMs = 1500, maxPages = 80 } = {}) {
       })
       if (html === null) break
       pagesRead++
+      read++
 
       const entries = parseRecordingList(html)
       if (!entries.length) break
-      last = Math.min(last, totalPages(html) ?? last)
+      const reported = totalPages(html)
+      if (reported !== null) total = total === null ? reported : Math.min(total, reported)
+      last = Math.min(last, total ?? last)
 
       for (const entry of entries) {
         const date = recordingDate(entry.slug)
@@ -218,9 +245,11 @@ export async function fetchRecordings({ delayMs = 1500, maxPages = 80 } = {}) {
         records.push({ title: entry.title, url: entry.url, board, date })
       }
 
+      report(false)
       page++
       if (page <= last) await sleep(delayMs)
     }
+    report(true)
     await sleep(delayMs)
   }
 

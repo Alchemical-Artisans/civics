@@ -42,7 +42,7 @@ npm run test                # unit (once) then e2e
 npm run test:unit           # vitest, watch mode
 npm run test:e2e            # playwright; builds and previews on :4173 first
 
-npm run metadata:update     # refresh everything the site takes from the city
+npm run metadata:update     # refresh everything, then write up the new sittings
 npm run calendar:update     # scrape only documents new since the last run
 npm run calendar:rebuild    # re-scrape everything (only when scrape/date logic changed)
 npm run budget:update       # re-scrape the budget and audit listing (always full)
@@ -201,6 +201,12 @@ own WordPress site under `/category/government/<body>/`.
 `metadata:update`) reads those listings, one page at a time behind an honest
 `civics-calendar/1.0` user-agent -- the reverse of the city's host, which 502s
 anything without a browser string; HC Media rate-limits the browser strings.
+That pacing is why this step takes about seven minutes, and why it is the one
+that draws a progress bar: `fetchRecordings` reports each page read and
+`update-recordings.mjs` renders it with `scripts/lib/progress.mjs`, the
+`onProgress` division `cacheAll` already makes -- a listing's page count is
+printed from its second page on, so the first page of each of the three draws
+an empty rail and estimates nothing.
 `kind` is a fourth value, `"recording"`, sorted after minutes and drawn as a
 violet chip. **A recording is matched to a sitting, never allowed to make
 one -- by the scrape.** The day and body are read off a volunteer-typed title --
@@ -442,7 +448,13 @@ decides whether `pdftotext` got anything, renders the pages when it did not, and
 hands Claude Code a prompt with the rules and the file paths in it. The prompt
 itself is `scripts/prompts/transcribe-meeting.md` and is the thing to edit when
 a transcription comes out wrong -- a correction made there is one every future
-run gets. `--prompt-only` writes it and launches nothing.
+run gets. `--prompt-only` writes it and launches nothing. **`metadata:update`
+ends by running it over every sitting the run added** -- a board-and-date the
+calendar did not have, with a document to read and no page written -- so a
+refresh and the writing up are one command; a sitting whose only record is a
+recording is skipped, having nothing to read, and `--no-transcribe` skips the
+lot. It goes last, after the attention report, being the one part of a run that
+waits for a person.
 
 **`/` is the landing page** (`src/routes/+page.svelte`): the site's name, a
 slogan, and a card for each half — the meeting calendar and the current budget

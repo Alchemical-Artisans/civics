@@ -155,6 +155,12 @@ export const meetingIdOf = (record) =>
     .replace(/^-|-$/g, "")}-${record.date}`
 
 /**
+ * Whether a record is one the calendar will show: dated, not taken down, and --
+ * the one field only a recording carries -- not an unmatched orphan.
+ */
+const onCalendar = (r) => Boolean(r.date) && !r.gone && !r.orphan
+
+/**
  * Meeting ids reaching the calendar after this run that were not there before
  * it -- a board sitting on a date nothing else already covered, ready to pass
  * straight to `npm run transcribe --`.
@@ -167,10 +173,26 @@ export const meetingIdOf = (record) =>
  * meetings, so this does not announce a sitting the calendar will not show.
  */
 export function newMeetingIds(before, after) {
-  const onCalendar = (r) => Boolean(r.date) && !r.gone && !r.orphan
   const had = new Set(before.filter(onCalendar).map(meetingIdOf))
   const now = new Set(after.filter(onCalendar).map(meetingIdOf))
   return [...now].filter((id) => !had.has(id)).sort()
+}
+
+/**
+ * The new meetings `npm run transcribe --` can actually be pointed at, which is
+ * what `metadata:update` finishes by doing.
+ *
+ * Two of `newMeetingIds`' answers are not among them. A sitting whose only
+ * record is a recording has no document to read at all -- HC Media's video
+ * carries no `fileUrl`, so `assignIds` gives it no document and the transcribe
+ * runner would report that nothing matches the id. And a sitting somebody has
+ * already written up is not new work: `newMeetingIds` says a board sat on a day
+ * the calendar had nothing for, which a hand-written page can pre-date, the page
+ * being the one thing here no scrape knows about.
+ */
+export function meetingsToTranscribe(before, after, written = new Set()) {
+  const readable = new Set(after.filter((r) => onCalendar(r) && r.fileUrl).map(meetingIdOf))
+  return newMeetingIds(before, after).filter((id) => readable.has(id) && !written.has(id))
 }
 
 /** Print `newMeetingIds`' result, if there is any, for the run summary. */

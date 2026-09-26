@@ -19,6 +19,25 @@ repeated at the end so they cannot scroll past.
 Arguments are forwarded to every step, so `npm run metadata:update -- --prune`
 reaches the calendar. The other scripts take no flags and ignore them.
 
+**It finishes by writing up what it found.** A scrape says the Planning Board sat
+on the 9th; a page is what turns that row into something a person can read, and
+until now every run ended by printing the new meeting ids and the command to
+paste them into. It now runs that command itself: once every scrape and the
+attention report are done, each new sitting goes to
+[`transcribe-meeting.mjs`](../scripts/transcribe-meeting.mjs) in turn — the same
+`npm run transcribe -- <id>` session, PDFs fetched and scans rendered, one after
+another. "New" is a board-and-date the calendar did not have before the run,
+which is `newMeetingIds` again, less the two it cannot hand over: a sitting whose
+only record is a recording has no document to read, and one somebody has already
+written up is not new work. The flags reach it like any other step, so
+`-- --accept-edits` saves confirming every file and `-- --prompt-only` writes the
+prompts and launches nothing. **`--no-transcribe` skips the lot**, for a run that
+is only meant to refresh the data.
+
+It runs last, after the links step's "needs your attention" block, because it is
+the one part of the run that stops and waits for a person: a block of counts
+printed above an hour of writing is a block nobody reads.
+
 **Each step prints one line saying what it is doing, then only what wants a
 person's attention.** The rest — document counts, what a scrape read off each
 page, the routine detail nobody reads unless something looks wrong — goes to
@@ -157,6 +176,23 @@ same opt-in `unrecognised-notices.txt` is -- a new body wants a line in
 **`recordings:update` is slow: ~7 minutes.** It reads 64 listing pages one at a
 time with a pause between, because HC Media rate-limits. Nothing else here is
 paced that way; it is a manual scrape and the wait is deliberate.
+
+So it draws a bar rather than going quiet — a run that prints nothing for seven
+minutes is indistinguishable from one that has hung:
+
+```
+  2/3 school-committee    [███████████░░░░░]  12/17  118 found  ~1m 21s left
+  city-council            27 pages, 231 recordings
+```
+
+One listing at a time, pages against the count WordPress prints, recordings
+found, and how much longer — paced off this run's own pages rather than a figure
+written down here, the wait being the host's and not ours to predict. A
+category's first page carries no count (WordPress prints it from page two on),
+so that one line draws an empty rail and names no time. Each listing settles to
+a line that stays. Redirected to a file the animation goes and those three lines
+remain: [`scripts/lib/progress.mjs`](../scripts/lib/progress.mjs) draws nothing
+in place when stdout is not a terminal.
 
 None of them touches the hand-written pages. Those live in
 `src/routes/calendar/meetings/` and `src/routes/budget/<year>/`; the scripts

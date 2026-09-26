@@ -1,7 +1,8 @@
 /** Load/save helpers for the committed calendar data file. */
-import { readFile, writeFile, mkdir } from "node:fs/promises"
+import { readFile } from "node:fs/promises"
 import path from "node:path"
 import { summarizeDocuments } from "./documents.mjs"
+import { writeDataFile } from "./data-file.mjs"
 
 export const DATA_FILE = path.join(
   import.meta.dirname,
@@ -33,8 +34,7 @@ export async function saveStore(meetings, { source }) {
     count: sorted.length,
     meetings: sorted,
   }
-  await mkdir(path.dirname(DATA_FILE), { recursive: true })
-  await writeFile(DATA_FILE, JSON.stringify(payload, null, 2) + "\n")
+  await writeDataFile(DATA_FILE, payload)
   return payload
 }
 

@@ -13,8 +13,9 @@
  * no separate marker for "this date was set by hand" -- an entry in this file
  * carrying a `date` *is* that marker.
  */
-import { readFile, writeFile, mkdir } from "node:fs/promises"
+import { readFile } from "node:fs/promises"
 import path from "node:path"
+import { writeDataFile } from "./data-file.mjs"
 
 export const REVIEWS_FILE = path.join(
   import.meta.dirname,
@@ -58,8 +59,7 @@ export async function saveReviews(reviews) {
   // Key-sorted so the diff reads the same however the listing was ordered.
   const sorted = {}
   for (const key of Object.keys(reviews).sort()) sorted[key] = reviews[key]
-  await mkdir(path.dirname(REVIEWS_FILE), { recursive: true })
-  await writeFile(REVIEWS_FILE, JSON.stringify(sorted, null, 2) + "\n")
+  await writeDataFile(REVIEWS_FILE, sorted)
   return sorted
 }
 

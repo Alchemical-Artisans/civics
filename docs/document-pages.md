@@ -45,6 +45,13 @@ asks you to name one rather than picking. `--prompt-only` writes the prompt and
 launches nothing, which is also how you read what it is about to say.
 `--accept-edits` saves confirming every file, and `--print` runs headless.
 
+**`metadata:update` runs it for you.** Every sitting a refresh adds — a
+board-and-date the calendar did not have, with a document to read and no page
+written for it — is handed to this in turn once the scrapes are done, so the
+refresh and the writing up are one command rather than a list of ids to paste
+back. `npm run metadata:update -- --no-transcribe` skips it. See
+[operations.md](./operations.md#the-one-command).
+
 **The prompt is the thing to edit.** When a transcription comes out wrong — a
 slug named badly, an item that should not have had its own page, a heading given
 prose the city never printed — the fix belongs in that file, where every future

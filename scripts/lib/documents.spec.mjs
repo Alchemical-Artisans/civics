@@ -1,5 +1,11 @@
 import { describe, it, expect } from "vitest"
-import { assignIds, documentId, newMeetingIds, summarizeDocuments } from "./documents.mjs"
+import {
+  assignIds,
+  documentId,
+  meetingsToTranscribe,
+  newMeetingIds,
+  summarizeDocuments,
+} from "./documents.mjs"
 
 const record = (over = {}) => ({
   title: "City Council Agenda",
@@ -195,5 +201,39 @@ describe("newMeetingIds", () => {
       "board-of-assessors-2026-08-25",
       "zoning-board-of-appeals-2026-08-25",
     ])
+  })
+})
+
+// Which of those `metadata:update` hands straight to the transcribe runner.
+describe("meetingsToTranscribe", () => {
+  it("names a new sitting with a document to read", () => {
+    const after = [record({ board: "Planning Board", date: "2026-08-26" })]
+    expect(meetingsToTranscribe([], after)).toEqual(["planning-board-2026-08-26"])
+  })
+
+  it("skips a sitting whose only record is a recording", () => {
+    // HC Media's video carries no file of its own, so `assignIds` gives the
+    // sitting no document and the runner would report that nothing matches.
+    const after = [record({ board: "City Council", date: "2026-08-25", fileUrl: null })]
+    expect(meetingsToTranscribe([], after)).toEqual([])
+  })
+
+  it("keeps a sitting whose recording arrived beside an agenda", () => {
+    const after = [
+      record({ board: "City Council", date: "2026-08-25", fileUrl: null }),
+      record({ board: "City Council", date: "2026-08-25" }),
+    ]
+    expect(meetingsToTranscribe([], after)).toEqual(["city-council-2026-08-25"])
+  })
+
+  it("skips a sitting somebody has already written up", () => {
+    const after = [record({ board: "City Council", date: "2026-08-25" })]
+    const written = new Set(["city-council-2026-08-25"])
+    expect(meetingsToTranscribe([], after, written)).toEqual([])
+  })
+
+  it("skips a document the city has taken down", () => {
+    const after = [record({ board: "City Council", date: "2026-08-25", gone: true })]
+    expect(meetingsToTranscribe([], after)).toEqual([])
   })
 })

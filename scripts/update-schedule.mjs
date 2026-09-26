@@ -16,11 +16,12 @@
  * meetings on the calendar that the Council never intended to hold. The
  * Commission's dates need no such care -- they are already dates.
  */
-import { writeFile, mkdir, readFile } from "node:fs/promises"
+import { readFile } from "node:fs/promises"
 import path from "node:path"
 import { fetchMeetingCalendars, fetchMeetingRules } from "./lib/schedule.mjs"
 import { NOTICE_CALENDAR, fetchNotices, writeUnrecognised } from "./lib/notices.mjs"
 import { createLog } from "./lib/log.mjs"
+import { writeDataFile } from "./lib/data-file.mjs"
 
 // The city's day, not the machine's. `en-CA` is the locale that formats a date
 // as `YYYY-MM-DD`, which is the form everything here keeps dates in; the zone
@@ -64,25 +65,17 @@ if (!notices.length && !unrecognised.length) {
   process.exit(1)
 }
 
-await mkdir(path.dirname(DATA_FILE), { recursive: true })
-await writeFile(
-  DATA_FILE,
-  JSON.stringify(
-    {
-      generatedAt: new Date().toISOString(),
-      rules,
-      calendars,
-      // The page the notices were read off, recorded here rather than rebuilt
-      // from a notice's own URL: the footer lists it once however many boards
-      // it accounts for, and what the city calls it is not in a URL.
-      noticeCalendar: { name: NOTICE_CALENDAR.name, url: `${NOTICE_CALENDAR.origin}/` },
-      notices,
-      cancelled,
-    },
-    null,
-    2,
-  ) + "\n",
-)
+await writeDataFile(DATA_FILE, {
+  generatedAt: new Date().toISOString(),
+  rules,
+  calendars,
+  // The page the notices were read off, recorded here rather than rebuilt from
+  // a notice's own URL: the footer lists it once however many boards it
+  // accounts for, and what the city calls it is not in a URL.
+  noticeCalendar: { name: NOTICE_CALENDAR.name, url: `${NOTICE_CALENDAR.origin}/` },
+  notices,
+  cancelled,
+})
 
 for (const rule of rules) log.write(`  ${rule.board}: a rule, ${rule.exceptions.length} exceptions`)
 for (const c of calendars) log.write(`  ${c.board}: ${c.sittings.length} dates for ${c.year}`)

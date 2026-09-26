@@ -11,10 +11,11 @@
  * under src/routes/budget/<year>/; a refresh only re-derives which years the
  * city publishes and where its PDFs are.
  */
-import { readFile, writeFile, mkdir } from "node:fs/promises"
+import { readFile } from "node:fs/promises"
 import path from "node:path"
 import { BUDGET_URL, diffYears, fetchBudgetListing } from "./lib/budget.mjs"
 import { createLog } from "./lib/log.mjs"
+import { writeDataFile } from "./lib/data-file.mjs"
 
 export const DATA_FILE = path.join(import.meta.dirname, "..", "src", "lib", "data", "budget.json")
 
@@ -36,8 +37,7 @@ const payload = {
   count: years.length,
   years,
 }
-await mkdir(path.dirname(DATA_FILE), { recursive: true })
-await writeFile(DATA_FILE, JSON.stringify(payload, null, 2) + "\n")
+await writeDataFile(DATA_FILE, payload)
 
 const withBudget = years.filter((y) => y.budget).length
 const withAudit = years.filter((y) => y.audit).length
