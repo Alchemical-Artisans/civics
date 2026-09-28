@@ -6,6 +6,7 @@
     formatMonth,
     groupByDate,
     easternDate,
+    statedTime,
     type Meeting,
     type MeetingKind,
   } from "$lib/calendar"
@@ -128,10 +129,12 @@
       ? "border border-dashed border-slate-500 text-slate-600 hover:bg-slate-100"
       : "bg-slate-100 text-slate-900 hover:bg-slate-200"
 
-  const entryTitle = (m: Meeting) =>
-    m.scheduled
-      ? `${m.board} — expected; no agenda published yet`
-      : `${m.board} — ${m.documents.length} document${m.documents.length === 1 ? "" : "s"}`
+  const entryTitle = (m: Meeting) => {
+    const at = statedTime(m) ? ` at ${statedTime(m)}` : ""
+    return m.scheduled
+      ? `${m.board}${at} — expected; no agenda published yet`
+      : `${m.board}${at} — ${m.documents.length} document${m.documents.length === 1 ? "" : "s"}`
+  }
 
   const KIND_NAME: Record<MeetingKind, string> = {
     agenda: "agenda",
@@ -383,6 +386,21 @@
                           m,
                         )}"
                       >
+                        <!-- The hour the city stated for the sitting, ahead of
+                             the board's name and in the reader's reading order:
+                             which meeting it is and when it starts are the two
+                             things a chip is asked, and a day with three
+                             sittings on it is read down the column of hours,
+                             which is what `groupByDate` now orders a day by.
+                             Only a notice or a published schedule states one --
+                             see `statedTime` -- so most past sittings have none
+                             and the name simply starts the chip as it used to.
+                             `tabular-nums` so the hours line up under each
+                             other; `shrink-0`, which is what makes the board's
+                             name the part that truncates. -->
+                        {#if statedTime(m)}
+                          <span class="shrink-0 tabular-nums">{statedTime(m)}</span>
+                        {/if}
                         <span class="min-w-0 flex-1 truncate">{m.board}</span>
                         <!-- One letter per document, coloured by kind: the
                              reader can see at a glance whether a meeting has
@@ -442,6 +460,13 @@
                 <li class="px-3 py-2">
                   <a href={linkFor(m)} class="block hover:underline">
                     <span class="text-sm font-medium text-slate-900">{m.board}</span>
+                    <!-- After the name rather than before it, the opposite of
+                         the grid: the day is already this group's own heading,
+                         so the hour is a detail of the sitting here rather than
+                         the thing that orders a cell's worth of them. -->
+                    {#if statedTime(m)}
+                      <span class="ml-2 text-sm text-slate-500 tabular-nums">{statedTime(m)}</span>
+                    {/if}
                     {#each m.documents as doc, i (i)}
                       <span class="ml-2 rounded px-1.5 py-0.5 text-[11px] {kindClass(doc.kind)}">
                         {doc.kind}

@@ -191,7 +191,20 @@ and kind -- doing it in the scrape would leave the wrong answer behind the
 moment the listing caught up. A `Meeting` now carries the notice's stated
 `time`, so publishing an agenda no longer takes the hour off the page: it used
 to arrive only through `scheduled`, which is set on sittings with no documents
-at all.
+at all. **That hour is on the calendar itself now**, and on the front page's
+week strip: `statedTime` in `calendar.ts` reads it off `time` or else
+`scheduled.time`, each chip leads with it ahead of the board's name -- which
+meeting and when being the two things a chip is asked -- and `groupByDate`
+orders a day by it, then by board, where a day used to be alphabetical.
+Alphabetical was the only order available while a cell said nothing about when a
+sitting started, and it puts 7:15 PM above 9:30 AM; `timeOrder` turns the
+printed hour into minutes into the day and sorts an hour it cannot read, and no
+hour at all, last. The hour reaches the calendar from a notice or a published
+schedule and nowhere else, so most past sittings carry none -- the hour somebody
+read off a past agenda by eye is `MeetingDetails.time` on that meeting's own
+write-up, which the calendar has no access to, and which quotes whatever the
+document printed ("10:00AM", "6:00 P.M.") where the notices and both schedules
+agree on `7:00 PM`.
 
 **Haverhill Community Television has the video of a sitting, and the city links
 it nowhere.** HC Media (`haverhillcommunitytv.org`) records the City Council,

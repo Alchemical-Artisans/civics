@@ -165,6 +165,15 @@
                       meeting,
                     )}"
                   >
+                    <!-- The hour ahead of the name, exactly as the calendar's
+                         own chips lead with it: this card is a week of that
+                         page, and the two reading the same way is the point of
+                         sharing its colours. Only a notice or a published
+                         schedule states one, so the week ahead of today mostly
+                         carries an hour and the days behind it mostly do not. -->
+                    {#if meeting.time}
+                      <span class="shrink-0 tabular-nums">{meeting.time}</span>
+                    {/if}
                     <span class="min-w-0 truncate">{meeting.board}</span>
                     <span class="flex shrink-0 gap-0.5" aria-hidden="true">
                       {#each meeting.kinds as kind, at (at)}

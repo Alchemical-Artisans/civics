@@ -527,6 +527,45 @@ sliding a day. The zone only ever decides which day _now_ is.
 Everything downstream — `visible`, `byDate`, `weeks`, `monthCount` — is
 `$derived`, so filtering and navigation need no manual invalidation.
 
+## The hour a sitting starts
+
+A chip leads with the hour the city stated for the sitting — `7:00 PM City
+Council` — and so does each row of the front page's week strip, which is a week
+of this page and reads the same way. `statedTime()` in `$lib/calendar` resolves
+it: `Meeting.time`, the hour the city's own meeting notice gives, or failing
+that `Meeting.scheduled.time`, the hour a rule or a board's printed calendar
+gives. The two can never both be set, `scheduled` being confined to a sitting
+with no documents at all, but the notice is read first anyway — the later and
+more specific word, the same precedence [the meeting
+page](#the-document-page) applies.
+
+The hour comes before the board's name rather than after it because a chip is
+asked two things, which meeting and when, and because a day with three sittings
+on it is then read down its column of hours. `groupByDate` orders a day by that
+hour and then by board, which is what makes the column worth reading: a day used
+to be alphabetical, the only order available while a cell said nothing about when
+a sitting started, and alphabetical puts 7:15 PM above 9:30 AM. The front page
+sorts its own days with the same comparator, `byHourThenBoard`. `timeOrder()`
+turns the printed hour into minutes into the day, and sorts an hour it cannot
+read — and no hour at all — last: a sitting the city stated no hour for is not
+one that starts before the 9:00 AM sitting above it.
+
+The name is what truncates, not the hour, so "Conservation Commission" arrives in
+a cell as "Conse…". That is the trade: the board is also the chip's `title` and
+its accessible name in full, and a reader who wants the untruncated name of every
+sitting has the narrow view's day list, where the hour sits after the name — the
+day is that group's own heading there, so the hour is a detail of the sitting
+rather than the thing ordering a cell's worth of them.
+
+**Most past sittings carry no hour, and that is not an omission here.** The hour
+reaches the calendar from a notice or a published schedule, and the city posts
+notices forward only — the current month from its first day, then ahead. A past
+sitting whose agenda printed an hour still shows it on its own meeting page,
+where `MeetingDetails.time` is what somebody read off the document by eye; the
+calendar has no access to a write-up's load, and those quote whatever spelling
+the document printed ("10:00AM", "6:00 P.M.", "7:00 pm") where the notices and
+both schedules agree on `7:00 PM`.
+
 ## Layout
 
 Two presentations of the same data, switched on viewport width:
@@ -637,7 +676,10 @@ not been shown anything yet. What is there instead is a drawing:
   the page carries seven days of meetings rather than the whole record. Rows and
   not a Sunday-to-Saturday rail, which is how the calendar itself is laid out
   and was this card's first shape: a day cell in a rail is a seventh of half a
-  page, and "Planning Board" arrives in one as "P…".
+  page, and "Planning Board" arrives in one as "P…". A chip leads with the hour
+  the city stated and a row is ordered by it, exactly as on the calendar — see
+  [the hour a sitting starts](#the-hour-a-sitting-starts), which is also why the
+  days behind today mostly carry no hour at all.
 - The **budget card** shows the chart the book itself opens with — `BudgetColumns`,
   the two sides of the year on one scale — reduced to what a card can say. Each
   book carries its own `summary.ts` (see

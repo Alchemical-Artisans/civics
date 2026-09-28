@@ -493,7 +493,60 @@ export function buildMonthGrid(key: string, today?: string): DayCell[][] {
   return weeks
 }
 
-/** Index meetings by their date string. */
+/**
+ * The hour a sitting states, where anything the city published states one.
+ *
+ * Two fields carry it, and they are the same kind of statement about the same
+ * sitting: `time` is the hour the city's own meeting notice gives, and
+ * `scheduled.time` the hour a rule or a board's printed calendar gives. They
+ * can never both be set -- `scheduled` is only ever on a sitting with no
+ * documents -- but the notice is read first anyway, being the later and more
+ * specific word, which is the precedence the meeting page applies for the same
+ * reason.
+ *
+ * Not every sitting has one, and the gap is not arbitrary: the hour reaches the
+ * calendar from a notice or a schedule, and the city posts notices forward only,
+ * so a past sitting whose agenda printed an hour shows none. That agenda's own
+ * hour is on the meeting page, read off the document by whoever wrote it up
+ * (`MeetingDetails.time`); the calendar has no access to a write-up's load.
+ *
+ * Printed exactly as its source states it. The notices and both schedules
+ * already agree on `7:00 PM`, so there is nothing here to normalise -- unlike
+ * the write-ups, which quote whatever the document printed.
+ */
+export const statedTime = (meeting: Meeting): string | undefined =>
+  meeting.time ?? meeting.scheduled?.time
+
+/**
+ * A stated hour as minutes into the day, for ordering a day's sittings by it.
+ *
+ * Tolerant of the spellings a document prints -- "6:00 P.M.", "10:00AM",
+ * "7:00 pm" -- though nothing `statedTime` returns is spelled any of those
+ * ways: the notices and both published schedules agree on `7:00 PM`. Ordering
+ * is the one place an hour is compared rather than printed, so parsing the
+ * wider set costs nothing here and does not have to be discovered later.
+ *
+ * An hour that is absent or unreadable sorts last, which is the only end of the
+ * day it can go: a sitting the city stated no hour for is not one that starts
+ * before the 9:00 AM sitting above it.
+ */
+export function timeOrder(time: string | undefined): number {
+  const stated = time?.match(/^(\d{1,2})(?::(\d{2}))?\s*([ap])\.?m\.?$/i)
+  if (!stated) return Number.MAX_SAFE_INTEGER
+  const hour = Number(stated[1]) % 12
+  const afternoon = stated[3].toLowerCase() === "p"
+  return (hour + (afternoon ? 12 : 0)) * 60 + Number(stated[2] ?? 0)
+}
+
+/**
+ * Index meetings by their date string, each day in the order it is sat.
+ *
+ * By the hour the city stated, then by board. A day used to be alphabetical,
+ * which was the only order available while a cell said nothing about when a
+ * sitting started; once each chip leads with its hour, alphabetical puts 7:15 PM
+ * above 9:30 AM and the column of hours reads as noise. Sittings the city stated
+ * no hour for fall to the end of the day in board order -- see `timeOrder`.
+ */
 export function groupByDate(meetings: Meeting[]): Map<string, Meeting[]> {
   const out = new Map<string, Meeting[]>()
   for (const m of meetings) {
@@ -501,9 +554,19 @@ export function groupByDate(meetings: Meeting[]): Map<string, Meeting[]> {
     if (bucket) bucket.push(m)
     else out.set(m.date, [m])
   }
-  for (const list of out.values()) list.sort((a, b) => a.board.localeCompare(b.board))
+  for (const list of out.values()) list.sort(byHourThenBoard)
   return out
 }
+
+/**
+ * The order a day's sittings are shown in, wherever they are shown.
+ *
+ * The month grid buckets its days through `groupByDate`; the front page's week
+ * strip filters the whole record down to one day at a time and sorts it itself.
+ * Both are the same day of the same calendar, so both read the same way.
+ */
+export const byHourThenBoard = (a: Meeting, b: Meeting): number =>
+  timeOrder(statedTime(a)) - timeOrder(statedTime(b)) || a.board.localeCompare(b.board)
 
 /** Every month between the earliest and latest meeting, oldest first. */
 export function monthsCovered(meetings: Meeting[]): string[] {

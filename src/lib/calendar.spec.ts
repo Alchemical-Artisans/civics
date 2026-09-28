@@ -12,6 +12,8 @@ import {
   monthKey,
   easternDate,
   monthsCovered,
+  statedTime,
+  timeOrder,
   withScheduled,
   withoutSecondCopies,
   type MeetingDocument,
@@ -144,6 +146,29 @@ describe("groupByDate", () => {
   it("orders entries within a day by board", () => {
     const g = groupByDate([meeting("2026-08-27", "Zoning"), meeting("2026-08-27", "Airport")])
     expect(g.get("2026-08-27")!.map((m) => m.board)).toEqual(["Airport", "Zoning"])
+  })
+
+  it("orders a day by the hour the city stated, then by board", () => {
+    // Alphabetical was the only order available while a cell said nothing about
+    // when a sitting started. Now that each chip leads with its hour, a day
+    // reads down its column of hours -- and a sitting with no hour goes last
+    // rather than above one stated for the morning.
+    const at = (board: string, time?: string) => ({
+      ...meeting("2026-09-17", board),
+      ...(time ? { time } : {}),
+    })
+    const day = groupByDate([
+      at("Conservation Commission", "7:15 PM"),
+      at("Board of Assessors"),
+      at("Housing Authority", "10:00 AM"),
+      at("Library Board of Trustees", "9:30 AM"),
+    ])
+    expect(day.get("2026-09-17")!.map((m) => m.board)).toEqual([
+      "Library Board of Trustees",
+      "Housing Authority",
+      "Conservation Commission",
+      "Board of Assessors",
+    ])
   })
 })
 
@@ -348,6 +373,63 @@ describe("withScheduled", () => {
   it("marks an expected sitting written when somebody has written it up", () => {
     const meetings = withScheduled([], [sitting("2025-01-28")], (id) => id.endsWith("2025-01-28"))
     expect(meetings[0].written).toBe(true)
+  })
+})
+
+describe("timeOrder", () => {
+  it("orders the morning before the afternoon", () => {
+    expect(timeOrder("9:30 AM")).toBeLessThan(timeOrder("10:00 AM"))
+    expect(timeOrder("10:00 AM")).toBeLessThan(timeOrder("1:00 PM"))
+    expect(timeOrder("7:00 PM")).toBeLessThan(timeOrder("7:15 PM"))
+  })
+
+  it("puts noon and midnight on the right side of the day", () => {
+    // `% 12` is what makes 12 work at all, and it is wrong in one direction for
+    // each of the two: 12:30 AM is the half hour after midnight, 12:30 PM the
+    // half hour after noon.
+    expect(timeOrder("12:30 AM")).toBe(30)
+    expect(timeOrder("12:30 PM")).toBe(12 * 60 + 30)
+  })
+
+  it("reads the spellings a document prints, not just the scrape's", () => {
+    const seven = timeOrder("7:00 PM")
+    for (const spelling of ["7:00 P.M.", "7:00 pm", "7:00PM", "7 PM"]) {
+      expect(timeOrder(spelling)).toBe(seven)
+    }
+  })
+
+  it("sorts an hour it cannot read, and no hour at all, last", () => {
+    // A sitting the city stated no hour for is not one starting before the
+    // 9:00 AM sitting above it.
+    expect(timeOrder(undefined)).toBeGreaterThan(timeOrder("11:59 PM"))
+    expect(timeOrder("as posted")).toBeGreaterThan(timeOrder("11:59 PM"))
+  })
+})
+
+describe("statedTime", () => {
+  it("reads the hour the city's notice states", () => {
+    const documented = { ...meeting("2026-09-29"), time: "7:00 PM" }
+    expect(statedTime(documented)).toBe("7:00 PM")
+  })
+
+  it("reads the hour an expected sitting's source states", () => {
+    expect(statedTime(withScheduled([], [sitting("2025-01-28")])[0])).toBe("7:00 PM")
+  })
+
+  it("has nothing to say about a sitting no source gave an hour", () => {
+    // The ordinary case for a past sitting: the hour reaches the calendar from a
+    // notice or a schedule, and the city posts notices forward only. A write-up
+    // may still have read one off the agenda, which the meeting page shows and
+    // this cannot see.
+    expect(statedTime(meeting("2026-09-22"))).toBeUndefined()
+  })
+
+  it("prefers the notice's hour to the schedule's", () => {
+    // The two can never both be set, `scheduled` being confined to a sitting
+    // with no documents at all -- but the notice is the later and more specific
+    // word wherever they meet, the same precedence the meeting page applies.
+    const both = { ...withScheduled([], [sitting("2025-01-28")])[0], time: "6:00 PM" }
+    expect(statedTime(both)).toBe("6:00 PM")
   })
 })
 

@@ -1,6 +1,13 @@
 import type { PageLoad } from "./$types"
 import { calendar } from "$lib/meetings"
-import { WEEKDAYS, weekOf, type Meeting, type MeetingKind } from "$lib/calendar"
+import {
+  WEEKDAYS,
+  byHourThenBoard,
+  statedTime,
+  weekOf,
+  type Meeting,
+  type MeetingKind,
+} from "$lib/calendar"
 import type { BookSummary } from "$lib/budget"
 
 /**
@@ -27,6 +34,12 @@ export interface WeekEntry {
   board: string
   /** One letter per document, in published order. Empty on an expected sitting. */
   kinds: MeetingKind[]
+  /**
+   * The hour the city stated for the sitting, where a notice or a published
+   * schedule states one -- see `statedTime`, which explains why a past sitting
+   * usually has none.
+   */
+  time?: string
   /** True where the city has published nothing for the sitting but said it will hold it. */
   expected: boolean
 }
@@ -47,6 +60,7 @@ const entryOf = (meeting: Meeting): WeekEntry => ({
   board: meeting.board,
   kinds: meeting.documents.map((document) => document.kind),
   expected: Boolean(meeting.scheduled),
+  ...(statedTime(meeting) ? { time: statedTime(meeting)! } : {}),
 })
 
 export const load: PageLoad = async ({ parent }) => {
@@ -74,7 +88,9 @@ export const load: PageLoad = async ({ parent }) => {
     isToday: date === today,
     meetings: meetings
       .filter((meeting) => meeting.date === date)
-      .sort((a, b) => a.board.localeCompare(b.board))
+      // The order the calendar's own cells use, so the week here and the week
+      // there read the same way: by the hour the city stated, then by board.
+      .sort(byHourThenBoard)
       .map(entryOf),
   }))
 
