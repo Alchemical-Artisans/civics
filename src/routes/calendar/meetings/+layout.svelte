@@ -1,10 +1,13 @@
 <script lang="ts">
+  import { onMount } from "svelte"
   import { page } from "$app/state"
   import Note from "$lib/Note.svelte"
   import AddToCalendar from "$lib/AddToCalendar.svelte"
   import { Router } from "$lib/router"
   import {
+    easternDate,
     formatLongDate,
+    liveStream,
     monthKey,
     type MeetingDetails,
     type MeetingDocument,
@@ -13,6 +16,27 @@
   let { data, children } = $props()
 
   const meeting = $derived(data.meeting)
+
+  /**
+   * Today in the city: the build's date in the HTML that is served, the
+   * reader's own once this mounts. `inTheBrowser` is unset in the server render
+   * and in the client's first, so filling it in is an ordinary reactive change
+   * rather than a hydration mismatch -- the same bargain the calendar grid and
+   * `BudgetTimeline` make for their own today marks.
+   */
+  let inTheBrowser = $state<string | null>(null)
+  onMount(() => {
+    inTheBrowser = easternDate()
+  })
+  const today = $derived(inTheBrowser ?? data.today)
+
+  /**
+   * The broadcast, for a sitting that has not happened yet. Derived from the
+   * board and the date rather than written into the write-up: see `liveStream`.
+   * Not on an item page, which is one entry on the agenda rather than the
+   * sitting the broadcast is of.
+   */
+  const stream = $derived(data.isItem ? undefined : liveStream(meeting.board, meeting.date, today))
 
   // When and where, set by the write-up below from what its document actually
   // printed. Absent on a meeting nobody has written up, and on one whose
@@ -133,9 +157,9 @@
 
     <!-- How to attend, rather than how to read the document -- so it sits
 	     above the source links, not among them. -->
-    {#if !data.isItem && (details?.location || details?.remote)}
+    {#if !data.isItem && (details?.location || details?.remote || stream)}
       <p class="mt-2 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-slate-600">
-        {#if details.location}
+        {#if details?.location}
           <a
             class="underline hover:text-slate-900"
             href={Router.map(details.location.mapQuery)}
@@ -145,7 +169,7 @@
             {details.location.name}<span class="sr-only">, opens a map in a new tab</span>
           </a>
         {/if}
-        {#if details.remote}
+        {#if details?.remote}
           <span class="inline-flex flex-wrap items-center gap-x-3 gap-y-1">
             {#if details.remote.url}
               <a
@@ -171,10 +195,10 @@
              though watching took the same commitment as attending remotely, so
              it stands beside Remote Access instead, at the level a reader sees
              without opening anything. -->
-        {#if details.remote?.stream}
+        {#if stream}
           <a
             class="underline hover:text-slate-900"
-            href={details.remote.stream}
+            href={stream}
             target="_blank"
             rel="external noopener noreferrer"
           >

@@ -22,6 +22,7 @@ const expected = expectedSittings(TODAY)
   .filter((s) => !documented.has(`${s.board}::${s.date}`))
   .map((s) => ({
     id: meetingId(s.board, s.date),
+    board: s.board,
     source: s.source,
     related: s.related,
     // The hour the source stated, where it stated one. What decides whether
@@ -45,6 +46,22 @@ const written = readdirSync(dir, { withFileTypes: true })
       existsSync(join(dir, entry.name, "+page.svelte")),
   )
   .map((entry) => entry.name)
+
+/**
+ * Broadcast sittings either side of today.
+ *
+ * The three boards channel 8 carries are named here because they are what this
+ * is about; the sittings are found rather than named, since which ones are ahead
+ * of today changes with every scrape and every day. `upcomingBroadcast` comes
+ * out of the projection, whose sittings are forward-only and always have a page;
+ * `pastBroadcast` is a write-up, whose directory is proof the page exists.
+ */
+const BROADCAST_BOARDS = ["City Council", "School Committee", "License Commission"]
+const upcomingBroadcast = expected.find((s) => BROADCAST_BOARDS.includes(s.board))
+const pastBroadcast = meetingsData.meetings
+  .filter((m) => m.date && m.date < TODAY && BROADCAST_BOARDS.includes(m.board))
+  .map((m) => meetingId(m.board, m.date!))
+  .find((id) => written.includes(id))
 
 /** An item page beneath the first written meeting, by the same reasoning. */
 const items = readdirSync(join(dir, written[0]), { withFileTypes: true })
@@ -174,17 +191,34 @@ test.describe("meeting pages", () => {
     )
   })
 
-  test("a live stream link sits at the top level, not behind a disclosure", async ({ page }) => {
-    // Watching is one click for anyone, unlike the remote-access disclosure
-    // above, which is for someone the document expects to register or dial in
-    // -- so the stream sits beside Remote Access in the header rather than
-    // inside a `<details>`.
-    await page.goto("/calendar/meetings/city-council-2026-09-15")
+  test("a sitting still ahead offers the broadcast, at the top level", async ({ page }) => {
+    // Nothing states this on the page: the board is one channel 8 carries and
+    // the day has not come yet, which is all the link follows from -- so this
+    // one has no write-up at all, and still offers it.
+    test.skip(!upcomingBroadcast, "no broadcast board sitting left ahead in the year")
+    await page.goto(`/calendar/meetings/${upcomingBroadcast!.id}`)
 
+    const stream = page.locator("header").getByRole("link", { name: /View the Live Stream/ })
+    await expect(stream).toHaveAttribute(
+      "href",
+      "http://haverhillcommunitytv.org/video/channel-8-live-stream",
+    )
+    // Watching is one click for anyone, unlike the remote-access disclosure,
+    // which is for someone the document expects to register or dial in -- so
+    // the stream sits beside Remote Access rather than inside a `<details>`.
     await expect(
-      page.locator("header").getByRole("link", { name: /View the Live Stream/ }),
-    ).toHaveAttribute("href", "http://haverhillcommunitytv.org/video/channel-8-live-stream")
-    await expect(page.locator("header details")).toHaveCount(0)
+      page.locator("header details").getByRole("link", { name: /View the Live Stream/ }),
+    ).toHaveCount(0)
+  })
+
+  test("a sitting that is over offers nothing to watch live", async ({ page }) => {
+    // The link is channel 8 itself, which the day after a sitting is airing
+    // something else entirely. The video, where HC Media posts one, arrives in
+    // the document list above as a recording instead.
+    test.skip(!pastBroadcast, "no written sitting of a broadcast board has passed")
+    await page.goto(`/calendar/meetings/${pastBroadcast}`)
+
+    await expect(page.getByRole("link", { name: /View the Live Stream/ })).toHaveCount(0)
   })
 
   test("a matched recording shows on a sitting, linking to HC Media", async ({ page }) => {

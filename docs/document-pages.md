@@ -99,7 +99,6 @@ Everything it writes is under `.cache/`, which is gitignored and disposable.
          meetingId: "…",
          passcode: "…",
          how: ["Register at least 6 hours ahead at …; a link is emailed after."],
-         stream: "http://haverhillcommunitytv.org/video/channel-8-live-stream",
        },
        notice: ["The meeting is held in person as its official location under…"],
      },
@@ -117,16 +116,20 @@ Everything it writes is under `.cache/`, which is gitignored and disposable.
    a link that 404s. Where the remote option is not one link but a procedure —
    a form to register on, a link emailed later, paragraphs of conditions — those
    paragraphs go in `how`, verbatim, and the header shows them behind a
-   disclosure the reader opens. `stream` is where the sitting is broadcast
-   live; an agenda that says it "will be broadcast over HCTV and WHAV" without
-   an address is pointing at Haverhill Community Television's channel 8, so
-   link that and drop the sentence. It sits beside "Remote Access" in the
-   header rather than behind the `how` disclosure — watching is one click for
-   anyone, where the disclosure is for someone the document expects to
-   register or dial in, so burying the two together overstates what watching
-   takes. Write it in freely — `npm run streams:prune`, a step of
-   `metadata:update`, removes it on its own once the meeting's date has
-   passed, since a live stream link is meaningless after the sitting is over.
+   disclosure the reader opens.
+
+   **The live stream is not one of these fields and is not yours to write.**
+   The City Council, the School Committee and the License Commission are
+   carried on Haverhill Community Television's channel 8, whether or not the
+   agenda in front of you mentions it, and the page works that out for itself:
+   `liveStream` in [`src/lib/calendar.ts`](../src/lib/calendar.ts) puts a "View
+   the Live Stream" link beside "Remote Access" for those three boards on any
+   sitting that has not happened yet — a sitting with no write-up at all
+   included. An agenda that says the meeting "will be broadcast over HCTV and
+   WHAV" without printing an address is saying nothing the page does not
+   already say, so drop the sentence rather than quoting it. Nothing has to be
+   removed afterwards either: the link is gone the day after the sitting
+   because the date is behind today, not because anybody pruned it.
 
    `notice` is standing Open Meeting Law boilerplate — one string per paragraph,
    behind an information icon next to the title rather than in the write-up

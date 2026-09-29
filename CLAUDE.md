@@ -48,7 +48,6 @@ npm run calendar:rebuild    # re-scrape everything (only when scrape/date logic 
 npm run budget:update       # re-scrape the budget and audit listing (always full)
 npm run notices:update      # the agendas the city hangs off its meeting notices
 npm run recordings:update   # HC Media's video of a sitting, matched to it
-npm run streams:prune       # drop a meeting's live-stream link once the sitting is over
 npm run transcribe -- <id>  # hand a sitting to Claude Code to write its page
 npm run storybook           # storybook on :6006
 ```
@@ -245,22 +244,28 @@ transcription page. `Video Recordings` is one entry in the calendar's Sources,
 last, after the city's own pages.
 
 **A live stream is not a recording, and stops being useful the moment the
-sitting ends.** `MeetingDetails.remote.stream`, on a hand-written meeting
-page, names Haverhill Community Television's channel 8 -- what an agenda means
-by "will be broadcast over HCTV and WHAV" without printing an address --
-because that is the whole record for a sitting that has not happened yet.
-Once it has, the link points at whatever channel 8 is airing that day rather
-than at anything about the meeting, and the actual video, if HC Media posts
-one, arrives on its own through `update-recordings.mjs` above. `scripts/prune-live-streams.mjs`
-(`npm run streams:prune`, a step of `metadata:update`) drops `stream` from
-every write-up whose date -- read off the meeting id itself, the same
-`meetingId()` rule as everywhere else, so no store lookup is needed -- is
-before today in the city's own timezone. Write-ups are hand-written, so this
-edits `+page.ts` source directly rather than `meetings.json`, and takes the
-comment sitting over `stream` with it: one field, one comment, is this
-codebase's convention, so leaving the comment behind would describe a link
-that is no longer there. `scripts/lib/streams.mjs` holds the text surgery,
-tested in `streams.spec.mjs` against a string rather than a file on disk.
+sitting ends.** Channel 8 carries the sitting live -- what an agenda means by
+"will be broadcast over HCTV and WHAV" without printing an address -- and for a
+sitting that has not happened yet that link is the whole record. Once it has,
+the same URL points at whatever channel 8 is airing that day rather than at
+anything about the meeting, and the actual video, if HC Media posts one, arrives
+on its own through `update-recordings.mjs` above. **Neither half of that is a
+judgement anybody makes**, so neither is written down: `liveStream` in
+`calendar.ts` derives the link from the board and the date, and
+`meetings/+layout.svelte` shows it beside "Remote Access" for the three boards
+`BROADCAST_BOARDS` names -- the City Council, the School Committee and the
+License Commission, HC Media's own three `/category/government/` listings -- on
+any sitting today or later. It was `MeetingDetails.remote.stream`, typed into a
+write-up by hand and taken back out by a script (`prune-live-streams.mjs`, and
+`scripts/lib/streams.mjs`'s text surgery, both gone) once the date had passed:
+two manual steps per sitting for a fact that follows from the board's name. The
+derived version also reaches sittings a write-up would not -- a Tuesday the
+Council's rule expects, where a link to the broadcast is all the site has to
+offer. The date it compares against is the build's, from
+`meetings/+layout.server.ts` so both renders agree on it, and the reader's own
+after mount: the same `inTheBrowser` bargain the calendar grid and
+`BudgetTimeline` make, which is what takes the link off a page prerendered
+before the sitting and read after it.
 
 **The School Committee keeps its record on its own site, and nothing else in the
 pipeline touches that body.** The listing and its archives cover five boards and

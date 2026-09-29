@@ -13,7 +13,7 @@ import { calendar } from "$lib/meetings"
  * Not the *last* segment, because a meeting can have pages beneath it for
  * individual agenda items; those want the same meeting out of this one lookup.
  */
-export const load: LayoutLoad = ({ url }) => {
+export const load: LayoutLoad = ({ url, data }) => {
   const segments = url.pathname.replace(/\/+$/, "").split("/")
   // lastIndexOf, so a base path that happens to contain "meetings" cannot
   // shadow the real one.
@@ -30,5 +30,14 @@ export const load: LayoutLoad = ({ url }) => {
     meeting,
     /** True on a page for one agenda item, rather than the meeting itself. */
     isItem: segments.length > at + 2,
+    /**
+     * The build's date, straight through from `+layout.server.ts` -- a
+     * universal load's own return is what reaches the component, so anything
+     * the server load offers has to be forwarded here to arrive. It is there
+     * rather than here because this function runs again in the browser, where
+     * `easternDate()` would answer with the reader's day instead of the
+     * build's; see the comment in that file.
+     */
+    today: data.today,
   }
 }

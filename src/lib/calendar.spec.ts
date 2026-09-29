@@ -8,6 +8,8 @@ import {
   formatMonth,
   groupByDate,
   groupIntoMeetings,
+  LIVE_STREAM,
+  liveStream,
   meetingId,
   monthKey,
   easternDate,
@@ -453,6 +455,33 @@ describe("easternDate", () => {
   it("zero-pads to the YYYY-MM-DD the rest of the file speaks", () => {
     expect(easternDate(new Date("2026-01-05T17:00:00Z"))).toBe("2026-01-05")
     expect(easternDate(new Date("2026-01-05T17:00:00Z"))).toMatch(/^\d{4}-\d{2}-\d{2}$/)
+  })
+})
+
+describe("liveStream", () => {
+  it("offers the broadcast to the three boards channel 8 carries", () => {
+    for (const board of ["City Council", "School Committee", "License Commission"]) {
+      expect(liveStream(board, "2026-09-29", "2026-09-29")).toBe(LIVE_STREAM)
+    }
+  })
+
+  it("claims no broadcast for a board nothing says is carried", () => {
+    // A council committee's recordings arrive under the council's own HC Media
+    // listing, which is not the same as a statement that the sitting is carried
+    // live -- so the link is not offered, the way `BODIES` declines a notice it
+    // does not recognise rather than guessing.
+    expect(
+      liveStream("Planning and Development Committee", "2026-09-29", "2026-09-29"),
+    ).toBeUndefined()
+    expect(liveStream("Conservation Commission", "2026-09-29", "2026-09-29")).toBeUndefined()
+  })
+
+  it("stops offering it the day after the sitting", () => {
+    // The link is the channel, not the meeting: the day after, it carries
+    // whatever channel 8 is airing. Today itself still counts -- a reader on
+    // the morning of a 7:00 PM sitting is exactly who the link is for.
+    expect(liveStream("City Council", "2026-09-29", "2026-09-30")).toBeUndefined()
+    expect(liveStream("City Council", "2026-09-29", "2026-09-28")).toBe(LIVE_STREAM)
   })
 })
 

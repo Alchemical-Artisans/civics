@@ -328,22 +328,14 @@ export interface MeetingDetails {
    * not. `url` is optional because of them; give both where a document prints
    * a link and then qualifies it.
    *
-   * `stream` is where a sitting can be watched live, for the boards the city
-   * broadcasts. It is the one thing here the document does not supply: an
-   * agenda says the meeting "will be broadcast over HCTV and WHAV" and prints
-   * no address for either, so a reader is told a thing exists and left to go
-   * and find it. Haverhill Community Television's channel 8 page is that
-   * address. Naming it is the same act as the rest of this file -- rearranging
-   * what the city publishes so a reader can use it -- rather than words put in
-   * the city's mouth, and the sentence claiming the broadcast is dropped in
-   * favour of the link to it.
+   * Where a sitting is watched live is not here, and is not read off a
+   * document: see `liveStream` below.
    */
   remote?: {
     url?: string
     meetingId?: string
     passcode?: string
     how?: string[]
-    stream?: string
   }
   /**
    * Standing boilerplate from the head of the document -- Open Meeting Law
@@ -354,6 +346,52 @@ export interface MeetingDetails {
    */
   notice?: string[]
 }
+
+/**
+ * Where a sitting can be watched live: Haverhill Community Television's
+ * channel 8.
+ *
+ * The one thing about attending a meeting the city does not print. An agenda
+ * says the sitting "will be broadcast over HCTV and WHAV" and gives no address
+ * for either; a notice says a live stream is provided as a courtesy and does
+ * not say where. A reader is told a thing exists and left to go and find it,
+ * and this is where it is -- naming it is the same act as the rest of this
+ * site, rearranging what the city publishes so a reader can use it.
+ */
+export const LIVE_STREAM = "http://haverhillcommunitytv.org/video/channel-8-live-stream"
+
+/**
+ * The boards whose sittings channel 8 carries.
+ *
+ * Hand-kept, the way `BODIES` and `RECORDING_BODIES` in `scripts/lib/` are, and
+ * the same three bodies HC Media keeps a `/category/government/` listing for:
+ * it posts the video of City Council, School Committee and License Commission
+ * sittings and of no others, a recording being a broadcast kept. A council
+ * committee's recordings arrive under the council's own listing, but nothing
+ * the city or HC Media publishes says a committee's sitting is carried live, so
+ * none is claimed here.
+ */
+const BROADCAST_BOARDS = ["City Council", "School Committee", "License Commission"]
+
+/**
+ * The live stream for a sitting, where there is one to offer.
+ *
+ * This was a field on `MeetingDetails` for a while, written into a write-up by
+ * hand and taken back out again by a script whose whole job was that, once the
+ * sitting was over. Neither half of it was a judgement anybody was making:
+ * one of the three boards above is broadcast whether or not its agenda mentions
+ * it, and a sitting is either still ahead or not. So it is derived here, which
+ * is also what puts the link on a sitting nobody has written up -- a Tuesday
+ * the Council's rule expects, where a link to the broadcast is the only thing
+ * the site has to offer a reader at all.
+ *
+ * `date >= today` because the stream is the channel rather than the meeting: on
+ * the day it carries the sitting, and every day after it carries whatever
+ * channel 8 is airing. The video of the sitting itself, where HC Media posts
+ * one, arrives on its own as a `recording` document.
+ */
+export const liveStream = (board: string, date: string, today: string): string | undefined =>
+  BROADCAST_BOARDS.includes(board) && date >= today ? LIVE_STREAM : undefined
 
 export interface DayCell {
   date: string

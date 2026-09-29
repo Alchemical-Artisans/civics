@@ -78,7 +78,6 @@ export const load: PageLoad = () => ({
       meetingId: "…",
       passcode: "…",
       how: ["…"],
-      stream: "http://haverhillcommunitytv.org/video/channel-8-live-stream",
     },
     notice: ["…"],
   },
@@ -99,11 +98,14 @@ is handed, so drop the room and add the city.
   paragraph) and the header shows them behind a disclosure a reader opens.
   Give `url` **only** where the document prints a working join link; a
   shortened or malformed URL stays as text inside `how`, not a link that
-  404s. `stream` is where the sitting is broadcast live — the School
-  Committee and others are carried on Haverhill Community Television's
-  channel 8, and an agenda that says the meeting "will be broadcast over HCTV
-  and WHAV" without printing an address is pointing at that page; use the URL
-  above and drop the sentence, since the link says it better.
+  404s. **The live stream is not a field here and is not yours to write:** the
+  City Council, the School Committee and the License Commission are carried on
+  Haverhill Community Television's channel 8, and the page derives the link
+  from the board and the date (`liveStream` in `src/lib/calendar.ts`), showing
+  it on any sitting that has not happened yet. So an agenda saying the meeting
+  "will be broadcast over HCTV and WHAV" without printing an address is saying
+  nothing the page does not already say — drop the sentence rather than
+  quoting it.
 - **`notice`** — standing Open Meeting Law boilerplate, one string per
   paragraph, behind an information icon. Keep this to what turns on a choice
   _this_ body made: that it meets in-person as its official location, say.
