@@ -1,4 +1,5 @@
 <script lang="ts">
+  import AddressMap from "$lib/AddressMap.svelte"
   import { Router } from "$lib/router"
 
   const MEETING = "city-council-2026-10-06"
@@ -11,6 +12,15 @@
   America&rdquo; program at Hilldale Cemetery which will be held on Saturday, December 19<sup
     >th</sup
   >
+</p>
+
+<AddressMap address="Hilldale Cemetery, Haverhill, MA" lat={42.7893138} lon={-71.0955691} />
+
+<p>
+  Wreaths Across America is a national program; its own site is
+  <a href="https://www.wreathsacrossamerica.org/" target="_blank" rel="external noopener noreferrer"
+    >wreathsacrossamerica.org<span class="sr-only">, opens in a new tab</span></a
+  >.
 </p>
 
 <hr />
