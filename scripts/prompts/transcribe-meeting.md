@@ -298,7 +298,7 @@ skip it.
 Use the result only where it resolves to the actual address or named place
 printed -- a building, a house number, a feature of the right name. Where the
 document names a place with no street number of its own that the lookup
-cannot find *by name* (a pumping station, an unnamed lot) and it only turns
+cannot find _by name_ (a pumping station, an unnamed lot) and it only turns
 up the street or the neighbourhood it sits on, **leave the map off** rather than centring it on an approximation and calling it the
 place -- the same rule as §10's "do not guess": a map is a stronger claim of
 precision than a sentence naming the street, and this codebase does not make

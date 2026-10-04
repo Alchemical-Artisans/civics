@@ -29,8 +29,12 @@
     details,
     event: given,
     filename,
-  }: { meeting?: Meeting; details?: MeetingDetails; event?: CalendarEvent; filename?: string } =
-    $props()
+  }: {
+    meeting?: Meeting
+    details?: MeetingDetails
+    event?: CalendarEvent
+    filename?: string
+  } = $props()
 
   const event = $derived(given ?? eventForMeeting(meeting!, details))
 
