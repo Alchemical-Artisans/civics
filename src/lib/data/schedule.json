@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-26T04:21:02.449Z",
+  "generatedAt": "2026-10-02T21:00:45.232Z",
   "rules": [
     {
       "board": "City Council",
@@ -382,172 +382,25 @@
   },
   "notices": [
     {
-      "board": "Historic Commission",
-      "date": "2026-09-02",
-      "title": "Haverhill Historic Commission Mtg",
-      "url": "https://events.haverhillma.gov/default/Detail/2026-09-02-1800-Haverhill-Historic-Commission-Mtg",
-      "time": "6:00 PM"
-    },
-    {
-      "board": "Rocks Village Historic District Commission",
-      "date": "2026-09-02",
-      "title": "Rocks Village Historic District Commission Meeting",
-      "url": "https://events.haverhillma.gov/default/Detail/2026-09-02-1900-Rocks-Village-Historic-District-Commission-Meeting",
-      "time": "7:00 PM"
-    },
-    {
       "board": "Consentino School Building Committee",
-      "date": "2026-09-03",
+      "date": "2026-10-01",
       "title": "Consentino School Building Committee Meeting",
-      "url": "https://events.haverhillma.gov/default/Detail/2026-09-03-0900-Consentino-School-Building-Committee-Meeting",
+      "url": "https://events.haverhillma.gov/default/Detail/2026-10-01-0900-Consentino-School-Building-Committee-Meeting",
       "time": "9:00 AM"
     },
     {
       "board": "License Commission",
-      "date": "2026-09-03",
+      "date": "2026-10-01",
       "title": "License Commission Meeting",
-      "url": "https://events.haverhillma.gov/default/Detail/2026-09-03-1800-License-Commission-Meeting",
+      "url": "https://events.haverhillma.gov/default/Detail/2026-10-01-1800-License-Commission-Meeting",
       "time": "6:00 PM"
     },
     {
-      "board": "Retirement Board",
-      "date": "2026-09-08",
-      "title": "Haverhill Retirement Board Meeting",
-      "url": "https://events.haverhillma.gov/default/Detail/2026-09-08-0900-Haverhill-Retirement-Board-Meeting",
-      "time": "9:00 AM"
-    },
-    {
-      "board": "Planning Board",
-      "date": "2026-09-09",
-      "title": "Planning Board Meeting",
-      "url": "https://events.haverhillma.gov/default/Detail/2026-09-09-1900-Planning-Board-Meeting",
-      "time": "7:00 PM"
-    },
-    {
-      "board": "School Committee",
-      "date": "2026-09-10",
-      "title": "Haverhill School Committee Meeting - Revised",
-      "url": "https://events.haverhillma.gov/default/Detail/2026-09-10-1900-Haverhill-School-Committee-Meeting-Revised",
-      "time": "7:00 PM"
-    },
-    {
-      "board": "School Committee Negotiating Subcommittee",
-      "date": "2026-09-10",
-      "title": "Haverhill School Committee Subcommittee for HEA Grievances Meeting",
-      "url": "https://events.haverhillma.gov/default/Detail/2026-09-10-1700-Haverhill-School-Committee-Subcommittee-for-HEA-Gr",
+      "board": "Walnut Square School Site Council",
+      "date": "2026-10-05",
+      "title": "Walnut Square Site Council Meeting",
+      "url": "https://events.haverhillma.gov/default/Detail/2026-10-05-1700-Walnut-Square-Site-Council-Meeting",
       "time": "5:00 PM"
-    },
-    {
-      "board": "License Commission",
-      "date": "2026-09-14",
-      "title": "License Commission Meeting",
-      "url": "https://events.haverhillma.gov/default/Detail/2026-09-14-1300-License-Commission-Meeting",
-      "time": "1:00 PM"
-    },
-    {
-      "board": "Natural Resources and Public Property Committee",
-      "date": "2026-09-14",
-      "title": "Natural Resources and Public Property Committee Meeting-REVISED",
-      "url": "https://events.haverhillma.gov/default/Detail/2026-09-14-1800-Natural-Resources-and-Public-Property-Committee-Me2",
-      "time": "6:00 PM"
-    },
-    {
-      "board": "City Council",
-      "date": "2026-09-15",
-      "title": "City Council Meeting",
-      "url": "https://events.haverhillma.gov/default/Detail/2026-09-15-1900-City-Council-Meeting2",
-      "time": "7:00 PM"
-    },
-    {
-      "board": "Cultural Council",
-      "date": "2026-09-16",
-      "title": "Haverhill Cultural Council Meeting",
-      "url": "https://events.haverhillma.gov/default/Detail/2026-09-16-1830-Haverhill-Cultural-Council-Meeting",
-      "time": "6:30 PM"
-    },
-    {
-      "board": "Washington Street Shoe Historic District Commission",
-      "date": "2026-09-16",
-      "title": "Washington Street Shoe Historic District Commission Meeting",
-      "url": "https://events.haverhillma.gov/default/Detail/2026-09-16-1800-Washington-Street-Shoe-Historic-District-Commissio",
-      "time": "6:00 PM"
-    },
-    {
-      "board": "Conservation Commission",
-      "date": "2026-09-17",
-      "title": "Haverhill Conservation Commission Meeting - REVISED",
-      "url": "https://events.haverhillma.gov/default/Detail/2026-09-17-1915-Haverhill-Conservation-Commission-Meeting-REVISED",
-      "time": "7:15 PM"
-    },
-    {
-      "board": "Housing Authority",
-      "date": "2026-09-17",
-      "title": "Haverhill Housing Authority Meeting",
-      "url": "https://events.haverhillma.gov/default/Detail/2026-09-17-1000-Haverhill-Housing-Authority-Meeting2",
-      "time": "10:00 AM"
-    },
-    {
-      "board": "Library Board of Trustees",
-      "date": "2026-09-17",
-      "title": "Haverhill Public Library Board of Trustees Meeting",
-      "url": "https://events.haverhillma.gov/default/Detail/2026-09-17-0930-Haverhill-Public-Library-Board-of-Trustees-Meeting",
-      "time": "9:30 AM"
-    },
-    {
-      "board": "Board of Assessors",
-      "date": "2026-09-22",
-      "title": "Board of Assessors Public Meeting",
-      "url": "https://events.haverhillma.gov/default/Detail/2026-09-22-1000-Board-of-Assessors-Public-Meeting",
-      "time": "10:00 AM"
-    },
-    {
-      "board": "City Council",
-      "date": "2026-09-22",
-      "title": "City Council Meeting",
-      "url": "https://events.haverhillma.gov/default/Detail/2026-09-22-1900-City-Council-Meeting2",
-      "time": "7:00 PM"
-    },
-    {
-      "board": "School Committee",
-      "date": "2026-09-23",
-      "title": "Haverhill School Committee Meeting Revised",
-      "url": "https://events.haverhillma.gov/default/Detail/2026-09-23-1900-Haverhill-School-Committee-Meeting-Revised",
-      "time": "7:00 PM"
-    },
-    {
-      "board": "Bradford Common Historic District Commission",
-      "date": "2026-09-28",
-      "title": "Bradford Common Historic District Commission",
-      "url": "https://events.haverhillma.gov/default/Detail/2026-09-28-1800-Bradford-Common-Historic-District-Commission",
-      "time": "6:00 PM"
-    },
-    {
-      "board": "Special Education Parent Advisory Council",
-      "date": "2026-09-28",
-      "title": "SEPAC - Special Education Parental Advisory Council Meeting",
-      "url": "https://events.haverhillma.gov/default/Detail/2026-09-28-1800-SEPAC-Special-Education-Parental-Advisory-Council-",
-      "time": "6:00 PM"
-    },
-    {
-      "board": "Board of Assessors",
-      "date": "2026-09-29",
-      "title": "Haverhill Board of Assessors Public Meeting",
-      "url": "https://events.haverhillma.gov/default/Detail/2026-09-29-1000-Haverhill-Board-of-Assessors-Public-Meeting",
-      "time": "10:00 AM"
-    },
-    {
-      "board": "City Council",
-      "date": "2026-09-29",
-      "title": "City Council Meeting",
-      "url": "https://events.haverhillma.gov/default/Detail/2026-09-29-1900-City-Council-Meeting2",
-      "time": "7:00 PM"
-    },
-    {
-      "board": "Historic Commission",
-      "date": "2026-09-30",
-      "title": "Haverhill Historic Commission Meeting",
-      "url": "https://events.haverhillma.gov/default/Detail/2026-09-30-1800-Haverhill-Historic-Commission-Meeting",
-      "time": "6:00 PM"
     },
     {
       "board": "City Council",
@@ -557,6 +410,27 @@
       "time": "7:00 PM"
     },
     {
+      "board": "Hunking School Site Council",
+      "date": "2026-10-06",
+      "title": "Caleb Dustin Hunking Site Council Meeting",
+      "url": "https://events.haverhillma.gov/default/Detail/2026-10-06-1715-Caleb-Dustin-Hunking-Site-Council-Meeting",
+      "time": "5:15 PM"
+    },
+    {
+      "board": "Consentino School Building Committee",
+      "date": "2026-10-07",
+      "title": "Consentino School Building Committee Mtg",
+      "url": "https://events.haverhillma.gov/default/Detail/2026-10-07-1330-Consentino-School-Building-Committee-Mtg",
+      "time": "1:30 PM"
+    },
+    {
+      "board": "Harbor Commission",
+      "date": "2026-10-07",
+      "title": "Haverhill Harbor Commission Meeting",
+      "url": "https://events.haverhillma.gov/default/Detail/2026-10-07-1730-Haverhill-Harbor-Commission-Meeting",
+      "time": "5:30 PM"
+    },
+    {
       "board": "Conservation Commission",
       "date": "2026-10-08",
       "title": "Haverhill Conservation Commission Meeting",
@@ -564,11 +438,39 @@
       "time": "7:15 PM"
     },
     {
+      "board": "School Committee Negotiating Subcommittee",
+      "date": "2026-10-08",
+      "title": "Haverhill School Committee Subcommittee for HEA Grievances Meeting",
+      "url": "https://events.haverhillma.gov/default/Detail/2026-10-08-1700-Haverhill-School-Committee-Subcommittee-for-HEA-Gr",
+      "time": "5:00 PM"
+    },
+    {
+      "board": "John Greenleaf Whittier School Building Committee",
+      "date": "2026-10-14",
+      "title": "John Greenleaf Whittier School Building Committee Meeting",
+      "url": "https://events.haverhillma.gov/default/Detail/2026-10-14-0830-John-Greenleaf-Whittier-School-Building-Committee-2",
+      "time": "8:30 AM"
+    },
+    {
+      "board": "Planning and Development Committee",
+      "date": "2026-10-19",
+      "title": "Planning and Development Committee Meeting",
+      "url": "https://events.haverhillma.gov/default/Detail/2026-10-19-1800-Planning-and-Development-Committee-Meeting",
+      "time": "6:00 PM"
+    },
+    {
       "board": "City Council",
       "date": "2026-10-20",
       "title": "City Council Meeting",
       "url": "https://events.haverhillma.gov/default/Detail/2026-10-20-1900-City-Council-Meeting2",
       "time": "7:00 PM"
+    },
+    {
+      "board": "School Committee Negotiating Subcommittee",
+      "date": "2026-10-22",
+      "title": "Haverhill School Committee Subcommittee for HEA Grievances Meeting",
+      "url": "https://events.haverhillma.gov/default/Detail/2026-10-22-1700-Haverhill-School-Committee-Subcommittee-for-HEA-Gr",
+      "time": "5:00 PM"
     },
     {
       "board": "City Council",
