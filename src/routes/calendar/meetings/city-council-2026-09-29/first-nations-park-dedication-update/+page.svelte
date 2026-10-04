@@ -7,7 +7,10 @@
 
 <p>
   Mayor Barrett wishes to introduce Dan Speers, <em>Chair of the Native American Task Force</em>, to
-  provide an update regarding the October 3<sup>rd</sup> dedication of First Nations Parks
+  provide an update regarding the October 3<sup>rd</sup> dedication of
+  <a href={Router.meetingItem("city-council-2023-06-13", "first-nations-park-name")}
+    >First Nations Parks</a
+  >
 </p>
 
 <hr />
