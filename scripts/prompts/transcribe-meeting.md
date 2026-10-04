@@ -323,6 +323,42 @@ guess at a domain; where you cannot confirm one, leave it out and say so in
 your report. This is the one place the page carries a sentence the document
 did not print, so keep it to the link and one clause.
 
+### An upcoming event the item announces
+
+When an item announces something that happens on a stated future day -- a
+ceremony, a drive, a hearing, a festival, a deadline to show up for, as
+distinct from the sitting itself -- and the sitting is not yet past, give the
+page the same "Add to calendar" control the meeting header has, built from
+`AddToCalendar` and a `CalendarEvent`:
+
+```svelte
+<script lang="ts">
+  import AddToCalendar from "$lib/AddToCalendar.svelte"
+  import type { CalendarEvent } from "$lib/ics"
+  import { Router } from "$lib/router"
+
+  const event: CalendarEvent = {
+    uid: `${MEETING}-${ITEM}@haverhill.alchemicalartisans.com`,
+    title: "Wreaths Across America, Hilldale Cemetery",
+    start: "20261219", // YYYYMMDD; add THHMMSS only if the document states an hour
+    end: "20261220", // all-day: the day after. Timed: start plus the stated length, else two hours
+    allDay: true,
+    location: "Hilldale Cemetery, Haverhill, MA",
+    description: "...",
+    url: Router.absolute(`/calendar/meetings/${MEETING}/${ITEM}`),
+  }
+</script>
+
+<div class="not-prose my-4">
+  <AddToCalendar {event} filename="<item-slug>-<date>" />
+</div>
+```
+
+Put it under the paragraph that states the date. Use the event's date and
+hour only as the document prints them -- no hour printed means all-day, never
+an invented time. `src/routes/calendar/meetings/city-council-2026-10-06/wreaths-across-america/`
+is the worked example.
+
 ## 6. Cross-references to other meetings
 
 A document sometimes names another sitting's business without printing it — a

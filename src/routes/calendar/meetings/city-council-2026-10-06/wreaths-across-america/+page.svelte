@@ -1,9 +1,24 @@
 <script lang="ts">
   import AddressMap from "$lib/AddressMap.svelte"
+  import AddToCalendar from "$lib/AddToCalendar.svelte"
+  import type { CalendarEvent } from "$lib/ics"
   import { Router } from "$lib/router"
 
   const MEETING = "city-council-2026-10-06"
   const ITEM = "wreaths-across-america"
+
+  // The letter gives a day and no hour, so this is an all-day event; the end
+  // of an all-day event is the day after (iCalendar's exclusive DTEND).
+  const event: CalendarEvent = {
+    uid: `${MEETING}-${ITEM}@haverhill.alchemicalartisans.com`,
+    title: "Wreaths Across America, Hilldale Cemetery",
+    start: "20261219",
+    end: "20261220",
+    allDay: true,
+    location: "Hilldale Cemetery, Haverhill, MA",
+    description: `Wreaths Across America at Hilldale Cemetery.\nCity Council agenda item: ${Router.absolute(`/calendar/meetings/${MEETING}/${ITEM}`)}`,
+    url: Router.absolute(`/calendar/meetings/${MEETING}/${ITEM}`),
+  }
 </script>
 
 <p>
@@ -13,6 +28,10 @@
     >th</sup
   >
 </p>
+
+<div class="not-prose my-4">
+  <AddToCalendar {event} filename="wreaths-across-america-2026-12-19" />
+</div>
 
 <AddressMap address="Hilldale Cemetery, Haverhill, MA" lat={42.7893138} lon={-71.0955691} />
 

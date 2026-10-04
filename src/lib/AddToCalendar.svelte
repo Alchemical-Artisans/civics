@@ -17,11 +17,22 @@
   import calendarAdd from "@iconify-icons/material-symbols/calendar-add-on-outline-rounded"
   import { Router } from "$lib/router"
   import type { Meeting, MeetingDetails } from "$lib/calendar"
-  import { eventForMeeting, icsStamp, toIcs } from "$lib/ics"
+  import { eventForMeeting, icsStamp, toIcs, type CalendarEvent } from "$lib/ics"
 
-  let { meeting, details }: { meeting: Meeting; details?: MeetingDetails } = $props()
+  /**
+   * Either a sitting (`meeting`, with its `details`) or any other dated thing
+   * an agenda item announces (`event`, with the `filename` its download
+   * takes) -- a ceremony the Council is told about is not a sitting.
+   */
+  let {
+    meeting,
+    details,
+    event: given,
+    filename,
+  }: { meeting?: Meeting; details?: MeetingDetails; event?: CalendarEvent; filename?: string } =
+    $props()
 
-  const event = $derived(eventForMeeting(meeting, details))
+  const event = $derived(given ?? eventForMeeting(meeting!, details))
 
   const googleUrl = $derived(
     Router.googleCalendar({
@@ -60,7 +71,7 @@
     const href = URL.createObjectURL(blob)
     const a = document.createElement("a")
     a.href = href
-    a.download = `${meeting.id}.ics`
+    a.download = `${filename ?? meeting!.id}.ics`
     a.click()
     URL.revokeObjectURL(href)
     close()
