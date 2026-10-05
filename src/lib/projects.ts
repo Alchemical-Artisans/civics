@@ -1,0 +1,156 @@
+/**
+ * Projects: one thing the city is doing, followed across every sitting that
+ * touched it.
+ *
+ * The calendar is organised the way the city publishes -- a sitting, then its
+ * agenda, then the items on it -- and that is the wrong shape for anything
+ * that takes more than one evening. An election is a warrant the Council
+ * receives, an early-voting schedule the Clerk announces, a posting deadline
+ * and a polling day; on the calendar those are four entries in two months
+ * with nothing joining them. A project is the join: a page of its own, with a
+ * timeline of every agenda item that bears on it, and each of those items
+ * linking back.
+ *
+ * The timeline is declared here, in one place, rather than by each item page
+ * saying which project it belongs to: the project page has to list its items
+ * in order, and the meeting layout has to find an item's project, so one of
+ * them would otherwise be restating the other. An item is named by its
+ * meeting id and its directory name, the two segments of its URL -- the same
+ * identity the layout already reads off the URL to find the meeting.
+ *
+ * A project page itself is hand-written, one static route each under
+ * `src/routes/projects/`, the same way a meeting write-up is: what an election
+ * needs (a map, a ballot per precinct) is not what a building project would.
+ */
+
+/** An agenda item on a project's timeline. */
+export interface ItemEntry {
+  kind: "item"
+  /** The meeting's id, e.g. `city-council-2026-10-06`. */
+  meeting: string
+  /** The item page's directory name beneath the meeting. */
+  item: string
+  board: string
+  /** The agenda's own number for the item, as printed. */
+  number: string
+  title: string
+}
+
+/**
+ * A date a document on the timeline sets, rather than a sitting: early voting
+ * opening, a filing deadline, the election itself. Shown on the timeline so a
+ * reader can see what the agenda items were *for*, and where the process
+ * stands, but drawn apart from the agenda items, since nobody met.
+ */
+export interface DateEntry {
+  kind: "date"
+  date: string
+  /** The last day of a run of days, like early voting's. */
+  through?: string
+  title: string
+  /** The agenda item whose document states the date. */
+  from: { meeting: string; item: string }
+}
+
+export type Entry = ItemEntry | DateEntry
+
+export interface Project {
+  slug: string
+  title: string
+  entries: Entry[]
+}
+
+export const PROJECTS: Project[] = [
+  {
+    slug: "2026-state-election",
+    title: "2026 State Election",
+    entries: [
+      {
+        kind: "item",
+        meeting: "city-council-2026-10-06",
+        item: "early-voting-schedule",
+        board: "City Council",
+        number: "8.1",
+        title: "Early Voting Schedule and Election Deadlines",
+      },
+      {
+        kind: "item",
+        meeting: "city-council-2026-10-06",
+        item: "election-warrant",
+        board: "City Council",
+        number: "8.2",
+        title: "Election Warrant, 2026 State Election",
+      },
+      {
+        kind: "date",
+        date: "2026-10-17",
+        through: "2026-10-30",
+        title: "Early voting, in the Early Voting Room on the basement level of City Hall",
+        from: { meeting: "city-council-2026-10-06", item: "early-voting-schedule" },
+      },
+      {
+        kind: "date",
+        date: "2026-10-27",
+        title: "Vote-by-mail applications must be received by 5:00 PM",
+        from: { meeting: "city-council-2026-10-06", item: "early-voting-schedule" },
+      },
+      {
+        kind: "date",
+        date: "2026-10-27",
+        title: "Warrant must be posted, at least seven days before the election",
+        from: { meeting: "city-council-2026-10-06", item: "election-warrant" },
+      },
+      {
+        kind: "date",
+        date: "2026-11-03",
+        title: "Election Day, 7:00 A.M. to 8:00 P.M.",
+        from: { meeting: "city-council-2026-10-06", item: "election-warrant" },
+      },
+    ],
+  },
+]
+
+/** The date an entry falls on: a sitting's is the tail of its meeting id. */
+export function entryDate(entry: Entry): string {
+  return entry.kind === "item" ? entry.meeting.slice(-10) : entry.date
+}
+
+/**
+ * The fragment an entry answers to on its project's page. An agenda item's is
+ * its own URL's last two segments, so it is unique and readable in an address
+ * bar; a date's is never linked to, but takes one anyway so every entry can be
+ * pointed at.
+ */
+export function entryId(entry: Entry): string {
+  return entry.kind === "item"
+    ? `${entry.meeting}-${entry.item}`
+    : `${entry.date}-${entry.title
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-|-$/g, "")}`
+}
+
+/** A project's entries in date order, agenda items ahead of dates on the same day. */
+export function timeline(project: Project): Entry[] {
+  return project.entries
+    .map((entry, i) => ({ entry, i }))
+    .sort(
+      (a, b) =>
+        entryDate(a.entry).localeCompare(entryDate(b.entry)) ||
+        Number(a.entry.kind === "date") - Number(b.entry.kind === "date") ||
+        a.i - b.i,
+    )
+    .map(({ entry }) => entry)
+}
+
+/** Every project an agenda item is on, with the entry naming it. */
+export function projectsOf(
+  meeting: string,
+  item: string,
+): { project: Project; entry: ItemEntry }[] {
+  return PROJECTS.flatMap((project) =>
+    project.entries
+      .filter((e): e is ItemEntry => e.kind === "item" && e.meeting === meeting && e.item === item)
+      .map((entry) => ({ project, entry })),
+  )
+}
