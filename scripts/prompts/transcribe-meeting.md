@@ -286,12 +286,20 @@ One request, not a loop over every address in the packet at once --
 Nominatim's usage policy caps this at one request a second, and the user
 agent above is required, not optional.
 
-Use the result only where it resolves to the actual address printed --
-a building, a house number, the type in the response is `"building"` or
-similarly specific. Where the document names a place with no street number
-of its own (a pumping station, a park with no numbered frontage) and the
-lookup only turns up the street or the neighbourhood it sits on, **leave the
-map off** rather than centring it on an approximation and calling it the
+A **named place** counts as well as a street address: a cemetery, a park,
+a school, a library, a memorial. An item that says "a ceremony at Hilldale
+Cemetery" is naming where something happens even with no number printed, so
+look the place up by name (`q=Hilldale+Cemetery%2C+Haverhill%2C+MA`) and map
+it when the top result is that very feature -- `"name"` matches and the type
+is the place's own (`cemetery`, `park`, `school`...). Do not wait for the
+document to say "map"; the absence of a printed address is not a reason to
+skip it.
+
+Use the result only where it resolves to the actual address or named place
+printed -- a building, a house number, a feature of the right name. Where the
+document names a place with no street number of its own that the lookup
+cannot find _by name_ (a pumping station, an unnamed lot) and it only turns
+up the street or the neighbourhood it sits on, **leave the map off** rather than centring it on an approximation and calling it the
 place -- the same rule as §10's "do not guess": a map is a stronger claim of
 precision than a sentence naming the street, and this codebase does not make
 claims the document does not support. Say in your report which addresses got
@@ -300,6 +308,56 @@ a map and which were left out, and why.
 This is for a place the document is _about_ -- not the sitting's own
 location, which is a different thing (§3's `mapQuery`) with its own Google
 Maps search link.
+
+### An event with a wider organisation behind it
+
+When an item is a local instance of something national or otherwise run by an
+organisation with its own site -- Wreaths Across America, a Relay for Life, a
+Veterans Day observance, a charity drive, a state program or a federal grant
+-- link that organisation's official site in a sentence of its own under the
+item, with `target="_blank" rel="external noopener noreferrer"`. Name it
+plainly ("Wreaths Across America is a national program; its own site is
+...") rather than in the city's voice, since the document does not say it.
+Use the organisation's own homepage, confirmed by search or fetch, never a
+guess at a domain; where you cannot confirm one, leave it out and say so in
+your report. This is the one place the page carries a sentence the document
+did not print, so keep it to the link and one clause.
+
+### An upcoming event the item announces
+
+When an item announces something that happens on a stated future day -- a
+ceremony, a drive, a hearing, a festival, a deadline to show up for, as
+distinct from the sitting itself -- and the sitting is not yet past, give the
+page the same "Add to calendar" control the meeting header has, built from
+`AddToCalendar` and a `CalendarEvent`:
+
+```svelte
+<script lang="ts">
+  import AddToCalendar from "$lib/AddToCalendar.svelte"
+  import type { CalendarEvent } from "$lib/ics"
+  import { Router } from "$lib/router"
+
+  const event: CalendarEvent = {
+    uid: `${MEETING}-${ITEM}@haverhill.alchemicalartisans.com`,
+    title: "Wreaths Across America, Hilldale Cemetery",
+    start: "20261219", // YYYYMMDD; add THHMMSS only if the document states an hour
+    end: "20261220", // all-day: the day after. Timed: start plus the stated length, else two hours
+    allDay: true,
+    location: "Hilldale Cemetery, Haverhill, MA",
+    description: "...",
+    url: Router.absolute(`/calendar/meetings/${MEETING}/${ITEM}`),
+  }
+</script>
+
+<div class="not-prose my-4">
+  <AddToCalendar {event} filename="<item-slug>-<date>" />
+</div>
+```
+
+Put it under the paragraph that states the date. Use the event's date and
+hour only as the document prints them -- no hour printed means all-day, never
+an invented time. `src/routes/calendar/meetings/city-council-2026-10-06/wreaths-across-america/`
+is the worked example.
 
 ## 6. Cross-references to other meetings
 
