@@ -48,6 +48,7 @@ npm run calendar:rebuild    # re-scrape everything (only when scrape/date logic 
 npm run budget:update       # re-scrape the budget and audit listing (always full)
 npm run notices:update      # the agendas the city hangs off its meeting notices
 npm run recordings:update   # HC Media's video of a sitting, matched to it
+npm run precincts:update    # ward and precinct shapes and districts, from MassGIS
 npm run transcribe -- <id>  # hand a sitting to Claude Code to write its page
 npm run storybook           # storybook on :6006
 ```
@@ -452,9 +453,9 @@ and its minutes separately; they are two documents about one sitting, matched on
 board and date, which is all the listing gives to match on. An entry opens
 `/calendar/meetings/<board-slug>-<date>`, which lists that sitting's documents —
 each linking to a write-up here when one exists and to the city's PDF when not.
-That route is the **only** one with a parameter, and it prerenders because
-`+page.ts` exports `entries()`; everything else, hand-written pages included, is
-a static route.
+That route and a project's `precincts/[precinct]` (below) are the only ones
+with a parameter, and both prerender because their `+page.ts` exports
+`entries()`; everything else, hand-written pages included, is a static route.
 
 **Write-ups are hand-written, one static route each**, at
 `src/routes/calendar/meetings/<meeting id>/+page.svelte`, with an agenda item
@@ -484,6 +485,56 @@ refresh and the writing up are one command; a sitting whose only record is a
 recording is skipped, having nothing to read, and `--no-transcribe` skips the
 lot. It goes last, after the attention report, being the one part of a run that
 waits for a person.
+
+**A project follows one undertaking across every sitting that touched it.**
+The calendar is shaped the way the city publishes -- a sitting, its agenda, the
+items on it -- which is the wrong shape for anything taking more than one
+evening. `/projects/<slug>` is a hand-written static route, one directory each,
+and `src/lib/projects.ts` is the registry of each project's timeline: the agenda
+items that bear on it (meeting id plus item directory, the two segments of the
+item's URL) and the dates their documents set. Declared once, there, because the
+project page lists them in order and `meetings/+layout.svelte` has to find an
+item's project to link back to it -- the layout's load reads the item's
+directory name off the URL as `itemSlug`. The link back carries the item's own
+entry id as the fragment, and `:target` rings that entry on the project page:
+no script, and no query string, which a prerendered page cannot read. There is
+no `/projects` index and no header entry yet; a project is reached from its
+items.
+
+**The 2026 State Election** is the first, `src/routes/projects/2026-state-election/`.
+Its `election.ts` holds the warrant's polling places, offices and ten questions
+as data -- the warrant's item page renders them from there, so a precinct page
+and the transcription cannot disagree -- plus the coordinates of each polling
+place (looked up once against Nominatim, as `AddressMap` does) and which
+precincts each warrant row serves. **Precinct shapes are MassGIS's**, "Wards
+and Precincts 2022" and its sub-precincts, written to `src/lib/data/precincts.json`
+by `npm run precincts:update` (not a step of `metadata:update`: the lines move
+once a decade). That script also works out each precinct's districts by area
+overlap against the 2021 redistricting polygons -- the `…2021`/`Congress118`
+services, **not** `Massachusetts_House_Districts` and siblings, which are the
+pre-2022 districts -- and stops if any precinct is less than 98% inside one
+district. Wards are the union of their precincts. `precincts/[precinct]` is one
+page per precinct: the ward outlined, the precinct shaded, an `A` half in its
+own colour with its own column in the ballot table where its districts differ. The
+nine statewide questions are linked to the Secretary of the Commonwealth's
+online Information for Voters (`VOTER_INFORMATION`) rather than quoted -- it has
+the full text and the arguments, which the warrant does not -- and only the
+city's own Question 10 (`local: true`), which no state publication covers, is
+quoted from the warrant. `electionEvent` is the "add to calendar" event: the
+polls' hours, and on a precinct page that precinct's building as the location,
+left off where its halves vote in two.
+**The warrant names only the Third Essex House district**, while MassGIS puts
+ten precincts and halves in the Fifteenth Essex; `ballotFor` lists that race
+marked "not on the warrant" rather than dropping it, and `election.spec.ts`
+pins the list. 3-2A is a MassGIS sub-precinct with no warrant row, and its page
+says so rather than guessing a room.
+
+**`PrecinctMap.svelte` is an SVG drawn at build time over OpenStreetMap's raster
+tiles**, not a map library: each precinct is an SVG `<a>`, a link before
+anything hydrates, and `$lib/map.ts` does the Web Mercator arithmetic that lays
+shapes onto the tile grid. The reader's browser fetches the tiles, as it already
+does for `AddressMap`'s embed. Do not name an SVG class after a Tailwind utility
+(`outline` drew a rectangle round every ward).
 
 **`/` is the landing page** (`src/routes/+page.svelte`): the site's name, a
 slogan, and a card for each half — the meeting calendar and the current budget

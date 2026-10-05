@@ -4,6 +4,7 @@
   import Note from "$lib/Note.svelte"
   import AddToCalendar from "$lib/AddToCalendar.svelte"
   import { Router } from "$lib/router"
+  import { entryId, projectsOf } from "$lib/projects"
   import {
     easternDate,
     formatLongDate,
@@ -59,6 +60,11 @@
   // repeating them here would bury the one item the reader came for.
   const item = $derived(page.data.item)
   const heading = $derived(item?.title ?? meeting.board)
+
+  // The projects this item is on, each linked back to with this item's own
+  // entry as the fragment, so the project page opens on it and rings it. Only
+  // an item page: a project's timeline is made of agenda items, not sittings.
+  const projects = $derived(data.itemSlug ? projectsOf(meeting.id, data.itemSlug) : [])
 
   // A write-up is prose and keeps a reading column. One can ask for the
   // window's width instead by returning `wide` from its own load, the same
@@ -154,6 +160,21 @@
         <AddToCalendar {meeting} {details} />
       {/if}
     </div>
+
+    <!-- What this item is part of, beside the date: the step this item is
+         in a longer undertaking, and a way to see the rest of it. -->
+    {#each projects as { project, entry } (project.slug)}
+      <p class="mt-3 text-sm">
+        <a
+          class="inline-flex items-center gap-2 rounded-md border border-sky-200 bg-sky-50 px-3 py-1.5 text-sky-900 hover:border-sky-400"
+          href={Router.project(project.slug, entryId(entry))}
+        >
+          <span class="text-xs tracking-wide text-sky-700 uppercase">Project</span>
+          {project.title}
+          <span aria-hidden="true">&rarr;</span>
+        </a>
+      </p>
+    {/each}
 
     <!-- How to attend, rather than how to read the document -- so it sits
 	     above the source links, not among them. -->

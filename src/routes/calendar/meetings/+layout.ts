@@ -31,6 +31,12 @@ export const load: LayoutLoad = ({ url, data }) => {
     /** True on a page for one agenda item, rather than the meeting itself. */
     isItem: segments.length > at + 2,
     /**
+     * The item's directory name, on an item page: with the meeting's id, what
+     * `$lib/projects` names an agenda item by, so the page can find the
+     * projects it is part of.
+     */
+    itemSlug: segments[at + 2] as string | undefined,
+    /**
      * The build's date, straight through from `+layout.server.ts` -- a
      * universal load's own return is what reaches the component, so anything
      * the server load offers has to be forwarded here to arrive. It is there

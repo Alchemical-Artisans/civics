@@ -70,6 +70,26 @@ export class Router {
   }
 
   /**
+   * A project: one undertaking of the city's followed across every sitting
+   * that touched it, rather than one sitting's worth of agenda. `slug` is the
+   * project's directory name under `projects/`.
+   *
+   * `entry` is the id of one entry on the project's timeline -- what an agenda
+   * item links back with, so the project opens on that item and highlights
+   * it. A fragment rather than a query string, because the page is
+   * prerendered and a fragment is the one part of a URL a static page can
+   * answer to without a script: `:target` does the highlighting.
+   */
+  static project(slug: string, entry?: string): string {
+    return path(`/projects/${slug}`) + (entry ? `#${entry}` : "")
+  }
+
+  /** One precinct of an election project -- `id` is MassGIS's `"1-2"`. */
+  static precinct(slug: string, id: string): string {
+    return path(`/projects/${slug}/precincts/${id}`)
+  }
+
+  /**
    * A few pages lifted out of a document's PDF and published beside it, so an
    * item that rests on a letter or a plan can link to just that letter rather
    * than to a 200-page packet the reader then has to search.
@@ -269,6 +289,19 @@ export class Router {
   /** The same point on OpenStreetMap's own site, full-size, for `osmEmbed`'s "larger map" link. */
   static osmView(lat: number, lon: number): string {
     return `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lon}#map=18/${lat}/${lon}`
+  }
+
+  /**
+   * One raster tile of OpenStreetMap's standard map, for the street map under
+   * `PrecinctMap`'s shapes. Fetched by the reader's browser, never the build.
+   */
+  static osmTile(z: number, x: number, y: number): string {
+    return `https://tile.openstreetmap.org/${z}/${x}/${y}.png`
+  }
+
+  /** OpenStreetMap's copyright page, which its tiles' licence requires a map to link. */
+  static osmCopyright(): string {
+    return "https://www.openstreetmap.org/copyright"
   }
 }
 
