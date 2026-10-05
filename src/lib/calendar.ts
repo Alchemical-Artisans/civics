@@ -59,11 +59,66 @@ export interface MeetingDocument {
  * the meeting being called. It is also the only source most of the city's
  * boards have: the document listing covers five of them and this covers around
  * fifty.
+ *
+ * An `announcement` is none of the city's pages but another sitting's own
+ * document: a Council agenda carrying "Vice President Michitson wishes to
+ * announce a Planning and Development Committee meeting on Monday, October 19",
+ * often a week or more before the committee's notice is posted. It is read by
+ * whoever transcribes that agenda, who links the words to the sitting and, where
+ * the calendar does not have it yet, writes a placeholder page for it declaring
+ * the sitting in an `announced.ts` -- see `Announcement`. It ranks after a
+ * notice and ahead of a printed calendar: it is about this sitting rather than a
+ * pattern, but it is a line on someone else's agenda rather than the body's own
+ * posting. `meeting` and `item` are the internal page it was read off.
  */
 export type SittingSource =
+  CitySource | { kind: "announcement"; meeting: string; item?: string; title: string }
+
+/** The three a city page states, each with the `url` of that page. */
+export type CitySource =
   | { kind: "notice"; url: string; title: string }
   | { kind: "calendar"; url: string; heading: string }
   | { kind: "rule"; url: string; intro: string; exceptions: string[] }
+
+/**
+ * A sitting one meeting's documents announce, declared by hand in the
+ * placeholder page written for it: `<meeting id>/announced.ts`, exporting
+ * `announced`. The directory is named `meetingId(board, date)`, and
+ * `$lib/meetings` refuses to build when it is not.
+ *
+ * Unlike a notice, it is not dropped once its day has passed: the placeholder
+ * page is a static route, and a static route whose sitting the calendar no
+ * longer had would fail the build. By then the sitting usually has documents of
+ * its own, which win.
+ */
+export interface Announcement {
+  board: string
+  /** `YYYY-MM-DD`, as the announcing document states it. */
+  date: string
+  /** Only where the announcing document states one, as printed. */
+  time?: string
+  /** The meeting whose document carries the announcement. */
+  meeting: string
+  /** The item page under that meeting, where the announcement has one. */
+  item?: string
+  /** What to call the announcement where the sitting cites it. */
+  title: string
+}
+
+/** An `Announcement` as a sitting, for `withScheduled`. */
+export function announcedSitting(a: Announcement): ScheduledSitting {
+  return {
+    board: a.board,
+    date: a.date,
+    ...(a.time ? { time: a.time } : {}),
+    source: {
+      kind: "announcement",
+      meeting: a.meeting,
+      ...(a.item ? { item: a.item } : {}),
+      title: a.title,
+    },
+  }
+}
 
 /**
  * One sitting the city has said will be held, ahead of any document about it.
@@ -76,7 +131,7 @@ export type SittingSource =
  * Scraped by `scripts/update-schedule.mjs` and turned into dates by
  * `$lib/schedule`, which projects forward only and explains at length why.
  */
-export interface ScheduledSitting {
+export interface ScheduledSitting<S extends SittingSource = SittingSource> {
   board: string
   /** `YYYY-MM-DD`, a day the city's notice, or the board's calendar or rule, names. */
   date: string
@@ -94,8 +149,8 @@ export interface ScheduledSitting {
    * them.
    */
   related?: { label: string; date: string }[]
-  /** What the city published that puts this sitting on the calendar. */
-  source: SittingSource
+  /** What was published that puts this sitting on the calendar. */
+  source: S
 }
 
 /**

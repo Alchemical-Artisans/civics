@@ -8,13 +8,16 @@
  */
 import raw from "./data/meetings.json"
 import {
+  announcedSitting,
   boardsOf,
   easternDate,
   groupIntoMeetings,
+  meetingId,
   monthKey,
   monthsCovered,
   withScheduled,
   withoutSecondCopies,
+  type Announcement,
   type Meeting,
   type MeetingDocument,
   type MeetingKind,
@@ -82,6 +85,30 @@ const written = new Set(
     .map((path) => path.split("/").at(-2)!)
     .filter((name) => !name.startsWith("[")),
 )
+
+/**
+ * The sittings another meeting's documents announce, each declared in the
+ * placeholder page somebody wrote for it -- `<meeting id>/announced.ts`. See
+ * `Announcement` in `$lib/calendar`.
+ *
+ * Eager, unlike `written`, because here the module's contents are the point.
+ * The directory has to be the id the sitting resolves to: the layout looks the
+ * sitting up by the URL segment, so a mismatch would put one meeting on the
+ * calendar and 404 the page written for it.
+ */
+export const announced: Announcement[] = Object.entries(
+  import.meta.glob<Announcement>("../routes/calendar/meetings/*/announced.ts", {
+    eager: true,
+    import: "announced",
+  }),
+).map(([path, announcement]) => {
+  const directory = path.split("/").at(-2)!
+  const id = meetingId(announcement.board, announcement.date)
+  if (directory !== id) {
+    throw new Error(`${path} announces ${id}, so its directory must be named ${id}`)
+  }
+  return announcement
+})
 
 /** One page or file the calendar is built out of. */
 export interface Source {
@@ -280,10 +307,21 @@ export function calendar(): Calendar {
   // of them account for. Order matters: an expected date the city has since
   // published an agenda for is an ordinary meeting, and `withScheduled` only
   // fills the gaps left over.
+  //
+  // `withScheduled` keeps the first of two sittings naming one day, so an
+  // announcement goes after the city's notices and ahead of the printed
+  // calendars and the rule: a line on another body's agenda about this very
+  // sitting is better evidence than a pattern, and worse than the body's own
+  // posting.
   const isWritten = (id: string) => written.has(id)
+  const expected = expectedSittings(BUILT_ON)
   const meetings = withScheduled(
     groupIntoMeetings(documents, isWritten),
-    expectedSittings(BUILT_ON),
+    [
+      ...expected.filter((s) => s.source.kind === "notice"),
+      ...announced.map(announcedSitting),
+      ...expected.filter((s) => s.source.kind !== "notice"),
+    ],
     isWritten,
   )
 

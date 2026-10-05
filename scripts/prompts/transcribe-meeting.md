@@ -383,6 +383,57 @@ rather than guessing at what it points to. See
 whose "Doc. 41-a" links to the City Council item that referred the matter to
 it.
 
+### A sitting the document announces
+
+An item that announces another body's sitting -- "Vice President Michitson
+wishes to announce a Planning and Development Committee meeting on Monday,
+October 19, 2026", a committee report naming the day it next meets, a hearing
+continued to a stated date -- names a sitting with a page of its own. **Link
+the printed words to it** with `Router.meeting(id)`, where `id` is
+`meetingId(board, date)` from `$lib/calendar`: the board slugged, then the
+date. Use the board's name as the calendar already spells it (`grep -o
+'"board": *"[^"]*"' src/lib/data/meetings.json | sort -u`, and the notices'
+boards in `src/lib/data/schedule.json`), not the document's wording, or the id
+will name a meeting that does not exist.
+
+Then check the calendar has that sitting -- a directory under
+`src/routes/calendar/meetings/`, a record in `meetings.json`, or a notice in
+`schedule.json` for that board and date. **If it has none, write a placeholder
+page for it**, `src/routes/calendar/meetings/<id>/`, with:
+
+- `announced.ts`, which is what puts the sitting on the calendar:
+
+  ```ts
+  import type { Announcement } from "$lib/calendar"
+
+  export const announced: Announcement = {
+    board: "Planning and Development Committee",
+    date: "2026-10-19",
+    time: "6:00 PM", // only where the announcing document states one
+    meeting: "<the meeting you are transcribing>",
+    item: "<the item page carrying the announcement>", // omit if it has none
+    title: "Announced at the City Council meeting of October 6, 2026",
+  }
+  ```
+
+  The directory must be named the id the board and date resolve to; the build
+  fails otherwise.
+
+- `+page.svelte` holding whatever the announcing document says the sitting
+  is about -- the topics a chairperson's letter lists, transcribed verbatim
+  under the same rules as any other page -- or, where it says nothing, a single
+  `<p>` stating that no agenda has been published yet. Nothing of your own
+  beyond that line.
+
+- `+page.ts` returning `{ details: … }` (§3) where the announcement states the
+  hour, room or remote link.
+
+Write the placeholder even where the calendar already has the sitting from a
+notice alone: a notice drops off the calendar once its day passes, and a
+written page whose sitting is gone fails the build. An `announced.ts` keeps it.
+`planning-and-development-committee-2026-10-19/` is the worked example,
+announced from `city-council-2026-10-06/planning-development-committee-meeting/`.
+
 ## 7. Excerpts, where there is a packet
 
 An item resting on a letter or a plan can link to just those pages rather than a

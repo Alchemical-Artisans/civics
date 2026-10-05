@@ -371,6 +371,17 @@ agenda would be, and the hour it states lets a reader add the sitting to their
 own calendar. See
 [docs/calendar-page.md](docs/calendar-page.md#sittings-the-city-has-said-it-will-hold).
 
+**A sitting another meeting announces can be written onto the calendar by
+hand.** A Council agenda often announces a committee's sitting a week or more
+before the committee's notice is posted. The transcriber links the words to
+that sitting and, where the calendar lacks it, writes a placeholder page whose
+`announced.ts` exports an `Announcement` (`calendar.ts`); `meetings.ts` globs
+those and hands them to `withScheduled` after the notices and ahead of the
+printed calendars and the rule, as a fourth `SittingSource`, `announcement`.
+Unlike a notice it is not dropped once its day passes, since the placeholder is
+a static route and the layout 404s a route whose sitting is gone. The directory
+must be the id the board and date resolve to, or the build fails.
+
 **The calendar opens on the month we are in, and every "today" is a date in
 Haverhill.** `easternDate()` in `calendar.ts` is the only way one is computed:
 `new Date().toISOString()` names tomorrow from eight in the evening here, which

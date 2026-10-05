@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest"
-import { calendar } from "./meetings"
+import { announced, calendar } from "./meetings"
+import { meetingId } from "./calendar"
 import reviews from "./data/reviews.json"
 
 const documents = calendar().meetings.flatMap((m) => m.documents)
@@ -125,5 +126,24 @@ describe("recordings", () => {
     expect(hcm).toHaveLength(1)
     expect(hcm[0].name).toBe("Video Recordings")
     expect(docs.indexOf(hcm[0])).toBe(docs.length - 1)
+  })
+})
+
+describe("announced", () => {
+  /**
+   * A placeholder page written for an announced sitting is a static route, and
+   * the layout 404s a route whose sitting the calendar does not have -- so every
+   * announcement has to come out of `calendar()` as a meeting, whatever else
+   * (a notice, an agenda) has since turned up for the same day.
+   */
+  it("puts every announced sitting on the calendar", () => {
+    expect(announced.length).toBeGreaterThan(0)
+    const ids = new Set(calendar().meetings.map((m) => m.id))
+    for (const a of announced) expect(ids).toContain(meetingId(a.board, a.date))
+  })
+
+  it("names a meeting that is on the calendar as its source", () => {
+    const ids = new Set(calendar().meetings.map((m) => m.id))
+    for (const a of announced) expect(ids).toContain(a.meeting)
   })
 })

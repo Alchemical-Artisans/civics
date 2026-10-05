@@ -52,7 +52,7 @@
 // but the e2e suite reaches this module through Playwright's plain Node
 // loader, which refuses a JSON import without it.
 import raw from "./data/schedule.json" with { type: "json" }
-import type { ScheduledSitting } from "./calendar"
+import type { CitySource, ScheduledSitting } from "./calendar"
 
 /** A board's rule, exactly as `update-schedule.mjs` scraped it. */
 export interface MeetingRule {
@@ -273,7 +273,7 @@ export function meetingCalendars(): MeetingCalendar[] {
  * left unrefreshed for weeks therefore keeps projecting from the day it ran;
  * every push rebuilds, so in practice the horizon moves with the deploy.
  */
-export function expectedSittings(today: string): ScheduledSitting[] {
+export function expectedSittings(today: string): ScheduledSitting<CitySource>[] {
   const fromNotices = meetingNotices()
     .filter((notice) => notice.date >= today)
     .map((notice) => ({

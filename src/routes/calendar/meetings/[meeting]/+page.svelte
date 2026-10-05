@@ -11,6 +11,7 @@
 -->
 <script lang="ts">
   import { formatLongDate } from "$lib/calendar"
+  import { Router } from "$lib/router"
 
   // From the layout's load, which is where every meeting page gets its sitting.
   let { data } = $props()
@@ -41,6 +42,19 @@
       <a href={source.url} target="_blank" rel="external noopener noreferrer">{source.title}</a>.
     </p>
     <p>An agenda is usually published a few days beforehand. Check again nearer the day.</p>
+  {:else if source.kind === "announcement"}
+    <!-- Not reached while the placeholder page an announcement is declared in
+         exists, since that static route serves the id instead; here so the
+         page still says something true if one ever falls through. -->
+    <p>
+      The city has published no agenda for this sitting yet. It is on the calendar because it was
+      announced in
+      <a
+        href={source.item
+          ? Router.meetingItem(source.meeting, source.item)
+          : Router.meeting(source.meeting)}>{source.title}</a
+      >.
+    </p>
   {:else if source.kind === "calendar"}
     <p>
       The city has published no agenda for this sitting yet. It is on the calendar because the
