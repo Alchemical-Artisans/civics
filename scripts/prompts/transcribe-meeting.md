@@ -319,8 +319,10 @@ prints it**, wrapping those words in the text in place with
 `target="_blank" rel="external noopener noreferrer"` (and an `sr-only` "opens
 in a new tab"). The words stay the city's, exactly as printed; only the link
 is added. Do not append a sentence of your own beside or under the item to
-carry the link. Use the organisation's own homepage, confirmed by search or
-fetch, never a guess at a domain; where the document does not name the
+carry the link. Where the organisation has a page for this very chapter, location or
+event (Wreaths Across America keeps one per cemetery, `wreathsacrossamerica.org/<id>`),
+link that rather than the national homepage; otherwise use the organisation's
+own homepage. Confirm it by search or fetch, never a guess at a domain; where the document does not name the
 organisation, or you cannot confirm a site, leave it out and say so in your
 report.
 

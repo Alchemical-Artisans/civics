@@ -24,7 +24,7 @@
 <p>
   Mayor Barrett and Councilor Sullivan wish to introduce Tammy Dobrosielski from the
   <em>Hilldale Cemetery Association</em> to speak about this year&rsquo;s &ldquo;<a
-    href="https://www.wreathsacrossamerica.org/"
+    href="https://wreathsacrossamerica.org/mahchm"
     target="_blank"
     rel="external noopener noreferrer"
     >Wreaths Across America<span class="sr-only">, opens in a new tab</span></a
