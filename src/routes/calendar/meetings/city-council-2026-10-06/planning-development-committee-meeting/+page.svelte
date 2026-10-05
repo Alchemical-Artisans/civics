@@ -3,11 +3,15 @@
 
   const MEETING = "city-council-2026-10-06"
   const ITEM = "planning-development-committee-meeting"
+  // The sitting this item announces, which has a page of its own.
+  const COMMITTEE = "planning-and-development-committee-2026-10-19"
 </script>
 
 <p>
-  Vice President Michitson wishes to announce a Planning and Development Committee meeting on
-  Monday, October 19, 2026, at 6:00PM in Room 202, City Council Chambers.
+  Vice President Michitson wishes to announce a
+  <a href={Router.meeting(COMMITTEE)}
+    >Planning and Development Committee meeting on Monday, October 19, 2026</a
+  >, at 6:00PM in Room 202, City Council Chambers.
 </p>
 
 <hr />

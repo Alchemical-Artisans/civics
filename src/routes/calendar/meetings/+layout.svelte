@@ -319,20 +319,34 @@
             >
               Expected
             </span>
-            <a
-              class="text-slate-600 underline hover:text-slate-900"
-              href={expected.source.url}
-              target="_blank"
-              rel="external noopener noreferrer"
-            >
-              {expected.source.kind === "notice"
-                ? expected.source.title
-                : expected.source.kind === "calendar"
-                  ? expected.source.heading
-                  : `The ${meeting.board}'s meeting rule`}<span class="sr-only">
-                , opens the city's page in a new tab</span
+            {#if expected.source.kind === "announcement"}
+              <!-- Read off a page of this site rather than the city's, so an
+                   ordinary link: the item where the announcement has one, else
+                   the meeting whose agenda carries it. -->
+              <a
+                class="text-slate-600 underline hover:text-slate-900"
+                href={expected.source.item
+                  ? Router.meetingItem(expected.source.meeting, expected.source.item)
+                  : Router.meeting(expected.source.meeting)}
               >
-            </a>
+                {expected.source.title}
+              </a>
+            {:else}
+              <a
+                class="text-slate-600 underline hover:text-slate-900"
+                href={expected.source.url}
+                target="_blank"
+                rel="external noopener noreferrer"
+              >
+                {expected.source.kind === "notice"
+                  ? expected.source.title
+                  : expected.source.kind === "calendar"
+                    ? expected.source.heading
+                    : `The ${meeting.board}'s meeting rule`}<span class="sr-only">
+                  , opens the city's page in a new tab</span
+                >
+              </a>
+            {/if}
           </li>
         {/if}
       </ul>
@@ -350,7 +364,10 @@
 
   <footer class="mt-8 border-t border-slate-200 pt-4 text-xs text-slate-500">
     <p>
-      {#if expected}
+      {#if expected?.source.kind === "announcement"}
+        Nothing has been published for this sitting. Its announcement in another meeting's
+        documents, linked above, is why it is on the calendar.
+      {:else if expected}
         Nothing has been published for this sitting. What the {meeting.board} itself published about the
         days it sits, linked above, is why it is on the calendar.
       {/if}
