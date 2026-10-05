@@ -18,10 +18,9 @@
 <ul>
   <li>
     <a href={Router.excerpt(MEETING, `${ITEM}/cover-sheet`)} target="_blank" rel="noopener">
-      Document # 32-Q, with the Council&rsquo;s vote of September 22, 2026<span class="sr-only">
-        , PDF, one page, opens in a new tab</span
-      >
-    </a>
+      Document # 32-Q<span class="sr-only">, PDF, one page, opens in a new tab</span>
+    </a>, with the Council&rsquo;s vote of
+    <a href={Router.meetingItem("city-council-2026-09-22", ITEM)}>September 22, 2026</a>
   </li>
   <li>
     <a href={Router.excerpt(MEETING, `${ITEM}/mayors-letter`)} target="_blank" rel="noopener">
