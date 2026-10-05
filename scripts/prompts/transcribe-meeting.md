@@ -314,14 +314,17 @@ Maps search link.
 When an item is a local instance of something national or otherwise run by an
 organisation with its own site -- Wreaths Across America, a Relay for Life, a
 Veterans Day observance, a charity drive, a state program or a federal grant
--- link that organisation's official site in a sentence of its own under the
-item, with `target="_blank" rel="external noopener noreferrer"`. Name it
-plainly ("Wreaths Across America is a national program; its own site is
-...") rather than in the city's voice, since the document does not say it.
-Use the organisation's own homepage, confirmed by search or fetch, never a
-guess at a domain; where you cannot confirm one, leave it out and say so in
-your report. This is the one place the page carries a sentence the document
-did not print, so keep it to the link and one clause.
+-- link the organisation's official site **from its name where the document
+prints it**, wrapping those words in the text in place with
+`target="_blank" rel="external noopener noreferrer"` (and an `sr-only` "opens
+in a new tab"). The words stay the city's, exactly as printed; only the link
+is added. Do not append a sentence of your own beside or under the item to
+carry the link. Where the organisation has a page for this very chapter, location or
+event (Wreaths Across America keeps one per cemetery, `wreathsacrossamerica.org/<id>`),
+link that rather than the national homepage; otherwise use the organisation's
+own homepage. Confirm it by search or fetch, never a guess at a domain; where the document does not name the
+organisation, or you cannot confirm a site, leave it out and say so in your
+report.
 
 ### An upcoming event the item announces
 
