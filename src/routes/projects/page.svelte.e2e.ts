@@ -30,3 +30,20 @@ test("a precinct with an A half shows both ballots and both buildings", async ({
   await expect(senate).toContainText("SECOND ESSEX AND MIDDLESEX DISTRICT")
   await expect(senate).toContainText("FIRST ESSEX DISTRICT")
 })
+
+test("the early-voting item links to the project too", async ({ page }) => {
+  await page.goto("/calendar/meetings/city-council-2026-10-06/early-voting-schedule")
+  await page.getByRole("link", { name: "Project 2026 State Election" }).click()
+  await expect(page).toHaveURL(`${PROJECT}#city-council-2026-10-06-early-voting-schedule`)
+})
+
+test("a precinct page links the statewide questions out and offers the day", async ({ page }) => {
+  await page.goto(`${PROJECT}/precincts/5-3`)
+  await expect(page.getByRole("link", { name: /Information for Voters/ })).toHaveAttribute(
+    "href",
+    /sec\.state\.ma\.us/,
+  )
+  await expect(page.getByRole("heading", { name: "Question 10" })).toBeVisible()
+  await expect(page.getByRole("heading", { name: "Question 1", exact: true })).toHaveCount(0)
+  await expect(page.getByRole("button", { name: /add to calendar/i })).toBeVisible()
+})

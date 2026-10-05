@@ -9,6 +9,7 @@
 -->
 <script lang="ts">
   import PrecinctMap from "$lib/PrecinctMap.svelte"
+  import AddToCalendar from "$lib/AddToCalendar.svelte"
   import { COLOURS } from "$lib/chart-colours"
   import { formatLongDate } from "$lib/calendar"
   import { boundsOf } from "$lib/map"
@@ -22,6 +23,7 @@
     PROJECT,
     WARDS,
     buildings,
+    electionEvent,
     precinctName,
   } from "./election"
 
@@ -63,9 +65,12 @@
   <header class="mb-6 border-b border-slate-200 pb-6">
     <p class="text-sm text-slate-500">Project</p>
     <h1 class="text-2xl font-bold tracking-tight text-slate-900">{PROJECT.title}</h1>
-    <p class="mt-2 text-sm text-slate-600">
-      {formatLongDate(ELECTION.date)}, {ELECTION.hours}
-    </p>
+    <!-- No polling place on this one: that depends on the precinct, and each
+         precinct's own page offers the event with its building in it. -->
+    <div class="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
+      <p class="text-sm text-slate-600">{formatLongDate(ELECTION.date)}, {ELECTION.hours}</p>
+      <AddToCalendar event={electionEvent()} filename={PROJECT.slug} />
+    </div>
   </header>
 
   <div class="grid gap-8 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">

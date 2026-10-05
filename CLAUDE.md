@@ -504,7 +504,14 @@ services, **not** `Massachusetts_House_Districts` and siblings, which are the
 pre-2022 districts -- and stops if any precinct is less than 98% inside one
 district. Wards are the union of their precincts. `precincts/[precinct]` is one
 page per precinct: the ward outlined, the precinct shaded, an `A` half in its
-own colour with its own column in the ballot table where its districts differ.
+own colour with its own column in the ballot table where its districts differ. The
+nine statewide questions are linked to the Secretary of the Commonwealth's
+online Information for Voters (`VOTER_INFORMATION`) rather than quoted -- it has
+the full text and the arguments, which the warrant does not -- and only the
+city's own Question 10 (`local: true`), which no state publication covers, is
+quoted from the warrant. `electionEvent` is the "add to calendar" event: the
+polls' hours, and on a precinct page that precinct's building as the location,
+left off where its halves vote in two.
 **The warrant names only the Third Essex House district**, while MassGIS puts
 ten precincts and halves in the Fifteenth Essex; `ballotFor` lists that race
 marked "not on the warrant" rather than dropping it, and `election.spec.ts`

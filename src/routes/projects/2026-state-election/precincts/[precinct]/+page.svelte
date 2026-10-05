@@ -10,6 +10,7 @@
 -->
 <script lang="ts">
   import PrecinctMap from "$lib/PrecinctMap.svelte"
+  import AddToCalendar from "$lib/AddToCalendar.svelte"
   import { formatLongDate } from "$lib/calendar"
   import { boundsOf } from "$lib/map"
   import { Router } from "$lib/router"
@@ -19,8 +20,10 @@
     PRECINCT_SOURCE,
     PROJECT,
     QUESTIONS,
+    VOTER_INFORMATION,
     WARDS,
     ballotFor,
+    electionEvent,
     buildings,
     pollingPlaceFor,
     precinctName,
@@ -93,6 +96,9 @@
   )
 
   const title = $derived(precinctName(precinct.id))
+
+  const statewide = QUESTIONS.filter((q) => !q.local)
+  const local = QUESTIONS.filter((q) => q.local)
 </script>
 
 <svelte:head>
@@ -115,9 +121,10 @@
 
   <header class="mb-6 border-b border-slate-200 pb-6">
     <h1 class="text-2xl font-bold tracking-tight text-slate-900">{title}</h1>
-    <p class="mt-2 text-sm text-slate-600">
-      {formatLongDate(ELECTION.date)}, {ELECTION.hours}
-    </p>
+    <div class="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
+      <p class="text-sm text-slate-600">{formatLongDate(ELECTION.date)}, {ELECTION.hours}</p>
+      <AddToCalendar event={electionEvent(precinct.id)} filename="{PROJECT.slug}-{precinct.id}" />
+    </div>
 
     <!-- Where to go, first: it is what most readers came for. -->
     <dl class="mt-4 space-y-2 text-sm">
@@ -210,43 +217,39 @@
     {/if}
 
     <h3 class="mt-8 font-semibold text-slate-900">Questions</h3>
+    <!-- The statewide questions are linked out, not quoted: the state's own
+         booklet has the summary, the full text of each law, what a yes and a
+         no do and the arguments on both sides, which the warrant does not.
+         The city's own question is in no state publication, so it is the one
+         quoted here, from the warrant. -->
     <p class="mt-1 max-w-prose text-sm text-slate-600">
-      The same ten on every ballot in the city. Each opens to the summary the warrant prints.
+      Every ballot in the city carries the same {statewide.length} statewide questions, numbered 1 to
+      {statewide.length}. The Secretary of the Commonwealth's
+      <a
+        class="underline hover:text-slate-900"
+        href={VOTER_INFORMATION}
+        target="_blank"
+        rel="external noopener noreferrer"
+        >Information for Voters<span class="sr-only">, opens in a new tab</span></a
+      > describes each: a summary, the full text of the law, what a yes and a no vote would do, and the
+      arguments for and against.
     </p>
-    <ol class="mt-3 space-y-2">
-      {#each QUESTIONS as q (q.number)}
-        <li>
-          <details class="group rounded-lg border border-slate-200 text-sm">
-            <summary
-              class="flex cursor-pointer gap-2 rounded-lg px-3 py-2 select-none [&::-webkit-details-marker]:hidden"
-            >
-              <span
-                aria-hidden="true"
-                class="text-slate-400 transition-transform duration-150 group-open:rotate-90"
-                >&#9656;</span
-              >
-              <span>
-                <span class="font-medium text-slate-900">Question {q.number}</span>{#if q.kind}<span
-                    class="text-slate-500">: {q.kind}</span
-                  >{/if}
-                <span class="mt-0.5 block text-slate-700">
-                  {#if q.yes}<em><strong>A YES VOTE</strong></em> {q.yes}{:else}{q.question}{/if}
-                </span>
-              </span>
-            </summary>
-            <div class="prose prose-sm max-w-none border-t border-slate-100 px-3 pt-2 prose-slate">
-              {#if q.yes}<p>{q.question}</p>{/if}
-              <h4>SUMMARY</h4>
-              {#each q.summary as paragraph (paragraph)}
-                <p>{paragraph}</p>
-              {/each}
-              {#if q.yes}<p><em><strong>A YES VOTE</strong></em> {q.yes}</p>{/if}
-              {#if q.no}<p><em><strong>A NO VOTE</strong></em> {q.no}</p>{/if}
-            </div>
-          </details>
-        </li>
-      {/each}
-    </ol>
+    {#each local as q (q.number)}
+      <div class="mt-4 max-w-prose text-sm">
+        <h4 class="font-medium text-slate-900">Question {q.number}</h4>
+        <p class="mt-1 text-slate-600">
+          Haverhill's own question, which the state's booklet does not cover. As the warrant prints
+          it:
+        </p>
+        <div class="prose prose-sm mt-2 max-w-none prose-slate">
+          <p>{q.question}</p>
+          <h5>SUMMARY</h5>
+          {#each q.summary as paragraph (paragraph)}
+            <p>{paragraph}</p>
+          {/each}
+        </div>
+      </div>
+    {/each}
 
     <p class="mt-6 text-sm text-slate-600">
       All of it is the

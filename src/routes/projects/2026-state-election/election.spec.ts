@@ -7,6 +7,7 @@ import {
   QUESTIONS,
   WARDS,
   ballotFor,
+  electionEvent,
   pollingPlaceFor,
   warrantDistrict,
 } from "./election"
@@ -98,5 +99,37 @@ describe("ballotFor", () => {
 describe("QUESTIONS", () => {
   it("numbers the ten questions in order", () => {
     expect(QUESTIONS.map((q) => q.number)).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+  })
+})
+
+describe("electionEvent", () => {
+  it("runs from the polls' opening to their close", () => {
+    const event = electionEvent()
+    expect([event.start, event.end, event.allDay]).toEqual([
+      "20261103T070000",
+      "20261103T200000",
+      false,
+    ])
+    expect(event.location).toBeUndefined()
+  })
+
+  it("puts a precinct's polling place in its event", () => {
+    // 5-3 and its A half vote in one building, so it is still one location.
+    expect(electionEvent("5-3").location).toBe(
+      "West Congregational Church, 767 Broadway, Haverhill, MA",
+    )
+  })
+
+  it("leaves the location off where the halves vote apart, and names both", () => {
+    const event = electionEvent("7-2")
+    expect(event.location).toBeUndefined()
+    expect(event.description).toContain("Hunking Middle School")
+    expect(event.description).toContain("Consentino Middle School")
+  })
+})
+
+describe("the local question", () => {
+  it("is Question 10 and no other", () => {
+    expect(QUESTIONS.filter((q) => q.local).map((q) => q.number)).toEqual([10])
   })
 })

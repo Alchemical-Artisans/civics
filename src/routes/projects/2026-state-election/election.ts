@@ -16,12 +16,26 @@
  */
 import precinctData from "$lib/data/precincts.json"
 import { PROJECTS, type Project } from "$lib/projects"
+import type { CalendarEvent } from "$lib/ics"
+import { Router } from "$lib/router"
 
 /** The project this is, from the registry the meeting pages link back through. */
 export const PROJECT = PROJECTS.find((p) => p.slug === "2026-state-election") as Project
 
 /** The day and the hours, as the warrant prints the hours. */
 export const ELECTION = { date: "2026-11-03", hours: "7:00 A.M. to 8:00 P.M." } as const
+
+/**
+ * The Secretary of the Commonwealth's "Information for Voters" for 2026: the
+ * booklet mailed to every household, online. It carries each statewide
+ * question's summary, the full text of the law, what a yes and a no vote do,
+ * and the arguments for and against -- more than the warrant, and the state's
+ * own account of it, so a precinct page links here rather than repeating the
+ * warrant's copy. It covers the nine statewide questions only; Haverhill's own
+ * Question 10 is in no state publication, and the warrant is its source.
+ */
+export const VOTER_INFORMATION =
+  "https://www.sec.state.ma.us/divisions/elections/research-and-statistics/information-for-voters-2026.htm"
 
 /** A precinct's shape and districts, from MassGIS by way of `npm run precincts:update`. */
 export interface Precinct {
@@ -287,6 +301,12 @@ export interface Question {
   number: number
   /** The heading after the number; Question 10, the city's own, has none. */
   kind?: string
+  /**
+   * Haverhill's own question, put on the ballot by local petition, rather
+   * than one of the Commonwealth's. The state's voter information covers only
+   * its own, so a local question is the one a precinct page still quotes.
+   */
+  local?: true
   question: string
   summary: string[]
   yes?: string
@@ -426,6 +446,7 @@ export const QUESTIONS: Question[] = [
   },
   {
     number: 10,
+    local: true,
     question:
       "Shall the City of Haverhill allow the sale of marijuana and marijuana products, as those terms are defined in section 1 of chapter 94G of the General Laws, for consumption on the premises where sold, a summary of which appears below?",
     summary: [
@@ -537,6 +558,44 @@ export function buildings(places: PollingPlace[] = POLLING_PLACES): PollingPlace
   for (const place of places)
     groups.set(place.address, [...(groups.get(place.address) ?? []), place])
   return [...groups.values()]
+}
+
+/**
+ * Election Day as a calendar event: the polls' hours from the warrant, and,
+ * for one precinct, the building it votes in as the location. A precinct
+ * whose halves vote in two buildings gets no location -- which one is the
+ * reader's depends on which side of the line they live, which the event
+ * cannot know -- and its description names both.
+ */
+export function electionEvent(precinct?: string): CalendarEvent {
+  const page = precinct
+    ? Router.absolute(`/projects/${PROJECT.slug}/precincts/${precinct}`)
+    : Router.absolute(`/projects/${PROJECT.slug}`)
+  const parent = PRECINCTS.find((p) => p.id === precinct)
+  const places = parent
+    ? buildings(
+        [parent.id, ...parent.subprecincts.map((s) => s.id)].flatMap((id) => {
+          const place = pollingPlaceFor(id)
+          return place ? [place] : []
+        }),
+      ).map(([place]) => place)
+    : []
+  const day = ELECTION.date.replace(/-/g, "")
+  return {
+    uid: `${PROJECT.slug}${precinct ? `-${precinct}` : ""}@haverhill.alchemicalartisans.com`,
+    title: `${PROJECT.title}${precinct ? ` (${precinctName(precinct)})` : ""}`,
+    start: `${day}T070000`,
+    end: `${day}T200000`,
+    allDay: false,
+    location:
+      places.length === 1 ? `${places[0].name}, ${places[0].address}, Haverhill, MA` : undefined,
+    description: [
+      `Polls are open ${ELECTION.hours}`,
+      ...places.map((p) => `Polling place: ${p.name}, ${p.address}`),
+      `Where to vote and what is on the ballot: ${page}`,
+    ].join("\n"),
+    url: page,
+  }
 }
 
 /** "Ward 1, Precinct 2", for a precinct id. */
