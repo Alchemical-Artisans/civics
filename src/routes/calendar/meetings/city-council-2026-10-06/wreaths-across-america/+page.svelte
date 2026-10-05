@@ -23,10 +23,12 @@
 
 <p>
   Mayor Barrett and Councilor Sullivan wish to introduce Tammy Dobrosielski from the
-  <em>Hilldale Cemetery Association</em> to speak about this year&rsquo;s &ldquo;Wreaths Across
-  America&rdquo; program at Hilldale Cemetery which will be held on Saturday, December 19<sup
-    >th</sup
-  >
+  <em>Hilldale Cemetery Association</em> to speak about this year&rsquo;s &ldquo;<a
+    href="https://www.wreathsacrossamerica.org/"
+    target="_blank"
+    rel="external noopener noreferrer"
+    >Wreaths Across America<span class="sr-only">, opens in a new tab</span></a
+  >&rdquo; program at Hilldale Cemetery which will be held on Saturday, December 19<sup>th</sup>
 </p>
 
 <div class="not-prose my-4">
@@ -34,13 +36,6 @@
 </div>
 
 <AddressMap address="Hilldale Cemetery, Haverhill, MA" lat={42.7893138} lon={-71.0955691} />
-
-<p>
-  Wreaths Across America is a national program; its own site is
-  <a href="https://www.wreathsacrossamerica.org/" target="_blank" rel="external noopener noreferrer"
-    >wreathsacrossamerica.org<span class="sr-only">, opens in a new tab</span></a
-  >.
-</p>
 
 <hr />
 
