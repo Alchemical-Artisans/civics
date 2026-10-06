@@ -34,9 +34,8 @@
   />
 </svelte:head>
 
-<!-- The map takes the height of the window, and stays put while the timeline
-     beside it is read. -->
-<div class="h-[70dvh] lg:sticky lg:top-4 lg:h-[calc(100dvh-2rem)]">
+<!-- The map takes whatever height the header and the tabs leave. -->
+<div class="h-[70dvh] lg:h-full">
   <PrecinctMap
     interactive
     title="Haverhill's seven wards and twenty-one precincts, with each polling place"
