@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest"
-import { after, before, diff, diffLines, fromComparison, type Redline } from "./redline"
+import { after, before, diff, diffLines, fromComparison, splitRows, type Redline } from "./redline"
 
 const text = (runs: { text: string }[]) => runs.map((r) => r.text).join("")
 const marked = (runs: { text: string; changed: boolean }[]) =>
@@ -123,5 +123,39 @@ describe("fromComparison", () => {
   it("strikes a rewritten provision whole and adds its replacement whole", () => {
     expect(redline[4].text).toEqual([{ struck: "Old wording here." }])
     expect(redline[5].text).toEqual([{ added: "Something else." }])
+  })
+})
+
+describe("splitRows", () => {
+  const rows = splitRows(
+    diffLines([
+      { text: ["Kept."] },
+      { text: ["A fine of $", { added: "2" }, "5", { struck: "0" }, "."] },
+      { kind: "term", text: [{ struck: "SPRINKLER" }] },
+      { text: [{ struck: "Old definition." }] },
+      { kind: "term", text: [{ added: "IRRIGATION" }] },
+      { text: [{ added: "New definition." }] },
+      { text: [{ added: "And one more." }] },
+    ]),
+  )
+  const sides = rows.map((r) => [
+    r.left?.runs.map((x) => x.text).join(""),
+    r.right?.runs.map((x) => x.text).join(""),
+  ])
+
+  it("puts an unchanged paragraph on both sides", () => {
+    expect(sides[0]).toEqual(["Kept.", "Kept."])
+  })
+
+  it("puts an amended paragraph's two versions on one row", () => {
+    expect(sides[1]).toEqual(["A fine of $50.", "A fine of $25."])
+  })
+
+  it("sets a run struck whole beside the run added after it, in order", () => {
+    expect(sides.slice(2)).toEqual([
+      ["SPRINKLER", "IRRIGATION"],
+      ["Old definition.", "New definition."],
+      [undefined, "And one more."],
+    ])
   })
 })

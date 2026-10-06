@@ -565,11 +565,17 @@ one depends on the packet:
   is the worked example.
 
 `$lib/OrdinanceDiff.svelte` draws the diff the way GitHub draws one: a file
-header naming the text, with the `+`/`−` paragraph counts and the
-strike-through link; then each paragraph a line, red and minus for today's,
-green and plus for the amended, the moved words highlighted darker; unchanged
-stretches folded behind `@@` rows that open in place. It sits under an `<h2>`
-naming the article, after the packet's links.
+header naming the text, with the `+`/`−` paragraph counts, a Split/Unified
+switch (split by default, unified on a phone, the reader's choice
+remembered), "Expand all", and the strike-through link; then each paragraph
+a line, red and minus for today's, green and plus for the amended, the moved
+words highlighted darker; unchanged stretches folded behind `@@` rows that
+open in place. It sits under an `<h2>` naming the article, ahead of the
+packet's links: the diff is what a reader came for, and the scans are its
+sources. The item's `+page.ts` returns `wide: true`, since the split view
+halves the width of each side. Where the strike-through is generated, the
+button says so -- "View strike-through (generated)" -- so nobody takes it for
+the city's own copy.
 
 Where the two versions have to be paired, the transcription has to carry the
 **pairing**: which provision of the old text answers which of the new. That

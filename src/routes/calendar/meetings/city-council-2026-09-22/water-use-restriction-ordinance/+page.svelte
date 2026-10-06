@@ -24,6 +24,25 @@
 
 <hr />
 
+<!-- The order and the article it would replace, transcribed out of the two
+     PDFs linked below and drawn as a diff of one against the other. The order
+     says only "in its entirety", and the packet leaves a reader to hold seven
+     scanned pages against five; which words actually move is the whole
+     question in front of the Council. The packet has no marked-up copy, so the
+     strike-through the diff links to is generated, from the same redline. See
+     `ordinances.ts` for how the two are paired and `$lib/redline` for how the
+     marks are written out of them. -->
+<h2>{HEADING.article}, {HEADING.title}</h2>
+<p class="text-sm text-slate-600">{HEADING.adopted}</p>
+
+<OrdinanceDiff
+  redline={REDLINE}
+  name="Chapter 250, {HEADING.article}, {HEADING.title}"
+  strikeThrough={{ href: Router.strikeThrough(MEETING, ITEM), external: false }}
+/>
+
+<hr />
+
 <ul>
   <li>
     <a href={Router.excerpt(MEETING, `${ITEM}/mayors-letter`)} target="_blank" rel="noopener">
@@ -58,22 +77,3 @@
     </a>
   </li>
 </ul>
-
-<hr />
-
-<!-- The order and the article it would replace, transcribed out of the two
-     PDFs linked above and drawn as a diff of one against the other. The order
-     says only "in its entirety", and the packet leaves a reader to hold seven
-     scanned pages against five; which words actually move is the whole
-     question in front of the Council. The packet has no marked-up copy, so the
-     strike-through the diff links to is generated, from the same redline. See
-     `ordinances.ts` for how the two are paired and `$lib/redline` for how the
-     marks are written out of them. -->
-<h2>{HEADING.article}, {HEADING.title}</h2>
-<p class="text-sm text-slate-600">{HEADING.adopted}</p>
-
-<OrdinanceDiff
-  redline={REDLINE}
-  name="Chapter 250, {HEADING.article}, {HEADING.title}"
-  strikeThrough={{ href: Router.strikeThrough(MEETING, ITEM), external: false }}
-/>

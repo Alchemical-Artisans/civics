@@ -32,6 +32,22 @@
 
 <hr />
 
+<!-- The order and the article it would replace, drawn as a diff of one
+     against the other. The order says only "in its entirety", and the packet
+     leaves a reader to hold seven scanned pages against five; which words
+     actually move is the whole question in front of the Council. This packet
+     has no marked-up copy either, so the strike-through is generated. -->
+<h2>{HEADING.article}, {HEADING.title}</h2>
+<p class="text-sm text-slate-600">{HEADING.adopted}</p>
+
+<OrdinanceDiff
+  redline={REDLINE}
+  name="Chapter 250, {HEADING.article}, {HEADING.title}"
+  strikeThrough={{ href: Router.strikeThrough(MEETING, ITEM), external: false }}
+/>
+
+<hr />
+
 <ul>
   <li>
     <a href={Router.excerpt(MEETING, `${ITEM}/cover-sheet`)} target="_blank" rel="noopener">
@@ -73,19 +89,3 @@
     </a>
   </li>
 </ul>
-
-<hr />
-
-<!-- The order and the article it would replace, drawn as a diff of one
-     against the other. The order says only "in its entirety", and the packet
-     leaves a reader to hold seven scanned pages against five; which words
-     actually move is the whole question in front of the Council. This packet
-     has no marked-up copy either, so the strike-through is generated. -->
-<h2>{HEADING.article}, {HEADING.title}</h2>
-<p class="text-sm text-slate-600">{HEADING.adopted}</p>
-
-<OrdinanceDiff
-  redline={REDLINE}
-  name="Chapter 250, {HEADING.article}, {HEADING.title}"
-  strikeThrough={{ href: Router.strikeThrough(MEETING, ITEM), external: false }}
-/>

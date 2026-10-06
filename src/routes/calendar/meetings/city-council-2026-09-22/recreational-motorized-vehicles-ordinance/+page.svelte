@@ -17,6 +17,24 @@
 
 <hr />
 
+<!-- The article as the ordinance would amend it, drawn as a diff. The packet
+     carries the city's own marked-up copy, so the strike-through the diff
+     links to is that PDF rather than one generated here, and the diff's marks
+     are a transcription of its marks rather than a word diff -- see
+     `ordinance.ts`. -->
+<h2>{HEADING.chapter}, {HEADING.article}, {HEADING.title}</h2>
+
+<OrdinanceDiff
+  redline={REDLINE}
+  name="{HEADING.chapter}, {HEADING.article}, {HEADING.title}"
+  strikeThrough={{
+    href: Router.excerpt(MEETING, `${ITEM}/ordinance-amendments-marked`),
+    external: true,
+  }}
+/>
+
+<hr />
+
 <ul>
   <li>
     <a href={Router.excerpt(MEETING, `${ITEM}/mayors-letter`)} target="_blank" rel="noopener">
@@ -61,21 +79,3 @@
     </a>
   </li>
 </ul>
-
-<hr />
-
-<!-- The article as the ordinance would amend it, drawn as a diff. The packet
-     carries the city's own marked-up copy, so the strike-through the diff
-     links to is that PDF rather than one generated here, and the diff's marks
-     are a transcription of its marks rather than a word diff -- see
-     `ordinance.ts`. -->
-<h2>{HEADING.chapter}, {HEADING.article}, {HEADING.title}</h2>
-
-<OrdinanceDiff
-  redline={REDLINE}
-  name="{HEADING.chapter}, {HEADING.article}, {HEADING.title}"
-  strikeThrough={{
-    href: Router.excerpt(MEETING, `${ITEM}/ordinance-amendments-marked`),
-    external: true,
-  }}
-/>

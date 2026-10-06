@@ -121,6 +121,8 @@ export type DiffLine = {
   kind: NonNullable<Block["kind"]>
   indent: number
   runs: Run[]
+  /** Which paragraph of the redline the line was drawn from. */
+  block: number
 }
 
 /**
@@ -146,7 +148,7 @@ export const diffLines = (redline: Redline): DiffLine[] => {
   const lines: DiffLine[] = []
   let old = 0
   let now = 0
-  for (const block of redline) {
+  redline.forEach((block, at) => {
     const kind = block.kind ?? "text"
     const indent = block.indent ?? 0
     const was = before(block)
@@ -158,9 +160,10 @@ export const diffLines = (redline: Redline): DiffLine[] => {
         new: ++now,
         kind,
         indent,
+        block: at,
         runs: side(block, "added"),
       })
-      continue
+      return
     }
     if (was)
       lines.push({
@@ -168,6 +171,7 @@ export const diffLines = (redline: Redline): DiffLine[] => {
         old: ++old,
         kind,
         indent,
+        block: at,
         runs: unlessWhole(side(block, "struck")),
       })
     if (is)
@@ -176,10 +180,56 @@ export const diffLines = (redline: Redline): DiffLine[] => {
         new: ++now,
         kind,
         indent,
+        block: at,
         runs: unlessWhole(side(block, "added")),
       })
-  }
+  })
   return lines
+}
+
+/** One row of a split diff: today's paragraph on the left, the amended on the right. */
+export type SplitRow = { left?: DiffLine; right?: DiffLine }
+
+/**
+ * Lines laid out side by side, as GitHub's split view lays them out.
+ *
+ * An unchanged paragraph is the same line on both sides, and an amended one
+ * puts its removed and added lines on one row. Where a stretch strikes some
+ * paragraphs whole and adds others whole -- a rewritten provision, a defined
+ * term renamed -- the removed run and the added run after it are set beside
+ * each other in order, the way GitHub pairs a run of deleted lines with the
+ * run added in their place; whichever run is longer finishes against a blank.
+ */
+export const splitRows = (lines: DiffLine[]): SplitRow[] => {
+  const rows: SplitRow[] = []
+  let removed: DiffLine[] = []
+  let added: DiffLine[] = []
+  const flush = () => {
+    for (let k = 0; k < Math.max(removed.length, added.length); k++)
+      rows.push({ left: removed[k], right: added[k] })
+    removed = []
+    added = []
+  }
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i]
+    const next = lines[i + 1]
+    if (line.type === "context") {
+      flush()
+      rows.push({ left: line, right: line })
+    } else if (line.type === "removed" && next?.type === "added" && next.block === line.block) {
+      flush()
+      rows.push({ left: line, right: next })
+      i++
+    } else if (line.type === "removed") {
+      // A removal after additions starts a new pairing rather than reaching
+      // back to set itself beside text that came before it.
+      if (added.length) flush()
+      removed.push(line)
+    } else added.push(line)
+  }
+  flush()
+  return rows
 }
 
 /**
