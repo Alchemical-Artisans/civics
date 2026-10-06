@@ -173,13 +173,7 @@
     </div>
 
     <section aria-labelledby="ballot">
-      <h2 id="ballot" class="text-lg font-semibold text-slate-900">On the ballot</h2>
-      {#if !sameBallot}
-        <p class="mt-1 max-w-prose text-sm text-slate-600">
-          {title} votes on two ballots: a district line runs through it, and the side a voter lives on
-          decides which of the columns below is theirs.
-        </p>
-      {/if}
+      <h2 id="ballot" class="text-lg font-semibold text-slate-900">Ballot</h2>
 
       <table class="mt-3 w-full text-left text-sm">
         <thead class="border-b border-slate-300 text-slate-500">
@@ -219,30 +213,22 @@
       {/if}
 
       <h3 class="mt-8 font-semibold text-slate-900">Questions</h3>
-      <!-- The statewide questions are linked out, not quoted: the state's own
-         booklet has the summary, the full text of each law, what a yes and a
-         no do and the arguments on both sides, which the warrant does not.
-         The city's own question is in no state publication, so it is the one
-         quoted here, from the warrant. -->
-      <p class="mt-1 max-w-prose text-sm text-slate-600">
-        Every ballot in the city carries the same {statewide.length} statewide questions, numbered 1 to
-        {statewide.length}. The Secretary of the Commonwealth's
+      <!-- Statewide questions are linked out, not quoted; the city's own is
+         in no state publication, so it is quoted from the warrant. -->
+      <p class="mt-1 text-sm">
         <a
           class="underline hover:text-slate-900"
           href={VOTER_INFORMATION}
           target="_blank"
           rel="external noopener noreferrer"
-          >Information for Voters<span class="sr-only">, opens in a new tab</span></a
-        > describes each: a summary, the full text of the law, what a yes and a no vote would do, and
-        the arguments for and against.
+          >Questions 1 to {statewide.length}: Information for Voters<span class="sr-only"
+            >, opens in a new tab</span
+          ></a
+        >
       </p>
       {#each local as q (q.number)}
         <div class="mt-4 max-w-prose text-sm">
           <h4 class="font-medium text-slate-900">Question {q.number}</h4>
-          <p class="mt-1 text-slate-600">
-            Haverhill's own question, which the state's booklet does not cover. As the warrant
-            prints it:
-          </p>
           <div class="prose prose-sm mt-2 max-w-none prose-slate">
             <p>{q.question}</p>
             <h5>SUMMARY</h5>
@@ -252,15 +238,6 @@
           </div>
         </div>
       {/each}
-
-      <p class="mt-6 text-sm text-slate-600">
-        All of it is the
-        <a
-          class="underline hover:text-slate-900"
-          href={Router.meetingItem("city-council-2026-10-06", "election-warrant")}
-          >warrant the City Clerk submitted to the Council</a
-        >, but for which district a precinct is in, which is MassGIS's.
-      </p>
     </section>
   </div>
 </div>
