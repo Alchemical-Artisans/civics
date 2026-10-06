@@ -302,16 +302,15 @@
               <a
                 class="underline hover:text-slate-900"
                 href={Router.projectPage(PROJECT.slug, `questions/${q.number}`)}
-                >Question {q.number}</a
+                >Question {q.number}: {q.title}</a
               >
-              <span class="text-slate-500">(Haverhill)</span>
             {:else}
               <a
                 class="underline hover:text-slate-900"
                 href={voterGuideUrl(q.number)}
                 target="_blank"
                 rel="external noopener noreferrer"
-                >Question {q.number}<span class="sr-only">, opens in a new tab</span></a
+                >Question {q.number}: {q.title}<span class="sr-only">, opens in a new tab</span></a
               >
             {/if}
           </li>

@@ -305,6 +305,12 @@ export const OFFICES: Office[] = [
 /** One ballot question, as the warrant prints it. */
 export interface Question {
   number: number
+  /**
+   * A few words naming what is asked, so a list of questions says more than
+   * numbers. Ours, not the warrant's -- the warrant prints only a number and
+   * the question -- and drawn from the warrant's own summary of each.
+   */
+  title: string
   /** The heading after the number; Question 10, the city's own, has none. */
   kind?: string
   /**
@@ -322,6 +328,7 @@ export interface Question {
 export const QUESTIONS: Question[] = [
   {
     number: 1,
+    title: "Public records for the Legislature and Governor",
     kind: "LAW PROPOSED BY INITIATIVE PETITION",
     question:
       "Do you approve of a law summarized below, on which no vote was taken by the Senate or the House of Representatives before May 6, 2026?",
@@ -333,6 +340,7 @@ export const QUESTIONS: Question[] = [
   },
   {
     number: 2,
+    title: "Public defenders' right to unionize",
     kind: "LAW PROPOSED BY INITIATIVE PETITION",
     question:
       "Do you approve of a law summarized below, on which no vote was taken by the Senate or the House of Representatives before May 6, 2026?",
@@ -344,6 +352,7 @@ export const QUESTIONS: Question[] = [
   },
   {
     number: 3,
+    title: "All-party primaries",
     kind: "LAW PROPOSED BY INITIATIVE PETITION",
     question:
       "Do you approve of a law summarized below, on which no vote was taken by the Senate or the House of Representatives before May 6, 2026?",
@@ -357,6 +366,7 @@ export const QUESTIONS: Question[] = [
   },
   {
     number: 4,
+    title: "Same-day voter registration",
     kind: "LAW PROPOSED BY INITIATIVE PETITION",
     question:
       "Do you approve of a law summarized below, on which no vote was taken by the Senate or the House of Representatives before May 6, 2026?",
@@ -373,6 +383,7 @@ export const QUESTIONS: Question[] = [
   },
   {
     number: 5,
+    title: "State revenue limit and rebates",
     kind: "LAW PROPOSED BY INITIATIVE PETITION",
     question:
       "Do you approve of a law summarized below, on which no vote was taken by the Senate or the House of Representatives before May 6, 2026?",
@@ -386,6 +397,7 @@ export const QUESTIONS: Question[] = [
   },
   {
     number: 6,
+    title: "Nature for All conservation fund",
     kind: "LAW PROPOSED BY INITIATIVE PETITION",
     question:
       "Do you approve of a law summarized below, on which no vote was taken by the Senate or the House of Representatives before May 6, 2026?",
@@ -402,6 +414,7 @@ export const QUESTIONS: Question[] = [
   },
   {
     number: 7,
+    title: "Single-family homes on small lots",
     kind: "LAW PROPOSED BY INITIATIVE PETITION",
     question:
       "Do you approve of a law summarized below, on which no vote was taken by the Senate or the House of Representatives before May 6, 2026?",
@@ -414,6 +427,7 @@ export const QUESTIONS: Question[] = [
   },
   {
     number: 8,
+    title: "Repeal of recreational marijuana sales",
     kind: "LAW PROPOSED BY INITIATIVE PETITION",
     question:
       "Do you approve of a law summarized below, on which no vote was taken by the Senate or the House of Representatives before May 6, 2026?",
@@ -429,6 +443,7 @@ export const QUESTIONS: Question[] = [
   },
   {
     number: 9,
+    title: "Firearms law (referendum)",
     kind: "REFERENDUM ON AN EXISTING LAW",
     question:
       "Do you approve of a law summarized below, which was approved by the House of Representatives on July 18, 2024 by a vote of 124 to 33, and approved by the Senate on July 18, 2024 by a vote of 35 to 5?",
@@ -452,6 +467,7 @@ export const QUESTIONS: Question[] = [
   },
   {
     number: 10,
+    title: "On-site marijuana consumption",
     local: true,
     question:
       "Shall the City of Haverhill allow the sale of marijuana and marijuana products, as those terms are defined in section 1 of chapter 94G of the General Laws, for consumption on the premises where sold, a summary of which appears below?",

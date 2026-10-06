@@ -13,7 +13,7 @@
 </script>
 
 <svelte:head>
-  <title>Question {q.number} - {PROJECT.title} - Haverhill</title>
+  <title>Question {q.number}: {q.title} - {PROJECT.title} - Haverhill</title>
   <meta
     name="description"
     content="Question {q.number} on Haverhill's ballot in the {PROJECT.title}, as the warrant prints it."
@@ -30,7 +30,7 @@
     </a>
   </nav>
 
-  <h1 class="text-2xl font-bold tracking-tight text-slate-900">Question {q.number}</h1>
+  <h1 class="text-2xl font-bold tracking-tight text-slate-900">Question {q.number}: {q.title}</h1>
   <p class="mt-1 text-sm text-slate-600">Haverhill's own question, on every ballot in the city.</p>
 
   <div class="prose mt-6 max-w-none prose-slate">

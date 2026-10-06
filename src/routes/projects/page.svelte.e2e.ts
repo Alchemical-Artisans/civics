@@ -40,15 +40,15 @@ test("the early-voting item links to the project too", async ({ page }) => {
 
 test("a precinct page links each question and offers the day", async ({ page }) => {
   await page.goto(`${PROJECT}/precincts/5-3`)
-  await expect(page.getByRole("link", { name: /^Question 1,/ })).toHaveAttribute(
+  await expect(page.getByRole("link", { name: /^Question 1: / })).toHaveAttribute(
     "href",
     /omniballot\.us\/.*\/info\/10$/,
   )
-  await expect(page.getByRole("link", { name: /^Question 9,/ })).toHaveAttribute(
+  await expect(page.getByRole("link", { name: /^Question 9: / })).toHaveAttribute(
     "href",
     /info\/18$/,
   )
-  await page.getByRole("link", { name: "Question 10" }).click()
+  await page.getByRole("link", { name: /^Question 10: / }).click()
   await expect(page).toHaveURL(`${PROJECT}/questions/10`)
   await expect(page.getByRole("heading", { name: "Question 10" })).toBeVisible()
   await page.goBack()
