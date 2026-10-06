@@ -550,11 +550,10 @@ district. Wards are the union of their precincts. The front page is the map, and
 `polling-places` beside it is the warrant's table, the timeline in the shared
 layout beside both. `precincts/[precinct]` is one
 page per precinct: the ward outlined, the precinct shaded, an `A` half in its
-own colour with its own column in the ballot table where its districts differ. The
-nine statewide questions are linked to the Secretary of the Commonwealth's
-online Information for Voters (`VOTER_INFORMATION`) rather than quoted -- it has
-the full text and the arguments, which the warrant does not -- and only the
-city's own Question 10 (`local: true`), which no state publication covers, is
+own colour whose ballot is a tab of its own where its districts differ. Each statewide question links to its own entry in the Secretary of the
+Commonwealth's online voter guide (`voterGuideUrl`; the guide numbers them from 10) rather than being quoted -- it has the full text and the arguments, which
+the warrant does not -- and only the city's own Question 10 (`local: true`),
+which no state publication covers, has a page here, `questions/[question]`,
 quoted from the warrant. `electionEvent` is the "add to calendar" event: the
 polls' hours, and on a precinct page that precinct's building as the location,
 left off where its halves vote in two.

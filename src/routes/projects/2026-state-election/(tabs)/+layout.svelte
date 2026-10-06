@@ -109,8 +109,14 @@
   const current = $derived((page.route.id ?? "").replace(/^.*\/\(tabs\)/, ""))
 </script>
 
-<div class="mx-auto max-w-6xl px-4 py-8">
-  <header class="mb-6 border-b border-slate-200 pb-6">
+<!-- On a wide window the page is one screen: the header, then the map (or the
+     table of polling places) and the timeline side by side, each of the two
+     columns scrolling for itself. 6rem is the site's bar above and its footer
+     below. -->
+<div
+  class="mx-auto flex max-w-6xl flex-col px-4 py-8 lg:h-[calc(100dvh-6rem)] lg:overflow-hidden lg:py-4"
+>
+  <header class="mb-6 border-b border-slate-200 pb-6 lg:mb-3 lg:pb-3">
     <p class="text-sm text-slate-500">Project</p>
     <h1 class="text-2xl font-bold tracking-tight text-slate-900">{PROJECT.title}</h1>
     <!-- No polling place on this one: that depends on the precinct, and each
@@ -121,8 +127,10 @@
     </div>
   </header>
 
-  <div class="grid gap-8 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
-    <div>
+  <div
+    class="grid gap-8 lg:min-h-0 lg:flex-1 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] lg:grid-rows-[minmax(0,1fr)]"
+  >
+    <div class="flex flex-col lg:min-h-0">
       <nav
         aria-label="Where to vote"
         class="mb-4 flex flex-wrap gap-x-4 gap-y-1 border-b border-slate-200 text-sm"
@@ -137,10 +145,12 @@
           >
         {/each}
       </nav>
-      {@render children()}
+      <div class="lg:relative lg:min-h-0 lg:flex-1 lg:overflow-y-auto">
+        {@render children()}
+      </div>
     </div>
 
-    <section aria-labelledby="timeline">
+    <section aria-labelledby="timeline" class="lg:relative lg:min-h-0 lg:overflow-y-auto lg:pr-2">
       <h2 id="timeline" class="text-lg font-semibold text-slate-900">Timeline</h2>
       {#snippet row(entry: (typeof entries)[number])}
         <!-- `target:` is the entry an agenda item linked back to. -->

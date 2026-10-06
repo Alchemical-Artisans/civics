@@ -19,6 +19,7 @@ import { PROJECTS, type Project } from "$lib/projects"
 import type { CalendarEvent } from "$lib/ics"
 import { Router } from "$lib/router"
 import { COLOURS } from "$lib/chart-colours"
+import { candidatesFor, type Candidate } from "./candidates"
 
 /** The project this is, from the registry the meeting pages link back through. */
 export const PROJECT = PROJECTS.find((p) => p.slug === "2026-state-election") as Project
@@ -27,16 +28,20 @@ export const PROJECT = PROJECTS.find((p) => p.slug === "2026-state-election") as
 export const ELECTION = { date: "2026-11-03", hours: "7:00 A.M. to 8:00 P.M." } as const
 
 /**
- * The Secretary of the Commonwealth's "Information for Voters" for 2026: the
- * booklet mailed to every household, online. It carries each statewide
- * question's summary, the full text of the law, what a yes and a no vote do,
- * and the arguments for and against -- more than the warrant, and the state's
- * own account of it, so a precinct page links here rather than repeating the
- * warrant's copy. It covers the nine statewide questions only; Haverhill's own
- * Question 10 is in no state publication, and the warrant is its source.
+ * The Secretary of the Commonwealth's voter guide for 2026, on Omniballot: the
+ * summary, the full text of the law, what a yes and a no vote do and the
+ * arguments for and against, which the warrant lacks. It is the state's own
+ * account, so a precinct page links each statewide question to its entry
+ * rather than repeating the warrant's copy.
+ *
+ * The guide's entries are numbered from 10 -- Question 1 is `info/10`, and
+ * the nine run in order from there. That offset is read off the guide's own
+ * links, and is ours to correct if the guide is renumbered; Haverhill's
+ * Question 10 is in no state publication and has no entry.
  */
-export const VOTER_INFORMATION =
-  "https://www.sec.state.ma.us/divisions/elections/research-and-statistics/information-for-voters-2026.htm"
+export function voterGuideUrl(question: number): string {
+  return `https://ma.omniballot.us/sites/25/vg/app/vig/voter-guide/info/${question + 9}`
+}
 
 /** A precinct's shape and districts, from MassGIS by way of `npm run precincts:update`. */
 export interface Precinct {
@@ -300,6 +305,12 @@ export const OFFICES: Office[] = [
 /** One ballot question, as the warrant prints it. */
 export interface Question {
   number: number
+  /**
+   * A few words naming what is asked, so a list of questions says more than
+   * numbers. Ours, not the warrant's -- the warrant prints only a number and
+   * the question -- and drawn from the warrant's own summary of each.
+   */
+  title: string
   /** The heading after the number; Question 10, the city's own, has none. */
   kind?: string
   /**
@@ -317,6 +328,7 @@ export interface Question {
 export const QUESTIONS: Question[] = [
   {
     number: 1,
+    title: "Public records for the Legislature and Governor",
     kind: "LAW PROPOSED BY INITIATIVE PETITION",
     question:
       "Do you approve of a law summarized below, on which no vote was taken by the Senate or the House of Representatives before May 6, 2026?",
@@ -328,6 +340,7 @@ export const QUESTIONS: Question[] = [
   },
   {
     number: 2,
+    title: "Public defenders' right to unionize",
     kind: "LAW PROPOSED BY INITIATIVE PETITION",
     question:
       "Do you approve of a law summarized below, on which no vote was taken by the Senate or the House of Representatives before May 6, 2026?",
@@ -339,6 +352,7 @@ export const QUESTIONS: Question[] = [
   },
   {
     number: 3,
+    title: "All-party primaries",
     kind: "LAW PROPOSED BY INITIATIVE PETITION",
     question:
       "Do you approve of a law summarized below, on which no vote was taken by the Senate or the House of Representatives before May 6, 2026?",
@@ -352,6 +366,7 @@ export const QUESTIONS: Question[] = [
   },
   {
     number: 4,
+    title: "Same-day voter registration",
     kind: "LAW PROPOSED BY INITIATIVE PETITION",
     question:
       "Do you approve of a law summarized below, on which no vote was taken by the Senate or the House of Representatives before May 6, 2026?",
@@ -368,6 +383,7 @@ export const QUESTIONS: Question[] = [
   },
   {
     number: 5,
+    title: "State revenue limit and rebates",
     kind: "LAW PROPOSED BY INITIATIVE PETITION",
     question:
       "Do you approve of a law summarized below, on which no vote was taken by the Senate or the House of Representatives before May 6, 2026?",
@@ -381,6 +397,7 @@ export const QUESTIONS: Question[] = [
   },
   {
     number: 6,
+    title: "Nature for All conservation fund",
     kind: "LAW PROPOSED BY INITIATIVE PETITION",
     question:
       "Do you approve of a law summarized below, on which no vote was taken by the Senate or the House of Representatives before May 6, 2026?",
@@ -397,6 +414,7 @@ export const QUESTIONS: Question[] = [
   },
   {
     number: 7,
+    title: "Single-family homes on small lots",
     kind: "LAW PROPOSED BY INITIATIVE PETITION",
     question:
       "Do you approve of a law summarized below, on which no vote was taken by the Senate or the House of Representatives before May 6, 2026?",
@@ -409,6 +427,7 @@ export const QUESTIONS: Question[] = [
   },
   {
     number: 8,
+    title: "Repeal of recreational marijuana sales",
     kind: "LAW PROPOSED BY INITIATIVE PETITION",
     question:
       "Do you approve of a law summarized below, on which no vote was taken by the Senate or the House of Representatives before May 6, 2026?",
@@ -424,6 +443,7 @@ export const QUESTIONS: Question[] = [
   },
   {
     number: 9,
+    title: "Firearms law (referendum)",
     kind: "REFERENDUM ON AN EXISTING LAW",
     question:
       "Do you approve of a law summarized below, which was approved by the House of Representatives on July 18, 2024 by a vote of 124 to 33, and approved by the Senate on July 18, 2024 by a vote of 35 to 5?",
@@ -447,6 +467,7 @@ export const QUESTIONS: Question[] = [
   },
   {
     number: 10,
+    title: "On-site marijuana consumption",
     local: true,
     question:
       "Shall the City of Haverhill allow the sale of marijuana and marijuana products, as those terms are defined in section 1 of chapter 94G of the General Laws, for consumption on the premises where sold, a summary of which appears below?",
@@ -503,6 +524,8 @@ export interface BallotLine {
    * See `ballotFor`.
    */
   onWarrant: boolean
+  /** Who is running, from the Secretary of the Commonwealth's list: `candidates.ts`. */
+  candidates: Candidate[]
 }
 
 /**
@@ -527,7 +550,12 @@ export function ballotFor(districts: Districts): BallotLine[] {
   const seen = new Set<string>()
   for (const row of OFFICES) {
     if (!row.kind) {
-      lines.push({ office: row.office, district: row.district, onWarrant: true })
+      lines.push({
+        office: row.office,
+        district: row.district,
+        onWarrant: true,
+        candidates: candidatesFor(row.office, row.district),
+      })
       continue
     }
     if (seen.has(row.office)) continue
@@ -536,8 +564,18 @@ export function ballotFor(districts: Districts): BallotLine[] {
     const match = OFFICES.find((r) => r.office === row.office && r.district === ours)
     lines.push(
       match
-        ? { office: row.office, district: match.district, onWarrant: true }
-        : { office: row.office, district: ours, onWarrant: false },
+        ? {
+            office: row.office,
+            district: match.district,
+            onWarrant: true,
+            candidates: candidatesFor(row.office, match.district),
+          }
+        : {
+            office: row.office,
+            district: ours,
+            onWarrant: false,
+            candidates: candidatesFor(row.office, ours),
+          },
     )
   }
   return lines

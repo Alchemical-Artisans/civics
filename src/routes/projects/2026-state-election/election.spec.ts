@@ -91,7 +91,29 @@ describe("ballotFor", () => {
         office: "REPRESENTATIVE IN GENERAL COURT",
         district: "FIFTEENTH ESSEX DISTRICT",
         onWarrant: false,
+        candidates: [
+          {
+            name: "Ryan M. Hamilton",
+            party: "Democratic",
+            url: "https://hamilton4rep.com/index.html",
+          },
+          {
+            name: "Ronald L. Heiseler, III",
+            party: "Republican",
+            url: "https://www.ronnieheiseler.com/",
+          },
+        ],
       })
+    }
+  })
+})
+
+describe("candidates", () => {
+  it("name someone for every office on every precinct's ballot", () => {
+    for (const p of [...PRECINCTS, ...PRECINCTS.flatMap((p) => p.subprecincts)]) {
+      for (const line of ballotFor(p.districts)) {
+        expect(line.candidates.length, `${p.id} ${line.office} ${line.district}`).toBeGreaterThan(0)
+      }
     }
   })
 })

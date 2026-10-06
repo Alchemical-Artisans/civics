@@ -26,9 +26,10 @@ test("a precinct with an A half shows both ballots and both buildings", async ({
   await page.goto(`${PROJECT}/precincts/7-2`)
   await expect(page.getByText("Hunking Middle School", { exact: true })).toBeVisible()
   await expect(page.getByText("Consentino Middle School", { exact: true })).toBeVisible()
-  const senate = page.getByRole("row", { name: /SENATOR IN GENERAL COURT/ })
-  await expect(senate).toContainText("SECOND ESSEX AND MIDDLESEX DISTRICT")
-  await expect(senate).toContainText("FIRST ESSEX DISTRICT")
+  const ballot = page.getByRole("tabpanel").filter({ visible: true })
+  await expect(ballot).toContainText("Barry R. Finegold")
+  await page.getByRole("tab", { name: "Precinct 7-2A" }).click()
+  await expect(ballot).toContainText("Pavel M. Payano")
 })
 
 test("the early-voting item links to the project too", async ({ page }) => {
@@ -37,14 +38,20 @@ test("the early-voting item links to the project too", async ({ page }) => {
   await expect(page).toHaveURL(`${PROJECT}#city-council-2026-10-06-early-voting-schedule`)
 })
 
-test("a precinct page links the statewide questions out and offers the day", async ({ page }) => {
+test("a precinct page links each question and offers the day", async ({ page }) => {
   await page.goto(`${PROJECT}/precincts/5-3`)
-  await expect(page.getByRole("link", { name: /Information for Voters/ })).toHaveAttribute(
+  await expect(page.getByRole("link", { name: /^Question 1: / })).toHaveAttribute(
     "href",
-    /sec\.state\.ma\.us/,
+    /omniballot\.us\/.*\/info\/10$/,
   )
+  await expect(page.getByRole("link", { name: /^Question 9: / })).toHaveAttribute(
+    "href",
+    /info\/18$/,
+  )
+  await page.getByRole("link", { name: /^Question 10: / }).click()
+  await expect(page).toHaveURL(`${PROJECT}/questions/10`)
   await expect(page.getByRole("heading", { name: "Question 10" })).toBeVisible()
-  await expect(page.getByRole("heading", { name: "Question 1", exact: true })).toHaveCount(0)
+  await page.goBack()
   await expect(page.getByRole("button", { name: /add to calendar/i })).toBeVisible()
 })
 
