@@ -1,5 +1,7 @@
 <script lang="ts">
   import { Router } from "$lib/router"
+  import OrdinanceDiff from "$lib/OrdinanceDiff.svelte"
+  import { HEADING, REDLINE } from "./ordinance"
 
   const MEETING = "city-council-2026-09-22"
   const ITEM = "recreational-motorized-vehicles-ordinance"
@@ -12,6 +14,24 @@
 </p>
 
 <p class="text-right"><strong>File 10 Days</strong></p>
+
+<hr />
+
+<!-- The article as the ordinance would amend it, drawn as a diff. The packet
+     carries the city's own marked-up copy, so the strike-through the diff
+     links to is that PDF rather than one generated here, and the diff's marks
+     are a transcription of its marks rather than a word diff -- see
+     `ordinance.ts`. -->
+<h2>{HEADING.chapter}, {HEADING.article}, {HEADING.title}</h2>
+
+<OrdinanceDiff
+  redline={REDLINE}
+  name="{HEADING.chapter}, {HEADING.article}, {HEADING.title}"
+  strikeThrough={{
+    href: Router.excerpt(MEETING, `${ITEM}/ordinance-amendments-marked`),
+    external: true,
+  }}
+/>
 
 <hr />
 

@@ -5,10 +5,9 @@ import type { PageLoad } from "./$types"
  * order itself, 5.2.1, is transcribed on this page rather than left on the
  * outline beside the link.
  *
- * `wide` for the same reason a budget section asks for it: the page is a
- * two-column comparison of the article the order would replace against the
- * article it would put in its place, and a 48rem reading column has nowhere to
- * put two columns of legal prose. See `ordinances.ts`.
+ * `wide` for the diff, which lays today's text and the amended text side by
+ * side by default, and a 48rem reading column halves each to a few words a
+ * line.
  */
 export const load: PageLoad = () => ({
   item: { title: "Water Use Restriction Ordinance" },
