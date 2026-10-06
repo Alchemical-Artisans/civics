@@ -183,8 +183,11 @@
   <!-- The same split as the project's own page: the map on the left, what is
        to be read about it on the right. -->
   <div class="grid gap-8 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
-    <div>
+    <!-- The map takes the height of the window, and stays put while the ballot
+         beside it is read. -->
+    <div class="h-[70dvh] lg:sticky lg:top-4 lg:h-[calc(100dvh-2rem)]">
       <PrecinctMap
+        interactive
         title="{title}, outlined within Ward {precinct.ward}, with its polling place"
         {bounds}
         {areas}

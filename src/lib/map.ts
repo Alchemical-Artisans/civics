@@ -7,8 +7,9 @@
  * reader's browser. The shapes are links -- a precinct opens its own page --
  * and an SVG `<a>` is a link before anything hydrates, for a keyboard and a
  * screen reader as much as a mouse, the bargain the bar's own menu makes. The
- * cost is a map that does not pan or zoom; it does not need to, since every
- * map on the site is of one city or one part of it, framed in advance.
+ * cost is a map framed in advance; one given a pane to itself (`interactive`)
+ * pans and zooms once hydrated, by moving the SVG's viewBox and choosing tiles
+ * at whatever zoom that reaches, while the static frame stays what is served.
  *
  * The street map underneath is OpenStreetMap's own raster tiles, laid into the
  * SVG as images in the same Web Mercator pixel grid the tiles are cut on --
