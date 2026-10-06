@@ -92,8 +92,16 @@ describe("ballotFor", () => {
         district: "FIFTEENTH ESSEX DISTRICT",
         onWarrant: false,
         candidates: [
-          { name: "Ryan M. Hamilton", party: "Democratic" },
-          { name: "Ronald L. Heiseler, III", party: "Republican" },
+          {
+            name: "Ryan M. Hamilton",
+            party: "Democratic",
+            url: "https://hamilton4rep.com/index.html",
+          },
+          {
+            name: "Ronald L. Heiseler, III",
+            party: "Republican",
+            url: "https://www.ronnieheiseler.com/",
+          },
         ],
       })
     }
