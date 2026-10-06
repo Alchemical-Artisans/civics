@@ -59,3 +59,19 @@ test("the agenda opens the project on the item, not the item's own page", async 
     .click()
   await expect(page).toHaveURL(WARRANT)
 })
+
+test("the map and the polling places are two pages, the map first", async ({ page }) => {
+  await page.goto(PROJECT)
+  const tabs = page.getByRole("navigation", { name: "Where to vote" })
+  await expect(tabs.getByRole("link", { name: "Map" })).toHaveAttribute("aria-current", "page")
+  await expect(page.getByRole("table")).toHaveCount(0)
+  await tabs.getByRole("link", { name: "Polling places" }).click()
+  await expect(page).toHaveURL(`${PROJECT}/polling-places`)
+  await expect(tabs.getByRole("link", { name: "Polling places" })).toHaveAttribute(
+    "aria-current",
+    "page",
+  )
+  await expect(page.getByRole("group", { name: /twenty-one precincts/ })).toHaveCount(0)
+  await page.getByRole("link", { name: "Ward 7, Precinct 2A" }).click()
+  await expect(page).toHaveURL(`${PROJECT}/precincts/7-2`)
+})

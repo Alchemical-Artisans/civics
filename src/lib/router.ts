@@ -84,6 +84,15 @@ export class Router {
     return path(`/projects/${slug}`) + (entry ? `#${entry}` : "")
   }
 
+  /**
+   * A page of a project other than its front one: one of the views its
+   * front page shares a layout with, like an election's table of polling
+   * places beside its map.
+   */
+  static projectPage(slug: string, name: string): string {
+    return path(`/projects/${slug}/${name}`)
+  }
+
   /** One precinct of an election project -- `id` is MassGIS's `"1-2"`. */
   static precinct(slug: string, id: string): string {
     return path(`/projects/${slug}/precincts/${id}`)

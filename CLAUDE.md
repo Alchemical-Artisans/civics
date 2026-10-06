@@ -489,7 +489,10 @@ waits for a person.
 **A project follows one undertaking across every sitting that touched it.**
 The calendar is shaped the way the city publishes -- a sitting, its agenda, the
 items on it -- which is the wrong shape for anything taking more than one
-evening. `/projects/<slug>` is a hand-written static route, one directory each,
+evening. `/projects/<slug>` is a hand-written static route, one directory each
+(a project whose front page has more than one view puts them under a
+`(tabs)` route group with a shared layout, as `spending` does -- separate
+pages linked from a plain `<nav>`, never panels a script switches),
 and `src/lib/projects.ts` is the registry of each project's timeline: the agenda
 items that bear on it (meeting id plus item directory, the two segments of the
 item's URL) and the dates their documents set. Declared once, there, because the
@@ -517,7 +520,9 @@ once a decade). That script also works out each precinct's districts by area
 overlap against the 2021 redistricting polygons -- the `…2021`/`Congress118`
 services, **not** `Massachusetts_House_Districts` and siblings, which are the
 pre-2022 districts -- and stops if any precinct is less than 98% inside one
-district. Wards are the union of their precincts. `precincts/[precinct]` is one
+district. Wards are the union of their precincts. The front page is the map, and
+`polling-places` beside it is the warrant's table, the timeline in the shared
+layout beside both. `precincts/[precinct]` is one
 page per precinct: the ward outlined, the precinct shaded, an `A` half in its
 own colour with its own column in the ballot table where its districts differ. The
 nine statewide questions are linked to the Secretary of the Commonwealth's

@@ -8,10 +8,15 @@ const itemPages = new Set(
     return `${meeting}/${item}`
   }),
 )
+// A project's front page may sit inside a route group, `(tabs)` -- matched
+// here rather than in the glob, where parentheses are pattern syntax.
 const projectPages = new Set(
-  Object.keys(import.meta.glob("/src/routes/projects/*/+page.svelte")).map(
-    (file) => file.split("/").slice(-2, -1)[0],
-  ),
+  Object.keys(import.meta.glob("/src/routes/projects/**/+page.svelte"))
+    .map(
+      (file) =>
+        file.match(/^\/src\/routes\/projects\/([^/]+)\/(?:\(tabs\)\/)?\+page\.svelte$/)?.[1],
+    )
+    .filter(Boolean),
 )
 
 describe("PROJECTS", () => {
