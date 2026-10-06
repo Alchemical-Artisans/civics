@@ -1559,11 +1559,14 @@ test.describe("budget pages", () => {
     await expect(page.locator('header a[href*="#page="]')).toHaveCount(0)
     await expect(bookPdf(page)).toHaveCount(1)
 
-    // The way back up, now that no page carries one of its own: the bar's menu
-    // of years, which reaches any book from any page.
+    // The way back up, now that no page carries one of its own: the bar's
+    // Projects menu, whose budgets reach any book from any page.
     const header = page.getByRole("banner")
-    await header.getByRole("link", { name: "Budget", exact: true }).hover()
-    await header.getByRole("link", { name: `FY${books[0].slice(2)}` }).click()
+    await header.getByRole("button", { name: /Projects/ }).hover()
+    await header
+      .locator("#project-list")
+      .getByRole("link", { name: `${books[0].slice(2)} Budget`, exact: true })
+      .click()
     await expect(page).toHaveURL(new RegExp(`/budget/${books[0]}$`))
   })
 
@@ -1594,14 +1597,5 @@ test.describe("budget pages", () => {
   test("has no page for a fiscal year the city does not publish", async ({ page }) => {
     const response = await page.goto("/budget/fy1999")
     expect(response?.status()).toBe(404)
-  })
-
-  test("is where the front page's budget card points", async ({ page }) => {
-    await page.goto("/")
-    await page
-      .getByRole("navigation", { name: "The two halves" })
-      .getByRole("link", { name: /Budget/ })
-      .click()
-    await expect(page).toHaveURL(new RegExp(`/budget/${books[0]}$`))
   })
 })

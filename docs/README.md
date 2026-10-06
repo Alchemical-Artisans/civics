@@ -111,7 +111,7 @@ scripts/
 
 src/lib/
   Note.svelte              the information popover in a document page's header
-  SiteHeader.svelte        the bar on every page: mark, page name, budget menu, calendar
+  SiteHeader.svelte        the bar on every page: mark, page name, projects menu, calendar
   heading.ts               what that bar says about a page, from `page.data`
   heading.spec.ts          unit tests for it
   BudgetColumns.svelte     spending and revenue, two columns on one scale

@@ -166,9 +166,6 @@
       ? `, its ${precinct.subprecincts.map((s) => s.id).join(' and ')} half in orange`
       : ''}. Ward and precinct lines: {PRECINCT_SOURCE.name}."
   />
-  <p class="text-xs text-slate-500">
-    {precinct.population.toLocaleString("en-US")} residents at the 2020 census.
-  </p>
 
   <section aria-labelledby="ballot" class="mt-8">
     <h2 id="ballot" class="text-lg font-semibold text-slate-900">On the ballot</h2>

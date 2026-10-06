@@ -21,7 +21,7 @@ grouped into pages the book has no equivalent of, named things the book never
 calls them, and reached from charts rather than from a contents. The words on a
 page are still the city's, exactly as printed -- the text is quotation, the
 arrangement is editorial. There is no page listing the fiscal years: the list is the
-menu behind **Budget** in the bar at the top of every page.
+"Budgets" group of the **Projects** menu in the bar at the top of every page.
 
 `docs/` is the authoritative reference and is unusually complete. Start at
 [docs/README.md](docs/README.md), which maps the rest:
@@ -489,7 +489,10 @@ waits for a person.
 **A project follows one undertaking across every sitting that touched it.**
 The calendar is shaped the way the city publishes -- a sitting, its agenda, the
 items on it -- which is the wrong shape for anything taking more than one
-evening. `/projects/<slug>` is a hand-written static route, one directory each,
+evening. `/projects/<slug>` is a hand-written static route, one directory each
+(a project whose front page has more than one view puts them under a
+`(tabs)` route group with a shared layout, as `spending` does -- separate
+pages linked from a plain `<nav>`, never panels a script switches),
 and `src/lib/projects.ts` is the registry of each project's timeline: the agenda
 items that bear on it (meeting id plus item directory, the two segments of the
 item's URL) and the dates their documents set. Declared once, there, because the
@@ -497,9 +500,20 @@ project page lists them in order and `meetings/+layout.svelte` has to find an
 item's project to link back to it -- the layout's load reads the item's
 directory name off the URL as `itemSlug`. The link back carries the item's own
 entry id as the fragment, and `:target` rings that entry on the project page:
-no script, and no query string, which a prerendered page cannot read. There is
-no `/projects` index and no header entry yet; a project is reached from its
-items.
+no script, and no query string, which a prerendered page cannot read. The
+agenda itself links such an item to the project rather than to its write-up:
+a meeting page writes `agendaHref(meeting, item)` for an item's line, which
+opens the project on that item's entry when the item is on one and the item's
+own page otherwise; the write-up stays reachable from the timeline. There is
+no `/projects` index: the bar's **Projects** menu is the list, in two groups
+-- "Elections" from `PROJECTS` and "Budgets" from `budget.json`'s fiscal
+years, which had a Budget menu of their own in the bar until budgets were
+treated as one more kind of project (without moving their routes: books stay
+at `/budget/<year>`, and reading one marks Projects as the current section).
+Each group shows only its most recent entry -- the newest written book for
+budgets -- and a "Show archived" button in the menu reveals the rest; the
+hiding is done on mount, so with no script every entry stays listed. With no
+page to go to, the word Projects is itself the button that opens the menu.
 
 **The 2026 State Election** is the first, `src/routes/projects/2026-state-election/`.
 Its `election.ts` holds the warrant's polling places, offices and ten questions
@@ -513,7 +527,9 @@ once a decade). That script also works out each precinct's districts by area
 overlap against the 2021 redistricting polygons -- the `…2021`/`Congress118`
 services, **not** `Massachusetts_House_Districts` and siblings, which are the
 pre-2022 districts -- and stops if any precinct is less than 98% inside one
-district. Wards are the union of their precincts. `precincts/[precinct]` is one
+district. Wards are the union of their precincts. The front page is the map, and
+`polling-places` beside it is the warrant's table, the timeline in the shared
+layout beside both. `precincts/[precinct]` is one
 page per precinct: the ward outlined, the precinct shaded, an `A` half in its
 own colour with its own column in the ballot table where its districts differ. The
 nine statewide questions are linked to the Secretary of the Commonwealth's
@@ -537,14 +553,16 @@ does for `AddressMap`'s embed. Do not name an SVG class after a Tailwind utility
 (`outline` drew a rectangle round every ward).
 
 **`/` is the landing page** (`src/routes/+page.svelte`): the site's name, a
-slogan, and a card for each half — the meeting calendar and the current budget
-book, side by side. It
+slogan, and two cards side by side — the meeting calendar and the project the
+city is in the middle of, today the 2026 State Election drawn as its precinct
+map (`ElectionCard.svelte`, beside the project's `election.ts`), each precinct a
+link to its page. The second card was the budget's until budgets moved into
+the Projects menu; `summary.ts` and `headline` in `$lib/budget`, which drew it,
+are no longer read by anything. It
 forwarded straight to the budget for a while (an index costs a hop), which
 stopped making sense once the two halves became separate things a reader arrives
 wanting one or the other of; the old meta refresh and its e2e tests are gone.
-The budget card's year comes from `fiscalYears().find((y) => y.written)`, so
-creating `src/routes/budget/fy2028/` moves it; with no book written the card is
-dropped. The header carries a link to each half from every page, so no page
+The header carries a way into each part from every page, so no page
 needs its own sideways link. **A card is its half rather than a description of
 one**: both carried a paragraph explaining what was behind them, under a
 paragraph explaining the site, and all three were the site talking about itself
@@ -555,15 +573,9 @@ and `src/routes/+page.ts` trims the record to them, so the page carries seven
 days rather than a few thousand meetings. Rows and not a Sunday-to-Saturday
 rail, which is how the calendar itself is laid out and was this card's first
 shape: a cell in a rail is a seventh of half a page, and "Planning Board"
-arrives in one as "P…". The budget card draws `BudgetColumns` -- the chart the
-book itself opens with -- from the book's own `summary.ts`, which reads the same
-`SPENDING` and `REVENUE_DETAIL` the book's front page draws in full and rolls
-each down to its largest three parts plus everything else, so the card and the
-book cannot state different figures; the front page globs `./budget/*/summary.ts`
-and takes the newest written book's, the same directory-listing trick everything
-else here follows. Its legend is the one thing the book's own charts do
-without -- there a segment names itself on hover, and this is the first thing on
-the site, read as often on a phone where there is no hover to give. Both cards
+arrives in one as "P…". The election card is the map and nothing else, no
+precinct numbers on it, since at a card's size the downtown labels pile up.
+Both cards
 are one big link by way of the heading's own `::after` covering the card, which
 is what lets the sittings inside one still be links. See
 [docs/calendar-page.md](docs/calendar-page.md#the-site-root).
@@ -593,7 +605,7 @@ side, and the snow-and-ice transfer is quoted on `reserves`, beside the free
 cash policy it answers to. The front page just draws the budget.
 
 **The budget is the same idea one level deeper, and shares nothing with the
-calendar.** The bar's menu lists every fiscal year the city publishes — a book
+calendar.** The bar's Projects menu lists every fiscal year the city publishes — a book
 here where one is written, the city's own PDF where it is not, and each year's
 audit report beside it, which is the only place those are linked. `/budget`
 itself is not a page: it was one, and reaching a book through it cost a hop.
@@ -615,7 +627,11 @@ its sections were read off rendered pages by hand. See
 Notable pieces:
 
 - **`src/lib/SiteHeader.svelte`** is the bar on every page: the mark, the page's
-  own name, the budget with its menu of fiscal years, and the calendar. It
+  own name, the projects with their menu -- elections and budgets -- and the
+  calendar. The menu is **`src/lib/HeaderMenu.svelte`**, which holds
+  everything below about hovering, the caret and the CSS-to-script handover;
+  on a phone it hangs a menu off the bar's right edge rather than off its own
+  word, so it stays on screen wherever the word sits in the bar. It
   carries no link to a document at all: the budget calendar in the footer does
   that, on every page of a book, hanging each file off the step of the year that
   produced it. On the budget half it
@@ -627,11 +643,11 @@ Notable pieces:
   the year it belonged to. Plain links rather than a second `<nav>`, since the
   bar already has one. a budget book is called `2027 Budget`, never "FY2027
   Mayor's Budget". The bar runs the width of the window, because a bar narrower
-  than the page under it reads as a mistake. Its budget entry is a link to this
-  year's book with a menu of every fiscal year under it — the list `/budget`
-  used to be, and the reason no budget page carries a back link any more. The
-  word navigates, so the caret beside it is a separate `<button>`: that is the
-  whole control on a touch screen, where there is no hover. The hover itself is
+  than the page under it reads as a mistake. Its Projects menu carries every
+  fiscal year -- the list `/budget` used to be, then a Budget menu of its own,
+  and the reason no budget page carries a back link any more. Where a menu's
+  word navigates, the caret beside it is a separate `<button>`; Projects has no
+  page to go to, so its word is the button. The hover itself is
   written both in CSS (so a page that has not hydrated still opens the menu) and
   in the component, which takes over on mount via `:not(.live)` — otherwise
   `:hover` would hold open a menu Escape had just closed. The current section is

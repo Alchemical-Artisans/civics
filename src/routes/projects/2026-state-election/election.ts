@@ -18,6 +18,7 @@ import precinctData from "$lib/data/precincts.json"
 import { PROJECTS, type Project } from "$lib/projects"
 import type { CalendarEvent } from "$lib/ics"
 import { Router } from "$lib/router"
+import { COLOURS } from "$lib/chart-colours"
 
 /** The project this is, from the registry the meeting pages link back through. */
 export const PROJECT = PROJECTS.find((p) => p.slug === "2026-state-election") as Project
@@ -597,6 +598,20 @@ export function electionEvent(precinct?: string): CalendarEvent {
     url: page,
   }
 }
+
+/**
+ * A colour per ward, so the precincts read as seven groups before a reader
+ * has found a single number on the map. The chart sequence, since it is the
+ * one set of colours on the site already checked for telling apart.
+ *
+ * Not simply the first seven: the seventh is a second blue, and Ward 7 shares
+ * a long border with Ward 1's. Ochre is the sequence's furthest from all six
+ * of its neighbours' colours. Here rather than beside one map because the
+ * project's map and the front page's card draw the same city and should not
+ * colour it two ways.
+ */
+const WARD_COLOURS = [0, 1, 2, 3, 4, 5, 11].map((i) => COLOURS[i])
+export const wardColour = (ward: number) => WARD_COLOURS[ward - 1]
 
 /** "Ward 1, Precinct 2", for a precinct id. */
 export function precinctName(id: string): string {

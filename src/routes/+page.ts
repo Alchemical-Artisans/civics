@@ -8,25 +8,6 @@ import {
   type Meeting,
   type MeetingKind,
 } from "$lib/calendar"
-import type { BookSummary } from "$lib/budget"
-
-/**
- * The newest written book's own headline figures.
- *
- * The same directory-listing glob `$lib/budget` uses to find which books have
- * a page here, one file deeper: a book carries its own `summary.ts`, and the
- * front page reads whichever belongs to the book the header's menu opens on.
- * Nothing here names a fiscal year, so writing next year's book up moves the
- * card with everything else.
- *
- * Eager, because this runs at build time and the alternative -- a dynamic
- * import in a prerendered load -- buys nothing on a page that ships its data
- * baked in. A book with a page but no summary yields null, and the card falls
- * back to its own words rather than to a broken chart.
- */
-const summaries = import.meta.glob<{ SUMMARY: BookSummary }>("./budget/*/summary.ts", {
-  eager: true,
-})
 
 /** One meeting as the week strip draws it: a name, a link, and its documents' kinds. */
 export interface WeekEntry {
@@ -63,8 +44,7 @@ const entryOf = (meeting: Meeting): WeekEntry => ({
   ...(statedTime(meeting) ? { time: statedTime(meeting)! } : {}),
 })
 
-export const load: PageLoad = async ({ parent }) => {
-  const { budgetBook } = await parent()
+export const load: PageLoad = () => {
   const { meetings, today } = calendar()
 
   /**
@@ -97,8 +77,5 @@ export const load: PageLoad = async ({ parent }) => {
   return {
     today,
     week,
-    summary: budgetBook
-      ? (summaries[`./budget/${budgetBook.id}/summary.ts`]?.SUMMARY ?? null)
-      : null,
   }
 }

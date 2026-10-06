@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { PROJECTS, entryDate, entryId, projectsOf, timeline } from "./projects"
+import { PROJECTS, agendaHref, entryDate, entryId, projectsOf, timeline } from "./projects"
 
 // Every item page that exists, by its meeting id and directory name.
 const itemPages = new Set(
@@ -8,10 +8,15 @@ const itemPages = new Set(
     return `${meeting}/${item}`
   }),
 )
+// A project's front page may sit inside a route group, `(tabs)` -- matched
+// here rather than in the glob, where parentheses are pattern syntax.
 const projectPages = new Set(
-  Object.keys(import.meta.glob("/src/routes/projects/*/+page.svelte")).map(
-    (file) => file.split("/").slice(-2, -1)[0],
-  ),
+  Object.keys(import.meta.glob("/src/routes/projects/**/+page.svelte"))
+    .map(
+      (file) =>
+        file.match(/^\/src\/routes\/projects\/([^/]+)\/(?:\(tabs\)\/)?\+page\.svelte$/)?.[1],
+    )
+    .filter(Boolean),
 )
 
 describe("PROJECTS", () => {
@@ -40,6 +45,7 @@ describe("timeline", () => {
   it("runs in date order, a sitting ahead of a date it shares a day with", () => {
     const project = {
       slug: "x",
+      kind: "election" as const,
       title: "X",
       entries: [
         {
@@ -78,5 +84,19 @@ describe("projectsOf", () => {
     expect(found.map((f) => f.project.slug)).toEqual(["2026-state-election"])
     expect(entryId(found[0].entry)).toBe("city-council-2026-10-06-election-warrant")
     expect(projectsOf("city-council-2026-10-06", "white-cane-awareness-day")).toEqual([])
+  })
+})
+
+describe("agendaHref", () => {
+  it("sends an item on a project to its entry on the project page", () => {
+    expect(agendaHref("city-council-2026-10-06", "election-warrant")).toBe(
+      "/projects/2026-state-election#city-council-2026-10-06-election-warrant",
+    )
+  })
+
+  it("sends any other item to its own page", () => {
+    expect(agendaHref("city-council-2026-10-06", "white-cane-awareness-day")).toBe(
+      "/calendar/meetings/city-council-2026-10-06/white-cane-awareness-day",
+    )
   })
 })
