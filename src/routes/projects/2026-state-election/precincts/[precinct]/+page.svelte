@@ -21,13 +21,13 @@
     PRECINCT_SOURCE,
     PROJECT,
     QUESTIONS,
-    VOTER_INFORMATION,
     WARDS,
     ballotFor,
     electionEvent,
     buildings,
     pollingPlaceFor,
     precinctName,
+    voterGuideUrl,
   } from "../../election"
   import { CANDIDATES_SOURCE } from "../../candidates"
 
@@ -121,9 +121,6 @@
   )
 
   const title = $derived(precinctName(precinct.id))
-
-  const statewide = QUESTIONS.filter((q) => !q.local)
-  const local = QUESTIONS.filter((q) => q.local)
 </script>
 
 <svelte:head>
@@ -296,31 +293,30 @@
       </p>
 
       <h3 class="mt-8 font-semibold text-slate-900">Questions</h3>
-      <!-- Statewide questions are linked out, not quoted; the city's own is
-         in no state publication, so it is quoted from the warrant. -->
-      <p class="mt-1 text-sm">
-        <a
-          class="underline hover:text-slate-900"
-          href={VOTER_INFORMATION}
-          target="_blank"
-          rel="external noopener noreferrer"
-          >Questions 1 to {statewide.length}: Information for Voters<span class="sr-only"
-            >, opens in a new tab</span
-          ></a
-        >
-      </p>
-      {#each local as q (q.number)}
-        <div class="mt-4 max-w-prose text-sm">
-          <h4 class="font-medium text-slate-900">Question {q.number}</h4>
-          <div class="prose prose-sm mt-2 max-w-none prose-slate">
-            <p>{q.question}</p>
-            <h5>SUMMARY</h5>
-            {#each q.summary as paragraph (paragraph)}
-              <p>{paragraph}</p>
-            {/each}
-          </div>
-        </div>
-      {/each}
+      <!-- Each statewide question goes to its entry in the state's voter guide;
+         the city's own is in no state publication, so it has a page here. -->
+      <ul class="mt-1 text-sm text-slate-700">
+        {#each QUESTIONS as q (q.number)}
+          <li>
+            {#if q.local}
+              <a
+                class="underline hover:text-slate-900"
+                href={Router.projectPage(PROJECT.slug, `questions/${q.number}`)}
+                >Question {q.number}</a
+              >
+              <span class="text-slate-500">(Haverhill)</span>
+            {:else}
+              <a
+                class="underline hover:text-slate-900"
+                href={voterGuideUrl(q.number)}
+                target="_blank"
+                rel="external noopener noreferrer"
+                >Question {q.number}<span class="sr-only">, opens in a new tab</span></a
+              >
+            {/if}
+          </li>
+        {/each}
+      </ul>
     </section>
   </div>
 </div>

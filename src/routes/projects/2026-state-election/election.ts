@@ -28,16 +28,20 @@ export const PROJECT = PROJECTS.find((p) => p.slug === "2026-state-election") as
 export const ELECTION = { date: "2026-11-03", hours: "7:00 A.M. to 8:00 P.M." } as const
 
 /**
- * The Secretary of the Commonwealth's "Information for Voters" for 2026: the
- * booklet mailed to every household, online. It carries each statewide
- * question's summary, the full text of the law, what a yes and a no vote do,
- * and the arguments for and against -- more than the warrant, and the state's
- * own account of it, so a precinct page links here rather than repeating the
- * warrant's copy. It covers the nine statewide questions only; Haverhill's own
- * Question 10 is in no state publication, and the warrant is its source.
+ * The Secretary of the Commonwealth's voter guide for 2026, on Omniballot: the
+ * summary, the full text of the law, what a yes and a no vote do and the
+ * arguments for and against, which the warrant lacks. It is the state's own
+ * account, so a precinct page links each statewide question to its entry
+ * rather than repeating the warrant's copy.
+ *
+ * The guide's entries are numbered from 10 -- Question 1 is `info/10`, and
+ * the nine run in order from there. That offset is read off the guide's own
+ * links, and is ours to correct if the guide is renumbered; Haverhill's
+ * Question 10 is in no state publication and has no entry.
  */
-export const VOTER_INFORMATION =
-  "https://www.sec.state.ma.us/divisions/elections/research-and-statistics/information-for-voters-2026.htm"
+export function voterGuideUrl(question: number): string {
+  return `https://ma.omniballot.us/sites/25/vg/app/vig/voter-guide/info/${question + 9}`
+}
 
 /** A precinct's shape and districts, from MassGIS by way of `npm run precincts:update`. */
 export interface Precinct {
