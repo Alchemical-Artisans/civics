@@ -34,21 +34,26 @@
   />
 </svelte:head>
 
-<PrecinctMap
-  title="Haverhill's seven wards and twenty-one precincts, with each polling place"
-  {bounds}
-  areas={PRECINCTS.map((p) => ({
-    id: p.id,
-    shape: p.shape,
-    name: precinctName(p.id),
-    href: Router.precinct(PROJECT.slug, p.id),
-    fill: wardColour(p.ward),
-    opacity: 0.4,
-    label: p.id,
-  }))}
-  outlines={WARDS.map((w) => ({ shape: w.shape, name: `Ward ${w.ward}` }))}
-  {markers}
-  width={1200}
-  height={900}
-  caption="Ward and precinct lines: {PRECINCT_SOURCE.name}. Polling places: the warrant."
-/>
+<!-- The map takes the height of the window, and stays put while the timeline
+     beside it is read. -->
+<div class="h-[70dvh] lg:sticky lg:top-4 lg:h-[calc(100dvh-2rem)]">
+  <PrecinctMap
+    interactive
+    title="Haverhill's seven wards and twenty-one precincts, with each polling place"
+    {bounds}
+    areas={PRECINCTS.map((p) => ({
+      id: p.id,
+      shape: p.shape,
+      name: precinctName(p.id),
+      href: Router.precinct(PROJECT.slug, p.id),
+      fill: wardColour(p.ward),
+      opacity: 0.4,
+      label: p.id,
+    }))}
+    outlines={WARDS.map((w) => ({ shape: w.shape, name: `Ward ${w.ward}` }))}
+    {markers}
+    width={1200}
+    height={900}
+    caption="Ward and precinct lines: {PRECINCT_SOURCE.name}. Polling places: the warrant."
+  />
+</div>
