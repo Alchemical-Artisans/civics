@@ -21,6 +21,11 @@
     /** Its accessible name, and the tooltip on hover. */
     name: string
     href?: string
+    /**
+     * Called when the shape is clicked, for one that selects something on the
+     * page rather than going to another. Ignored where there is an `href`.
+     */
+    onselect?: () => void
     /** Drawn over the street map in this colour. */
     fill: string
     /** 0 to 1; the shapes a page is about are filled more strongly than their neighbours. */
@@ -90,12 +95,24 @@
           />
         </a>
       {:else}
+        <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
         <path
           class="area"
+          class:selectable={area.onselect}
+          role={area.onselect ? "button" : undefined}
+          tabindex={area.onselect ? 0 : undefined}
+          aria-label={area.onselect ? area.name : undefined}
           d={pathOf(area.shape, f.z)}
           fill={area.fill}
           fill-opacity={area.opacity}
           fill-rule="evenodd"
+          onclick={area.onselect}
+          onkeydown={(event) => {
+            if (area.onselect && (event.key === "Enter" || event.key === " ")) {
+              event.preventDefault()
+              area.onselect()
+            }
+          }}
         >
           <title>{area.name}</title>
         </path>
@@ -142,6 +159,18 @@
   .tiles {
     filter: grayscale(1);
     opacity: 0.6;
+  }
+  .selectable {
+    cursor: pointer;
+  }
+  .selectable:hover,
+  .selectable:focus-visible {
+    fill-opacity: 0.85;
+  }
+  .selectable:focus-visible {
+    outline: none;
+    stroke: #0f172a;
+    stroke-width: 3;
   }
   .area,
   .area path {

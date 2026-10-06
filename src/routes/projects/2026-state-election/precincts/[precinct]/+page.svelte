@@ -81,6 +81,10 @@
     ),
   )
 
+  // Where the precinct has two ballots, its own shape and its half's are the
+  // way to pick one from the map as well as from the tabs.
+  const select = (id: string) => (panels.length > 1 ? () => (activeBallot = id) : undefined)
+
   const areas = $derived([
     ...PRECINCTS.map((p) => ({
       id: p.id,
@@ -90,6 +94,7 @@
       fill: p.id === precinct.id ? "#0369a1" : p.ward === precinct.ward ? "#7dd3fc" : "#cbd5e1",
       opacity: p.id === precinct.id ? 0.55 : 0.35,
       label: p.id === precinct.id ? undefined : p.id,
+      onselect: p.id === precinct.id ? select(p.id) : undefined,
     })),
     // The `A` half over its parent, in its own colour, so the line the ballot
     // table turns on is the line a reader can see.
@@ -100,6 +105,7 @@
       fill: "#ea580c",
       opacity: 0.55,
       label: s.id,
+      onselect: select(s.id),
     })),
   ])
 
