@@ -1,3 +1,10 @@
+<script lang="ts">
+  import { Router } from "$lib/router"
+
+  const MEETING = "city-council-2026-07-14"
+  const ITEM = "annual-license-renewals"
+</script>
+
 <ul>
   <li>
     <strong>12.8.1. Hawker Peddlers License- Fixed location</strong> &ndash;
@@ -36,5 +43,53 @@
   <li><strong>12.8.17. Exterior Vending Machines/Redbox Automated Retail, LLC</strong></li>
   <li>
     <strong>12.8.18. Limousine/Livery License/Chair Cars</strong> <em>with Police approval</em>
+  </li>
+</ul>
+
+<h2>Minutes</h2>
+
+<p>
+  Motion by Councilor Sullivan to approve, Second by Councilor Ferreira<br />
+  PASSED &ndash; Yeas 9, Nays 0, Absent 2 (Toohey and Diodati)
+</p>
+
+<hr />
+
+<ul>
+  <li>
+    <a href={Router.excerpt(MEETING, `${ITEM}/application`)} target="_blank" rel="noopener">
+      Taxi/limousine license application, TLLB-26-2<span class="sr-only"
+        >, PDF, two pages, opens in a new tab</span
+      >
+    </a>
+  </li>
+  <li>
+    <a href={Router.excerpt(MEETING, `${ITEM}/approvals`)} target="_blank" rel="noopener">
+      City Clerk and Police Department approvals<span class="sr-only"
+        >, PDF, three pages, opens in a new tab</span
+      >
+    </a>
+  </li>
+  <li>
+    <a
+      href={Router.excerpt(MEETING, `${ITEM}/business-certificate`)}
+      target="_blank"
+      rel="noopener"
+    >
+      Business Certificate, New England Health Transportation Inc.<span class="sr-only"
+        >, PDF, one page, opens in a new tab</span
+      >
+    </a>
+  </li>
+  <li>
+    <a
+      href={Router.excerpt(MEETING, `${ITEM}/vehicle-registrations`)}
+      target="_blank"
+      rel="noopener"
+    >
+      Registry of Motor Vehicles certificates of registration<span class="sr-only"
+        >, PDF, four pages, opens in a new tab</span
+      >
+    </a>
   </li>
 </ul>

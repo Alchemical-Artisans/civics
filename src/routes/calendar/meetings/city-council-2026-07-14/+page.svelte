@@ -18,18 +18,22 @@
 
 <ul>
   <li>
-    <strong>5.1</strong> Mayor Barrett requests to present HC Media&rsquo;s
-    <em>Declaration of Independence</em> community reading video
+    <strong>5.1</strong>
+    <a href={Router.meetingItem(MEETING, "declaration-of-independence-reading")}>
+      Declaration of Independence Reading Video
+    </a>
   </li>
   <li>
-    <strong>5.2</strong> Mayor Barrett and Salisbury Town Manager Neil Harrington requests to
-    provide an update to Council on the progress of the Whittier Regional Technical High School -
-    <em>Regional Agreement Amendment Committee (RAAC)</em>
+    <strong>5.2</strong>
+    <a href={Router.meetingItem(MEETING, "whittier-regional-agreement-amendment-committee-update")}>
+      Whittier Regional Agreement Amendment Committee Update
+    </a>
   </li>
   <li>
-    <strong>5.3</strong> Mayor Barrett requests Robert E. Ward,
-    <em>Director of Water/Wastewater</em>, to provide an update on the 42&rdquo; force main sewer
-    break
+    <strong>5.3</strong>
+    <a href={Router.meetingItem(MEETING, "force-main-sewer-break-update")}>
+      42-Inch Force Main Sewer Break Update
+    </a>
   </li>
 </ul>
 
@@ -41,8 +45,10 @@
 
 <ul>
   <li>
-    <strong>8.1</strong> Chris Loughnane, <em>City Assessor</em>, submits monthly abatement report
-    for the month of June 2026
+    <strong>8.1</strong>
+    <a href={Router.meetingItem(MEETING, "monthly-abatement-report")}>
+      Monthly Abatement Report, June
+    </a>
   </li>
   <li>
     <strong>8.2</strong>
@@ -55,12 +61,10 @@
     </a>
   </li>
   <li>
-    <strong>8.4</strong> <strong><u>EROM-26-16 &ndash;</u></strong> Lisa DeMeo,
-    <em>City Engineer</em>, requests approval to open the roadway to allow for the installation of a
-    fire suppression water service, which requires Kelley Excavation to excavate in the right of way
-    <ul>
-      <li><strong>8.4.1.</strong> Order &ndash; approve request to excavate at 136 Winter St</li>
-    </ul>
+    <strong>8.4</strong>
+    <a href={Router.meetingItem(MEETING, "road-opening-136-winter-st")}>
+      Road Opening, 136 Winter St, EROM-26-16
+    </a>
   </li>
 </ul>
 
@@ -68,12 +72,16 @@
 
 <ul>
   <li>
-    <strong>9.1</strong> <strong><u>Doc 7-E</u></strong>- Petition from National Grid and Verizon,
-    requesting a joint pole location for South Prospect St WR#31222471
+    <strong>9.1</strong>
+    <a href={Router.meetingItem(MEETING, "joint-pole-location-south-prospect-st")}>
+      Joint Pole Location, South Prospect St
+    </a>
   </li>
   <li>
-    <strong>9.2</strong> <strong><u>Doc 7-F</u></strong>- Petition from National Grid and Verizon,
-    requesting a joint pole location for Water St WR#31222575
+    <strong>9.2</strong>
+    <a href={Router.meetingItem(MEETING, "joint-pole-location-water-st")}>
+      Joint Pole Location, Water St
+    </a>
   </li>
 </ul>
 
@@ -81,60 +89,22 @@
 
 <ul>
   <li>
-    <strong>10.1</strong> <strong><u>Doc 21-A - CCSP-26-1-</u></strong>; Jony Perez of Davinci Mini
-    Apartments, LLC and Davinci Child Center, LLC requesting to convert a currently unoccupied
-    building to a daycare program on first floor (allowed by right in Zoning Code) and 12 apartments
-    units (six two-bedrooms and six one-bedrooms) on the top three floors at 121 Merrimack St in the
-    Waterfront (WD-C) District
-    <p><em><strong>Continued from May 19, 2026</strong></em></p>
-    <p>
-      <em>
-        <strong>
-          Related communication from Planning Director, Jacki Byerley, stating Planning Board has
-          continued their hearing until September 9<sup>th</sup> to allow applicant time to submit a traffic
-          study report
-        </strong>
-      </em>
-    </p>
+    <strong>10.1</strong>
+    <a href={Router.meetingItem(MEETING, "merrimack-st-special-permit")}>
+      Special Permit, 121 Merrimack St, Planning Board Hearing Continued to September 9
+    </a>
   </li>
   <li>
-    <strong>10.2</strong> <strong><u>Doc 21-B</u></strong> - Planning Director, Jacki Byerley,
-    requests a hearing for the following Zoning Amendment &ndash; Battery Energy Storage Systems
-    <ul>
-      <li>
-        <strong>10.2.1</strong> Ordinance: re: Amend Chapter 255 Zoning Ordinance and Zoning Map
-        &ndash; Battery Energy Storage Systems Overlay District (BESS)&ndash; by inserting a new
-        section 7.9 Battery Energy Storage Systems, amending section 3.1.3 Table of Use and Parking
-        regulations by allowing a Tier 1, Tier 2 and Tier 3 BESS and amending the Zoning Map to
-        include the BESS Overlay District. The overlay district will be creating regulations for the
-        installation and use of free-standing battery energy storage systems (&ldquo;BESS&rdquo;),
-        adding to the table the overlay district with the allowed Tiers and updating the zoning map
-        to include the BESS Overlay District, or take any other action related to
-        <p><em><strong>Continued from May 19, 2026</strong></em></p>
-        <p>
-          <em>
-            <strong>
-              Related communication from Planning and Development Committee Chair, Vice President
-              Michitson, to continue hearing until August 25<sup>th</sup>
-            </strong>
-          </em>
-        </p>
-      </li>
-    </ul>
+    <strong>10.2</strong>
+    <a href={Router.meetingItem(MEETING, "battery-energy-storage-systems-ordinance")}>
+      Continue Hearing for Battery Energy Storage Systems Ordinance to August 25, 2026
+    </a>
   </li>
   <li>
-    <strong>10.3</strong> <strong><u>Doc 13-B -</u></strong> Zoning hearing request from Attorney
-    Paul Magliochetti on behalf of client, Haverhill STEM, LLC (Haverhill STEM) for a zoning change
-    to allow the licensing and operation of Marijuana Social Consumption Establishments
-    <p><em><strong>Continued from June 2, 2026</strong></em></p>
-    <p>
-      <em>
-        <strong>
-          Related communication from applicant withdrawing application<br />Planning Board
-          recommendation to allow the withdrawal of the application
-        </strong>
-      </em>
-    </p>
+    <strong>10.3</strong>
+    <a href={Router.meetingItem(MEETING, "marijuana-social-consumption-zoning-request")}>
+      Marijuana Social Consumption Zoning Request, Application Withdrawn
+    </a>
   </li>
 </ul>
 
@@ -144,54 +114,49 @@
 
 <ul>
   <li>
-    <strong>12.1</strong> <strong><u>CCSP-26-5 </u></strong>&ndash; Francis Bevilacqua of Bevi
-    Builds II requests approval to replace existing single-family dwelling and construct a
-    three-family residential dwelling at 16 Margin St in the Residential Urban (RU) zoning district
-    <p><em><strong>Hearing for August 11, 2026</strong></em></p>
+    <strong>12.1</strong>
+    <a href={Router.meetingItem(MEETING, "special-permit-16-margin-st")}>
+      Special Permit, 16 Margin St, Hearing for August 11, 2026
+    </a>
   </li>
   <li>
-    <strong>12.2</strong> <strong><u>CCSP-26-2</u></strong> &ndash; Philip Rice of Rice &amp;
-    Brouillard requests approval to transform an existing 1 &frac12; story structure into a
-    three-family residential building containing a mix of two and three bedroom units. The
-    renovation will include an interior reconfiguration, structural expansion, and modernization of
-    all building systems to meet current safety, accessibility, and energy-efficiency standards
-    if/as needed
-    <p><em><strong>Hearing for August 25, 2026</strong></em></p>
+    <strong>12.2</strong>
+    <a href={Router.meetingItem(MEETING, "special-permit-125-river-st")}>
+      Special Permit, 125 River St, Hearing for August 25, 2026
+    </a>
   </li>
+  <li><strong>12.3 Applications Handicap Parking Sign:</strong> <em>with Police approval</em></li>
   <li>
-    <strong>12.3</strong> <strong><u>Applications Handicap Parking Sign:</u></strong>
-    <em>with Police approval</em>
-  </li>
-  <li>
-    <strong>12.4</strong> <strong><u>Amusement/Event Application:</u></strong>
-    <em>with Police approval</em>
+    <strong>12.4 Amusement/Event Application:</strong> <em>with Police approval</em>
     <ul>
       <li>
-        <strong>12.4.1.</strong> <strong><u>EVNT-26-20 </u></strong>&ndash; Cynthia Morgan of
-        <em>Cyndie&rsquo;s Methodical Media</em> requests to hold Woofstock 2026 on Saturday September
-        19, 2026 from 10 AM to 3 PM at Chris&rsquo; Farm Stand located at 436 Salem St
+        <strong>12.4.1</strong>
+        <a href={Router.meetingItem(MEETING, "event-applications")}>
+          Woofstock 2026, Cyndie&rsquo;s Methodical Media
+        </a>
       </li>
     </ul>
   </li>
-  <li><strong>12.5</strong> <strong><u>Auctioneer License</u></strong>:</li>
+  <li><strong>12.5 Auctioneer License</strong>:</li>
   <li>
-    <strong>12.6</strong> <strong><u>Tag Days</u></strong>: <em>with Police approval</em>
+    <strong>12.6 Tag Days</strong>: <em>with Police approval</em>
     <ul>
       <li>
-        <strong>12.6.1.</strong> <strong><u>TAGD-26-9 </u></strong>&ndash; Haverhill Lions Club,
-        September 12, 2026
+        <strong>12.6.1</strong>
+        <a href={Router.meetingItem(MEETING, "tag-days")}
+          >Haverhill Lions Club, September 12, 2026</a
+        >
       </li>
     </ul>
   </li>
   <li>
-    <strong>12.7</strong>
-    <strong><u>One Day Liquor License</u> &ndash;with Police and License Commission approval</strong
-    >
+    <strong>12.7 One Day Liquor License</strong> &ndash;with Police and License Commission approval
     <ul>
       <li>
-        <strong>12.7.1.</strong> <strong><u>LCDL-26-15</u></strong> &ndash; Joseph LeBlanc for
-        <em>Team Haverhill</em> requests All Alcohol license for <em>River Ruckus Festival,</em> Saturday
-        September 12, 20266 from 12 noon to 9 PM in the Riverfront parking lot
+        <strong>12.7.1</strong>
+        <a href={Router.meetingItem(MEETING, "one-day-liquor-license")}>
+          River Ruckus Festival, Team Haverhill
+        </a>
       </li>
     </ul>
   </li>
@@ -205,58 +170,10 @@
 
 <ul>
   <li>
-    <strong>13.1</strong> Order - That $953,216 will be transferred from various general fund appropriations
-    to fund FY 2026 operating expenses.
+    <strong>13.1</strong>
+    <a href={Router.meetingItem(MEETING, "fy26-budget-transfers")}>FY26 Budget Transfers</a>
   </li>
 </ul>
-
-<table>
-  <thead>
-    <tr>
-      <th scope="col">Transfer to: (Budget Deficits)</th>
-      <th scope="col">Amount</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr><th scope="row">Auditing Services / Expenses</th><td>$22,500.00</td></tr>
-    <tr><th scope="row">IT Salaries</th><td>$14,215.00</td></tr>
-    <tr><th scope="row">Building Maint. Salaries</th><td>$3,800.00</td></tr>
-    <tr><th scope="row">Building Maint. Expenses</th><td>$4,000.00</td></tr>
-    <tr><th scope="row">Public Health Salaries</th><td>$18,565.00</td></tr>
-    <tr><th scope="row">Snow &amp; Ice Salaries</th><td>$7,420.00</td></tr>
-    <tr><th scope="row">Snow &amp; Ice Expenses</th><td>$369,342.00</td></tr>
-    <tr><th scope="row">Citizens Center Salaries</th><td>$3,264.00</td></tr>
-    <tr><th scope="row">Payroll Taxes</th><td>$196,183.00</td></tr>
-    <tr><th scope="row">Workers Compensation</th><td>$226,014.00</td></tr>
-    <tr><th scope="row">Injured on Duty</th><td>$47,448.00</td></tr>
-    <tr><th scope="row">Sick Leave Buyback</th><td>$40,001.00</td></tr>
-    <tr><th scope="row">General Liability Insurance</th><td>$464.00</td></tr>
-    <tr><th scope="row">Total</th><td>$953,216.00</td></tr>
-  </tbody>
-</table>
-
-<table>
-  <thead>
-    <tr>
-      <th scope="col">Transfer from: (Budget Surplus)</th>
-      <th scope="col">Amount</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr><th scope="row">Budget Reserve</th><td>$180,000.00</td></tr>
-    <tr><th scope="row">Veterans Expense</th><td>$65,000.00</td></tr>
-    <tr><th scope="row">Parks Department Salaries</th><td>$40,000.00</td></tr>
-    <tr><th scope="row">Fleet Maintenance Salaries</th><td>$85,000.00</td></tr>
-    <tr><th scope="row">Public Works Highway Salaries</th><td>$125,000.00</td></tr>
-    <tr><th scope="row">Police Salaries</th><td>$300,000.00</td></tr>
-    <tr><th scope="row">Economic Development Salaries</th><td>$30,000.00</td></tr>
-    <tr><th scope="row">Inspectional Services Salaries</th><td>$25,000.00</td></tr>
-    <tr><th scope="row">City Clerk Salaries</th><td>$33,216.00</td></tr>
-    <tr><th scope="row">Constituent Services Salaries</th><td>$15,000.00</td></tr>
-    <tr><th scope="row">Treasurer/Collector Salaries</th><td>$55,000.00</td></tr>
-    <tr><th scope="row">Total</th><td>$953,216.00</td></tr>
-  </tbody>
-</table>
 
 <h2>14. Ordinances (File 10 days)</h2>
 
@@ -264,8 +181,10 @@
 
 <ul>
   <li>
-    <strong>15.1</strong> Councilor McGonagle wishes to announce the Public Safety subcommittee meeting
-    on Wednesday, July 29, 2026 at 6 PM in Room 202, City Council Chambers
+    <strong>15.1</strong>
+    <a href={Router.meetingItem(MEETING, "public-safety-committee-meeting")}>
+      Public Safety Committee, July 29, 2026
+    </a>
   </li>
 </ul>
 
@@ -275,8 +194,41 @@
 
 <h2>18. Council Committee Reports and Announcements</h2>
 
-<h2>19. Documents referred to committee study</h2>
+<h2>
+  <a href={Router.meetingItem(MEETING, "documents-referred-to-committee-study")}>
+    19. Documents referred to committee study
+  </a>
+</h2>
 
 <h2>20. Long term matters study list</h2>
 
 <h2>21. Adjourn</h2>
+
+<h2>Minutes</h2>
+
+<p>
+  Present: Councilors Jordan, Basiliere, Sullivan, Ferreira, Michitson, Lewandowski, LePage and
+  Rogers<br />
+  Remote: Councilor McGonagle<br />
+  Absent: Councilors Toohey and Diodati<br />
+  City Clerk: Kaitlin M. Wright-Esposito
+</p>
+
+<p>
+  <strong>3. Approval of minutes of prior meeting</strong><br />
+  Councilor LePage stated he reviewed the minutes and finds them in order, Second by Councilor Lewandowski<br
+  />
+  PASSED &ndash; Yeas 9, Nays 0, Absent 2 (Toohey and Diodati)
+</p>
+
+<p>
+  <strong>4. Assignment of the minutes review for the next Meeting:</strong><br />
+  President Jordan assigned the minutes to Councilor Rogers
+</p>
+
+<p>
+  <strong>21. Adjourn</strong><br />
+  Motion by Councilor Sullivan to adjourn, Second by Councilor Rogers<br />
+  PASSED &ndash; Yeas 9, Nays 0, Absent 2 (Toohey and Diodati)<br />
+  ADJOURNED: 20:47
+</p>
