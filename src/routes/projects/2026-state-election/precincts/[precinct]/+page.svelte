@@ -70,7 +70,6 @@
     event.preventDefault()
     document.getElementById(`ballot-tab-${activeBallot}`)?.focus()
   }
-  const offWarrant = $derived(ballots.flat().some((line) => !line.onWarrant))
 
   // Framed on the ward, which is what the precinct is drawn inside, and
   // stretched to take in the polling place: Ward 7's Precinct 2 votes at
@@ -260,8 +259,7 @@
                         {#each cell.candidates as candidate (candidate.name)}
                           <li>
                             {candidate.name}
-                            <span class="text-slate-500">({candidate.party})</span
-                            >{#if !cell.onWarrant}<sup>*</sup>{/if}
+                            <span class="text-slate-500">({candidate.party})</span>
                           </li>
                         {/each}
                       </ul>
@@ -284,16 +282,6 @@
           >{CANDIDATES_SOURCE.name}<span class="sr-only">, opens in a new tab</span></a
         >.
       </p>
-
-      {#if offWarrant}
-        <!-- The warrant names the Third Essex House district and no other. See
-           `ballotFor` for why this is said rather than left off. -->
-        <p class="mt-2 max-w-prose text-xs text-slate-500">
-          <sup>*</sup> Not on the warrant. The warrant names a Representative in General Court race only
-          for the Third Essex District; MassGIS's 2021 district lines put this part of the precinct in
-          the Fifteenth Essex District, which also elects a representative this year.
-        </p>
-      {/if}
 
       <h3 class="mt-8 font-semibold text-slate-900">Questions</h3>
       <!-- Statewide questions are linked out, not quoted; the city's own is
