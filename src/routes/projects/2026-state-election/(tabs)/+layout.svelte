@@ -17,10 +17,11 @@
 -->
 <script lang="ts">
   import { onMount, tick } from "svelte"
+  import { slide } from "svelte/transition"
   import { page } from "$app/state"
   import AddToCalendar from "$lib/AddToCalendar.svelte"
   import { easternDate, formatLongDate } from "$lib/calendar"
-  import { entryDate, entryEnd, entryId, splitAtToday, timeline } from "$lib/projects"
+  import { entryDate, entryId, splitAtToday, timeline } from "$lib/projects"
   import { Router } from "$lib/router"
   import { ELECTION, PROJECT, electionEvent } from "../election"
 
@@ -45,24 +46,51 @@
    */
   const { past, upcoming } = $derived(splitAtToday(entries, today))
 
-  let pastOpen = $state(false)
+  /**
+   * The fold is a `<details>` so that it is a working control with no script,
+   * but a `<details>` cannot animate: the browser hides its content the moment
+   * `open` goes, so there is nothing left to slide away. So once the page is
+   * live the component owns `open` itself -- `expanded` is what the reader has
+   * asked for, and `closing` keeps the attribute on for as long as the content
+   * takes to leave -- and the entries sit in an `{#if}` that `slide` can play.
+   * Before that, the served markup carries the entries inside the closed
+   * `<details>`, which is all a reader with no script needs to open it.
+   */
+  let expanded = $state(false)
+  let closing = $state(false)
+  let live = $state(false)
+  let duration = $state(250)
+  const showPast = $derived(expanded || !live)
+
+  function toggle(event: MouseEvent) {
+    // Only once live: before that the browser's own toggle is the control.
+    if (!live) return
+    event.preventDefault()
+    expanded = !expanded
+    if (!expanded) closing = true
+  }
 
   /**
    * An agenda item links back here with its own entry's id as the fragment,
    * and most of those entries are now behind the reader. A fold left shut would
    * leave the link landing on nothing, so open it when the address names an
-   * entry inside, and take the reader to that entry, which the browser could
-   * not scroll to while it was hidden.
+   * entry inside, and take the reader to that entry once it has finished
+   * sliding into place, which the browser could not scroll to while it was
+   * hidden.
    */
   async function openForFragment() {
     const id = decodeURIComponent(location.hash.slice(1))
     if (!id || !past.some((entry) => entryId(entry) === id)) return
-    pastOpen = true
+    expanded = true
     await tick()
+    await new Promise((resolve) => setTimeout(resolve, duration))
     document.getElementById(id)?.scrollIntoView()
   }
   onMount(() => {
     inTheBrowser = easternDate()
+    live = true
+    // A reader who has asked their system for less motion gets none.
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) duration = 0
     void tick().then(openForFragment)
     window.addEventListener("hashchange", openForFragment)
     return () => window.removeEventListener("hashchange", openForFragment)
@@ -141,20 +169,27 @@
       {/snippet}
 
       {#if past.length}
-        <!-- Past entries: the record, folded. The summary says how many and
-             over what days, so a reader knows what they would be opening. -->
-        <details bind:open={pastOpen} class="mt-3 text-sm">
-          <summary class="cursor-pointer text-slate-600 hover:text-slate-900">
-            {past.length} earlier {past.length === 1 ? "step" : "steps"},
-            {formatLongDate(entryDate(past[0]))} &ndash; {formatLongDate(
-              entryEnd(past[past.length - 1]),
-            )}
+        <!-- Past entries: the record, folded. Open, the summary and the steps
+             it controls are one group -- a tinted panel with a border -- so it
+             is plain which entries the arrow belongs to and where they stop. -->
+        <details
+          open={expanded || closing}
+          class="mt-3 rounded-lg border text-sm transition-colors {expanded
+            ? 'border-slate-200 bg-slate-50 p-3'
+            : 'border-transparent'}"
+        >
+          <summary onclick={toggle} class="cursor-pointer text-slate-600 hover:text-slate-900">
+            {past.length} earlier {past.length === 1 ? "step" : "steps"}
           </summary>
-          <ol class="mt-3 space-y-3 border-l-2 border-slate-200 pl-4">
-            {#each past as entry (entryId(entry))}
-              {@render row(entry)}
-            {/each}
-          </ol>
+          {#if showPast}
+            <div transition:slide={{ duration }} onoutroend={() => (closing = false)}>
+              <ol class="mt-3 space-y-3 border-l-2 border-slate-300 pl-4">
+                {#each past as entry (entryId(entry))}
+                  {@render row(entry)}
+                {/each}
+              </ol>
+            </div>
+          {/if}
         </details>
       {/if}
 

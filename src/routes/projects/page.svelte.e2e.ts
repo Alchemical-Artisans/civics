@@ -130,3 +130,34 @@ test("a link into an earlier entry opens the fold and lands on it", async ({ pag
   await expect(entry).toBeVisible()
   await expect(page.locator("details", { hasText: "earlier steps" })).toHaveAttribute("open", "")
 })
+
+test("the fold says how many steps and nothing about when", async ({ page }) => {
+  await page.clock.setFixedTime(ON_THE_DAY)
+  await page.goto(PROJECT)
+  const summary = page.locator("details > summary", { hasText: "earlier steps" })
+  await expect(summary).toHaveText(/^\s*\d+ earlier steps\s*$/)
+})
+
+test("open, the steps and their arrow are one group, and it closes again", async ({ page }) => {
+  await page.clock.setFixedTime(ON_THE_DAY)
+  await page.goto(PROJECT)
+  const fold = page.locator("details", { hasText: "earlier steps" })
+  const background = () => fold.evaluate((el) => getComputedStyle(el).backgroundColor)
+  const closedBackground = await background()
+  await fold.locator("summary").click()
+  const first = page.locator("#city-council-2026-07-14-primary-election-warrant")
+  await expect(first).toBeVisible()
+  // The group is tinted and bordered, and holds the summary and every step.
+  await expect(async () => expect(await background()).not.toBe(closedBackground)).toPass()
+  await page.evaluate(() => Promise.all(document.getAnimations().map((a) => a.finished)))
+  const group = (await fold.boundingBox())!
+  for (const box of [await fold.locator("summary").boundingBox(), await first.boundingBox()]) {
+    expect(box!.y).toBeGreaterThanOrEqual(group.y)
+    expect(box!.y + box!.height).toBeLessThanOrEqual(group.y + group.height + 1)
+  }
+  // Shut again, it slides away and is a plain line once more.
+  await fold.locator("summary").click()
+  await expect(first).toBeHidden()
+  await expect(fold).not.toHaveAttribute("open", "")
+  await expect(async () => expect(await background()).toBe(closedBackground)).toPass()
+})

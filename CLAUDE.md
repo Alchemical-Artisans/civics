@@ -502,13 +502,23 @@ directory name off the URL as `itemSlug`. The link back carries the item's own
 entry id as the fragment, and `:target` rings that entry on the project page:
 no script, and no query string, which a prerendered page cannot read. **Entries
 whose last day has gone are folded away**, in a `<details>` above the rest
-reading "7 earlier steps" -- the page has to carry what happened, but a reader
-comes for what is still ahead. `splitAtToday` in `projects.ts` does the split
-(a run of days like early voting is ahead until its `through`, and a sitting
-today is not yet past); the date is the build's from `(tabs)/+layout.server.ts`
-and the reader's own after mount, the `inTheBrowser` bargain again. The fold
-opens itself when the address names an entry inside it, since the fragment
-above points at past entries more often than not. The agenda itself links such an item to the project rather than to its write-up:
+reading "7 earlier steps" and nothing more -- no dates, since the entries
+carry their own and a range over them said what the first of them already did.
+The page has to carry what happened, but a reader comes for what is still
+ahead. `splitAtToday` in `projects.ts` does the split (a run of days like early
+voting is ahead until its `through`, and a sitting today is not yet past); the
+date is the build's from `(tabs)/+layout.server.ts` and the reader's own after
+mount, the `inTheBrowser` bargain again. **A `<details>` cannot animate** -- the
+browser hides its content the moment `open` goes, leaving nothing to slide away
+-- so once live the layout owns `open` (`expanded`, plus `closing` while the
+content leaves) and the entries sit in an `{#if}` playing Svelte's `slide`; the
+served HTML carries them inside the closed `<details>`, which is all a reader
+with no script needs to open it, and a reader who asks for reduced motion gets a
+duration of 0. Open, the summary and its steps are one tinted, bordered panel,
+so it is plain which entries the arrow controls and where they stop. The fold
+opens itself, and scrolls to the entry once it has slid into place, when the
+address names an entry inside it, since the fragment above points at past
+entries more often than not. The agenda itself links such an item to the project rather than to its write-up:
 a meeting page writes `agendaHref(meeting, item)` for an item's line, which
 opens the project on that item's entry when the item is on one and the item's
 own page otherwise; the write-up stays reachable from the timeline. There is
