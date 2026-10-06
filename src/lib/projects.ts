@@ -24,6 +24,8 @@
  */
 
 /** An agenda item on a project's timeline. */
+import { Router } from "./router"
+
 export interface ItemEntry {
   kind: "item"
   /** The meeting's id, e.g. `city-council-2026-10-06`. */
@@ -153,4 +155,26 @@ export function projectsOf(
       .filter((e): e is ItemEntry => e.kind === "item" && e.meeting === meeting && e.item === item)
       .map((entry) => ({ project, entry })),
   )
+}
+
+/**
+ * Where an agenda's own line for an item should point.
+ *
+ * An item that is part of a project opens the project, on its own entry: a
+ * reader following the agenda wants to see what the item is a step in, and
+ * the project page puts that step in the context of every other, with the
+ * item's own write-up one click further on its timeline. An item that is in
+ * no project opens its write-up, as every item did before projects existed.
+ *
+ * A project page rather than the item page even though the item page still
+ * exists: the agenda used to hand the reader the warrant's seven pages, when
+ * the reader who clicks "Election Warrant" from an agenda wants to know where
+ * they vote and what is on the ballot -- which the project answers and the
+ * warrant only implies.
+ */
+export function agendaHref(meeting: string, item: string): string {
+  const [first] = projectsOf(meeting, item)
+  return first
+    ? Router.project(first.project.slug, entryId(first.entry))
+    : Router.meetingItem(meeting, item)
 }

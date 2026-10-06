@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { PROJECTS, entryDate, entryId, projectsOf, timeline } from "./projects"
+import { PROJECTS, agendaHref, entryDate, entryId, projectsOf, timeline } from "./projects"
 
 // Every item page that exists, by its meeting id and directory name.
 const itemPages = new Set(
@@ -78,5 +78,19 @@ describe("projectsOf", () => {
     expect(found.map((f) => f.project.slug)).toEqual(["2026-state-election"])
     expect(entryId(found[0].entry)).toBe("city-council-2026-10-06-election-warrant")
     expect(projectsOf("city-council-2026-10-06", "white-cane-awareness-day")).toEqual([])
+  })
+})
+
+describe("agendaHref", () => {
+  it("sends an item on a project to its entry on the project page", () => {
+    expect(agendaHref("city-council-2026-10-06", "election-warrant")).toBe(
+      "/projects/2026-state-election#city-council-2026-10-06-election-warrant",
+    )
+  })
+
+  it("sends any other item to its own page", () => {
+    expect(agendaHref("city-council-2026-10-06", "white-cane-awareness-day")).toBe(
+      "/calendar/meetings/city-council-2026-10-06/white-cane-awareness-day",
+    )
   })
 })

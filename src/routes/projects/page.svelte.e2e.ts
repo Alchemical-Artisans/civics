@@ -47,3 +47,15 @@ test("a precinct page links the statewide questions out and offers the day", asy
   await expect(page.getByRole("heading", { name: "Question 1", exact: true })).toHaveCount(0)
   await expect(page.getByRole("button", { name: /add to calendar/i })).toBeVisible()
 })
+
+test("the agenda opens the project on the item, not the item's own page", async ({ page }) => {
+  await page.goto("/calendar/meetings/city-council-2026-10-06")
+  await page.getByRole("link", { name: "Election Warrant, 2026 State Election" }).click()
+  await expect(page).toHaveURL(`${PROJECT}#city-council-2026-10-06-election-warrant`)
+  // The write-up is still a click away, from the timeline entry itself.
+  await page
+    .locator("#city-council-2026-10-06-election-warrant")
+    .getByRole("link", { name: "Election Warrant, 2026 State Election" })
+    .click()
+  await expect(page).toHaveURL(WARRANT)
+})

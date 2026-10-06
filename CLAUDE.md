@@ -497,7 +497,11 @@ project page lists them in order and `meetings/+layout.svelte` has to find an
 item's project to link back to it -- the layout's load reads the item's
 directory name off the URL as `itemSlug`. The link back carries the item's own
 entry id as the fragment, and `:target` rings that entry on the project page:
-no script, and no query string, which a prerendered page cannot read. There is
+no script, and no query string, which a prerendered page cannot read. The
+agenda itself links such an item to the project rather than to its write-up:
+a meeting page writes `agendaHref(meeting, item)` for an item's line, which
+opens the project on that item's entry when the item is on one and the item's
+own page otherwise; the write-up stays reachable from the timeline. There is
 no `/projects` index and no header entry yet; a project is reached from its
 items.
 
