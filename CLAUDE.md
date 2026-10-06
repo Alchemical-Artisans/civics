@@ -514,8 +514,10 @@ browser hides its content the moment `open` goes, leaving nothing to slide away
 content leaves) and the entries sit in an `{#if}` playing Svelte's `slide`; the
 served HTML carries them inside the closed `<details>`, which is all a reader
 with no script needs to open it, and a reader who asks for reduced motion gets a
-duration of 0. Open, the summary and its steps are one tinted, bordered panel,
-so it is plain which entries the arrow controls and where they stop. The fold
+duration of 0. Open, the steps are one tinted, bordered panel under the summary,
+so it is plain which entries the arrow controls and where they stop; the panel
+is not wrapped round the summary too, which put a border and padding round the
+line the moment it was clicked and made it jump. The fold
 opens itself, and scrolls to the entry once it has slid into place, when the
 address names an entry inside it, since the fragment above points at past
 entries more often than not. The agenda itself links such an item to the project rather than to its write-up:

@@ -138,26 +138,40 @@ test("the fold says how many steps and nothing about when", async ({ page }) => 
   await expect(summary).toHaveText(/^\s*\d+ earlier steps\s*$/)
 })
 
-test("open, the steps and their arrow are one group, and it closes again", async ({ page }) => {
+test("open, the steps are one group under a summary that does not move, and it closes again", async ({
+  page,
+}) => {
   await page.clock.setFixedTime(ON_THE_DAY)
   await page.goto(PROJECT)
   const fold = page.locator("details", { hasText: "earlier steps" })
-  const background = () => fold.evaluate((el) => getComputedStyle(el).backgroundColor)
-  const closedBackground = await background()
-  await fold.locator("summary").click()
+  const summary = fold.locator("summary")
+  const before = (await summary.boundingBox())!
+  await summary.click()
   const first = page.locator("#city-council-2026-07-14-primary-election-warrant")
   await expect(first).toBeVisible()
-  // The group is tinted and bordered, and holds the summary and every step.
-  await expect(async () => expect(await background()).not.toBe(closedBackground)).toPass()
   await page.evaluate(() => Promise.all(document.getAnimations().map((a) => a.finished)))
-  const group = (await fold.boundingBox())!
-  for (const box of [await fold.locator("summary").boundingBox(), await first.boundingBox()]) {
-    expect(box!.y).toBeGreaterThanOrEqual(group.y)
-    expect(box!.y + box!.height).toBeLessThanOrEqual(group.y + group.height + 1)
-  }
-  // Shut again, it slides away and is a plain line once more.
-  await fold.locator("summary").click()
+  // The line the reader clicked stays where it was ...
+  const after = (await summary.boundingBox())!
+  expect([after.x, after.y, after.width, after.height]).toEqual([
+    before.x,
+    before.y,
+    before.width,
+    before.height,
+  ])
+  // ... and the steps sit together in a tinted, bordered panel beneath it.
+  const panel = fold.locator("div > div", { has: first })
+  const style = await panel.evaluate((el) => {
+    const css = getComputedStyle(el)
+    return { background: css.backgroundColor, border: css.borderTopWidth }
+  })
+  expect(style.background).not.toBe("rgba(0, 0, 0, 0)")
+  expect(style.border).not.toBe("0px")
+  const box = (await panel.boundingBox())!
+  expect(box.y).toBeGreaterThanOrEqual(after.y + after.height)
+  expect((await first.boundingBox())!.y).toBeGreaterThanOrEqual(box.y)
+  // Shut again, it slides away and the line is exactly where it was.
+  await summary.click()
   await expect(first).toBeHidden()
   await expect(fold).not.toHaveAttribute("open", "")
-  await expect(async () => expect(await background()).toBe(closedBackground)).toPass()
+  expect(await summary.boundingBox()).toEqual(before)
 })

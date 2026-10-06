@@ -169,25 +169,25 @@
       {/snippet}
 
       {#if past.length}
-        <!-- Past entries: the record, folded. Open, the summary and the steps
-             it controls are one group -- a tinted panel with a border -- so it
-             is plain which entries the arrow belongs to and where they stop. -->
-        <details
-          open={expanded || closing}
-          class="mt-3 rounded-lg border text-sm transition-colors {expanded
-            ? 'border-slate-200 bg-slate-50 p-3'
-            : 'border-transparent'}"
-        >
+        <!-- Past entries: the record, folded. The summary is a plain line that
+             never moves; opening it slides out a tinted, bordered panel under
+             it holding the steps it controls, so it is plain which entries the
+             arrow belongs to and where they stop. The panel is not wrapped
+             round the summary as well, which put a border and padding round
+             the line the moment it was clicked and made it jump. -->
+        <details open={expanded || closing} class="mt-3 text-sm">
           <summary onclick={toggle} class="cursor-pointer text-slate-600 hover:text-slate-900">
             {past.length} earlier {past.length === 1 ? "step" : "steps"}
           </summary>
           {#if showPast}
             <div transition:slide={{ duration }} onoutroend={() => (closing = false)}>
-              <ol class="mt-3 space-y-3 border-l-2 border-slate-300 pl-4">
-                {#each past as entry (entryId(entry))}
-                  {@render row(entry)}
-                {/each}
-              </ol>
+              <div class="mt-2 rounded-lg border border-slate-200 bg-slate-50 p-3">
+                <ol class="space-y-3 border-l-2 border-slate-300 pl-4">
+                  {#each past as entry (entryId(entry))}
+                    {@render row(entry)}
+                  {/each}
+                </ol>
+              </div>
             </div>
           {/if}
         </details>
