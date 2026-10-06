@@ -214,7 +214,8 @@
                 aria-controls="ballot-panel-{part.id}"
                 aria-selected={current === part.id}
                 tabindex={current === part.id ? 0 : -1}
-                class="-mb-px border-b-2 px-1 py-2 text-sm font-medium {current === part.id
+                class="-mb-px cursor-pointer border-b-2 px-1 py-2 text-sm font-medium {current ===
+                part.id
                   ? 'border-slate-900 text-slate-900'
                   : 'border-transparent text-slate-500 hover:text-slate-700'}"
                 onclick={() => (activeBallot = part.id)}
