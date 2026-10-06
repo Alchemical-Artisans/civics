@@ -56,9 +56,16 @@ export interface DateEntry {
 
 export type Entry = ItemEntry | DateEntry
 
+/**
+ * What sort of undertaking a project is, which is how the bar's Projects menu
+ * groups them. In the order the menu lists them.
+ */
+export const PROJECT_KINDS = [{ id: "election", label: "Elections" }] as const
+
 export interface Project {
   slug: string
   title: string
+  kind: (typeof PROJECT_KINDS)[number]["id"]
   entries: Entry[]
 }
 
@@ -66,6 +73,7 @@ export const PROJECTS: Project[] = [
   {
     slug: "2026-state-election",
     title: "2026 State Election",
+    kind: "election",
     entries: [
       {
         kind: "item",

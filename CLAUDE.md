@@ -505,8 +505,10 @@ agenda itself links such an item to the project rather than to its write-up:
 a meeting page writes `agendaHref(meeting, item)` for an item's line, which
 opens the project on that item's entry when the item is on one and the item's
 own page otherwise; the write-up stays reachable from the timeline. There is
-no `/projects` index and no header entry yet; a project is reached from its
-items.
+no `/projects` index: the bar's **Projects** menu is the list, grouped by
+`kind` under `PROJECT_KINDS`' labels ("Elections"), the way the Budget menu
+replaced `/budget`. With no page to go to, the word Projects is itself the
+button that opens it.
 
 **The 2026 State Election** is the first, `src/routes/projects/2026-state-election/`.
 Its `election.ts` holds the warrant's polling places, offices and ten questions
@@ -624,7 +626,12 @@ its sections were read off rendered pages by hand. See
 Notable pieces:
 
 - **`src/lib/SiteHeader.svelte`** is the bar on every page: the mark, the page's
-  own name, the budget with its menu of fiscal years, and the calendar. It
+  own name, the budget with its menu of fiscal years, the projects with theirs,
+  and the calendar. Both menus are **`src/lib/HeaderMenu.svelte`**, which holds
+  everything below about hovering, the caret and the CSS-to-script handover;
+  on a phone it hangs a menu off the bar's right edge rather than off its own
+  word, since with two menus side by side the left one would otherwise open
+  off the screen. It
   carries no link to a document at all: the budget calendar in the footer does
   that, on every page of a book, hanging each file off the step of the year that
   produced it. On the budget half it

@@ -45,6 +45,7 @@ describe("timeline", () => {
   it("runs in date order, a sitting ahead of a date it shares a day with", () => {
     const project = {
       slug: "x",
+      kind: "election" as const,
       title: "X",
       entries: [
         {

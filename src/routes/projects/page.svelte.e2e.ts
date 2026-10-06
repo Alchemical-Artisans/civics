@@ -75,3 +75,29 @@ test("the map and the polling places are two pages, the map first", async ({ pag
   await page.getByRole("link", { name: "Ward 7, Precinct 2A" }).click()
   await expect(page).toHaveURL(`${PROJECT}/precincts/7-2`)
 })
+
+test("the bar's Projects menu lists the election under Elections", async ({ page }) => {
+  await page.goto("/")
+  const header = page.locator("header")
+  const menu = header.locator("#project-list")
+  await expect(menu).toBeHidden()
+  await header.getByRole("button", { name: /Projects/ }).click()
+  await expect(menu).toBeVisible()
+  await expect(menu.getByText("Elections")).toBeVisible()
+  await menu.getByRole("link", { name: "2026 State Election" }).click()
+  await expect(page).toHaveURL(PROJECT)
+  // Inside the section, the word is marked as where the reader is.
+  await expect(
+    header.getByRole("button", { name: /Projects/ }).getByText("Projects", { exact: true }),
+  ).toHaveClass(/font-medium/)
+})
+
+test("the Projects menu opens on hover with no script", async ({ browser }) => {
+  const context = await browser.newContext({ javaScriptEnabled: false })
+  const page = await context.newPage()
+  await page.goto("/")
+  const header = page.locator("header")
+  await header.getByRole("button", { name: /Projects/ }).hover()
+  await expect(header.locator("#project-list")).toBeVisible()
+  await context.close()
+})

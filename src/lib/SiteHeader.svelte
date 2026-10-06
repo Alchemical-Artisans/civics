@@ -10,8 +10,9 @@
   replaces all of them.
 -->
 <script lang="ts">
-  import { onMount } from "svelte"
   import { page } from "$app/state"
+  import HeaderMenu from "$lib/HeaderMenu.svelte"
+  import { PROJECTS, PROJECT_KINDS } from "$lib/projects"
   import { Router } from "$lib/router"
   import { barOf } from "$lib/heading"
   import type { FiscalYear } from "$lib/budget"
@@ -40,6 +41,7 @@
 
   const current = $derived({
     budget: within("/budget"),
+    projects: within("/projects"),
     calendar: within("/calendar"),
   })
 
@@ -48,79 +50,21 @@
   /** The newest book with a page here: where the word "Budget" goes. */
   const newest = $derived(years.find((year) => year.written))
 
-  // The menu opens under the pointer and closes when it leaves, which is the
-  // only way to have "Budget" be a link to this year's book *and* a way to
-  // every other year: a word that navigates cannot also be the thing you press
-  // to see a list. The caret beside it is that press, and it is what a touch
-  // screen -- which has no hover to give -- uses instead.
-  //
-  // The hover is written twice on purpose: in the CSS below, so it works on a
-  // page that has not hydrated or that runs no script at all, and here, so the
-  // caret's `aria-expanded` says what is actually on screen. The two agree
-  // because both are the same condition.
-  let shown = $state(false)
-  let item: HTMLElement | undefined = $state()
-
-  // Which of the two is in charge. Before the page hydrates the CSS is, because
-  // it is the only thing there; from mount on the state above is, so that
-  // Escape and a second press on the caret can close a menu the pointer is
-  // still sitting on -- which CSS `:hover`, left in play, would hold open.
-  let live = $state(false)
-  onMount(() => (live = true))
-
-  const close = () => (shown = false)
-
-  // Only a mouse. A tap fires `pointerenter` as well, and on a phone that
-  // would open the menu under the finger already on its way to the link.
-  const enter = (event: PointerEvent) => {
-    if (event.pointerType === "mouse") shown = true
-  }
-
-  // Not while the reader is in it: the menu they pressed the caret to open, and
-  // are tabbing through, should not vanish because the mouse wandered off.
-  const leave = (event: PointerEvent) => {
-    if (event.pointerType !== "mouse") return
-    if (item?.contains(document.activeElement)) return
-    shown = false
-  }
-
-  // Tab through the years and the menu stays up; tab past the last of them and
-  // it closes. `focusout` fires before the next element takes focus, so where
-  // focus is going is `relatedTarget` rather than anything readable from here.
-  //
-  // There is no matching `focusin`. Focus does not open the menu -- pressing
-  // the caret does, by keyboard exactly as by thumb -- because a click gives
-  // the button focus a moment before it fires, and a menu that opens on focus
-  // would then be closed again by the press that opened it.
-  const left = (event: FocusEvent) => {
-    if (!item?.contains(event.relatedTarget as Node | null)) close()
-  }
-
-  // The page changes under a menu that stays exactly as it was, because
-  // SvelteKit navigates without replacing the bar.
-  $effect(() => {
-    if (page.url.pathname) close()
-  })
-
-  $effect(() => {
-    const past = (event: PointerEvent) => {
-      if (shown && !item?.contains(event.target as Node)) close()
-    }
-    const escape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") close()
-    }
-
-    document.addEventListener("pointerdown", past)
-    document.addEventListener("keydown", escape)
-    return () => {
-      document.removeEventListener("pointerdown", past)
-      document.removeEventListener("keydown", escape)
-    }
-  })
+  // Projects by kind, in the order the menu lists the kinds: what the city is
+  // doing, grouped by what sort of thing it is, rather than one flat list that
+  // would mix an election in with a building project.
+  const projectGroups = $derived(
+    PROJECT_KINDS.map((kind) => ({
+      ...kind,
+      projects: PROJECTS.filter((project) => project.kind === kind.id),
+    })).filter((group) => group.projects.length),
+  )
 </script>
 
 <header class="border-b border-slate-200 bg-white">
-  <div class="flex flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3">
+  <!-- `relative`: on a phone the menus in the bar hang off its right edge
+       rather than off their own words -- see `HeaderMenu`. -->
+  <div class="relative flex flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3">
     <a class="flex items-center gap-2 text-slate-900 hover:text-slate-600" href={Router.home()}>
       <!-- Decorative: the name sits right beside it, so a screen reader
            announcing the mark as well would only say the same thing twice. -->
@@ -181,104 +125,91 @@
       <!-- `aria-current="page"` on the link is the same section marker the
            calendar link carries; the year inside the menu gets `"true"` -- the
            current item of a set -- rather than a second "page" for one page. -->
-      <!-- `role="none"`: the wrapper is where hovering is noticed and where the
-           menu is positioned from, and nothing more -- the link, the caret and
-           the list under it carry every bit of the meaning. -->
-      <div
-        role="none"
-        class="budget-item relative flex items-center gap-1"
-        class:open={shown}
-        class:live
-        bind:this={item}
-        onpointerenter={enter}
-        onpointerleave={leave}
-        onfocusout={left}
+      <HeaderMenu
+        label="Budget"
+        href={newest ? Router.budgetBook(newest.id) : undefined}
+        current={current.budget}
+        id="budget-years"
+        toggle="Every fiscal year"
       >
-        {#if newest}
-          <a
-            class="underline decoration-slate-300 hover:decoration-slate-900 {current.budget
-              ? 'font-medium text-slate-900'
-              : 'text-slate-600'}"
-            href={Router.budgetBook(newest.id)}
-            aria-current={current.budget ? "page" : undefined}
-          >
-            Budget
-          </a>
-        {:else}
-          <!-- No book is written up, so the word leads nowhere and the years
-               in the menu are all links to the city's own files. -->
-          <span class="text-slate-600">Budget</span>
-        {/if}
+        {#each years as year (year.id)}
+          <li class="flex items-baseline justify-between gap-3 px-2 py-1 hover:bg-slate-50">
+            {#if year.written}
+              <a
+                class="font-medium text-slate-900 underline decoration-slate-300 hover:decoration-slate-900"
+                href={Router.budgetBook(year.id)}
+                aria-current={within(`/budget/${year.id}`) ? "true" : undefined}
+              >
+                FY{year.year}
+              </a>
+            {:else if year.budget}
+              <a
+                class="text-slate-600 underline decoration-slate-300 hover:text-slate-900"
+                href={year.budget}
+                target="_blank"
+                rel="external noopener noreferrer"
+              >
+                FY{year.year}<span class="sr-only">
+                  budget, PDF, opens the city's file in a new tab</span
+                >
+              </a>
+            {:else}
+              <!-- The city's page prints the year with nothing behind it, as
+                   it does for FY2022 and FY2023. Saying so beats a row the
+                   reader has to work out is dead. -->
+              <span class="text-slate-500"
+                >FY{year.year}<span class="sr-only"> — no budget file</span></span
+              >
+            {/if}
 
-        <!-- The caret is the whole control on a touch screen, so it is a
-             button of its own rather than a decoration on the link, and it is
-             padded out to something a thumb can hit. -->
-        <button
-          class="-m-2 cursor-pointer p-2 text-slate-500 hover:text-slate-900"
-          type="button"
-          aria-expanded={shown}
-          aria-controls="budget-years"
-          onclick={() => (shown = !shown)}
-        >
-          <span aria-hidden="true">&#9662;</span>
-          <span class="sr-only">Every fiscal year</span>
-        </button>
+            {#if year.audit}
+              <a
+                class="text-xs text-slate-500 underline decoration-slate-300 hover:text-slate-900"
+                href={year.audit}
+                target="_blank"
+                rel="external noopener noreferrer"
+              >
+                Audit<span class="sr-only">
+                  report for FY{year.year}, PDF, opens the city's file in a new tab</span
+                >
+              </a>
+            {/if}
+          </li>
+        {/each}
+      </HeaderMenu>
 
-        <!-- Taller than most screens if it ran to its content, so it scrolls
-             within itself; `right-0` because the menu hangs off the end of the
-             bar and would otherwise run off the window on a phone. It sits
-             against the bar rather than below a gap, so crossing into it does
-             not take the pointer out of what it is hovering. -->
-        <ul
-          class="budget-years absolute top-full right-0 z-50 m-0 max-h-[70vh] w-60 list-none overflow-y-auto rounded border border-slate-200 bg-white p-1 shadow-lg"
-          id="budget-years"
+      <!--
+        Projects: what the city is doing that runs across more than one
+        sitting, by kind. There is no page listing them -- the menu is the
+        list, the way the budget's menu replaced `/budget` -- so the word opens
+        the menu rather than going anywhere. A kind's name heads its projects
+        and is not a link.
+      -->
+      {#if projectGroups.length}
+        <HeaderMenu
+          label="Projects"
+          current={current.projects}
+          id="project-list"
+          toggle="every project"
         >
-          {#each years as year (year.id)}
-            <li class="flex items-baseline justify-between gap-3 px-2 py-1 hover:bg-slate-50">
-              {#if year.written}
+          {#each projectGroups as group (group.id)}
+            <li class="px-2 pt-1.5 pb-0.5 text-[11px] tracking-wide text-slate-500 uppercase">
+              {group.label}
+            </li>
+            {#each group.projects as project (project.slug)}
+              <li class="px-2 py-1 hover:bg-slate-50">
                 <a
                   class="font-medium text-slate-900 underline decoration-slate-300 hover:decoration-slate-900"
-                  href={Router.budgetBook(year.id)}
-                  aria-current={within(`/budget/${year.id}`) ? "true" : undefined}
+                  href={Router.project(project.slug)}
+                  aria-current={within(`/projects/${project.slug}`) ? "true" : undefined}
                 >
-                  FY{year.year}
+                  {project.title}
                 </a>
-              {:else if year.budget}
-                <a
-                  class="text-slate-600 underline decoration-slate-300 hover:text-slate-900"
-                  href={year.budget}
-                  target="_blank"
-                  rel="external noopener noreferrer"
-                >
-                  FY{year.year}<span class="sr-only">
-                    budget, PDF, opens the city's file in a new tab</span
-                  >
-                </a>
-              {:else}
-                <!-- The city's page prints the year with nothing behind it, as
-                     it does for FY2022 and FY2023. Saying so beats a row the
-                     reader has to work out is dead. -->
-                <span class="text-slate-500"
-                  >FY{year.year}<span class="sr-only"> — no budget file</span></span
-                >
-              {/if}
-
-              {#if year.audit}
-                <a
-                  class="text-xs text-slate-500 underline decoration-slate-300 hover:text-slate-900"
-                  href={year.audit}
-                  target="_blank"
-                  rel="external noopener noreferrer"
-                >
-                  Audit<span class="sr-only">
-                    report for FY{year.year}, PDF, opens the city's file in a new tab</span
-                  >
-                </a>
-              {/if}
-            </li>
+              </li>
+            {/each}
           {/each}
-        </ul>
-      </div>
+        </HeaderMenu>
+      {/if}
 
       <a
         class="underline decoration-slate-300 hover:decoration-slate-900 {current.calendar
@@ -292,32 +223,3 @@
     </nav>
   </div>
 </header>
-
-<style>
-  /*
-    The menu is hidden markup rather than markup that is not there, so hovering
-    reveals it with no script: a reader whose page has not hydrated, or who runs
-    none at all, still gets every year the city publishes. `:not(.live)` hands
-    that job over the moment the component mounts, so there is never a page
-    where CSS and the component disagree about what is on screen.
-
-    `@media (hover: hover)` keeps it off a touch screen, where a tap counts as a
-    hover and then stays hovered until something else is touched -- the menu
-    would open on the way to the link and sit there afterwards. The caret is
-    what a touch screen presses instead, and `.open` is that press.
-  */
-  .budget-years {
-    display: none;
-  }
-
-  .budget-item.open .budget-years {
-    display: block;
-  }
-
-  @media (hover: hover) {
-    .budget-item:not(.live):hover .budget-years,
-    .budget-item:not(.live):focus-within .budget-years {
-      display: block;
-    }
-  }
-</style>
