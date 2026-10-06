@@ -19,6 +19,7 @@ import { PROJECTS, type Project } from "$lib/projects"
 import type { CalendarEvent } from "$lib/ics"
 import { Router } from "$lib/router"
 import { COLOURS } from "$lib/chart-colours"
+import { candidatesFor, type Candidate } from "./candidates"
 
 /** The project this is, from the registry the meeting pages link back through. */
 export const PROJECT = PROJECTS.find((p) => p.slug === "2026-state-election") as Project
@@ -503,6 +504,8 @@ export interface BallotLine {
    * See `ballotFor`.
    */
   onWarrant: boolean
+  /** Who is running, from the Secretary of the Commonwealth's list: `candidates.ts`. */
+  candidates: Candidate[]
 }
 
 /**
@@ -527,7 +530,12 @@ export function ballotFor(districts: Districts): BallotLine[] {
   const seen = new Set<string>()
   for (const row of OFFICES) {
     if (!row.kind) {
-      lines.push({ office: row.office, district: row.district, onWarrant: true })
+      lines.push({
+        office: row.office,
+        district: row.district,
+        onWarrant: true,
+        candidates: candidatesFor(row.office, row.district),
+      })
       continue
     }
     if (seen.has(row.office)) continue
@@ -536,8 +544,18 @@ export function ballotFor(districts: Districts): BallotLine[] {
     const match = OFFICES.find((r) => r.office === row.office && r.district === ours)
     lines.push(
       match
-        ? { office: row.office, district: match.district, onWarrant: true }
-        : { office: row.office, district: ours, onWarrant: false },
+        ? {
+            office: row.office,
+            district: match.district,
+            onWarrant: true,
+            candidates: candidatesFor(row.office, match.district),
+          }
+        : {
+            office: row.office,
+            district: ours,
+            onWarrant: false,
+            candidates: candidatesFor(row.office, ours),
+          },
     )
   }
   return lines

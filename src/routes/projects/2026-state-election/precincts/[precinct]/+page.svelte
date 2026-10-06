@@ -29,6 +29,7 @@
     pollingPlaceFor,
     precinctName,
   } from "../../election"
+  import { CANDIDATES_SOURCE } from "../../candidates"
 
   let { data } = $props()
 
@@ -244,18 +245,26 @@
               <thead class="border-b border-slate-300 text-slate-500">
                 <tr>
                   <th scope="col" class="py-1 pr-3 font-medium">Office</th>
-                  <th scope="col" class="py-1 pr-3 font-medium">District</th>
+                  <th scope="col" class="py-1 pr-3 font-medium">Candidates</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-slate-100">
                 {#each ballots[i] as cell, row (row)}
                   {@const differs =
                     panels.length > 1 && ballots.some((b) => b[row].district !== cell.district)}
-                  <tr class={differs ? "bg-orange-50" : ""}>
+                  <tr class={differs ? "bg-orange-50" : ""} title={cell.district}>
                     <th scope="row" class="py-1.5 pr-3 font-normal text-slate-900">{cell.office}</th
                     >
                     <td class="py-1.5 pr-3 text-slate-700">
-                      {cell.district}{#if !cell.onWarrant}<sup>*</sup>{/if}
+                      <ul>
+                        {#each cell.candidates as candidate (candidate.name)}
+                          <li>
+                            {candidate.name}
+                            <span class="text-slate-500">({candidate.party})</span
+                            >{#if !cell.onWarrant}<sup>*</sup>{/if}
+                          </li>
+                        {/each}
+                      </ul>
                     </td>
                   </tr>
                 {/each}
@@ -264,6 +273,17 @@
           </div>
         {/each}
       </div>
+
+      <p class="mt-2 text-xs text-slate-500">
+        Candidates:
+        <a
+          class="underline hover:text-slate-700"
+          href={CANDIDATES_SOURCE.url}
+          target="_blank"
+          rel="external noopener noreferrer"
+          >{CANDIDATES_SOURCE.name}<span class="sr-only">, opens in a new tab</span></a
+        >.
+      </p>
 
       {#if offWarrant}
         <!-- The warrant names the Third Essex House district and no other. See
