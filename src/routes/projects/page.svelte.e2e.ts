@@ -26,8 +26,9 @@ test("a precinct with an A half shows both ballots and both buildings", async ({
   await page.goto(`${PROJECT}/precincts/7-2`)
   await expect(page.getByText("Hunking Middle School", { exact: true })).toBeVisible()
   await expect(page.getByText("Consentino Middle School", { exact: true })).toBeVisible()
-  const senate = page.getByRole("row", { name: /SENATOR IN GENERAL COURT/ })
+  const senate = page.getByRole("tabpanel").getByRole("row", { name: /SENATOR IN GENERAL COURT/ })
   await expect(senate).toContainText("SECOND ESSEX AND MIDDLESEX DISTRICT")
+  await page.getByRole("tab", { name: "Precinct 7-2A" }).click()
   await expect(senate).toContainText("FIRST ESSEX DISTRICT")
 })
 

@@ -9,6 +9,7 @@
   (Ward 7's Precinct 2 and 2A), each names its own.
 -->
 <script lang="ts">
+  import { onMount } from "svelte"
   import PrecinctMap from "$lib/PrecinctMap.svelte"
   import AddToCalendar from "$lib/AddToCalendar.svelte"
   import { formatLongDate } from "$lib/calendar"
@@ -49,7 +50,25 @@
   const sameBallot = $derived(
     ballots.every((b) => JSON.stringify(b) === JSON.stringify(ballots[0])),
   )
-  const columns = $derived(sameBallot ? [parts[0]] : parts)
+  // One ballot is one panel; two are a tab each.
+  const panels = $derived(sameBallot ? [parts[0]] : parts)
+
+  let activeBallot = $state("")
+  const current = $derived(panels.some((p) => p.id === activeBallot) ? activeBallot : panels[0].id)
+  let ballotsLive = $state(false)
+  onMount(() => (ballotsLive = true))
+
+  const moveBallot = (event: KeyboardEvent) => {
+    const at = panels.findIndex((p) => p.id === current)
+    if (event.key === "ArrowRight") activeBallot = panels[(at + 1) % panels.length].id
+    else if (event.key === "ArrowLeft")
+      activeBallot = panels[(at - 1 + panels.length) % panels.length].id
+    else if (event.key === "Home") activeBallot = panels[0].id
+    else if (event.key === "End") activeBallot = panels[panels.length - 1].id
+    else return
+    event.preventDefault()
+    document.getElementById(`ballot-tab-${activeBallot}`)?.focus()
+  }
   const offWarrant = $derived(ballots.flat().some((line) => !line.onWarrant))
 
   // Framed on the ward, which is what the precinct is drawn inside, and
@@ -175,32 +194,75 @@
     <section aria-labelledby="ballot">
       <h2 id="ballot" class="text-lg font-semibold text-slate-900">Ballot</h2>
 
-      <table class="mt-3 w-full text-left text-sm">
-        <thead class="border-b border-slate-300 text-slate-500">
-          <tr>
-            <th scope="col" class="py-1 pr-3 font-medium">Office</th>
-            {#each columns as part (part.id)}
-              <th scope="col" class="py-1 pr-3 font-medium">
-                {sameBallot ? "District" : `Precinct ${part.id}`}
-              </th>
+      <!-- An `A` half is a second ballot, so it is a tab of its own rather than
+         a column squeezed in beside the first. Hidden markup, not absent: until
+         this mounts the tab bar is `display: none` and every ballot sits in the
+         flow under its own heading, so a reader who never hydrates gets them
+         stacked. -->
+      <div class="ballots" class:live={ballotsLive}>
+        {#if panels.length > 1}
+          <div
+            role="tablist"
+            aria-label="Ballots"
+            class="ballot-tab-bar mt-3 flex flex-wrap gap-x-4 gap-y-1 border-b border-slate-200"
+          >
+            {#each panels as part (part.id)}
+              <button
+                type="button"
+                role="tab"
+                id="ballot-tab-{part.id}"
+                aria-controls="ballot-panel-{part.id}"
+                aria-selected={current === part.id}
+                tabindex={current === part.id ? 0 : -1}
+                class="-mb-px border-b-2 px-1 py-2 text-sm font-medium {current === part.id
+                  ? 'border-slate-900 text-slate-900'
+                  : 'border-transparent text-slate-500 hover:text-slate-700'}"
+                onclick={() => (activeBallot = part.id)}
+                onkeydown={moveBallot}
+              >
+                Precinct {part.id}
+              </button>
             {/each}
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-slate-100">
-          {#each ballots[0] as line, row (row)}
-            {@const differs = !sameBallot && ballots.some((b) => b[row].district !== line.district)}
-            <tr class={differs ? "bg-orange-50" : ""}>
-              <th scope="row" class="py-1.5 pr-3 font-normal text-slate-900">{line.office}</th>
-              {#each columns as part, i (part.id)}
-                {@const cell = ballots[i][row]}
-                <td class="py-1.5 pr-3 text-slate-700">
-                  {cell.district}{#if !cell.onWarrant}<sup>*</sup>{/if}
-                </td>
-              {/each}
-            </tr>
-          {/each}
-        </tbody>
-      </table>
+          </div>
+        {/if}
+
+        {#each panels as part, i (part.id)}
+          <div
+            id="ballot-panel-{part.id}"
+            role="tabpanel"
+            aria-labelledby={panels.length > 1 ? `ballot-tab-${part.id}` : "ballot"}
+            class="ballot-panel"
+            class:active={current === part.id}
+          >
+            {#if panels.length > 1}
+              <h3 class="ballot-panel-heading mt-4 font-medium text-slate-900">
+                Precinct {part.id}
+              </h3>
+            {/if}
+            <table class="mt-3 w-full text-left text-sm">
+              <thead class="border-b border-slate-300 text-slate-500">
+                <tr>
+                  <th scope="col" class="py-1 pr-3 font-medium">Office</th>
+                  <th scope="col" class="py-1 pr-3 font-medium">District</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100">
+                {#each ballots[i] as cell, row (row)}
+                  {@const differs =
+                    panels.length > 1 && ballots.some((b) => b[row].district !== cell.district)}
+                  <tr class={differs ? "bg-orange-50" : ""}>
+                    <th scope="row" class="py-1.5 pr-3 font-normal text-slate-900">{cell.office}</th
+                    >
+                    <td class="py-1.5 pr-3 text-slate-700">
+                      {cell.district}{#if !cell.onWarrant}<sup>*</sup>{/if}
+                    </td>
+                  </tr>
+                {/each}
+              </tbody>
+            </table>
+          </div>
+        {/each}
+      </div>
 
       {#if offWarrant}
         <!-- The warrant names the Third Essex House district and no other. See
@@ -241,3 +303,26 @@
     </section>
   </div>
 </div>
+
+<style>
+  .ballot-tab-bar {
+    display: none;
+  }
+
+  .ballots.live .ballot-tab-bar {
+    display: flex;
+  }
+
+  .ballots.live .ballot-panel {
+    display: none;
+  }
+
+  .ballots.live .ballot-panel.active {
+    display: block;
+  }
+
+  /* The tab already names the ballot; the heading is for the stacked, un-hydrated view. */
+  .ballots.live .ballot-panel-heading {
+    display: none;
+  }
+</style>
