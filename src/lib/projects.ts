@@ -76,6 +76,56 @@ export const PROJECTS: Project[] = [
     entries: [
       {
         kind: "item",
+        meeting: "city-council-2026-07-14",
+        item: "polling-place-changes",
+        board: "City Council",
+        number: "8.2",
+        title: "Polling Place Changes",
+      },
+      {
+        kind: "item",
+        meeting: "city-council-2026-07-14",
+        item: "primary-election-warrant",
+        board: "City Council",
+        number: "8.3",
+        title: "Election Warrant, 2026 State Primary",
+      },
+      {
+        kind: "item",
+        meeting: "city-council-2026-08-11",
+        item: "early-voting-schedule",
+        board: "City Council",
+        number: "8.1",
+        title: "Early Voting Schedule and Election Deadlines, State Primary",
+      },
+      {
+        kind: "date",
+        date: "2026-08-22",
+        through: "2026-08-28",
+        title:
+          "Early voting for the State Primary, in the Early Voting Room on the basement level of City Hall",
+        from: { meeting: "city-council-2026-08-11", item: "early-voting-schedule" },
+      },
+      {
+        kind: "date",
+        date: "2026-08-25",
+        title: "Vote-by-mail applications for the State Primary must be received by 5:00 PM",
+        from: { meeting: "city-council-2026-08-11", item: "early-voting-schedule" },
+      },
+      {
+        kind: "date",
+        date: "2026-08-25",
+        title: "Primary warrant must be posted, at least seven days before the primary",
+        from: { meeting: "city-council-2026-07-14", item: "primary-election-warrant" },
+      },
+      {
+        kind: "date",
+        date: "2026-09-01",
+        title: "State Primary, 7:00 A.M. to 8:00 P.M.",
+        from: { meeting: "city-council-2026-07-14", item: "primary-election-warrant" },
+      },
+      {
+        kind: "item",
         meeting: "city-council-2026-10-06",
         item: "early-voting-schedule",
         board: "City Council",
@@ -150,6 +200,34 @@ export function timeline(project: Project): Entry[] {
         a.i - b.i,
     )
     .map(({ entry }) => entry)
+}
+
+/**
+ * The last day an entry covers: a run of days like early voting ends on its
+ * `through`, anything else on its own date.
+ */
+export function entryEnd(entry: Entry): string {
+  return entry.kind === "date" && entry.through ? entry.through : entryDate(entry)
+}
+
+/**
+ * A timeline's entries split at today, in the order `timeline` gives them.
+ *
+ * What is behind a reader is the record, which the page has to carry but which
+ * few come for; what is ahead is the part they can still act on, so the page
+ * shows that and folds the rest away. An entry is past only once its last day
+ * has gone -- early voting is still ahead on the day it ends -- and a sitting
+ * today is not yet past either, so the agenda item that set a deadline stays
+ * in view on the day it is read out.
+ */
+export function splitAtToday(
+  entries: Entry[],
+  today: string,
+): { past: Entry[]; upcoming: Entry[] } {
+  return {
+    past: entries.filter((entry) => entryEnd(entry) < today),
+    upcoming: entries.filter((entry) => entryEnd(entry) >= today),
+  }
 }
 
 /** Every project an agenda item is on, with the entry naming it. */
