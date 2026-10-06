@@ -75,14 +75,10 @@ const matches = (a: string[], b: string[]): Array<[number, number]> => {
 }
 
 /**
- * Which words of `before` are gone and which words of `after` are new.
- *
- * A word that both versions carry in the same order is unchanged on both
- * sides; everything else is marked. A rewritten paragraph therefore comes back
- * marked almost end to end, which is the signal to show it plain instead --
- * see the `rewritten` flag on a comparison row.
+ * Which tokens of each side survive into the other, after stripping the common
+ * head and tail -- the alignment both `wordDiff` and `wordEdits` read.
  */
-export const wordDiff = (before: string, after: string): WordDiff => {
+const align = (before: string, after: string) => {
   const a = tokenize(before)
   const b = tokenize(after)
 
@@ -110,7 +106,57 @@ export const wordDiff = (before: string, after: string): WordDiff => {
     changedB[head + j] = false
   }
 
+  return { a, b, changedA, changedB }
+}
+
+/**
+ * Which words of `before` are gone and which words of `after` are new.
+ *
+ * A word that both versions carry in the same order is unchanged on both
+ * sides; everything else is marked. A rewritten paragraph therefore comes back
+ * marked almost end to end, which is the signal to show it plain instead --
+ * see the `rewritten` flag on a comparison row.
+ */
+export const wordDiff = (before: string, after: string): WordDiff => {
+  const { a, b, changedA, changedB } = align(before, after)
   return { before: runs(a, changedA), after: runs(b, changedB) }
+}
+
+/** One step of an edit script: text both versions share, or one side's own. */
+export type Edit = { text: string; op: "same" | "removed" | "added" }
+
+/**
+ * The same difference as `wordDiff`, as one interleaved run of text rather
+ * than two -- what a strike-through copy prints, where the struck words and
+ * their replacement sit side by side in a single sentence.
+ *
+ * Where a passage loses some words and gains others in one place, the loss is
+ * written first, as a marked-up copy prints it: "~~article~~ _ordinance_".
+ * Shared words take the after side's spacing, so joining the `same` and
+ * `added` steps gives `after` back exactly; joining `same` and `removed` gives
+ * `before` back but for the spacing around shared words.
+ */
+export const wordEdits = (before: string, after: string): Edit[] => {
+  const { a, b, changedA, changedB } = align(before, after)
+  const out: Edit[] = []
+  const push = (text: string, op: Edit["op"]) => {
+    const last = out[out.length - 1]
+    if (last && last.op === op) last.text += text
+    else out.push({ text, op })
+  }
+
+  let i = 0
+  let j = 0
+  while (i < a.length || j < b.length) {
+    while (i < a.length && changedA[i]) push(a[i++], "removed")
+    while (j < b.length && changedB[j]) push(b[j++], "added")
+    if (i < a.length && j < b.length) {
+      push(b[j], "same")
+      i++
+      j++
+    }
+  }
+  return out
 }
 
 /**

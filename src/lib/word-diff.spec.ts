@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest"
-import { wordDiff, similarity, type Run } from "./word-diff"
+import { wordDiff, wordEdits, similarity, type Edit, type Run } from "./word-diff"
 
 /** What a renderer draws: the marked runs, in order, trimmed for reading. */
 const marked = (runs: Run[]) => runs.filter((r) => r.changed).map((r) => r.text.trim())
@@ -72,5 +72,30 @@ describe("similarity", () => {
         "All nonessential outdoor water uses are banned, except that watering of ornamentals and flower gardens with drip irrigation, hand-held hose, or watering can.",
       ),
     ).toBeLessThan(0.3)
+  })
+})
+
+describe("wordEdits", () => {
+  const side = (edits: Edit[], op: Edit["op"]) =>
+    edits
+      .filter((e) => e.op === "same" || e.op === op)
+      .map((e) => e.text)
+      .join("")
+
+  it("gives each side back from its own steps", () => {
+    const before = "this article is adopted under MGL c. 40"
+    const after = "this ordinance is adopted under M.G.L. c. 40, as amended"
+    const edits = wordEdits(before, after)
+    expect(side(edits, "removed")).toBe(before)
+    expect(side(edits, "added")).toBe(after)
+  })
+
+  it("writes a loss before the words that replace it, as a marked copy does", () => {
+    expect(wordEdits("the City may declare", "the City shall declare")).toEqual([
+      { text: "the City ", op: "same" },
+      { text: "may ", op: "removed" },
+      { text: "shall ", op: "added" },
+      { text: "declare", op: "same" },
+    ])
   })
 })

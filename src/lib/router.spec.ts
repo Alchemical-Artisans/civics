@@ -35,6 +35,12 @@ describe("Router", () => {
     )
   })
 
+  it("builds a generated strike-through beneath its item", () => {
+    expect(Router.strikeThrough("city-council-2026-09-22", "water-use-restriction-ordinance")).toBe(
+      "/calendar/meetings/city-council-2026-09-22/water-use-restriction-ordinance/strike-through",
+    )
+  })
+
   it("builds an excerpt path beneath its meeting", () => {
     expect(Router.excerpt("city-council-2026-08-25", "surplus-city-vehicles/order")).toBe(
       "/excerpts/city-council-2026-08-25/surplus-city-vehicles/order.pdf",

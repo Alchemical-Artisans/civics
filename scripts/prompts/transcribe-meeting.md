@@ -510,8 +510,8 @@ scans has not been written up.
   `<th scope="row">` on a total row. Column widths and scrolling are handled
   site-wide in `src/routes/layout.css`; a page does not style its own table.
 - **Return `wide: true`** from the item's `+page.ts` where the table runs to
-  more than three or four columns — the same knob the ordinance comparison
-  uses, and for the same reason.
+  more than three or four columns — the same knob a budget section uses, and
+  for the same reason.
 - **What is a drawing is not transcribed.** These reports carry a "Trendline"
   column of sparklines and a column of Harvey balls beside each percentage;
   there is nothing in either to copy, and the figure beside them already says
@@ -538,46 +538,65 @@ regulations -- says almost nothing on the agenda line: "repeal and replace
 Chapter 250, Article VI ... in its entirety, with the following revised
 ordinance". The packet then attaches both, and a reader who wants to know what
 the Council is actually voting on has to hold seven scanned pages against five
-and find the changed words by eye. Nobody does that. **Transcribe both
-versions and show them side by side with the differences marked.**
+and find the changed words by eye. Nobody does that. **Transcribe the change
+and draw it as a diff, always -- and link a strike-through above it.** A diff
+is drawn even where the packet carries its own marked-up copy: the city's
+strike-through is a scan, and the diff is what a reader can search, read on a
+phone and skim for the handful of paragraphs that move.
 
-The pieces are already here:
+Everything is drawn from one shape, a **redline** (`$lib/redline.ts`): the
+text as paragraphs, each a run of kept words, `{ struck }` words and
+`{ added }` words, in the order a marked-up copy sets them down. How you get
+one depends on the packet:
 
-- `$lib/word-diff.ts` marks the words that moved between two versions of one
-  passage, as runs, both ways round -- struck on the side that loses a word,
-  solid on the side that gains one.
-- `$lib/OrdinanceComparison.svelte` draws a whole comparison: two columns on a
-  wide screen, stacked and labelled in place on a narrow one.
-- A `+page.ts` returning `wide: true` gives the item page the window's width
-  instead of a reading column, the same knob a budget section has.
+- **The packet has a marked-up copy** ("the deletions struck through and the
+  additions in italic"): transcribe it mark for mark into a `Redline`. Nothing
+  is derived; both versions are read back out of the marks. The diff's
+  "View strike-through" links to that excerpt, `external: true`.
+  `city-council-2026-09-22/recreational-motorized-vehicles-ordinance/ordinance.ts`
+  is the worked example.
+- **It has only the two versions** -- an order that repeals and replaces "in
+  its entirety", with the current text attached "for reference": transcribe
+  both and pair them, then `fromComparison` writes the redline out of a word
+  diff. The strike-through is then generated: an item subpage
+  `<item>/strike-through/` rendering `$lib/StrikeThrough.svelte`, linked with
+  `Router.strikeThrough(...)`, saying in one line that it is generated rather
+  than the city's. `city-council-2026-09-22/water-use-restriction-ordinance/`
+  is the worked example.
 
-What the transcription has to carry beyond the words is the **pairing**: which
-provision of the old text answers which of the new. That cannot be derived --
-an order that replaces an article in its entirety renumbers most of what it
-keeps, so § 250-25 becoming § 250-25.1 is invisible to any matching on
-numbers -- so the data file gives every provision a `key` and the two sides
-meet on it. A provision only one version has simply has one side. Each version
-keeps its **own** number, title and lettering on its own side of the page:
-printing one number over both columns would say the two agree when the whole
-point is that they do not.
+`$lib/OrdinanceDiff.svelte` draws the diff the way GitHub draws one: a file
+header naming the text, with the `+`/`−` paragraph counts and the
+strike-through link; then each paragraph a line, red and minus for today's,
+green and plus for the amended, the moved words highlighted darker; unchanged
+stretches folded behind `@@` rows that open in place. It sits under an `<h2>`
+naming the article, after the packet's links.
 
-The one judgement to make by hand is `rewritten`: two different sentences
-about the same subject rather than one sentence with words changed. A word
-diff of a rewritten provision marks nearly every word, which tells a reader
-nothing, so those are drawn plain and side by side with a "Rewritten" note
-instead. Pin the judgement in a spec against `similarity()`, so a
-transcription corrected later cannot quietly leave a rewrite drawn as an
-amendment.
+Where the two versions have to be paired, the transcription has to carry the
+**pairing**: which provision of the old text answers which of the new. That
+cannot be derived -- an order that replaces an article in its entirety
+renumbers most of what it keeps, so § 250-25 becoming § 250-25.1 is invisible
+to any matching on numbers -- so the data file gives every provision a `key`
+and the two sides meet on it. A provision only one version has simply has one
+side. Each version keeps its **own** number, title and lettering.
 
-Labels down the comparison are the city's words or none. Where the two
-versions letter a list differently and no shared label exists that either
-document actually prints, leave the row unlabelled and let each side carry its
-own numbering in its own text -- a handle invented to span them would be my
-words sitting in the record's typeface, which §10 bars.
+The one judgement to make by hand there is `rewritten`: two different
+sentences about the same subject rather than one sentence with words changed.
+A word diff of a rewritten provision marks nearly every word, which tells a
+reader nothing, so those are struck whole and added whole instead -- a removed
+line and an added line with no word highlights. Pin the judgement in a spec
+against `similarity()`, so a transcription corrected later cannot quietly
+leave a rewrite drawn as an amendment.
 
-`city-council-2026-09-22/water-use-restriction-ordinance/` is the worked
-example: `ordinances.ts` holds both transcriptions and the pairing,
-`ordinances.spec.ts` pins the flags and the figures the order moves.
+Where the marked-up copy's marks contradict themselves -- a section printed
+plain that the copy's own renumbering shows must be new -- follow the
+evidence, say so in the data file's comment, and pin it in a spec, so the
+reading is stated rather than buried.
+
+Labels are the city's words or none. Where the two versions letter a list
+differently and no shared label exists that either document actually prints,
+leave the row unlabelled and let each side carry its own numbering in its own
+text -- a handle invented to span them would be my words sitting in the
+record's typeface, which §10 bars.
 
 ## 10. The rules that bite
 

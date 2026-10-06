@@ -70,6 +70,15 @@ export class Router {
   }
 
   /**
+   * The strike-through copy of an amendment an agenda item carries, generated
+   * here because the packet has none of its own -- see `$lib/redline`. Where
+   * the packet does have one, the diff links to that excerpt instead.
+   */
+  static strikeThrough(id: string, item: string): string {
+    return path(`/calendar/meetings/${id}/${item}/strike-through`)
+  }
+
+  /**
    * A project: one undertaking of the city's followed across every sitting
    * that touched it, rather than one sitting's worth of agenda. `slug` is the
    * project's directory name under `projects/`.

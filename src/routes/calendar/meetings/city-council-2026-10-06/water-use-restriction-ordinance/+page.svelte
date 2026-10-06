@@ -1,14 +1,14 @@
 <script lang="ts">
   import { Router } from "$lib/router"
-  import OrdinanceComparison from "$lib/OrdinanceComparison.svelte"
+  import OrdinanceDiff from "$lib/OrdinanceDiff.svelte"
   // The order and the article it replaces are the same two documents the
   // Mayor filed on 22 September, rescanned into this packet at a different
   // resolution; the transcription and the pairing are read from there rather
   // than copied, so the two pages cannot come to state the article
   // differently, and `ordinances.spec.ts` beside it goes on pinning both.
   import {
-    COMPARISON,
     HEADING,
+    REDLINE,
   } from "../../city-council-2026-09-22/water-use-restriction-ordinance/ordinances"
 
   const MEETING = "city-council-2026-10-06"
@@ -76,15 +76,16 @@
 
 <hr />
 
-<!-- The order and the article it would replace, set against each other
-     provision by provision. The order says only "in its entirety", and the
-     packet leaves a reader to hold seven scanned pages against five; which
-     words actually move is the whole question in front of the Council. -->
+<!-- The order and the article it would replace, drawn as a diff of one
+     against the other. The order says only "in its entirety", and the packet
+     leaves a reader to hold seven scanned pages against five; which words
+     actually move is the whole question in front of the Council. This packet
+     has no marked-up copy either, so the strike-through is generated. -->
 <h2>{HEADING.article}, {HEADING.title}</h2>
 <p class="text-sm text-slate-600">{HEADING.adopted}</p>
 
-<OrdinanceComparison
-  parts={COMPARISON}
-  nowLabel="In the Code now"
-  proposedLabel="As the order would read"
+<OrdinanceDiff
+  redline={REDLINE}
+  name="Chapter 250, {HEADING.article}, {HEADING.title}"
+  strikeThrough={{ href: Router.strikeThrough(MEETING, ITEM), external: false }}
 />

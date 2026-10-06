@@ -1,3 +1,5 @@
+import { fromComparison, type Redline } from "$lib/redline"
+
 /**
  * The Water Use Restriction ordinance, as the Code prints it today and as the
  * Mayor's order would rewrite it.
@@ -723,3 +725,11 @@ export const COMPARISON: Part[] = [
     ],
   },
 ]
+
+/**
+ * The strike-through the packet never carried: today's article with the
+ * order's wording marked into it, written out from the two transcriptions
+ * above. The diff on the item page draws from it, and so does the
+ * strike-through page beneath it.
+ */
+export const REDLINE: Redline = fromComparison(COMPARISON)
