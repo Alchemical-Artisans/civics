@@ -204,7 +204,9 @@
   }
 </script>
 
-<figure class="not-prose my-4 {interactive ? 'flex h-full min-h-80 flex-col' : ''}">
+<!-- No margin on an interactive map: it fills a box its parent sized, and a
+     margin on top of `h-full` is what made that parent scroll. -->
+<figure class="not-prose {interactive ? 'flex h-full min-h-80 flex-col' : 'my-4'}">
   <div
     class="relative {interactive ? 'min-h-0 flex-1' : ''}"
     bind:clientWidth={box.w}
