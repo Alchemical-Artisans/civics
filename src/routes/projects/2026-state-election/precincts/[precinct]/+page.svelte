@@ -134,8 +134,13 @@
   />
 </svelte:head>
 
-<div class="mx-auto max-w-6xl px-4 py-8">
-  <nav class="mb-6">
+<!-- On a wide window the page is one screen: the header, then the map and the
+     ballot side by side, with the ballot the one thing that scrolls. 6rem is
+     the site's bar above and its footer below. -->
+<div
+  class="mx-auto flex max-w-6xl flex-col px-4 py-8 lg:h-[calc(100dvh-6rem)] lg:overflow-hidden lg:py-4"
+>
+  <nav class="mb-6 lg:mb-2">
     <a
       class="text-sm text-slate-600 underline hover:text-slate-900"
       href={Router.project(PROJECT.slug)}
@@ -144,7 +149,7 @@
     </a>
   </nav>
 
-  <header class="mb-6 border-b border-slate-200 pb-6">
+  <header class="mb-6 border-b border-slate-200 pb-6 lg:mb-3 lg:pb-3">
     <h1 class="text-2xl font-bold tracking-tight text-slate-900">{title}</h1>
     <div class="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
       <p class="text-sm text-slate-600">{formatLongDate(ELECTION.date)}, {ELECTION.hours}</p>
@@ -182,10 +187,11 @@
 
   <!-- The same split as the project's own page: the map on the left, what is
        to be read about it on the right. -->
-  <div class="grid gap-8 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
-    <!-- The map takes the height of the window, and stays put while the ballot
-         beside it is read. -->
-    <div class="h-[70dvh] lg:sticky lg:top-4 lg:h-[calc(100dvh-2rem)]">
+  <div
+    class="grid gap-8 lg:min-h-0 lg:flex-1 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] lg:grid-rows-[minmax(0,1fr)]"
+  >
+    <!-- The map takes whatever height the header leaves. -->
+    <div class="h-[70dvh] lg:h-full lg:min-h-0">
       <PrecinctMap
         interactive
         title="{title}, outlined within Ward {precinct.ward}, with its polling place"
@@ -200,7 +206,7 @@
       />
     </div>
 
-    <section aria-labelledby="ballot">
+    <section aria-labelledby="ballot" class="lg:relative lg:min-h-0 lg:overflow-y-auto lg:pr-2">
       <h2 id="ballot" class="text-lg font-semibold text-slate-900">Ballot</h2>
 
       <!-- An `A` half is a second ballot, so it is a tab of its own rather than
