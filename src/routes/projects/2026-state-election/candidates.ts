@@ -9,11 +9,11 @@
  * this against. Names and parties are as the page prints them (a governor and
  * lieutenant governor are one ticket and print as one line, without addresses).
  *
- * `url` is the candidate's own campaign site, where one could be found and
- * loaded; the state's list carries none, so these came from Politics1's and
- * each was fetched to see that it is that candidate's. An incumbent's
- * government page is not a campaign site and is not used, and a candidate
- * with no `url` simply has none here -- it means not found, not none.
+ * `url` is the candidate's own page, which the state's list does not carry:
+ * most are campaign sites, found through Politics1's list and checked by
+ * fetching each, the rest supplied by the site's owner, and a few of those are
+ * a LinkedIn or Facebook page where that is all the candidate has. An
+ * incumbent's government page is not used. Without a `url` there is none here.
  *
  * Keyed by the warrant's office and district (`OFFICES`), so `ballotFor` can
  * look a line up with the same two strings it already matches on. The one race
@@ -49,7 +49,7 @@ export const CANDIDATES = new Map<string, Candidate[]>([
   [
     key("GOVERNOR and LIEUTENANT GOVERNOR", "For this Commonwealth"),
     [
-      c("Healey and Driscoll", "Democratic"),
+      c("Healey and Driscoll", "Democratic", "https://maurahealey.com/"),
       c("Minogue and Oliver", "Republican", "https://minogueforma.com"),
       c("James and Kittredge", "Independent", "https://www.ajforma.com"),
     ],
@@ -57,14 +57,14 @@ export const CANDIDATES = new Map<string, Candidate[]>([
   [
     key("ATTORNEY GENERAL", "For this Commonwealth"),
     [
-      c("Andrea Joy Campbell", "Democratic"),
+      c("Andrea Joy Campbell", "Democratic", "https://andreacampbell.org/"),
       c("Michael C. Walsh", "Republican", "https://mikewalshforag.com"),
     ],
   ],
   [
     key("SECRETARY OF STATE", "For this Commonwealth"),
     [
-      c("William Francis Galvin", "Democratic"),
+      c("William Francis Galvin", "Democratic", "https://billgalvin.com/"),
       c("Anne R. Brensley", "Republican", "https://www.anne2026.com"),
     ],
   ],
@@ -85,33 +85,58 @@ export const CANDIDATES = new Map<string, Candidate[]>([
   [
     key("REPRESENTATIVE IN CONGRESS", "THIRD DISTRICT"),
     [
-      c("Lori Loureiro Trahan", "Democratic"),
+      c("Lori Loureiro Trahan", "Democratic", "https://loritrahan.com/"),
       c("Gary J. Grossi", "Republican", "https://www.garygrossi.org"),
-      c("Dennis R. Conlon", "Unenrolled"),
+      c("Dennis R. Conlon", "Unenrolled", "https://www.linkedin.com/in/dennis-conlon-4ba8854/"),
     ],
   ],
   [
     key("COUNCILLOR", "FIFTH DISTRICT"),
     [
       c("Eunice Delice Zeigler", "Democratic", "https://www.eunicezeigler.com/"),
-      c("William Falcetano", "Republican"),
+      c(
+        "William Falcetano",
+        "Republican",
+        "https://www.facebook.com/p/William-Falcetano-for-Governors-Council-61593663411654/",
+      ),
     ],
   ],
-  [key("SENATOR IN GENERAL COURT", "FIRST ESSEX DISTRICT"), [c("Pavel M. Payano", "Democratic")]],
+  [
+    key("SENATOR IN GENERAL COURT", "FIRST ESSEX DISTRICT"),
+    [c("Pavel M. Payano", "Democratic", "https://www.pavelpayano.com/")],
+  ],
   [
     key("SENATOR IN GENERAL COURT", "SECOND ESSEX AND MIDDLESEX DISTRICT"),
-    [c("Barry R. Finegold", "Democratic"), c("Theodore T. Semesnyei", "Republican")],
+    [
+      c("Barry R. Finegold", "Democratic", "https://www.barryfinegold.com/"),
+      c("Theodore T. Semesnyei", "Republican", "https://semesnyei.com/"),
+    ],
   ],
   [
     key("REPRESENTATIVE IN GENERAL COURT", "THIRD ESSEX DISTRICT"),
-    [c("Andres Xavier Vargas", "Democratic")],
+    [c("Andres Xavier Vargas", "Democratic", "https://www.repandyvargas.com/")],
   ],
   [
     key("REPRESENTATIVE IN GENERAL COURT", "FIFTEENTH ESSEX DISTRICT"),
-    [c("Ryan M. Hamilton", "Democratic"), c("Ronald L. Heiseler, III", "Republican")],
+    [
+      c("Ryan M. Hamilton", "Democratic", "https://hamilton4rep.com/index.html"),
+      c("Ronald L. Heiseler, III", "Republican", "https://www.ronnieheiseler.com/"),
+    ],
   ],
-  [key("DISTRICT ATTORNEY", "EASTERN DISTRICT"), [c("Paul F. Tucker", "Democratic")]],
-  [key("REGISTER OF PROBATE", "ESSEX COUNTY"), [c("Pamela Casey O'Brien", "Democratic")]],
+  [
+    key("DISTRICT ATTORNEY", "EASTERN DISTRICT"),
+    [c("Paul F. Tucker", "Democratic", "https://www.facebook.com/PaulTuckerSalem/")],
+  ],
+  [
+    key("REGISTER OF PROBATE", "ESSEX COUNTY"),
+    [
+      c(
+        "Pamela Casey O'Brien",
+        "Democratic",
+        "https://www.linkedin.com/in/pamela-casey-o-brien-51543aa3/",
+      ),
+    ],
+  ],
 ])
 
 export function candidatesFor(office: string, district: string): Candidate[] {
