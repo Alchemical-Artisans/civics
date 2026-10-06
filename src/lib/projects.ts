@@ -76,6 +76,56 @@ export const PROJECTS: Project[] = [
     entries: [
       {
         kind: "item",
+        meeting: "city-council-2026-07-14",
+        item: "polling-place-changes",
+        board: "City Council",
+        number: "8.2",
+        title: "Polling Place Changes",
+      },
+      {
+        kind: "item",
+        meeting: "city-council-2026-07-14",
+        item: "primary-election-warrant",
+        board: "City Council",
+        number: "8.3",
+        title: "Election Warrant, 2026 State Primary",
+      },
+      {
+        kind: "item",
+        meeting: "city-council-2026-08-11",
+        item: "early-voting-schedule",
+        board: "City Council",
+        number: "8.1",
+        title: "Early Voting Schedule and Election Deadlines, State Primary",
+      },
+      {
+        kind: "date",
+        date: "2026-08-22",
+        through: "2026-08-28",
+        title:
+          "Early voting for the State Primary, in the Early Voting Room on the basement level of City Hall",
+        from: { meeting: "city-council-2026-08-11", item: "early-voting-schedule" },
+      },
+      {
+        kind: "date",
+        date: "2026-08-25",
+        title: "Vote-by-mail applications for the State Primary must be received by 5:00 PM",
+        from: { meeting: "city-council-2026-08-11", item: "early-voting-schedule" },
+      },
+      {
+        kind: "date",
+        date: "2026-08-25",
+        title: "Primary warrant must be posted, at least seven days before the primary",
+        from: { meeting: "city-council-2026-07-14", item: "primary-election-warrant" },
+      },
+      {
+        kind: "date",
+        date: "2026-09-01",
+        title: "State Primary, 7:00 A.M. to 8:00 P.M.",
+        from: { meeting: "city-council-2026-07-14", item: "primary-election-warrant" },
+      },
+      {
+        kind: "item",
         meeting: "city-council-2026-10-06",
         item: "early-voting-schedule",
         board: "City Council",
