@@ -202,6 +202,34 @@ export function timeline(project: Project): Entry[] {
     .map(({ entry }) => entry)
 }
 
+/**
+ * The last day an entry covers: a run of days like early voting ends on its
+ * `through`, anything else on its own date.
+ */
+export function entryEnd(entry: Entry): string {
+  return entry.kind === "date" && entry.through ? entry.through : entryDate(entry)
+}
+
+/**
+ * A timeline's entries split at today, in the order `timeline` gives them.
+ *
+ * What is behind a reader is the record, which the page has to carry but which
+ * few come for; what is ahead is the part they can still act on, so the page
+ * shows that and folds the rest away. An entry is past only once its last day
+ * has gone -- early voting is still ahead on the day it ends -- and a sitting
+ * today is not yet past either, so the agenda item that set a deadline stays
+ * in view on the day it is read out.
+ */
+export function splitAtToday(
+  entries: Entry[],
+  today: string,
+): { past: Entry[]; upcoming: Entry[] } {
+  return {
+    past: entries.filter((entry) => entryEnd(entry) < today),
+    upcoming: entries.filter((entry) => entryEnd(entry) >= today),
+  }
+}
+
 /** Every project an agenda item is on, with the entry naming it. */
 export function projectsOf(
   meeting: string,

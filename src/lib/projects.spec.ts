@@ -1,5 +1,14 @@
 import { describe, expect, it } from "vitest"
-import { PROJECTS, agendaHref, entryDate, entryId, projectsOf, timeline } from "./projects"
+import {
+  PROJECTS,
+  agendaHref,
+  entryDate,
+  entryEnd,
+  entryId,
+  projectsOf,
+  splitAtToday,
+  timeline,
+} from "./projects"
 
 // Every item page that exists, by its meeting id and directory name.
 const itemPages = new Set(
@@ -98,5 +107,33 @@ describe("agendaHref", () => {
     expect(agendaHref("city-council-2026-10-06", "white-cane-awareness-day")).toBe(
       "/calendar/meetings/city-council-2026-10-06/white-cane-awareness-day",
     )
+  })
+})
+
+describe("splitAtToday", () => {
+  const entries = timeline(PROJECTS[0])
+
+  it("folds away what has already happened and keeps what is ahead", () => {
+    const { past, upcoming } = splitAtToday(entries, "2026-10-06")
+    expect(past.every((e) => entryEnd(e) < "2026-10-06")).toBe(true)
+    expect(upcoming.every((e) => entryEnd(e) >= "2026-10-06")).toBe(true)
+    expect(past.length + upcoming.length).toBe(entries.length)
+    // The primary and the summer's sittings are behind; the sitting of the
+    // day itself and everything after it are not.
+    expect(past.map(entryDate)).toContain("2026-07-14")
+    expect(past.map(entryDate)).toContain("2026-09-01")
+    expect(upcoming.map(entryDate)).toContain("2026-10-06")
+    expect(upcoming.map(entryDate)).toContain("2026-11-03")
+  })
+
+  it("keeps a run of days in view until its last day has gone", () => {
+    const early = entries.find((e) => e.kind === "date" && e.through === "2026-10-30")!
+    expect(splitAtToday(entries, "2026-10-30").upcoming).toContain(early)
+    expect(splitAtToday(entries, "2026-10-31").past).toContain(early)
+  })
+
+  it("is order-preserving and drops nothing", () => {
+    const { past, upcoming } = splitAtToday(entries, "2026-10-20")
+    expect([...past, ...upcoming]).toEqual(entries)
   })
 })

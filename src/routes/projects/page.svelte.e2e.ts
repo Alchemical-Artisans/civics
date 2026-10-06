@@ -101,3 +101,32 @@ test("the Projects menu opens on hover with no script", async ({ browser }) => {
   await expect(header.locator("#project-list")).toBeVisible()
   await context.close()
 })
+
+// The reader's own date decides what is behind them, so pin it: these would
+// otherwise change meaning the day the election is over.
+const ON_THE_DAY = new Date("2026-10-06T12:00:00-04:00")
+
+test("the timeline folds away what has already happened", async ({ page }) => {
+  await page.clock.setFixedTime(ON_THE_DAY)
+  await page.goto(PROJECT)
+  const fold = page.locator("details", { hasText: "earlier steps" })
+  await expect(fold).toBeVisible()
+  await expect(fold).not.toHaveAttribute("open", "")
+  // Closed, none of the summer's entries is on the page to read ...
+  await expect(page.locator("#city-council-2026-07-14-primary-election-warrant")).toBeHidden()
+  // ... and what is ahead is not behind the fold.
+  const ahead = page.locator("#city-council-2026-10-06-election-warrant")
+  await expect(ahead).toBeVisible()
+  await expect(fold.locator("#city-council-2026-10-06-election-warrant")).toHaveCount(0)
+  await expect(page.locator('[id="2026-11-03-election-day-7-00-a-m-to-8-00-p-m"]')).toBeVisible()
+  await fold.getByText("earlier steps").click()
+  await expect(page.locator("#city-council-2026-07-14-primary-election-warrant")).toBeVisible()
+})
+
+test("a link into an earlier entry opens the fold and lands on it", async ({ page }) => {
+  await page.clock.setFixedTime(ON_THE_DAY)
+  await page.goto(`${PROJECT}#city-council-2026-07-14-primary-election-warrant`)
+  const entry = page.locator("#city-council-2026-07-14-primary-election-warrant")
+  await expect(entry).toBeVisible()
+  await expect(page.locator("details", { hasText: "earlier steps" })).toHaveAttribute("open", "")
+})

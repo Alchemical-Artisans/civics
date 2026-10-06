@@ -500,8 +500,15 @@ project page lists them in order and `meetings/+layout.svelte` has to find an
 item's project to link back to it -- the layout's load reads the item's
 directory name off the URL as `itemSlug`. The link back carries the item's own
 entry id as the fragment, and `:target` rings that entry on the project page:
-no script, and no query string, which a prerendered page cannot read. The
-agenda itself links such an item to the project rather than to its write-up:
+no script, and no query string, which a prerendered page cannot read. **Entries
+whose last day has gone are folded away**, in a `<details>` above the rest
+reading "7 earlier steps" -- the page has to carry what happened, but a reader
+comes for what is still ahead. `splitAtToday` in `projects.ts` does the split
+(a run of days like early voting is ahead until its `through`, and a sitting
+today is not yet past); the date is the build's from `(tabs)/+layout.server.ts`
+and the reader's own after mount, the `inTheBrowser` bargain again. The fold
+opens itself when the address names an entry inside it, since the fragment
+above points at past entries more often than not. The agenda itself links such an item to the project rather than to its write-up:
 a meeting page writes `agendaHref(meeting, item)` for an item's line, which
 opens the project on that item's entry when the item is on one and the item's
 own page otherwise; the write-up stays reachable from the timeline. There is

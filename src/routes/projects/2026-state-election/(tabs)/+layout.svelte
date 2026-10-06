@@ -16,16 +16,57 @@
   No script: the highlight is CSS, and it is there in the served HTML.
 -->
 <script lang="ts">
+  import { onMount, tick } from "svelte"
   import { page } from "$app/state"
   import AddToCalendar from "$lib/AddToCalendar.svelte"
-  import { formatLongDate } from "$lib/calendar"
-  import { entryDate, entryId, timeline } from "$lib/projects"
+  import { easternDate, formatLongDate } from "$lib/calendar"
+  import { entryDate, entryEnd, entryId, splitAtToday, timeline } from "$lib/projects"
   import { Router } from "$lib/router"
   import { ELECTION, PROJECT, electionEvent } from "../election"
 
-  let { children } = $props()
+  let { data, children } = $props()
 
   const entries = timeline(PROJECT)
+
+  /**
+   * Today in the city: the build's date in the HTML that is served, the
+   * reader's own once this mounts. `inTheBrowser` is unset in the server render
+   * and in the client's first, so filling it in is an ordinary reactive change
+   * rather than a hydration mismatch -- the same bargain `BudgetTimeline` and
+   * the meeting layout make for their own today.
+   */
+  let inTheBrowser = $state<string | null>(null)
+  const today = $derived(inTheBrowser ?? data.today)
+
+  /**
+   * What is behind the reader is folded away; what is ahead is the timeline.
+   * The fold is a `<details>`, closed in the served HTML, so with no script it
+   * is still a control that works and nothing is hidden for good.
+   */
+  const { past, upcoming } = $derived(splitAtToday(entries, today))
+
+  let pastOpen = $state(false)
+
+  /**
+   * An agenda item links back here with its own entry's id as the fragment,
+   * and most of those entries are now behind the reader. A fold left shut would
+   * leave the link landing on nothing, so open it when the address names an
+   * entry inside, and take the reader to that entry, which the browser could
+   * not scroll to while it was hidden.
+   */
+  async function openForFragment() {
+    const id = decodeURIComponent(location.hash.slice(1))
+    if (!id || !past.some((entry) => entryId(entry) === id)) return
+    pastOpen = true
+    await tick()
+    document.getElementById(id)?.scrollIntoView()
+  }
+  onMount(() => {
+    inTheBrowser = easternDate()
+    void tick().then(openForFragment)
+    window.addEventListener("hashchange", openForFragment)
+    return () => window.removeEventListener("hashchange", openForFragment)
+  })
 
   // Matched on the route, never on the URL against a Router-built href: with
   // `paths.relative` on the two disagree during prerendering. See SiteHeader.
@@ -73,31 +114,53 @@
 
     <section aria-labelledby="timeline">
       <h2 id="timeline" class="text-lg font-semibold text-slate-900">Timeline</h2>
+      {#snippet row(entry: (typeof entries)[number])}
+        <!-- `target:` is the entry an agenda item linked back to. -->
+        <li
+          id={entryId(entry)}
+          class="relative scroll-mt-24 rounded-md px-2 py-1.5 target:bg-amber-50 target:ring-2 target:ring-amber-400"
+        >
+          <span
+            aria-hidden="true"
+            class="absolute top-3 -left-[1.4rem] h-2.5 w-2.5 rounded-full border-2 border-white bg-slate-400"
+          ></span>
+          <p class="text-xs text-slate-500">
+            {formatLongDate(entryDate(entry))}{#if entry.kind === "date" && entry.through}
+              &ndash; {formatLongDate(entry.through)}{/if}
+          </p>
+          {#if entry.kind === "item"}
+            <p class="text-slate-500">{entry.board}, item {entry.number}</p>
+            <a
+              class="font-medium text-slate-900 underline hover:text-sky-800"
+              href={Router.meetingItem(entry.meeting, entry.item)}>{entry.title}</a
+            >
+          {:else}
+            <p class="text-slate-800">{entry.title}</p>
+          {/if}
+        </li>
+      {/snippet}
+
+      {#if past.length}
+        <!-- Past entries: the record, folded. The summary says how many and
+             over what days, so a reader knows what they would be opening. -->
+        <details bind:open={pastOpen} class="mt-3 text-sm">
+          <summary class="cursor-pointer text-slate-600 hover:text-slate-900">
+            {past.length} earlier {past.length === 1 ? "step" : "steps"},
+            {formatLongDate(entryDate(past[0]))} &ndash; {formatLongDate(
+              entryEnd(past[past.length - 1]),
+            )}
+          </summary>
+          <ol class="mt-3 space-y-3 border-l-2 border-slate-200 pl-4">
+            {#each past as entry (entryId(entry))}
+              {@render row(entry)}
+            {/each}
+          </ol>
+        </details>
+      {/if}
+
       <ol class="mt-3 space-y-3 border-l-2 border-slate-200 pl-4 text-sm">
-        {#each entries as entry (entryId(entry))}
-          <!-- `target:` is the entry an agenda item linked back to. -->
-          <li
-            id={entryId(entry)}
-            class="relative scroll-mt-24 rounded-md px-2 py-1.5 target:bg-amber-50 target:ring-2 target:ring-amber-400"
-          >
-            <span
-              aria-hidden="true"
-              class="absolute top-3 -left-[1.4rem] h-2.5 w-2.5 rounded-full border-2 border-white bg-slate-400"
-            ></span>
-            <p class="text-xs text-slate-500">
-              {formatLongDate(entryDate(entry))}{#if entry.kind === "date" && entry.through}
-                &ndash; {formatLongDate(entry.through)}{/if}
-            </p>
-            {#if entry.kind === "item"}
-              <p class="text-slate-500">{entry.board}, item {entry.number}</p>
-              <a
-                class="font-medium text-slate-900 underline hover:text-sky-800"
-                href={Router.meetingItem(entry.meeting, entry.item)}>{entry.title}</a
-              >
-            {:else}
-              <p class="text-slate-800">{entry.title}</p>
-            {/if}
-          </li>
+        {#each upcoming as entry (entryId(entry))}
+          {@render row(entry)}
         {/each}
       </ol>
     </section>
