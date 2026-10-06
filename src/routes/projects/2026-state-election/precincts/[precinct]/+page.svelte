@@ -249,9 +249,7 @@
               </thead>
               <tbody class="divide-y divide-slate-100">
                 {#each ballots[i] as cell, row (row)}
-                  {@const differs =
-                    panels.length > 1 && ballots.some((b) => b[row].district !== cell.district)}
-                  <tr class={differs ? "bg-orange-50" : ""} title={cell.district}>
+                  <tr title={cell.district}>
                     <th scope="row" class="py-1.5 pr-3 font-normal text-slate-900">{cell.office}</th
                     >
                     <td class="py-1.5 pr-3 text-slate-700">
