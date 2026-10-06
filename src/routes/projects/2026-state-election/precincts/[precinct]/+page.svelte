@@ -249,32 +249,31 @@
                 Precinct {part.id}
               </h3>
             {/if}
-            <table class="mt-3 w-full text-left text-sm">
-              <thead class="border-b border-slate-300 text-slate-500">
-                <tr>
-                  <th scope="col" class="py-1 pr-3 font-medium">Office</th>
-                  <th scope="col" class="py-1 pr-3 font-medium">Candidates</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-slate-100">
-                {#each ballots[i] as cell, row (row)}
-                  <tr title={cell.district}>
-                    <th scope="row" class="py-1.5 pr-3 font-normal text-slate-900">{cell.office}</th
-                    >
-                    <td class="py-1.5 pr-3 text-slate-700">
-                      <ul>
-                        {#each cell.candidates as candidate (candidate.name)}
-                          <li>
-                            {candidate.name}
-                            <span class="text-slate-500">({candidate.party})</span>
-                          </li>
-                        {/each}
-                      </ul>
-                    </td>
-                  </tr>
-                {/each}
-              </tbody>
-            </table>
+            {#each ballots[i] as cell, row (row)}
+              <!-- The district is in the tooltip only: a voter has one, and it is
+                   not what they came to read. -->
+              <section title={cell.district} class="mt-4">
+                <h4 class="text-sm font-semibold text-slate-900">{cell.office}</h4>
+                <ul class="mt-1 space-y-0.5 text-sm text-slate-700">
+                  {#each cell.candidates as candidate (candidate.name)}
+                    <li>
+                      {#if candidate.url}
+                        <a
+                          class="underline hover:text-slate-900"
+                          href={candidate.url}
+                          target="_blank"
+                          rel="external noopener noreferrer"
+                          >{candidate.name}<span class="sr-only">, opens in a new tab</span></a
+                        >
+                      {:else}
+                        {candidate.name}
+                      {/if}
+                      <span class="text-slate-500">({candidate.party})</span>
+                    </li>
+                  {/each}
+                </ul>
+              </section>
+            {/each}
           </div>
         {/each}
       </div>

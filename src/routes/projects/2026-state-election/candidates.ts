@@ -9,6 +9,12 @@
  * this against. Names and parties are as the page prints them (a governor and
  * lieutenant governor are one ticket and print as one line, without addresses).
  *
+ * `url` is the candidate's own campaign site, where one could be found and
+ * loaded; the state's list carries none, so these came from Politics1's and
+ * each was fetched to see that it is that candidate's. An incumbent's
+ * government page is not a campaign site and is not used, and a candidate
+ * with no `url` simply has none here -- it means not found, not none.
+ *
  * Keyed by the warrant's office and district (`OFFICES`), so `ballotFor` can
  * look a line up with the same two strings it already matches on. The one race
  * the warrant names no row for -- the Fifteenth Essex House seat -- is keyed by
@@ -17,6 +23,8 @@
 export interface Candidate {
   name: string
   party: string
+  /** The candidate's own campaign site, where one was found. */
+  url?: string
 }
 
 export const CANDIDATES_SOURCE = {
@@ -26,53 +34,68 @@ export const CANDIDATES_SOURCE = {
 
 const key = (office: string, district: string) => `${office}|${district}`
 
-const c = (name: string, party: string): Candidate => ({ name, party })
+const c = (name: string, party: string, url?: string): Candidate => ({ name, party, url })
 
 export const CANDIDATES = new Map<string, Candidate[]>([
   [
     key("SENATOR IN CONGRESS", "For this Commonwealth"),
     [
-      c("Edward J. Markey", "Democratic"),
-      c("John Deaton", "Republican"),
-      c("Shiva Ayyadurai", "Independent"),
-      c("Joe Tache", "Socialism and Liberation"),
+      c("Edward J. Markey", "Democratic", "https://www.edmarkey.com"),
+      c("John Deaton", "Republican", "https://johndeatonforsenate.com/"),
+      c("Shiva Ayyadurai", "Independent", "https://shiva4senate.com"),
+      c("Joe Tache", "Socialism and Liberation", "https://www.tache4ma.com"),
     ],
   ],
   [
     key("GOVERNOR and LIEUTENANT GOVERNOR", "For this Commonwealth"),
     [
       c("Healey and Driscoll", "Democratic"),
-      c("Minogue and Oliver", "Republican"),
-      c("James and Kittredge", "Independent"),
+      c("Minogue and Oliver", "Republican", "https://minogueforma.com"),
+      c("James and Kittredge", "Independent", "https://www.ajforma.com"),
     ],
   ],
   [
     key("ATTORNEY GENERAL", "For this Commonwealth"),
-    [c("Andrea Joy Campbell", "Democratic"), c("Michael C. Walsh", "Republican")],
+    [
+      c("Andrea Joy Campbell", "Democratic"),
+      c("Michael C. Walsh", "Republican", "https://mikewalshforag.com"),
+    ],
   ],
   [
     key("SECRETARY OF STATE", "For this Commonwealth"),
-    [c("William Francis Galvin", "Democratic"), c("Anne R. Brensley", "Republican")],
+    [
+      c("William Francis Galvin", "Democratic"),
+      c("Anne R. Brensley", "Republican", "https://www.anne2026.com"),
+    ],
   ],
   [
     key("TREASURER", "For this Commonwealth"),
-    [c("Deborah B. Goldberg", "Democratic"), c("Elizabeth Dionne", "Republican")],
+    [
+      c("Deborah B. Goldberg", "Democratic", "https://www.debgoldberg.com"),
+      c("Elizabeth Dionne", "Republican", "https://votedionne.com"),
+    ],
   ],
   [
     key("AUDITOR", "For this Commonwealth"),
-    [c("Diana DiZoglio", "Democratic"), c("Al Ozonoff", "Libertarian")],
+    [
+      c("Diana DiZoglio", "Democratic", "https://www.dianadizoglio.com"),
+      c("Al Ozonoff", "Libertarian", "https://ozonoff4auditor.com"),
+    ],
   ],
   [
     key("REPRESENTATIVE IN CONGRESS", "THIRD DISTRICT"),
     [
       c("Lori Loureiro Trahan", "Democratic"),
-      c("Gary J. Grossi", "Republican"),
+      c("Gary J. Grossi", "Republican", "https://www.garygrossi.org"),
       c("Dennis R. Conlon", "Unenrolled"),
     ],
   ],
   [
     key("COUNCILLOR", "FIFTH DISTRICT"),
-    [c("Eunice Delice Zeigler", "Democratic"), c("William Falcetano", "Republican")],
+    [
+      c("Eunice Delice Zeigler", "Democratic", "https://www.eunicezeigler.com/"),
+      c("William Falcetano", "Republican"),
+    ],
   ],
   [key("SENATOR IN GENERAL COURT", "FIRST ESSEX DISTRICT"), [c("Pavel M. Payano", "Democratic")]],
   [

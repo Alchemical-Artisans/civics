@@ -26,10 +26,10 @@ test("a precinct with an A half shows both ballots and both buildings", async ({
   await page.goto(`${PROJECT}/precincts/7-2`)
   await expect(page.getByText("Hunking Middle School", { exact: true })).toBeVisible()
   await expect(page.getByText("Consentino Middle School", { exact: true })).toBeVisible()
-  const senate = page.getByRole("tabpanel").getByRole("row", { name: /SENATOR IN GENERAL COURT/ })
-  await expect(senate).toContainText("Barry R. Finegold")
+  const ballot = page.getByRole("tabpanel").filter({ visible: true })
+  await expect(ballot).toContainText("Barry R. Finegold")
   await page.getByRole("tab", { name: "Precinct 7-2A" }).click()
-  await expect(senate).toContainText("Pavel M. Payano")
+  await expect(ballot).toContainText("Pavel M. Payano")
 })
 
 test("the early-voting item links to the project too", async ({ page }) => {
