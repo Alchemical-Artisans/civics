@@ -658,10 +658,11 @@ See [deployment.md](./deployment.md#base-path).
 
 `/` is a landing page:
 [`src/routes/+page.svelte`](../src/routes/+page.svelte) names the site, carries
-a slogan, and gives a card for each half — the meeting calendar and the current
-budget book. It prerenders to static HTML like the rest of the site.
+a slogan, and gives two cards side by side — the meeting calendar and the
+project the city is in the middle of, today the 2026 State Election. It
+prerenders to static HTML like the rest of the site.
 
-**A card is its half rather than a description of one.** Both cards used to
+**A card is its subject rather than a description of one.** Both cards used to
 carry a paragraph saying what was behind them, under a paragraph saying what the
 site was for; all three were the site talking about itself to a reader who had
 not been shown anything yet. What is there instead is a drawing:
@@ -680,18 +681,15 @@ not been shown anything yet. What is there instead is a drawing:
   the city stated and a row is ordered by it, exactly as on the calendar — see
   [the hour a sitting starts](#the-hour-a-sitting-starts), which is also why the
   days behind today mostly carry no hour at all.
-- The **budget card** shows the chart the book itself opens with — `BudgetColumns`,
-  the two sides of the year on one scale — reduced to what a card can say. Each
-  book carries its own `summary.ts` (see
-  [`src/routes/budget/fy2027/summary.ts`](../src/routes/budget/fy2027/summary.ts)),
-  which reads the same `SPENDING` and `REVENUE_DETAIL` the book's own front page
-  draws in full and rolls each down to its largest three parts plus everything
-  else, so the card and the book cannot state different figures. The front page
-  globs `./budget/*/summary.ts` and takes the newest written book's, the same
-  directory-listing trick everything else here follows. A legend names the
-  segments, which the charts inside the book do without: there a segment names
-  itself on hover, and this is the first thing on the site, read as often on a
-  phone where there is no hover to give.
+- The **election card** is the project's precinct map and nothing else —
+  [`ElectionCard.svelte`](../src/routes/projects/2026-state-election/ElectionCard.svelte),
+  beside the project's own `election.ts` — every precinct a link to its own
+  page with its polling place and ballot, so a reader who knows their precinct
+  is one click from where they vote. No precinct numbers: at a card's size the
+  downtown labels pile on top of each other, and the project's own map has the
+  room to print them. The second card was the budget's — the book's two columns,
+  drawn from its `summary.ts` — until budgets became one kind of project, reached
+  from the bar's Projects menu; `summary.ts` and `headline` are no longer read.
 
 Both cards are one big link by way of the heading's own `::after` covering the
 card, which is what lets the things inside them be links too — a card wrapped in
@@ -713,36 +711,38 @@ a meta refresh (never a 301, which browsers cache indefinitely, and never
 SvelteKit's `redirect()`, which pushes a history entry the back button falls
 back into) — gone now, along with the e2e tests that pinned its behaviour.
 
-The budget card's destination is resolved, not written out.
-[`src/routes/+layout.ts`](../src/routes/+layout.ts) takes the first fiscal year
-`fiscalYears()` reports as written, newest first, with `written` derived from
-the route directory existing — so creating `src/routes/budget/fy2028/` is the
-whole act of moving it. If no book is written up at all the card is dropped
-entirely; the header's menu of years, which links the city's own PDFs, is then
-the only way into the budget.
-
-### Getting between the two halves
+### Getting between the parts of the site
 
 [`src/lib/SiteHeader.svelte`](../src/lib/SiteHeader.svelte) sits above every
 page: the mark, which goes to `/`, the page's own name where the page does not
 head itself (see [budget-pages.md](budget-pages.md)), and each half of the site
-at the right. The calendar is a link. So is the budget — it goes to this year's
-book, the same place the front page's budget card points — with a menu of every
-fiscal year the city publishes under it, because that list used to be a page,
-`/budget`, and reaching a book through it cost a hop. The menu is also why no
-budget page carries a way back up any more.
+at the right: **Projects**, a menu, and the calendar, a link. The menu lists
+projects by kind — "Elections", then "Budgets", every fiscal year the city
+publishes, which was a page once (`/budget`, a hop on the way to any book) and
+then a Budget menu of its own until budgets were treated as one more kind of
+project. The books keep their `/budget/<year>` routes; reading one marks
+Projects as the current section. The menu is also why no budget page carries a
+way back up any more.
 
-**The word and the caret beside it are two controls.** A word that navigates
-cannot also be the thing you press to see a list, so the word is the link and
-the caret is a `<button>` with `aria-expanded`. On a pointer the menu opens on
-hover and the caret is barely needed; on a touch screen there is no hover to
-give and the caret is the whole control, which is why it is padded out to a
-thumb rather than drawn on the link.
+**Only the most recent of each kind shows until a reader asks.** The newest
+election and the newest written budget book are listed; a "Show archived"
+button at the foot of the menu reveals the rest. Twenty-two budget years ahead
+of one election would bury it, and a reader opening the menu almost always
+wants what is current. The hiding is done on mount, since without a script
+there is no button to undo it: a page that has not hydrated lists everything.
+
+**A word that navigates and a caret beside it are two controls.**
+[`src/lib/HeaderMenu.svelte`](../src/lib/HeaderMenu.svelte) is the menu, and
+where its word is a link the caret is a separate `<button>` with
+`aria-expanded`, since a word that navigates cannot also be the thing you press
+to see a list. Projects has no page to go to, so its word is itself the button.
+On a phone the menu hangs off the bar's right edge rather than off its word, so
+it stays on screen wherever the word sits.
 
 **The hover is written twice, and only one of them is ever in force.** In CSS,
 so a page that has not hydrated — or a reader running no script at all — still
 gets every year the city publishes; and in the component, so the caret's
-`aria-expanded` says what is actually on screen. `.budget-item:not(.live)`
+`aria-expanded` says what is actually on screen. `.menu-item:not(.live)`
 hands the job from the first to the second the moment the component mounts,
 which is also what lets Escape and a second press close a menu the pointer is
 still sitting on: CSS `:hover`, left in play, would hold it open. The e2e suite

@@ -163,6 +163,7 @@
     <button
       class="flex cursor-pointer items-center gap-1"
       type="button"
+      aria-current={current ? "page" : undefined}
       aria-expanded={shown}
       aria-controls={id}
       onclick={press}

@@ -1,6 +1,6 @@
 <!--
-  The bar across the top of every page: the mark, the page's own name, and the
-  two things the site holds.
+  The bar across the top of every page: the mark, the page's own name, the
+  projects -- budgets among them -- and the calendar.
 
   It exists because the two halves were only reachable from each other through
   links buried in each page's own chrome -- a line above the calendar's heading
@@ -10,11 +10,12 @@
   replaces all of them.
 -->
 <script lang="ts">
+  import { onMount } from "svelte"
   import { page } from "$app/state"
   import HeaderMenu from "$lib/HeaderMenu.svelte"
-  import { PROJECTS, PROJECT_KINDS } from "$lib/projects"
+  import { PROJECTS } from "$lib/projects"
   import { Router } from "$lib/router"
-  import { barOf } from "$lib/heading"
+  import { barOf, bookName } from "$lib/heading"
   import type { FiscalYear } from "$lib/budget"
   import mark from "$lib/assets/favicon.svg"
 
@@ -39,26 +40,42 @@
   // never carries the base path, so it reads the same in both.
   const within = (prefix: string) => (page.route.id ?? "").startsWith(prefix)
 
+  // A budget book is a project as far as the bar is concerned -- the city's
+  // year of spending, followed from the Mayor's book to the Council's orders --
+  // so reading one marks Projects, though the books keep their own `/budget`
+  // routes rather than moving under `/projects`.
   const current = $derived({
-    budget: within("/budget"),
-    projects: within("/projects"),
+    projects: within("/projects") || within("/budget"),
     calendar: within("/calendar"),
   })
 
   const bar = $derived(barOf(page.data))
 
-  /** The newest book with a page here: where the word "Budget" goes. */
-  const newest = $derived(years.find((year) => year.written))
+  /**
+   * The Projects menu, a group per kind, each newest first.
+   *
+   * Elections are projects proper, from `$lib/projects`. Budgets are the
+   * fiscal years from `budget.json`, which were the bar's own Budget menu
+   * until that was folded in here: one book a year, a project of its own, and
+   * the list of them every bit as long as it was.
+   *
+   * Only the most recent of each kind shows until a reader asks for the rest.
+   * Twenty-two budget years ahead of the one election would bury the election,
+   * and the reader opening this menu almost always wants what is current: the
+   * election being held, the budget being spent. For a budget that is the
+   * newest book written up here, which is also where the old Budget link went.
+   */
+  const elections = $derived(PROJECTS.filter((project) => project.kind === "election"))
+  const currentYear = $derived(years.find((year) => year.written) ?? years[0])
 
-  // Projects by kind, in the order the menu lists the kinds: what the city is
-  // doing, grouped by what sort of thing it is, rather than one flat list that
-  // would mix an election in with a building project.
-  const projectGroups = $derived(
-    PROJECT_KINDS.map((kind) => ({
-      ...kind,
-      projects: PROJECTS.filter((project) => project.kind === kind.id),
-    })).filter((group) => group.projects.length),
-  )
+  let showArchived = $state(false)
+  // Hiding the archive is the script's to do: before the page hydrates, or on
+  // a page that runs none, there is no button to bring it back, so every entry
+  // stays in the menu as it always was.
+  let live = $state(false)
+  onMount(() => (live = true))
+  const hidden = (archived: boolean) => (archived && live && !showArchived ? "hidden" : "")
+  const archivedCount = $derived(elections.length - 1 + years.length - 1)
 </script>
 
 <header class="border-b border-slate-200 bg-white">
@@ -116,31 +133,57 @@
          the right and wrap as a pair on a narrow screen. -->
     <nav class="ml-auto flex items-center gap-4 text-sm" aria-label="Sections">
       <!--
-        The budget half is a word and a menu under it. The word goes where `/`
-        goes -- this year's book -- and the menu is every year the city
-        publishes, which was a page once, `/budget`, that every reader wanting a
-        book paid a hop through. Between them they also replace the way back up:
-        a book and its sections used to carry a "back" line of their own.
+        Projects: what the city is doing that runs across more than one
+        sitting, by kind, budgets among them. There is no page listing them --
+        the menu is the list, the way the old Budget menu replaced `/budget` --
+        so the word opens the menu rather than going anywhere. A kind's name
+        heads its entries and is not a link.
+
+        The menu replaced a Budget entry of its own, whose list of every year
+        was itself the replacement for a `/budget` page every reader wanting a
+        book paid a hop through. The entry in the menu the reader is in gets
+        `aria-current="true"` -- the current item of a set -- rather than a
+        second "page" for one page.
       -->
-      <!-- `aria-current="page"` on the link is the same section marker the
-           calendar link carries; the year inside the menu gets `"true"` -- the
-           current item of a set -- rather than a second "page" for one page. -->
       <HeaderMenu
-        label="Budget"
-        href={newest ? Router.budgetBook(newest.id) : undefined}
-        current={current.budget}
-        id="budget-years"
-        toggle="Every fiscal year"
+        label="Projects"
+        current={current.projects}
+        id="project-list"
+        toggle="every project"
       >
+        {#if elections.length}
+          <li class="px-2 pt-1.5 pb-0.5 text-[11px] tracking-wide text-slate-500 uppercase">
+            Elections
+          </li>
+          {#each elections as project, at (project.slug)}
+            <li class="px-2 py-1 hover:bg-slate-50 {hidden(at > 0)}">
+              <a
+                class="font-medium text-slate-900 underline decoration-slate-300 hover:decoration-slate-900"
+                href={Router.project(project.slug)}
+                aria-current={within(`/projects/${project.slug}`) ? "true" : undefined}
+              >
+                {project.title}
+              </a>
+            </li>
+          {/each}
+        {/if}
+
+        <li class="px-2 pt-2.5 pb-0.5 text-[11px] tracking-wide text-slate-500 uppercase">
+          Budgets
+        </li>
         {#each years as year (year.id)}
-          <li class="flex items-baseline justify-between gap-3 px-2 py-1 hover:bg-slate-50">
+          <li
+            class="flex items-baseline justify-between gap-3 px-2 py-1 hover:bg-slate-50 {hidden(
+              year !== currentYear,
+            )}"
+          >
             {#if year.written}
               <a
                 class="font-medium text-slate-900 underline decoration-slate-300 hover:decoration-slate-900"
                 href={Router.budgetBook(year.id)}
                 aria-current={within(`/budget/${year.id}`) ? "true" : undefined}
               >
-                FY{year.year}
+                {bookName(year.year)}
               </a>
             {:else if year.budget}
               <a
@@ -149,8 +192,8 @@
                 target="_blank"
                 rel="external noopener noreferrer"
               >
-                FY{year.year}<span class="sr-only">
-                  budget, PDF, opens the city's file in a new tab</span
+                {bookName(year.year)}<span class="sr-only">
+                  , PDF, opens the city's file in a new tab</span
                 >
               </a>
             {:else}
@@ -158,7 +201,7 @@
                    it does for FY2022 and FY2023. Saying so beats a row the
                    reader has to work out is dead. -->
               <span class="text-slate-500"
-                >FY{year.year}<span class="sr-only"> — no budget file</span></span
+                >{bookName(year.year)}<span class="sr-only"> — no budget file</span></span
               >
             {/if}
 
@@ -176,40 +219,20 @@
             {/if}
           </li>
         {/each}
-      </HeaderMenu>
 
-      <!--
-        Projects: what the city is doing that runs across more than one
-        sitting, by kind. There is no page listing them -- the menu is the
-        list, the way the budget's menu replaced `/budget` -- so the word opens
-        the menu rather than going anywhere. A kind's name heads its projects
-        and is not a link.
-      -->
-      {#if projectGroups.length}
-        <HeaderMenu
-          label="Projects"
-          current={current.projects}
-          id="project-list"
-          toggle="every project"
-        >
-          {#each projectGroups as group (group.id)}
-            <li class="px-2 pt-1.5 pb-0.5 text-[11px] tracking-wide text-slate-500 uppercase">
-              {group.label}
-            </li>
-            {#each group.projects as project (project.slug)}
-              <li class="px-2 py-1 hover:bg-slate-50">
-                <a
-                  class="font-medium text-slate-900 underline decoration-slate-300 hover:decoration-slate-900"
-                  href={Router.project(project.slug)}
-                  aria-current={within(`/projects/${project.slug}`) ? "true" : undefined}
-                >
-                  {project.title}
-                </a>
-              </li>
-            {/each}
-          {/each}
-        </HeaderMenu>
-      {/if}
+        {#if live && archivedCount > 0}
+          <li class="mt-1 border-t border-slate-100 px-2 pt-1.5 pb-1">
+            <button
+              type="button"
+              class="cursor-pointer text-xs text-slate-600 underline decoration-slate-300 hover:text-slate-900"
+              aria-pressed={showArchived}
+              onclick={() => (showArchived = !showArchived)}
+            >
+              {showArchived ? "Hide archived" : `Show archived (${archivedCount})`}
+            </button>
+          </li>
+        {/if}
+      </HeaderMenu>
 
       <a
         class="underline decoration-slate-300 hover:decoration-slate-900 {current.calendar

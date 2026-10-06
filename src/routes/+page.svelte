@@ -1,43 +1,30 @@
 <script lang="ts">
-  // The front page. It names the site and points at its two halves -- the
-  // meeting calendar and the budget -- which have nothing to do with each other
-  // beyond both being the City of Haverhill publishing about itself.
+  // The front page. It names the site and points at what it holds: the
+  // meeting calendar, and the project the city is in the middle of.
   //
   // `/` forwarded straight to the budget book for a while, on the reasoning that
   // an index costs every visitor a hop. That held while the budget was the
-  // whole point and the calendar a side door; it stopped holding once the two
-  // grew into separate things a reader arrives wanting one or the other of. A
+  // whole point and the calendar a side door; it stopped holding once the site
+  // grew into separate things a reader arrives wanting one or another of. A
   // reader who lands here now gets to choose rather than being dropped into
-  // half they may not have come for.
+  // something they may not have come for.
   //
-  // Each card *is* its half rather than a description of one: the week the
-  // calendar is on, and the year the budget is. Both used to carry a paragraph
-  // saying what was behind them, under a paragraph saying what the site was
-  // for, and all three were the site talking about itself to a reader who had
-  // not been shown anything yet. What is left is a slogan and two pictures.
+  // Each card *is* its subject rather than a description of one: the week the
+  // calendar is on, and the current project's own picture -- for the election,
+  // its map. The second card was the budget's, drawn as the year's two
+  // columns, until budgets became one kind of project among several, reached
+  // from the bar's Projects menu. Both cards used to carry a paragraph saying
+  // what was behind them, under a paragraph saying what the site was for, and
+  // all three were the site talking about itself to a reader who had not been
+  // shown anything yet. What is left is a slogan and two pictures.
   import { Router } from "$lib/router"
-  import { bookName } from "$lib/heading"
-  import BudgetColumns from "$lib/BudgetColumns.svelte"
-  import { COLOURS } from "$lib/chart-colours"
   import type { MeetingKind } from "$lib/calendar"
   import type { WeekDay, WeekEntry } from "./+page"
   import ElectionCard from "./projects/2026-state-election/ElectionCard.svelte"
-  import { ELECTION } from "./projects/2026-state-election/election"
 
   let { data } = $props()
 
-  // The budget half opens on whichever book is written up here. With none, the
-  // menu in the header is the only way in and there is no page to link.
-  const book = $derived(data.budgetBook)
   const week = $derived(data.week as WeekDay[])
-  const summary = $derived(data.summary)
-
-  // The election has a card while there is still an election to go to: up to
-  // and including the day itself, by the build's date, and gone from the
-  // first build after. A project that has finished is still a page -- the
-  // record of how it went -- but it is not what a reader arriving today has
-  // come for, and a card for it would push the two halves down for nothing.
-  const election = $derived(data.today <= ELECTION.date)
 
   // The calendar's own colours for a document's kind, so the week reads as a
   // week of the page it opens rather than as a second vocabulary for the same
@@ -118,19 +105,7 @@
     whose sittings cannot be opened is a picture of a calendar rather than a
     way into one.
   -->
-  <!--
-    Something the city is in the middle of, ahead of the two halves and the
-    width of both: it is the most time-bound thing on the site, and its map
-    needs the width to be a map. Outside the nav of the two halves, since it
-    is not a third one -- it is a project, and one that ends.
-  -->
-  {#if election}
-    <div class="mt-10">
-      <ElectionCard today={data.today} />
-    </div>
-  {/if}
-
-  <nav class="{election ? 'mt-5' : 'mt-10'} grid gap-5 lg:grid-cols-2" aria-label="The two halves">
+  <nav class="mt-10 grid gap-5 lg:grid-cols-2" aria-label="The calendar and the current project">
     <div
       class="relative flex min-h-[30rem] flex-col rounded-xl border border-slate-200 p-5 transition-colors focus-within:border-slate-400 hover:border-slate-300 hover:bg-slate-50 sm:p-6"
     >
@@ -219,79 +194,12 @@
       </ul>
     </div>
 
-    {#if book}
-      <div
-        class="relative flex min-h-[30rem] flex-col rounded-xl border border-slate-200 p-5 transition-colors focus-within:border-slate-400 hover:border-slate-300 hover:bg-slate-50 sm:p-6"
-      >
-        <h2 class="text-lg font-semibold text-slate-900">
-          <a
-            class="after:absolute after:inset-0 after:content-['']"
-            href={Router.budgetBook(book.id)}
-          >
-            {bookName(book.year)}
-          </a>
-        </h2>
-
-        <!--
-          The chart the book itself opens with, drawn from the same figures and
-          reduced to what a card can say: the two sides of the year on one
-          scale, each divided into the three largest things it is made of and
-          then everything else. A reader who follows the card meets the same
-          chart again on the other side of the click, in full -- forty-two
-          departments and fifty-four sources -- which is the reason to reuse the
-          component rather than draw something of this page's own.
-
-          The columns carry no `href`. Each would otherwise link past the book
-          into one side of it, and the card is already a link to the book.
-        -->
-        {#if summary}
-          <div class="mt-4 flex min-h-0 flex-1 gap-6">
-            <div class="min-h-0 flex-1">
-              <BudgetColumns
-                rows={[
-                  {
-                    label: summary.spending.label,
-                    parts: summary.spending.parts,
-                    total: summary.spending.total,
-                  },
-                  { label: summary.revenue.label, parts: summary.revenue.parts },
-                ]}
-              />
-            </div>
-
-            <!--
-              A legend, which the charts inside the book do without: there a
-              segment names itself on hover or focus, and a reader who has
-              opened the book has come to read it. This is the first thing on
-              the site, half of it is read on a phone where there is no hover to
-              give, and four colours that name nothing are decoration.
-
-              The swatch takes its colour by position, which is what
-              `BudgetColumns` coulours by too -- `headline` hands both the same
-              list, largest first.
-            -->
-            <ul class="not-prose w-40 shrink-0 space-y-2 self-center text-xs">
-              {#each [summary.spending, summary.revenue] as side (side.label)}
-                <li>
-                  <p class="m-0 font-semibold text-slate-900">{side.label}</p>
-                  <ul class="mt-1 space-y-0.5">
-                    {#each side.parts as part, at (part.label)}
-                      <li class="flex items-baseline gap-1.5 text-[11px] text-slate-600">
-                        <span
-                          class="mt-1 h-2 w-2 shrink-0 rounded-xs"
-                          style="background: {COLOURS[at % COLOURS.length]}"
-                          aria-hidden="true"
-                        ></span>
-                        <span class="min-w-0 flex-1 truncate">{part.label}</span>
-                      </li>
-                    {/each}
-                  </ul>
-                </li>
-              {/each}
-            </ul>
-          </div>
-        {/if}
-      </div>
-    {/if}
+    <!--
+      The project the city is in the middle of, beside the calendar: today that
+      is the election, drawn as its map. It took the budget's place -- a budget
+      book is a project too, and reached now from the bar's Projects menu along
+      with the rest of them.
+    -->
+    <ElectionCard />
   </nav>
 </div>
