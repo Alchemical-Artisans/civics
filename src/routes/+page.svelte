@@ -21,6 +21,8 @@
   import { COLOURS } from "$lib/chart-colours"
   import type { MeetingKind } from "$lib/calendar"
   import type { WeekDay, WeekEntry } from "./+page"
+  import ElectionCard from "./projects/2026-state-election/ElectionCard.svelte"
+  import { ELECTION } from "./projects/2026-state-election/election"
 
   let { data } = $props()
 
@@ -29,6 +31,13 @@
   const book = $derived(data.budgetBook)
   const week = $derived(data.week as WeekDay[])
   const summary = $derived(data.summary)
+
+  // The election has a card while there is still an election to go to: up to
+  // and including the day itself, by the build's date, and gone from the
+  // first build after. A project that has finished is still a page -- the
+  // record of how it went -- but it is not what a reader arriving today has
+  // come for, and a card for it would push the two halves down for nothing.
+  const election = $derived(data.today <= ELECTION.date)
 
   // The calendar's own colours for a document's kind, so the week reads as a
   // week of the page it opens rather than as a second vocabulary for the same
@@ -109,7 +118,19 @@
     whose sittings cannot be opened is a picture of a calendar rather than a
     way into one.
   -->
-  <nav class="mt-10 grid gap-5 lg:grid-cols-2" aria-label="The two halves">
+  <!--
+    Something the city is in the middle of, ahead of the two halves and the
+    width of both: it is the most time-bound thing on the site, and its map
+    needs the width to be a map. Outside the nav of the two halves, since it
+    is not a third one -- it is a project, and one that ends.
+  -->
+  {#if election}
+    <div class="mt-10">
+      <ElectionCard today={data.today} />
+    </div>
+  {/if}
+
+  <nav class="{election ? 'mt-5' : 'mt-10'} grid gap-5 lg:grid-cols-2" aria-label="The two halves">
     <div
       class="relative flex min-h-[30rem] flex-col rounded-xl border border-slate-200 p-5 transition-colors focus-within:border-slate-400 hover:border-slate-300 hover:bg-slate-50 sm:p-6"
     >
