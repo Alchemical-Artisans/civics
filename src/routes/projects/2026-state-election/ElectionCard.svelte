@@ -27,17 +27,11 @@
     PRECINCT_SOURCE,
     PROJECT,
     WARDS,
-    buildings,
     precinctName,
     wardColour,
   } from "./election"
 
   const bounds = boundsOf(WARDS.map((w) => w.shape))
-  const markers = buildings().map((places) => ({
-    lon: places[0].lon,
-    lat: places[0].lat,
-    name: `${places[0].name}, ${places[0].address}: ${places.map((p) => p.label).join("; ")}`,
-  }))
   const [month, day] = [ELECTION.date.slice(5, 7), Number(ELECTION.date.slice(8))]
   const MONTHS = [
     "Jan",
@@ -76,7 +70,7 @@
 
   <div class="relative mt-2 flex flex-1 items-center">
     <PrecinctMap
-      title="Haverhill's twenty-one precincts, each a link to its polling place and ballot"
+      title="Haverhill's twenty-one precincts, each a link to its ballot"
       {bounds}
       areas={PRECINCTS.map((p) => ({
         id: p.id,
@@ -87,7 +81,6 @@
         opacity: 0.4,
       }))}
       outlines={WARDS.map((w) => ({ shape: w.shape, name: `Ward ${w.ward}` }))}
-      {markers}
       width={640}
       height={520}
       caption="Ward and precinct lines: {PRECINCT_SOURCE.name}."

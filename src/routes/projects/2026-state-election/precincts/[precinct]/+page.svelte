@@ -5,8 +5,10 @@
   A precinct with an `A` half is two ballots under one name -- the half exists
   because a district line runs through the precinct -- so the ballot is a
   table with a column for each half, and the row where they differ is the
-  reason the half exists. Where the halves also vote in different buildings
-  (Ward 7's Precinct 2 and 2A), each names its own.
+  reason the half exists.
+
+  Where the precinct votes is not said here: the City Clerk asked that this
+  site link her page of polling locations rather than state one of its own.
 -->
 <script lang="ts">
   import { onMount } from "svelte"
@@ -24,8 +26,6 @@
     WARDS,
     ballotFor,
     electionEvent,
-    buildings,
-    pollingPlaceFor,
     precinctName,
     voterGuideUrl,
   } from "../../election"
@@ -41,12 +41,6 @@
     { id: precinct.id, districts: precinct.districts, shape: precinct.shape },
     ...precinct.subprecincts,
   ])
-  const places = $derived(parts.map((part) => ({ part, place: pollingPlaceFor(part.id) })))
-
-  // One building for the whole precinct, the ordinary case, is said once; two
-  // are said per half.
-  const oneBuilding = $derived(new Set(places.map((p) => p.place?.address)).size === 1)
-
   const ballots = $derived(parts.map((part) => ballotFor(part.districts)))
   const sameBallot = $derived(
     ballots.every((b) => JSON.stringify(b) === JSON.stringify(ballots[0])),
@@ -71,15 +65,8 @@
     document.getElementById(`ballot-tab-${activeBallot}`)?.focus()
   }
 
-  // Framed on the ward, which is what the precinct is drawn inside, and
-  // stretched to take in the polling place: Ward 7's Precinct 2 votes at
-  // Hunking Middle School, which is in Ward 2.
-  const bounds = $derived(
-    boundsOf(
-      [ward.shape],
-      places.flatMap(({ place }) => (place ? [[place.lon, place.lat] as [number, number]] : [])),
-    ),
-  )
+  // Framed on the ward, which is what the precinct is drawn inside.
+  const bounds = $derived(boundsOf([ward.shape]))
 
   // Where the precinct has two ballots, its own shape and its half's are the
   // way to pick one from the map as well as from the tabs.
@@ -109,17 +96,6 @@
     })),
   ])
 
-  // One pin per building: a precinct and its `A` half usually vote in the
-  // same one, and two pins on one spot is a duplicate rather than a second
-  // place to go.
-  const markers = $derived(
-    buildings(places.flatMap(({ place }) => (place ? [place] : []))).map(([place]) => ({
-      lon: place.lon,
-      lat: place.lat,
-      name: `${place.name}, ${place.address}`,
-    })),
-  )
-
   const title = $derived(precinctName(precinct.id))
 </script>
 
@@ -127,7 +103,7 @@
   <title>{title} - {PROJECT.title} - Haverhill</title>
   <meta
     name="description"
-    content="Haverhill {title} in the {PROJECT.title}: its polling place, its place in Ward {precinct.ward}, and every office and question on its ballot."
+    content="Haverhill {title} in the {PROJECT.title}: a link to its polling location, its place in Ward {precinct.ward}, and every office and question on its ballot."
   />
 </svelte:head>
 
@@ -153,33 +129,19 @@
       <AddToCalendar event={electionEvent(precinct.id)} filename="{PROJECT.slug}-{precinct.id}" />
     </div>
 
-    <!-- Where to go, first: it is what most readers came for. -->
-    <dl class="mt-4 space-y-2 text-sm">
-      {#each oneBuilding ? places.slice(0, 1) : places as { part, place } (part.id)}
-        <div>
-          <dt class="text-slate-500">
-            {oneBuilding ? "Polling place" : `Precinct ${part.id} votes at`}
-          </dt>
-          <dd class="text-slate-900">
-            {#if place}
-              <span class="font-medium">{place.name}</span>,
-              <a
-                class="underline hover:text-slate-700"
-                href={Router.map(`${place.address}, Haverhill, MA`)}
-                target="_blank"
-                rel="external noopener noreferrer"
-                >{place.address}<span class="sr-only">, opens a map in a new tab</span></a
-              >
-            {:else}
-              <!-- 3-2A: MassGIS draws it, the warrant names no polling place
-                     for it. Said rather than guessed: it is most likely part of
-                     Precinct 2's room, but the warrant does not say so. -->
-              The warrant names no polling place for Precinct {part.id}.
-            {/if}
-          </dd>
-        </div>
-      {/each}
-    </dl>
+    <!-- Where to go, first: it is what most readers came for, and it is the
+         Clerk's to say. -->
+    <p class="mt-4 text-sm">
+      <a
+        class="underline hover:text-slate-700"
+        href={Router.pollingLocations()}
+        target="_blank"
+        rel="external noopener noreferrer"
+        >Find {title}'s polling location on the City Clerk's website<span class="sr-only"
+          >, opens in a new tab</span
+        ></a
+      >
+    </p>
   </header>
 
   <!-- The same split as the project's own page: the map on the left, what is
@@ -191,11 +153,10 @@
     <div class="h-[70dvh] lg:h-full lg:min-h-0">
       <PrecinctMap
         interactive
-        title="{title}, outlined within Ward {precinct.ward}, with its polling place"
+        title="{title}, outlined within Ward {precinct.ward}"
         {bounds}
         {areas}
         outlines={[{ shape: ward.shape, name: `Ward ${precinct.ward}` }]}
-        {markers}
         height={480}
         caption="Ward {precinct.ward} is outlined; {title} is shaded{precinct.subprecincts.length
           ? `, its ${precinct.subprecincts.map((s) => s.id).join(' and ')} half in orange`
