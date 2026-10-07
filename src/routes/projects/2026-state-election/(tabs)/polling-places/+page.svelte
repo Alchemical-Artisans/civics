@@ -1,7 +1,7 @@
 <!--
-  The warrant's table of polling places, in its order and spelling: the map's
-  content in words, for a reader who would rather read a list than find a
-  shape. Each row opens its precinct's page.
+  Where to vote is the City Clerk's to say, not ours: she asked that this site
+  link her page of polling locations rather than state a place of its own, so
+  this tab is that link and, beneath it, a way to each precinct's ballot.
 -->
 <script lang="ts">
   import { formatLongDate } from "$lib/calendar"
@@ -18,31 +18,31 @@
     name="description"
     content="Where each of Haverhill's precincts votes in the {PROJECT.title} on {formatLongDate(
       ELECTION.date,
-    )}, as the election warrant lists them."
+    )}, from the City Clerk's website."
   />
 </svelte:head>
 
-<table class="w-full text-left text-sm">
-  <caption class="sr-only">Polling places by ward and precinct</caption>
-  <thead class="border-b border-slate-300 text-slate-500">
-    <tr>
-      <th scope="col" class="py-1 pr-3 font-medium">Ward and Precinct</th>
-      <th scope="col" class="py-1 pr-3 font-medium">Polling place</th>
-      <th scope="col" class="py-1 font-medium">Address</th>
-    </tr>
-  </thead>
-  <tbody class="divide-y divide-slate-100">
-    {#each POLLING_PLACES as place (place.label)}
-      <tr>
-        <th scope="row" class="py-1.5 pr-3 font-normal">
-          <a
-            class="text-sky-800 underline hover:text-slate-900"
-            href={Router.precinct(PROJECT.slug, pageOf(place.serves))}>{place.label}</a
-          >
-        </th>
-        <td class="py-1.5 pr-3 text-slate-700">{place.name}</td>
-        <td class="py-1.5 text-slate-700">{place.address}</td>
-      </tr>
-    {/each}
-  </tbody>
-</table>
+<p class="text-sm text-slate-700">
+  The City Clerk publishes where each ward and precinct votes.
+  <a
+    class="text-sky-800 underline hover:text-slate-900"
+    href={Router.pollingLocations()}
+    target="_blank"
+    rel="external noopener noreferrer"
+    >See the polling locations on the City Clerk's website<span class="sr-only"
+      >, opens in a new tab</span
+    ></a
+  >.
+</p>
+
+<h2 class="mt-6 text-sm font-semibold text-slate-900">Ballots by precinct</h2>
+<ul class="mt-1 grid grid-cols-2 gap-x-4 text-sm">
+  {#each POLLING_PLACES as place (place.label)}
+    <li class="py-0.5">
+      <a
+        class="text-sky-800 underline hover:text-slate-900"
+        href={Router.precinct(PROJECT.slug, pageOf(place.serves))}>{place.label}</a
+      >
+    </li>
+  {/each}
+</ul>

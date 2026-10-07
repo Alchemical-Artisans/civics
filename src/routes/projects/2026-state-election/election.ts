@@ -4,15 +4,22 @@
  * on the ballot, and the ten questions.
  *
  * Data rather than markup because three pages say it. The warrant's own item
- * page transcribes the document; the project page puts the polling places on a
- * map; each precinct's page says which of the offices and districts are on
- * *that* precinct's ballot. One copy, so the precinct pages cannot drift from
+ * page transcribes the document; the project page maps the precincts; each
+ * precinct's page says which of the offices and districts are on *that*
+ * precinct's ballot. One copy, so the precinct pages cannot drift from
  * the transcription they are built out of -- the same reason a budget table
  * lives in a `tables.ts` beside the pages that draw it.
  *
- * Everything here is the warrant's, as printed, with two exceptions that are
- * ours and say so where they are declared: the coordinates of each polling
- * place, and the key that ties a warrant row to the precincts it names.
+ * Everything here is the warrant's, as printed, with one exception that is
+ * ours and says so where it is declared: the key that ties a warrant row to
+ * the precincts it names.
+ *
+ * **Polling places appear only in the transcription of the warrant.** The City
+ * Clerk asked that the rest of the site not state where anyone votes, because
+ * a place published here that differs from hers sends a voter to the wrong
+ * door -- the church for Ward 3, Precinct 3 is "16 Ashland St" in the warrant
+ * and "15 Kenoza Ave" on her page. Every other page links her page,
+ * `Router.pollingLocations()`, instead.
  */
 import precinctData from "$lib/data/precincts.json"
 import { PROJECTS, type Project } from "$lib/projects"
@@ -76,17 +83,13 @@ export const PRECINCT_SOURCE = precinctData.source
  * "Ward 2, Precinct, 2" with its stray comma, and "Citizen Center 10 Welcome
  * St" with the address run into the name for Ward 3 only. `serves` is ours:
  * the precincts and sub-precincts the label names, in the ids MassGIS uses,
- * which is what joins a row to a shape. `lat`/`lon` are ours too, looked up
- * once by hand against Nominatim, the way `AddressMap` pins an address; every
- * one resolved to the building itself rather than to the street.
+ * which is what joins a row to a shape.
  */
 export interface PollingPlace {
   label: string
   name: string
   address: string
   serves: string[]
-  lat: number
-  lon: number
 }
 
 export const POLLING_PLACES: PollingPlace[] = [
@@ -95,176 +98,132 @@ export const POLLING_PLACES: PollingPlace[] = [
     name: "Somebody Cares",
     address: "358 Washington St",
     serves: ["1-1"],
-    lat: 42.7706568,
-    lon: -71.0931056,
   },
   {
     label: "Ward 1, Precinct 2/2A",
     name: "Citizen Center",
     address: "10 Welcome St",
     serves: ["1-2", "1-2A"],
-    lat: 42.7766213,
-    lon: -71.0788677,
   },
   {
     label: "Ward 1, Precinct 3/3A",
     name: "Haverhill High School",
     address: "137 Monument St",
     serves: ["1-3", "1-3A"],
-    lat: 42.7851758,
-    lon: -71.1063061,
   },
   {
     label: "Ward 2, Precinct 1",
     name: "Hunking Middle School",
     address: "480 South Main St",
     serves: ["2-1"],
-    lat: 42.7609349,
-    lon: -71.0865848,
   },
   {
     label: "Ward 2, Precinct, 2",
     name: "Bradford Elementary School",
     address: "118 Montvale St",
     serves: ["2-2"],
-    lat: 42.7569486,
-    lon: -71.069628,
   },
   {
     label: "Ward 2, Precinct 3",
     name: "Moody School",
     address: "59 Margin St",
     serves: ["2-3"],
-    lat: 42.7652926,
-    lon: -71.0966082,
   },
   {
     label: "Ward 3, Precinct 1",
     name: "Citizen Center 10 Welcome St",
     address: "10 Welcome St",
     serves: ["3-1"],
-    lat: 42.7766213,
-    lon: -71.0788677,
   },
   {
     label: "Ward 3, Precinct 2",
     name: "Haverhill City Hall – Early Voting Room",
     address: "4 Summer St",
     serves: ["3-2"],
-    lat: 42.7781603,
-    lon: -71.076848,
   },
   {
     label: "Ward 3, Precinct 3",
     name: "Unitarian Universalist Church",
     address: "16 Ashland St",
     serves: ["3-3"],
-    lat: 42.7811943,
-    lon: -71.0761499,
   },
   {
     label: "Ward 4, Precinct 1",
     name: "Nettle Middle School",
     address: "150 Boardman St",
     serves: ["4-1"],
-    lat: 42.7742084,
-    lon: -71.059093,
   },
   {
     label: "Ward 4, Precinct 2",
     name: "NECC, Tech Center",
     address: "100 Elliot St",
     serves: ["4-2"],
-    lat: 42.7966929,
-    lon: -71.0470029,
   },
   {
     label: "Ward 4, Precinct 3",
     name: "Kennedy Circle Community Room",
     address: "1 Kennedy Cir",
     serves: ["4-3"],
-    lat: 42.7653203,
-    lon: -71.0476589,
   },
   {
     label: "Ward 5, Precinct 1/1A",
     name: "Consentino Middle School",
     address: "685 Washington St",
     serves: ["5-1", "5-1A"],
-    lat: 42.769824,
-    lon: -71.1022659,
   },
   {
     label: "Ward 5, Precinct 2",
     name: "Julian Steele Community Room",
     address: "772 Washington St",
     serves: ["5-2"],
-    lat: 42.7727745,
-    lon: -71.1069865,
   },
   {
     label: "Ward 5, Precinct 3/3A",
     name: "West Congregational Church",
     address: "767 Broadway",
     serves: ["5-3", "5-3A"],
-    lat: 42.787566,
-    lon: -71.1331329,
   },
   {
     label: "Ward 6, Precinct 1",
     name: "Haverhill High School",
     address: "137 Monument St",
     serves: ["6-1"],
-    lat: 42.7851758,
-    lon: -71.1063061,
   },
   {
     label: "Ward 6, Precinct 2/2A",
     name: "John Greenleaf Whittier Middle School",
     address: "256 Concord St",
     serves: ["6-2", "6-2A"],
-    lat: 42.7976383,
-    lon: -71.0783048,
   },
   {
     label: "Ward 6, Precinct 3",
     name: "Pentucket Lake Elementary School",
     address: "252 Concord St",
     serves: ["6-3"],
-    lat: 42.7990057,
-    lon: -71.0789618,
   },
   {
     label: "Ward 7, Precinct 1",
     name: "Presidential Gardens Community Room",
     address: "140 Evergreen Dr",
     serves: ["7-1"],
-    lat: 42.7576573,
-    lon: -71.0912765,
   },
   {
     label: "Ward 7, Precinct 2",
     name: "Hunking Middle School",
     address: "480 South Main St",
     serves: ["7-2"],
-    lat: 42.7609349,
-    lon: -71.0865848,
   },
   {
     label: "Ward 7, Precinct 2A",
     name: "Consentino Middle School",
     address: "685 Washington St",
     serves: ["7-2A"],
-    lat: 42.769824,
-    lon: -71.1022659,
   },
   {
     label: "Ward 7, Precinct 3/3A",
     name: "Bradford Elementary School",
     address: "118 Montvale St",
     serves: ["7-3", "7-3A"],
-    lat: 42.7569486,
-    lon: -71.069628,
   },
 ]
 
@@ -581,44 +540,16 @@ export function ballotFor(districts: Districts): BallotLine[] {
   return lines
 }
 
-/** The warrant row naming a precinct or sub-precinct id, if any does. */
-export function pollingPlaceFor(id: string): PollingPlace | undefined {
-  return POLLING_PLACES.find((place) => place.serves.includes(id))
-}
-
 /**
- * Polling places grouped by building, in the warrant's order. Haverhill High,
- * Hunking, Consentino, Bradford Elementary and the Citizen Center each serve
- * two rows of the warrant, and a map with a pin per row would stack a second
- * pin on the first and hide its name.
- */
-export function buildings(places: PollingPlace[] = POLLING_PLACES): PollingPlace[][] {
-  const groups = new Map<string, PollingPlace[]>()
-  for (const place of places)
-    groups.set(place.address, [...(groups.get(place.address) ?? []), place])
-  return [...groups.values()]
-}
-
-/**
- * Election Day as a calendar event: the polls' hours from the warrant, and,
- * for one precinct, the building it votes in as the location. A precinct
- * whose halves vote in two buildings gets no location -- which one is the
- * reader's depends on which side of the line they live, which the event
- * cannot know -- and its description names both.
+ * Election Day as a calendar event: the polls' hours from the warrant, and a
+ * link to the City Clerk's list of polling locations. No location is set --
+ * where a precinct votes is the Clerk's to state, not ours -- so the event
+ * sends the reader to her page for it.
  */
 export function electionEvent(precinct?: string): CalendarEvent {
   const page = precinct
     ? Router.absolute(`/projects/${PROJECT.slug}/precincts/${precinct}`)
     : Router.absolute(`/projects/${PROJECT.slug}`)
-  const parent = PRECINCTS.find((p) => p.id === precinct)
-  const places = parent
-    ? buildings(
-        [parent.id, ...parent.subprecincts.map((s) => s.id)].flatMap((id) => {
-          const place = pollingPlaceFor(id)
-          return place ? [place] : []
-        }),
-      ).map(([place]) => place)
-    : []
   const day = ELECTION.date.replace(/-/g, "")
   return {
     uid: `${PROJECT.slug}${precinct ? `-${precinct}` : ""}@haverhill.alchemicalartisans.com`,
@@ -626,12 +557,10 @@ export function electionEvent(precinct?: string): CalendarEvent {
     start: `${day}T070000`,
     end: `${day}T200000`,
     allDay: false,
-    location:
-      places.length === 1 ? `${places[0].name}, ${places[0].address}, Haverhill, MA` : undefined,
     description: [
       `Polls are open ${ELECTION.hours}`,
-      ...places.map((p) => `Polling place: ${p.name}, ${p.address}`),
-      `Where to vote and what is on the ballot: ${page}`,
+      `Polling locations, from the City Clerk: ${Router.pollingLocations()}`,
+      `What is on the ballot: ${page}`,
     ].join("\n"),
     url: page,
   }

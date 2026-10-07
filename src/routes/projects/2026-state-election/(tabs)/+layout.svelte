@@ -110,7 +110,7 @@
 </script>
 
 <!-- On a wide window the page is one screen: the header, then the map (or the
-     table of polling places) and the timeline side by side, each of the two
+     page of polling places) and the timeline side by side, each of the two
      columns scrolling for itself. 6rem is the site's bar above and its footer
      below. -->
 <div
@@ -119,8 +119,8 @@
   <header class="mb-6 border-b border-slate-200 pb-6 lg:mb-3 lg:pb-3">
     <p class="text-sm text-slate-500">Project</p>
     <h1 class="text-2xl font-bold tracking-tight text-slate-900">{PROJECT.title}</h1>
-    <!-- No polling place on this one: that depends on the precinct, and each
-         precinct's own page offers the event with its building in it. -->
+    <!-- No polling place anywhere: the Clerk states those, and each
+         precinct page links her list. -->
     <div class="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
       <p class="text-sm text-slate-600">{formatLongDate(ELECTION.date)}, {ELECTION.hours}</p>
       <AddToCalendar event={electionEvent()} filename={PROJECT.slug} />

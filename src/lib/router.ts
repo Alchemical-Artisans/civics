@@ -266,6 +266,16 @@ export class Router {
   }
 
   /**
+   * The City Clerk's page of polling locations, the one place the city states
+   * where each ward and precinct votes. Linked rather than copied: the Clerk
+   * asked that this site not publish a polling place of its own, since a copy
+   * that drifts from hers sends a voter to the wrong door.
+   */
+  static pollingLocations(): string {
+    return `${CITY}/government/elections/polling-locations/`
+  }
+
+  /**
    * A place on a map. Also not a route here, and for the same reason as
    * `cityPage`: a document page links out to where its meeting is held, and
    * the spelling of that URL belongs with the rest of them.

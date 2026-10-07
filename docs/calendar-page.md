@@ -684,8 +684,8 @@ not been shown anything yet. What is there instead is a drawing:
 - The **election card** is the project's precinct map and nothing else —
   [`ElectionCard.svelte`](../src/routes/projects/2026-state-election/ElectionCard.svelte),
   beside the project's own `election.ts` — every precinct a link to its own
-  page with its polling place and ballot, so a reader who knows their precinct
-  is one click from where they vote. No precinct numbers: at a card's size the
+  page with its ballot and a link to the City Clerk's polling locations, so a reader who knows their precinct
+  is one click from finding where they vote. No precinct numbers: at a card's size the
   downtown labels pile on top of each other, and the project's own map has the
   room to print them. The second card was the budget's — the book's two columns,
   drawn from its `summary.ts` — until budgets became one kind of project, reached

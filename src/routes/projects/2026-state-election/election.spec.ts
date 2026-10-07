@@ -1,5 +1,4 @@
 import { describe, expect, it } from "vitest"
-import { contains } from "$lib/map"
 import {
   OFFICES,
   POLLING_PLACES,
@@ -8,7 +7,6 @@ import {
   WARDS,
   ballotFor,
   electionEvent,
-  pollingPlaceFor,
   warrantDistrict,
 } from "./election"
 
@@ -39,20 +37,9 @@ describe("POLLING_PLACES", () => {
     for (const place of POLLING_PLACES) for (const id of place.serves) expect(allIds).toContain(id)
   })
 
-  it("gives every precinct exactly one place, except the one the warrant omits", () => {
-    // 3-2A is in MassGIS's sub-precincts and on no row of the warrant; the
-    // precinct page says so rather than guessing a room for it.
-    const missing = allIds.filter((id) => !pollingPlaceFor(id))
-    expect(missing).toEqual(["3-2A"])
+  it("names no precinct twice", () => {
     const named = POLLING_PLACES.flatMap((p) => p.serves)
     expect(new Set(named).size).toBe(named.length)
-  })
-
-  it("pins every place inside the city", () => {
-    for (const place of POLLING_PLACES) {
-      const inside = WARDS.some((w) => contains(w.shape, [place.lon, place.lat]))
-      expect(inside, place.name).toBe(true)
-    }
   })
 })
 
@@ -135,18 +122,13 @@ describe("electionEvent", () => {
     expect(event.location).toBeUndefined()
   })
 
-  it("puts a precinct's polling place in its event", () => {
-    // 5-3 and its A half vote in one building, so it is still one location.
-    expect(electionEvent("5-3").location).toBe(
-      "West Congregational Church, 767 Broadway, Haverhill, MA",
-    )
-  })
-
-  it("leaves the location off where the halves vote apart, and names both", () => {
-    const event = electionEvent("7-2")
-    expect(event.location).toBeUndefined()
-    expect(event.description).toContain("Hunking Middle School")
-    expect(event.description).toContain("Consentino Middle School")
+  it("names no polling place, and sends the reader to the Clerk's page", () => {
+    for (const precinct of [undefined, "5-3", "7-2"]) {
+      const event = electionEvent(precinct)
+      expect(event.location).toBeUndefined()
+      expect(event.description).toContain("/government/elections/polling-locations/")
+      expect(event.description).not.toMatch(/Hunking|Consentino|Congregational/)
+    }
   })
 })
 

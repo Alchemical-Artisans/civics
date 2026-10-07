@@ -22,10 +22,14 @@ test("every precinct on the map is a link to its own page", async ({ page }) => 
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Ward 7, Precinct 2")
 })
 
-test("a precinct with an A half shows both ballots and both buildings", async ({ page }) => {
+test("a precinct with an A half shows both ballots and links the Clerk for the place", async ({
+  page,
+}) => {
   await page.goto(`${PROJECT}/precincts/7-2`)
-  await expect(page.getByText("Hunking Middle School", { exact: true })).toBeVisible()
-  await expect(page.getByText("Consentino Middle School", { exact: true })).toBeVisible()
+  await expect(page.getByText("Hunking Middle School")).toHaveCount(0)
+  await expect(
+    page.getByRole("link", { name: /polling location on the City Clerk/ }),
+  ).toHaveAttribute("href", /haverhillma\.gov\/government\/elections\/polling-locations\/$/)
   const ballot = page.getByRole("tabpanel").filter({ visible: true })
   await expect(ballot).toContainText("Barry R. Finegold")
   await page.getByRole("tab", { name: "Precinct 7-2A" }).click()
