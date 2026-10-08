@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-02T21:00:45.232Z",
+  "generatedAt": "2026-10-08T13:34:04.995Z",
   "rules": [
     {
       "board": "City Council",
@@ -438,11 +438,25 @@
       "time": "7:15 PM"
     },
     {
+      "board": "School Committee",
+      "date": "2026-10-08",
+      "title": "Haverhill School Committee Meeting",
+      "url": "https://events.haverhillma.gov/default/Detail/2026-10-08-1900-Haverhill-School-Committee-Meeting2",
+      "time": "7:00 PM"
+    },
+    {
       "board": "School Committee Negotiating Subcommittee",
       "date": "2026-10-08",
       "title": "Haverhill School Committee Subcommittee for HEA Grievances Meeting",
       "url": "https://events.haverhillma.gov/default/Detail/2026-10-08-1700-Haverhill-School-Committee-Subcommittee-for-HEA-Gr",
       "time": "5:00 PM"
+    },
+    {
+      "board": "Retirement Board",
+      "date": "2026-10-13",
+      "title": "HAVERHILL RETIREMENT SYSTEM",
+      "url": "https://events.haverhillma.gov/default/Detail/2026-10-13-0900-HAVERHILL-RETIREMENT-SYSTEM",
+      "time": "9:00 AM"
     },
     {
       "board": "John Greenleaf Whittier School Building Committee",

@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-10-02T21:00:40.409Z",
+  "generatedAt": "2026-10-08T13:33:54.161Z",
   "source": "https://www.haverhillma.gov/government/agendas-and-minutes/",
-  "count": 3128,
+  "count": 3135,
   "meetings": [
     {
       "title": "Special Education Parental Advisory Council Meeting (SEPAC)",
@@ -20,6 +20,24 @@
       "needsReview": false,
       "source": "https://events.haverhillma.gov/",
       "docId": "2026-11-09-1830-special-education-parental-advisory-council-meetin-a2891901"
+    },
+    {
+      "title": "Water Abatement Meeting Agenda 11-4-26",
+      "pageUrl": "/document-manager/media-pages/agenda-and-minutes/water-abatement-meeting-agenda-11-4-26/",
+      "fileUrl": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/btzhlcmq/abatement-board-meeting-agenda-11-4-26.pdf",
+      "category": "Water Department Meeting Agendas",
+      "description": "",
+      "board": "Water Department",
+      "kind": "agenda",
+      "date": "2026-11-04",
+      "dateSource": "meeting-date",
+      "rawMeetingDate": "11/04/2026 06:00 PM",
+      "dateAdjusted": false,
+      "dateConflict": false,
+      "filenameDate": null,
+      "needsReview": false,
+      "source": "https://www.haverhillma.gov/government/agendas-and-minutes/",
+      "docId": "water-abatement-meeting-agenda-11-4-26-c2efa290"
     },
     {
       "title": "Haverhill School Committee Subcommittee for HEA Grievances Meeting",
@@ -76,6 +94,24 @@
       "docId": "2026-10-14-0830-john-greenleaf-whittier-school-building-committee-2-68fde568"
     },
     {
+      "title": "HAVERHILL RETIREMENT SYSTEM",
+      "description": "HAVERHILL RETIREMENT BOARD 10.13.2026.pdf",
+      "pageUrl": "https://events.haverhillma.gov/default/Detail/2026-10-13-0900-HAVERHILL-RETIREMENT-SYSTEM",
+      "fileUrl": "https://events.haverhillma.gov/default/Detail/2026-10-13-0900-HAVERHILL-RETIREMENT-SYSTEM/131cc841-c980-4f0e-9615-b4dc014a2ca4",
+      "date": "2026-10-13",
+      "board": "Retirement Board",
+      "kind": "agenda",
+      "category": "Retirement Board Agendas",
+      "dateSource": "notice",
+      "rawMeetingDate": null,
+      "dateAdjusted": false,
+      "dateConflict": false,
+      "filenameDate": null,
+      "needsReview": false,
+      "source": "https://events.haverhillma.gov/",
+      "docId": "2026-10-13-0900-haverhill-retirement-system-dd5cd731"
+    },
+    {
       "title": "2026-10-08 Conservation Commission Agenda",
       "pageUrl": "/document-manager/media-pages/agenda-and-minutes/2026-10-08-conservation-commission-agenda/",
       "fileUrl": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/bkqj2pxm/20261008_hccagenda.pdf",
@@ -92,6 +128,42 @@
       "needsReview": false,
       "source": "https://www.haverhillma.gov/government/agendas-and-minutes/",
       "docId": "2026-10-08-conservation-commission-agenda-7881d959"
+    },
+    {
+      "title": "Final & Approved Hybrid Regular Meeting Minutes 09.24.26.docx (1)",
+      "description": "_final__approved_hybrid_regular_meeting_minutes_092426docx_1.pdf",
+      "pageUrl": "https://www.haverhill-ps.org/meeting-schedule-and-agenda-packet",
+      "fileUrl": "https://files.smartsites.parentsquare.com/10015/_final__approved_hybrid_regular_meeting_minutes_092426docx_1.pdf",
+      "board": "School Committee",
+      "kind": "minutes",
+      "category": "School Committee Minutes",
+      "date": "2026-10-08",
+      "dateSource": "schedule-page",
+      "rawMeetingDate": null,
+      "dateAdjusted": false,
+      "dateConflict": false,
+      "filenameDate": null,
+      "needsReview": false,
+      "source": "https://www.haverhill-ps.org/meeting-schedule-and-agenda-packet",
+      "docId": "meeting-schedule-and-agenda-packet-4c8e8974"
+    },
+    {
+      "title": "Final for Posting School Committee Hybrid Regular Meeting Agenda 10.08.26 (1)",
+      "description": "final_for_posting_hybrid_regular_meeting_agenda_100826_1.pdf",
+      "pageUrl": "https://www.haverhill-ps.org/meeting-schedule-and-agenda-packet",
+      "fileUrl": "https://files.smartsites.parentsquare.com/10015/final_for_posting_hybrid_regular_meeting_agenda_100826_1.pdf",
+      "board": "School Committee",
+      "kind": "agenda",
+      "category": "School Committee Agendas",
+      "date": "2026-10-08",
+      "dateSource": "schedule-page",
+      "rawMeetingDate": null,
+      "dateAdjusted": false,
+      "dateConflict": false,
+      "filenameDate": null,
+      "needsReview": false,
+      "source": "https://www.haverhill-ps.org/meeting-schedule-and-agenda-packet",
+      "docId": "meeting-schedule-and-agenda-packet-7381aec7"
     },
     {
       "title": "Haverhill Conservation Commission Meeting",
@@ -112,6 +184,24 @@
       "docId": "2026-10-08-1915-haverhill-conservation-commission-meeting-65e572af"
     },
     {
+      "title": "Haverhill School Committee Meeting",
+      "description": "school comm rev 26-004.pdf",
+      "pageUrl": "https://events.haverhillma.gov/default/Detail/2026-10-08-1900-Haverhill-School-Committee-Meeting2",
+      "fileUrl": "https://events.haverhillma.gov/default/Detail/2026-10-08-1900-Haverhill-School-Committee-Meeting2/499abd2d-beb9-4ce8-b259-b4db013bc701",
+      "date": "2026-10-08",
+      "board": "School Committee",
+      "kind": "agenda",
+      "category": "School Committee Agendas",
+      "dateSource": "notice",
+      "rawMeetingDate": null,
+      "dateAdjusted": false,
+      "dateConflict": false,
+      "filenameDate": null,
+      "needsReview": false,
+      "source": "https://events.haverhillma.gov/",
+      "docId": "2026-10-08-1900-haverhill-school-committee-meeting2-29f7f50f"
+    },
+    {
       "title": "Haverhill School Committee Subcommittee for HEA Grievances Meeting",
       "description": "hea grievance 1 26.pdf",
       "pageUrl": "https://events.haverhillma.gov/default/Detail/2026-10-08-1700-Haverhill-School-Committee-Subcommittee-for-HEA-Gr",
@@ -128,6 +218,24 @@
       "needsReview": false,
       "source": "https://events.haverhillma.gov/",
       "docId": "2026-10-08-1700-haverhill-school-committee-subcommittee-for-hea-gr-c7cba636"
+    },
+    {
+      "title": "HSC Portfolio Meeting Materials 10.08.26",
+      "description": "hsc_portfolio_meeting_materials_100826.pdf",
+      "pageUrl": "https://www.haverhill-ps.org/meeting-schedule-and-agenda-packet",
+      "fileUrl": "https://files.smartsites.parentsquare.com/10015/hsc_portfolio_meeting_materials_100826.pdf",
+      "board": "School Committee",
+      "kind": "other",
+      "category": "School Committee Documents",
+      "date": "2026-10-08",
+      "dateSource": "schedule-page",
+      "rawMeetingDate": null,
+      "dateAdjusted": false,
+      "dateConflict": false,
+      "filenameDate": null,
+      "needsReview": false,
+      "source": "https://www.haverhill-ps.org/meeting-schedule-and-agenda-packet",
+      "docId": "meeting-schedule-and-agenda-packet-9d33ba88"
     },
     {
       "title": "Consentino School Building Committee Mtg",
@@ -202,6 +310,25 @@
       "docId": "city-council-agenda-october-6-2026-bc78e872"
     },
     {
+      "title": "Haverhill City Council Meeting - October 6, 2026",
+      "description": "",
+      "pageUrl": "http://haverhillcommunitytv.org/video/haverhill-city-council-meeting-october-6-2026",
+      "fileUrl": null,
+      "date": "2026-10-06",
+      "board": "City Council",
+      "kind": "recording",
+      "category": "City Council Recordings",
+      "dateSource": "recording",
+      "rawMeetingDate": null,
+      "dateAdjusted": false,
+      "dateConflict": false,
+      "filenameDate": null,
+      "needsReview": false,
+      "orphan": false,
+      "source": "http://haverhillcommunitytv.org/",
+      "docId": null
+    },
+    {
       "title": "Walnut Square Site Council Meeting",
       "description": "walnut sq site cncl 26-001.pdf",
       "pageUrl": "https://events.haverhillma.gov/default/Detail/2026-10-05-1700-Walnut-Square-Site-Council-Meeting",
@@ -238,7 +365,7 @@
       "docId": "2026-10-01-0900-consentino-school-building-committee-meeting-f9d6d232"
     },
     {
-      "title": "Haverhill License Commission Special Meeting - October 1, 2026",
+      "title": "Haverhill License Commission Meeting - October 1, 2026",
       "description": "",
       "pageUrl": "http://haverhillcommunitytv.org/video/haverhill-license-commission-special-meeting-october-1-2026",
       "fileUrl": null,
