@@ -13,6 +13,13 @@
 
   const MEETING = "city-council-2026-10-06"
   const ITEM = "water-use-restriction-ordinance"
+  // The Planning and Development Committee sittings that took the matter up
+  // (Docs. 94-B and 1-F) before the Mayor filed this order; the DPW memo below
+  // says the revised ordinance "incorporates items discussed" there.
+  const COMMITTEE = [
+    ["planning-and-development-committee-2026-03-02", "March 2, 2026"],
+    ["planning-and-development-committee-2026-03-30", "March 30, 2026"],
+  ]
 </script>
 
 <p>
@@ -49,6 +56,13 @@
 <hr />
 
 <ul>
+  {#each COMMITTEE as [id, day] (id)}
+    <li>
+      <a href={Router.meeting(id)}>
+        Minutes/Summary of the Planning and Development Committee Meeting, {day}
+      </a>
+    </li>
+  {/each}
   <li>
     <a href={Router.excerpt(MEETING, `${ITEM}/cover-sheet`)} target="_blank" rel="noopener">
       Document # 32-R, with the Council&rsquo;s vote of September 22, 2026<span class="sr-only">
