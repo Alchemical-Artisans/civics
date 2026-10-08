@@ -374,6 +374,41 @@
     {/if}
   </header>
 
+  <!-- The items worth reading first, above the agenda that lists them all.
+       Only on the meeting itself: an item page is already one item. Each
+       reason is worded here, once, from the evidence the write-up recorded in
+       `details.highlights` -- the write-up supplies no prose of its own. -->
+  {#if !data.isItem && details?.highlights?.length}
+    <section class="mb-8 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3">
+      <h2 class="text-sm font-semibold tracking-wide text-amber-900 uppercase">Highlights</h2>
+      <ul class="mt-2 space-y-3">
+        {#each details.highlights as highlight (highlight.item)}
+          <li>
+            <a
+              class="font-medium text-slate-900 underline hover:text-slate-700"
+              href={Router.meetingItem(meeting.id, highlight.item)}
+            >
+              {#if highlight.number}{highlight.number}{" "}{/if}{highlight.title}
+            </a>
+            {#each highlight.reasons as reason, i (i)}
+              {#if reason.kind === "discussed-before"}
+                <p class="mt-0.5 text-sm text-slate-700">
+                  Discussed at length at an earlier meeting:
+                  {#each reason.meetings as earlier, j (earlier.id)}
+                    {#if j > 0}{" "}&middot;{" "}{/if}<a
+                      class="underline hover:text-slate-900"
+                      href={Router.meeting(earlier.id)}>{earlier.label}</a
+                    >
+                  {/each}
+                </p>
+              {/if}
+            {/each}
+          </li>
+        {/each}
+      </ul>
+    </section>
+  {/if}
+
   <!-- The write-up is the child route: an ordinary Svelte component, checked
 	     and formatted like the rest of the source, rather than a string of
 	     markup dropped in with {@html}. See docs/document-pages.md. -->

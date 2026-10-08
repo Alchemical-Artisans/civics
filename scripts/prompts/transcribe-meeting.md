@@ -300,7 +300,7 @@ printed -- a building, a house number, a feature of the right name. Where the
 document names a place with no street number of its own that the lookup
 cannot find _by name_ (a pumping station, an unnamed lot) and it only turns
 up the street or the neighbourhood it sits on, **leave the map off** rather than centring it on an approximation and calling it the
-place -- the same rule as §10's "do not guess": a map is a stronger claim of
+place -- the same rule as §11's "do not guess": a map is a stronger claim of
 precision than a sentence naming the street, and this codebase does not make
 claims the document does not support. Say in your report which addresses got
 a map and which were left out, and why.
@@ -651,9 +651,41 @@ Labels are the city's words or none. Where the two versions letter a list
 differently and no shared label exists that either document actually prints,
 leave the row unlabelled and let each side carry its own numbering in its own
 text -- a handle invented to span them would be my words sitting in the
-record's typeface, which §10 bars.
+record's typeface, which §11 bars.
 
-## 10. The rules that bite
+## 10. Highlights
+
+A sitting can have a few items a reader should see before the agenda's full
+outline, and deciding which is part of writing the sitting up. The layout draws
+a "Highlights" section above the agenda from `details.highlights` in the
+meeting page's `+page.ts` (`Highlight` in `src/lib/calendar.ts`); leave it out
+when nothing qualifies, which is the usual case for most boards.
+
+A highlight is **data, not prose**: an item (its directory name, its title as
+its own page gives it, and its agenda number) and one or more `reasons`. The
+layout words each kind of reason itself, so write no sentence of your own and
+do not call anything a highlight on a hunch. Each reason must be backed by a
+test below, and the evidence it names must be something you actually read.
+
+The tests so far -- there will be more, and each is a new `kind` in
+`HighlightReason` plus a wording in `meetings/+layout.svelte`:
+
+- **`discussed-before`** -- the matter was discussed at length at an earlier
+  sitting, which makes the sitting taking it up now likely to matter. §6's
+  "A matter that began in another body" is how you find those sittings; the
+  same ones you link from the item's page are the ones listed here. "At length"
+  is a judgement made from the minutes you read there: the item has its own
+  section with a recorded discussion (questions, positions, amendments agreed,
+  a vote), not a bare mention, a referral, or a line in a list. A matter only
+  referred to a committee and never taken up is not highlighted. List only the
+  sittings where that was true, with the label the minutes title themselves by.
+
+Because this depends on the earlier minutes, do the §6 search for every
+ordinance, order and study on the agenda before deciding, not only for items
+you would have looked up anyway. Where the earlier minutes cannot be found or
+read, say so in your report rather than highlighting on a guess.
+
+## 11. The rules that bite
 
 - **Transcribe verbatim.** Do not paraphrase, summarise, correct, or tidy. The
   city's spelling, punctuation and slips stay as printed — "dover use" for Dover
@@ -671,7 +703,7 @@ record's typeface, which §10 bars.
   cut out of a packet is still sideways, and nothing but the image will tell
   you; §7 has the render and the rotation snippet.
 
-## 11. Check it
+## 12. Check it
 
 ```sh
 npx prettier --write src/routes/calendar/meetings/<meeting id>/
@@ -688,11 +720,12 @@ the budget book defines without linking it. The build is what proves the new
 routes prerender — check `build/calendar/meetings/<meeting id>/` holds one file
 per item page.
 
-## 12. Commit, and report
+## 13. Commit, and report
 
 Commit directly to `main`, in the repo's voice: what changed and **why**, not a
 list of files. Do not push, and do not open a pull request.
 
-Then tell the user, briefly: which pages you created, any judgement call you
+Then tell the user, briefly: which pages you created, which items you highlighted
+and on what evidence (§10), any judgement call you
 made about slugs or about what did not get its own page, anything the document
 states that you could not read, and the result of the checks.

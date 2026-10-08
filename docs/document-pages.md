@@ -105,6 +105,13 @@ Everything it writes is under `.cache/`, which is gitignored and disposable.
    })
    ```
 
+   `details.highlights` lists the agenda items worth reading before the full
+   outline, each as an item plus the evidence for it rather than a sentence;
+   the layout draws them in a "Highlights" section above the agenda. Whether
+   something qualifies is judged at transcription time, by the tests in
+   `scripts/prompts/transcribe-meeting.md` (§10) -- today, that the matter was
+   discussed at length at earlier sittings.
+
    Every field is optional, and the file itself is optional — skip it for a set
    of minutes that states none of this. `name` is shown and should be verbatim;
    `mapQuery` is what gets handed to the map, so drop the room number and add
