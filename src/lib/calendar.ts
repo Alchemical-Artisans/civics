@@ -400,6 +400,45 @@ export interface MeetingDetails {
    * agenda itself below the fold on every page.
    */
   notice?: string[]
+  /**
+   * The items on this sitting's agenda worth a reader's attention first, shown
+   * in a section above the agenda itself.
+   *
+   * Decided by whoever writes the sitting up (the transcribe prompt's §13 says
+   * how), because it is a judgement about the record rather than a field in it,
+   * and recorded here as data -- an item and the evidence for it -- so the page
+   * writes none of its own prose: the layout words each kind of reason once.
+   * Empty or absent when nothing met a test below, which is the usual case.
+   */
+  highlights?: Highlight[]
+}
+
+/** One agenda item singled out, and why. */
+export interface Highlight {
+  /** The item's directory name under the meeting, as `Router.meetingItem` takes it. */
+  item: string
+  /** The item's title as its own page gives it. */
+  title: string
+  /** The agenda's number for it, as printed, e.g. `"16.2"`. */
+  number?: string
+  /** At least one; an item with several is highlighted for each. */
+  reasons: HighlightReason[]
+}
+
+/**
+ * Why an item is a highlight. A union so a new test is a new `kind` here and a
+ * new wording in the layout, and none of the existing write-ups change.
+ *
+ * - `discussed-before`: the matter came up at length at earlier sittings, so
+ *   the sitting taking it up now is likely to be significant. "At length" is
+ *   what the minutes of those sittings show -- the item has a section of its
+ *   own and a discussion recorded in it, not a bare mention or a referral --
+ *   which is read from the minutes, never inferred from the subject.
+ */
+export type HighlightReason = {
+  kind: "discussed-before"
+  /** The earlier sittings, each by meeting id and the label the minutes give it. */
+  meetings: { id: string; label: string }[]
 }
 
 /**

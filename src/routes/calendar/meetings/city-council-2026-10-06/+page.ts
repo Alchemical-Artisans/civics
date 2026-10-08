@@ -3,6 +3,30 @@ import type { PageLoad } from "./$types"
 export const load: PageLoad = () => ({
   details: {
     time: "7:00 PM",
+    // 16.2 went through two Planning and Development Committee sittings before
+    // the Mayor filed the order; both are linked from the item's own page.
+    highlights: [
+      {
+        item: "water-use-restriction-ordinance",
+        title: "Water Use Restriction Ordinance",
+        number: "16.2",
+        reasons: [
+          {
+            kind: "discussed-before",
+            meetings: [
+              {
+                id: "planning-and-development-committee-2026-03-02",
+                label: "Planning and Development Committee, March 2, 2026",
+              },
+              {
+                id: "planning-and-development-committee-2026-03-30",
+                label: "Planning and Development Committee, March 30, 2026",
+              },
+            ],
+          },
+        ],
+      },
+    ],
     location: {
       name: "Theodore A. Pelosi, Jr. Council Chambers, 4 Summer St, Room 202",
       mapQuery: "4 Summer Street, Haverhill, MA 01830",
