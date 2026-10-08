@@ -1,5 +1,9 @@
 import { describe, it, expect } from "vitest"
 import {
+  addDays,
+  daysCovered,
+  formatWeek,
+  weeksCovered,
   addMonths,
   boardsOf,
   buildMonthGrid,
@@ -497,5 +501,34 @@ describe("documents the city has taken down", () => {
     // With the License Commission's dropped upstream, only the Council's sits.
     const afterDrop = groupIntoMeetings([doc("2025-03-14")])
     expect(afterDrop.map((m) => m.board)).toEqual(["City Council"])
+  })
+})
+
+describe("week and day views", () => {
+  const m = (date: string) => ({ id: "x", board: "B", date, documents: [] }) as never
+
+  it("shifts days across month and year ends", () => {
+    expect(addDays("2026-12-31", 1)).toBe("2027-01-01")
+    expect(addDays("2026-03-01", -1)).toBe("2026-02-28")
+  })
+
+  it("covers every day of every week touching the months the record spans", () => {
+    const days = daysCovered([m("2026-01-15"), m("2026-02-03")])
+    expect(days[0]).toBe("2025-12-28")
+    expect(days.at(-1)).toBe("2026-02-28")
+    expect(days).toHaveLength(63)
+  })
+
+  it("names weeks by their Sunday, covering the span", () => {
+    const weeks = weeksCovered([m("2026-01-15"), m("2026-02-03")])
+    expect(weeks[0]).toBe("2025-12-28")
+    expect(weeks.every((w) => new Date(`${w}T00:00:00Z`).getUTCDay() === 0)).toBe(true)
+    expect(addDays(weeks.at(-1)!, 6) >= "2026-02-28").toBe(true)
+  })
+
+  it("formats a week, naming months and years only where it crosses them", () => {
+    expect(formatWeek("2026-10-04")).toBe("Oct 4 – 10, 2026")
+    expect(formatWeek("2026-09-27")).toBe("Sep 27 – Oct 3, 2026")
+    expect(formatWeek("2026-12-27")).toBe("Dec 27, 2026 – Jan 2, 2027")
   })
 })

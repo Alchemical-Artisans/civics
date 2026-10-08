@@ -14,7 +14,7 @@
  * every page but the one that populated it.
  */
 import { base } from "$app/paths"
-import { TIMEZONE, easternDate } from "./calendar"
+import { TIMEZONE, easternDate, weekOf } from "./calendar"
 
 /** Join the base path to a root-relative path, e.g. `/calendar`. */
 const path = (route: `/${string}`): string => `${base}${route}`
@@ -46,6 +46,19 @@ export class Router {
   static calendarMonth(key: string): string {
     const [year, month] = key.split("-")
     return path(`/calendar/${year}/${month}`)
+  }
+
+  /**
+   * One week of the calendar, Sunday to Saturday. Any date in the week will do:
+   * it is moved back to that week's Sunday, which is the route's name.
+   */
+  static calendarWeek(date: string): string {
+    return path(`/calendar/week/${weekOf(date)[0]}`)
+  }
+
+  /** One day of the calendar. `date` is `YYYY-MM-DD`. */
+  static calendarDay(date: string): string {
+    return path(`/calendar/day/${date}`)
   }
 
   /**

@@ -15,6 +15,11 @@ describe("Router", () => {
     expect(Router.calendarMonth("2026-08")).toBe("/calendar/2026/08")
   })
 
+  it("builds a week by its Sunday and a day by its date", () => {
+    expect(Router.calendarWeek("2026-10-08")).toBe("/calendar/week/2026-10-04")
+    expect(Router.calendarDay("2026-10-08")).toBe("/calendar/day/2026-10-08")
+  })
+
   it("resolves the bare calendar link to whatever month is current", () => {
     // There is no bare `/calendar` page any more, the same as there is no bare
     // `/budget` -- `now` is a parameter rather than the real clock so this does

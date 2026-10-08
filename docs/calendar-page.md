@@ -18,6 +18,26 @@ page's data. See [Payload](#payload) for why that stopped fitting comfortably
 on one page, and [routing](#routing-one-page-per-month) for how the split
 works.
 
+## Week and day views
+
+The month is one of three views, switched by `CalendarViews.svelte` (Month /
+Week / Day, plain links, `aria-current` on the open one). Each is its own
+prerendered route with a server load, for the reason the month's is:
+
+- `/calendar/week/<sunday>` -- seven rows, a day to a row, as on the front
+  page's card. Any date given to `Router.calendarWeek` is moved back to its
+  Sunday.
+- `/calendar/day/<date>` -- the day's meetings, each with its documents listed.
+
+Both cover whole weeks touching the months the record spans (`daysCovered`,
+`weeksCovered`), so every row a week draws has a day page, even where the week
+hangs over either end of the range; the Month link clamps to the months that
+exist. `calendar()` is memoised because ~5,000 day loads would otherwise each
+rebuild the whole record. The links in: a day number in the month grid, the
+front page's day labels and its date range (the week), and the switcher
+anchors on today when the page being read contains it, else its first day.
+The month's filters are not carried to the week and day views.
+
 ## One entry per meeting, not per document
 
 The city publishes an agenda and its minutes as two separate records. They are

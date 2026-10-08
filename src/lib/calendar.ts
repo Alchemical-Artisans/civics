@@ -555,6 +555,54 @@ export function weekOf(date: string): string[] {
   })
 }
 
+/** `2026-10-08` shifted by `delta` days. UTC arithmetic, like everything here. */
+export function addDays(date: string, delta: number): string {
+  const [year, month, day] = date.split("-").map(Number)
+  return isoOf(new Date(Date.UTC(year, month - 1, day + delta)))
+}
+
+/**
+ * Every day of every week touching the months the record spans, oldest first.
+ *
+ * Whole weeks rather than whole months, so the week view's seven rows each have
+ * a day page to link to even where the week hangs over either end of the
+ * calendar's range.
+ */
+export function daysCovered(meetings: Meeting[]): string[] {
+  const months = monthsCovered(meetings)
+  if (!months.length) return []
+  const first = weekOf(`${months[0]}-01`)[0]
+  const last = weekOf(addDays(`${addMonths(months.at(-1)!, 1)}-01`, -1))[6]
+  const out: string[] = []
+  for (let day = first; day <= last; day = addDays(day, 1)) out.push(day)
+  return out
+}
+
+/** The Sunday each week begins on, for every week in `daysCovered`: the weeks' route ids. */
+export function weeksCovered(meetings: Meeting[]): string[] {
+  const days = daysCovered(meetings)
+  if (!days.length) return []
+  const out: string[] = []
+  for (let day = weekOf(days[0])[0]; day <= days.at(-1)!; day = addDays(day, 7)) out.push(day)
+  return out
+}
+
+const SHORT_MONTHS = MONTH_NAMES.map((name) => name.slice(0, 3))
+
+/**
+ * `2026-10-04` -> `Oct 4 – 10, 2026`, naming the second month (and the first
+ * year) only where the week crosses one.
+ */
+export function formatWeek(start: string): string {
+  const end = addDays(start, 6)
+  const [y1, m1, d1] = start.split("-").map(Number)
+  const [y2, m2, d2] = end.split("-").map(Number)
+  const from = `${SHORT_MONTHS[m1 - 1]} ${d1}`
+  if (y1 !== y2) return `${from}, ${y1} – ${SHORT_MONTHS[m2 - 1]} ${d2}, ${y2}`
+  if (m1 !== m2) return `${from} – ${SHORT_MONTHS[m2 - 1]} ${d2}, ${y2}`
+  return `${from} – ${d2}, ${y2}`
+}
+
 /**
  * Build the Sunday-aligned grid for a month, padded with the leading/trailing
  * days needed to fill whole weeks.
