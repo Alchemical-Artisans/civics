@@ -115,7 +115,14 @@
             Meeting calendar
           </a>
         </h2>
-        <p class="m-0 text-xs whitespace-nowrap text-slate-500">{span}</p>
+        <!-- A link to the week itself; `relative` lifts it above the card's
+             covering link, the same as the sittings below. -->
+        <p class="m-0 text-xs whitespace-nowrap text-slate-500">
+          <a
+            class="relative underline decoration-slate-300 hover:text-slate-900"
+            href={Router.calendarWeek(week[0].date)}>{span}</a
+          >
+        </p>
       </div>
 
       <!--
@@ -142,11 +149,19 @@
               ? 'bg-slate-50'
               : 'bg-white'} {day.isToday ? 'ring-2 ring-amber-400 ring-inset' : ''}"
           >
-            <p class="m-0 flex w-14 shrink-0 items-baseline gap-1.5">
-              <span class="text-[10px] tracking-wide text-slate-500 uppercase">{day.weekday}</span>
-              <span class="text-sm font-medium {day.isToday ? 'text-slate-900' : 'text-slate-500'}">
-                {day.day}
-              </span>
+            <p class="m-0 shrink-0">
+              <a
+                href={Router.calendarDay(day.date)}
+                class="relative flex w-14 items-baseline gap-1.5 hover:underline"
+              >
+                <span class="text-[10px] tracking-wide text-slate-500 uppercase">{day.weekday}</span
+                >
+                <span
+                  class="text-sm font-medium {day.isToday ? 'text-slate-900' : 'text-slate-500'}"
+                >
+                  {day.day}
+                </span>
+              </a>
             </p>
 
             <ul class="flex min-w-0 flex-1 flex-wrap gap-1">

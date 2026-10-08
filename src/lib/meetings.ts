@@ -15,6 +15,10 @@ import {
   meetingId,
   monthKey,
   monthsCovered,
+  addDays,
+  daysCovered,
+  weeksCovered,
+  byHourThenBoard,
   withScheduled,
   withoutSecondCopies,
   type Announcement,
@@ -229,6 +233,14 @@ export interface Calendar {
  * are dropped here so they never reach the browser.
  */
 export function calendar(): Calendar {
+  // Built once per process. The week and day routes load once per page, and
+  // rebuilding the whole record for each of ~5,000 days would be the build.
+  return (built ??= buildCalendar())
+}
+
+let built: Calendar | undefined
+
+function buildCalendar(): Calendar {
   // Documents the city has taken down. `links:check` finds them and the
   // decision is recorded in `reviews.json` as `gone`, which is why it survives
   // into the data rather than living in the gitignored link cache -- the site
@@ -444,4 +456,54 @@ export function calendarMonth(key: string): MonthCalendar | null {
     prevMonth: at > 0 ? months[at - 1] : null,
     nextMonth: at < months.length - 1 ? months[at + 1] : null,
   }
+}
+
+/** What a week's or a day's own page needs. */
+export interface RangeCalendar extends Omit<Calendar, "meetings"> {
+  /** The meetings inside the range, in the order `groupByDate` gives a day. */
+  meetings: Meeting[]
+  /** Sunday of the week, or the day itself. */
+  start: string
+  /** First and last `YYYY-MM` the month pages cover, for clamping a link into them. */
+  months: [string, string]
+  /** The adjacent week or day, or `null` at either end of the calendar's range. */
+  prev: string | null
+  next: string | null
+}
+
+let allDays: string[] | undefined
+let allWeeks: string[] | undefined
+
+/** Every day and week with a page, in order; see `daysCovered`. */
+export const dayList = () => (allDays ??= daysCovered(calendar().meetings))
+export const weekList = () => (allWeeks ??= weeksCovered(calendar().meetings))
+
+function range(
+  starts: string[],
+  start: string,
+  inside: (date: string) => boolean,
+): RangeCalendar | null {
+  const at = starts.indexOf(start)
+  if (at === -1) return null
+  const full = calendar()
+  const months = monthsCovered(full.meetings)
+  return {
+    ...full,
+    start,
+    months: [months[0], months.at(-1)!],
+    meetings: full.meetings.filter((m) => inside(m.date)).sort(byHourThenBoard),
+    prev: at > 0 ? starts[at - 1] : null,
+    next: at < starts.length - 1 ? starts[at + 1] : null,
+  }
+}
+
+/** One Sunday-to-Saturday week, `start` being its Sunday. `null` outside the range. */
+export function calendarWeek(start: string): RangeCalendar | null {
+  const end = addDays(start, 6)
+  return range(weekList(), start, (d) => d >= start && d <= end)
+}
+
+/** One day. `null` outside the range the month pages cover. */
+export function calendarDay(date: string): RangeCalendar | null {
+  return range(dayList(), date, (d) => d === date)
 }

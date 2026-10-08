@@ -118,7 +118,7 @@ test.describe("meeting pages", () => {
 
   test("a meeting nobody has written up still lists its files", async ({ page }) => {
     await page.goto(CALENDAR)
-    for (const link of await page.locator("table a").all()) {
+    for (const link of await page.locator("table li a").all()) {
       const href = (await link.getAttribute("href"))!
       if (written.some((id) => href.endsWith(id))) continue
       await page.goto(new URL(href, page.url()).toString())

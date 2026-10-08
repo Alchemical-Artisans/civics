@@ -99,9 +99,9 @@ test.describe("meeting calendar", () => {
   test("every entry opens a meeting on this site", async ({ page }) => {
     // An entry is one sitting, not one document, so nothing in the grid leaves
     // the site any more -- the city's files are listed on the meeting page.
-    // Checked on every link, because one going somewhere else would be easy to
+    // Checked on every entry (the day numbers link to their own day page), because one going somewhere else would be easy to
     // miss.
-    const links = page.locator("table a")
+    const links = page.locator("table li a")
     const count = await links.count()
     expect(count).toBeGreaterThan(0)
 
@@ -134,7 +134,7 @@ test.describe("meeting calendar", () => {
   })
 
   test("filtering by board narrows the visible meetings", async ({ page }) => {
-    const entries = page.locator("table a")
+    const entries = page.locator("table li a")
     const before = await entries.count()
     await page.getByRole("button", { name: "Filters" }).click()
     await page.getByLabel("Boards").selectOption("Conservation Commission")
@@ -219,7 +219,7 @@ test.describe("meeting calendar", () => {
       const { id, date } = expected[0]
       await page.goto(monthUrl(monthKey(date)))
 
-      const entries = page.locator("table a")
+      const entries = page.locator("table li a")
       const before = await entries.count()
       const entry = page.locator(`table a[href$="/calendar/meetings/${id}"]`)
 

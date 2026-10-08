@@ -10,6 +10,7 @@
     type Meeting,
     type MeetingKind,
   } from "$lib/calendar"
+  import CalendarViews from "$lib/CalendarViews.svelte"
   import { Router } from "$lib/router"
   import { onMount } from "svelte"
 
@@ -96,6 +97,8 @@
   )
 
   const byDate = $derived(groupByDate(meetings))
+  // The other views open on today when this month holds it, else its first day.
+  const anchor = $derived(today.startsWith(month) ? today : `${month}-01`)
   const weeks = $derived(buildMonthGrid(month, today))
   const monthDays = $derived(
     weeks
@@ -198,6 +201,9 @@
        `<span>` rather than a `<button disabled>`: there is nothing here for a
        script to enable, before or after hydration. -->
   <div class="mb-4">
+    <div class="mb-3">
+      <CalendarViews view="month" date={anchor} />
+    </div>
     <div class="flex items-center justify-between gap-4">
       <div class="flex items-center gap-2">
         <button
@@ -373,7 +379,15 @@
                   ? 'text-slate-700'
                   : 'text-slate-400'}"
               >
-                {cell.day}
+                {#if cell.inMonth}
+                  <a
+                    href={Router.calendarDay(cell.date)}
+                    class="rounded px-1 hover:bg-slate-100 hover:underline"
+                    ><span class="sr-only">{formatLongDate(cell.date)}: </span>{cell.day}</a
+                  >
+                {:else}
+                  {cell.day}
+                {/if}
               </div>
               {#if cell.inMonth}
                 <ul class="space-y-0.5">
@@ -453,7 +467,9 @@
             <h3
               class="border-b border-slate-200 bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-800"
             >
-              {formatLongDate(day.date)}
+              <a class="hover:underline" href={Router.calendarDay(day.date)}
+                >{formatLongDate(day.date)}</a
+              >
             </h3>
             <ul class="divide-y divide-slate-100">
               {#each day.items as m (m.id)}
