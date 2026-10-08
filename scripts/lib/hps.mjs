@@ -96,6 +96,22 @@ export const isContinuation = (heading) =>
 export const kindOf = (label) =>
   /\bminutes?\b/i.test(label) ? "minutes" : /\bagenda\b/i.test(label) ? "agenda" : "other"
 
+/**
+ * Minutes are the record of the day they are filed under, or they are not
+ * minutes of that sitting. The page posts the previous sitting's minutes under
+ * the next one for the Committee to approve -- `..._092426docx.pdf` under the
+ * 8 October heading -- and that is information about the minutes, not the
+ * minutes of that day. The filename's date is the evidence, and unlike
+ * `withoutFutureMinutes` it keeps being true after the heading's day has passed.
+ * A name with no readable date, or the same date, is left as the label says.
+ */
+export function kindFor(label, fileUrl, date) {
+  const kind = kindOf(label)
+  if (kind !== "minutes") return kind
+  const named = parseDateFromFilename(fileUrl)?.date
+  return named && named !== date ? "other" : kind
+}
+
 const ANCHOR = new RegExp(
   `<a\\b([^>]*)href="(https://${FILE_HOST.replace(/\./g, "\\.")}/[^"]+)"([^>]*)>([\\s\\S]*?)</a>`,
   "gi",
@@ -263,7 +279,14 @@ export async function fetchSchoolCommitteeDocuments({ fetchPage = defaultFetch }
         filenameDate = fromName
       }
     }
-    documents.push(toRecord({ ...chosen, kind: kindOf(chosen.label), dateConflict, filenameDate }))
+    documents.push(
+      toRecord({
+        ...chosen,
+        kind: kindFor(chosen.label, chosen.fileUrl, chosen.date),
+        dateConflict,
+        filenameDate,
+      }),
+    )
   }
 
   return {

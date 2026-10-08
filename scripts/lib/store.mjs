@@ -23,9 +23,29 @@ export async function loadStore() {
   }
 }
 
+/** Today in Haverhill, as `YYYY-MM-DD` -- `toISOString` names tomorrow from eight in the evening. */
+const easternToday = () =>
+  new Intl.DateTimeFormat("en-CA", { timeZone: "America/New_York" }).format(new Date())
+
+/**
+ * Minutes record a sitting that has already happened, so a file dated today or
+ * later cannot be them. What the School Committee's page files under an
+ * upcoming sitting is the previous sitting's minutes, posted for the Committee
+ * to approve -- information about the minutes, not the minutes of that day --
+ * and every scrape writes through here, so none of them can tag one as such.
+ * The check is on the sitting's date, not the file's, and runs at write time:
+ * `kind` is a fact about the record, and deciding it at build time would hand
+ * the file to the sitting the day that sitting passed.
+ */
+export function withoutFutureMinutes(meetings, today = easternToday()) {
+  return meetings.map((m) =>
+    m.kind === "minutes" && m.date && m.date >= today ? { ...m, kind: "other" } : m,
+  )
+}
+
 export async function saveStore(meetings, { source }) {
   // Sort newest first, then by title so the diff is stable between runs.
-  const sorted = [...meetings].sort(
+  const sorted = [...withoutFutureMinutes(meetings)].sort(
     (a, b) => (b.date ?? "").localeCompare(a.date ?? "") || a.title.localeCompare(b.title),
   )
   const payload = {

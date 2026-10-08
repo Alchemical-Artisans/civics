@@ -3,6 +3,7 @@ import {
   HPS_PAGE,
   sectionDate,
   kindOf,
+  kindFor,
   isContinuation,
   sectionDocuments,
   parseSections,
@@ -208,5 +209,21 @@ describe("fetchSchoolCommitteeDocuments", () => {
     await expect(
       fetchSchoolCommitteeDocuments({ fetchPage: async () => "<p>nothing</p>" }),
     ).rejects.toThrow()
+  })
+})
+
+describe("kindFor", () => {
+  const url = (name) => `https://files.smartsites.parentsquare.com/10015/${name}`
+  it("keeps minutes filed under the day their filename names", () => {
+    expect(kindFor("Minutes 09.24.26", url("minutes_092426.pdf"), "2026-09-24")).toBe("minutes")
+  })
+  it("demotes the previous sitting's minutes posted for approval", () => {
+    expect(kindFor("Minutes 09.24.26", url("minutes_092426_1.pdf"), "2026-10-08")).toBe("other")
+  })
+  it("trusts the label when the filename has no date", () => {
+    expect(kindFor("Minutes", url("minutes.pdf"), "2026-10-08")).toBe("minutes")
+  })
+  it("leaves agendas alone", () => {
+    expect(kindFor("Agenda", url("agenda_092426.pdf"), "2026-10-08")).toBe("agenda")
   })
 })
