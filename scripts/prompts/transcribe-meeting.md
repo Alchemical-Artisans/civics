@@ -383,6 +383,55 @@ rather than guessing at what it points to. See
 whose "Doc. 41-a" links to the City Council item that referred the matter to
 it.
 
+### A matter that began in another body
+
+`grep` over `src/routes/` only finds what somebody has already written up, and
+most of the record is not. A Council order often arrives after a committee has
+worked on it for months -- the Planning and Development Committee, Natural
+Resources, a commission -- and the page that says so is a set of minutes nobody
+has transcribed. So for any item that is an ordinance, order or study, look for
+its origin before finishing, in this order:
+
+1. **Read what the packet says about where it came from.** A department memo or
+   mayor's letter will say "discussed during the City Council Planning and
+   Development Committee meeting", "at the request of the Conservation
+   Commission", "referred on …". That sentence names the body; the matter's
+   printed title often does not match the motion that started it (the Water Use
+   Restriction Ordinance order began as Docs. 94-B and 1-F, "update the
+   standards of Ch. 250 Article VI" and "a water conservation program"). Take
+   the body from the document, never from a guess about which board would
+   normally own the subject -- water use went through the Planning and
+   Development Committee, not the Conservation Commission, whose staff merely
+   attended.
+2. **Match the "Documents referred to committee" table.** It gives a Doc. number,
+   the motion and the committee, and `documents-referred-to-committee-study`
+   pages are written up for most sittings; grep the subject words in them to
+   find the Doc. number and who got it.
+3. **Then find that body's sittings in the data, not just the site:**
+
+   ```sh
+   python3 -c "import json;[print(r['date'],r['board'],r['kind'],r['fileUrl']) for r in json.load(open('src/lib/data/meetings.json'))['meetings'] if '<committee>' in (r['board']+(r['fileUrl'] or '')).lower() and r['date']>='<month the motion was filed>']"
+   ```
+
+   **Match on the filename too.** The city files committee minutes
+   (`planninganddevelopment_33026_minutes.pdf`) under the board `City Council`,
+   so a search on board alone misses them; HC Media's recordings of the same
+   sitting carry the right board and no text. Fetch the minutes (they are
+   scans -- render and read them) and confirm the item was discussed before
+   linking anything. A recording alone proves a sitting happened, not what it
+   covered.
+
+Where a sitting is found, **link it from the item's page** with
+`Router.meeting(id)` -- as a list entry titled the way the minutes title
+themselves ("Minutes/Summary of the Planning and Development Committee Meeting,
+March 2, 2026"), beside the packet's own documents, one for each sitting that
+discussed the matter -- and not as a sentence of your own. The sitting page
+exists for any board-and-date in `meetings.json`, written up or not, so the
+link is never dead; and where the sitting later gets written up, the same link
+reaches it. The same applies backwards: a committee page's "Doc. 94-B" links
+to the Council item that referred it, as above. Where no sitting can be found,
+say so in your reply rather than linking the nearest plausible one.
+
 ### A sitting the document announces
 
 An item that announces another body's sitting -- "Vice President Michitson
