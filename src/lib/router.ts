@@ -213,6 +213,38 @@ export class Router {
   }
 
   /**
+   * The public address of a meeting, or of one item on its agenda, for sharing:
+   * what the posted link and the QR code carry out of the site. Absolute and
+   * without `base`, for the reason `absolute` gives.
+   */
+  static sharedMeeting(id: string, item?: string): string {
+    return Router.absolute(`/calendar/meetings/${id}${item ? `/${item}` : ""}`)
+  }
+
+  /**
+   * Where each network takes a link to be posted. None of these is a route
+   * here; they are the networks' own documented "share" addresses, spelled in
+   * this class with the other outbound URL builders. `url` is the page being
+   * shared and `text` the words to go with it.
+   */
+  static shareFacebook(url: string): string {
+    return `https://www.facebook.com/sharer/sharer.php?${new URLSearchParams({ u: url })}`
+  }
+
+  static shareX(url: string, text: string): string {
+    return `https://x.com/intent/post?${new URLSearchParams({ text, url })}`
+  }
+
+  /** Bluesky's composer takes one string, so the link goes in the post's text. */
+  static shareBluesky(url: string, text: string): string {
+    return `https://bsky.app/intent/compose?${new URLSearchParams({ text: `${text} ${url}` })}`
+  }
+
+  static shareLinkedIn(url: string): string {
+    return `https://www.linkedin.com/sharing/share-offsite/?${new URLSearchParams({ url })}`
+  }
+
+  /**
    * Google Calendar's "create event" screen, prefilled. Not a route here; it
    * sits with the other outbound URL builders for the same reason `map` does.
    * Times are floating `YYYYMMDDTHHMMSS` with `ctz` naming the zone, or bare
