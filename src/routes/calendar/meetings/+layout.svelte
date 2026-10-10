@@ -3,6 +3,7 @@
   import { page } from "$app/state"
   import Note from "$lib/Note.svelte"
   import AddToCalendar from "$lib/AddToCalendar.svelte"
+  import ShareButton from "$lib/ShareButton.svelte"
   import { Router } from "$lib/router"
   import { entryId, projectsOf } from "$lib/projects"
   import {
@@ -83,6 +84,26 @@
       : formatLongDate(meeting.date),
   )
 
+  // What a link to this page unfurls as on Facebook, X, Bluesky, LinkedIn and
+  // Discord: each reads the Open Graph tags (X its own `twitter:` ones, falling
+  // back to them) out of the prerendered HTML, so the card is specific to the
+  // page without any script running. The sentence is built from the same facts
+  // the page shows -- the sitting, its hour, and which documents the city has
+  // published for it -- and for an item it is the item's own title.
+  const sharedUrl = $derived(Router.sharedMeeting(meeting.id, data.itemSlug))
+  const sittingLabel = $derived(`${meeting.board}, ${when}`)
+  const shareTitle = $derived(item ? `${item.title} - ${meeting.board}` : sittingLabel)
+  const documentKinds = $derived(
+    [...new Set(meeting.documents.map((doc) => kindLabel(doc.kind).toLowerCase()))].join(", "),
+  )
+  const shareDescription = $derived(
+    item
+      ? `An item on the ${meeting.board} agenda for ${when}.`
+      : expected
+        ? `A ${meeting.board} sitting expected on ${when}; no agenda published yet.`
+        : `${meeting.board} meeting on ${when}${documentKinds ? `. Published: ${documentKinds}` : ""}.`,
+  )
+
   const kindLabel = (kind: MeetingDocument["kind"]) =>
     kind === "agenda"
       ? "Agenda"
@@ -104,6 +125,15 @@
 
 <svelte:head>
   <title>{heading} - Haverhill Meeting Calendar</title>
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="Haverhill Meeting Calendar" />
+  <meta property="og:title" content={shareTitle} />
+  <meta property="og:description" content={shareDescription} />
+  <meta property="og:url" content={sharedUrl} />
+  <link rel="canonical" href={sharedUrl} />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content={shareTitle} />
+  <meta name="twitter:description" content={shareDescription} />
   <meta
     name="description"
     content="{meeting.board}, {formatLongDate(meeting.date)}: {expected
@@ -159,6 +189,7 @@
       {#if !data.isItem}
         <AddToCalendar {meeting} {details} />
       {/if}
+      <ShareButton url={sharedUrl} text={shareTitle} />
     </div>
 
     <!-- What this item is part of, beside the date: the step this item is
