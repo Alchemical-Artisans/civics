@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-08T13:34:04.995Z",
+  "generatedAt": "2026-10-10T22:12:35.241Z",
   "rules": [
     {
       "board": "City Council",
@@ -459,11 +459,39 @@
       "time": "9:00 AM"
     },
     {
+      "board": "School Committee",
+      "date": "2026-10-13",
+      "title": "Haverhill School Committee Special Subcommittee on Superintendent Goals & Contract Meeting",
+      "url": "https://events.haverhillma.gov/default/Detail/2026-10-13-1800-Haverhill-School-Committee-Special-Subcommittee-on",
+      "time": "6:00 PM"
+    },
+    {
       "board": "John Greenleaf Whittier School Building Committee",
       "date": "2026-10-14",
       "title": "John Greenleaf Whittier School Building Committee Meeting",
       "url": "https://events.haverhillma.gov/default/Detail/2026-10-14-0830-John-Greenleaf-Whittier-School-Building-Committee-2",
       "time": "8:30 AM"
+    },
+    {
+      "board": "Planning Board",
+      "date": "2026-10-14",
+      "title": "Haverhill Planning Board Meeting",
+      "url": "https://events.haverhillma.gov/default/Detail/2026-10-14-1900-Haverhill-Planning-Board-Meeting",
+      "time": "7:00 PM"
+    },
+    {
+      "board": "Housing Authority",
+      "date": "2026-10-15",
+      "title": "Haverhill Housing Authority Meeting",
+      "url": "https://events.haverhillma.gov/default/Detail/2026-10-15-1000-Haverhill-Housing-Authority-Meeting",
+      "time": "10:00 AM"
+    },
+    {
+      "board": "Library Board of Trustees",
+      "date": "2026-10-15",
+      "title": "Haverhill Public Library Board of Trustees Mtg",
+      "url": "https://events.haverhillma.gov/default/Detail/2026-10-15-0930-Haverhill-Public-Library-Board-of-Trustees-Mtg",
+      "time": "9:30 AM"
     },
     {
       "board": "Planning and Development Committee",
