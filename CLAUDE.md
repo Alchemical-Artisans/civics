@@ -50,6 +50,7 @@ npm run notices:update      # the agendas the city hangs off its meeting notices
 npm run recordings:update   # HC Media's video of a sitting, matched to it
 npm run precincts:update    # ward and precinct shapes and districts, from MassGIS
 npm run transcribe -- <id>  # hand a sitting to Claude Code to write its page
+npm run story               # 1080x1920 Instagram story card for the next Council sitting, in .cache/stories/
 npm run storybook           # storybook on :6006
 ```
 
@@ -1104,6 +1105,18 @@ rules that bite:
 - PDF pages cut out for one item are committed under `static/excerpts/<id>/`
   and linked with `Router.excerpt(...)`; `.cache/` is gitignored, so re-cutting
   means re-fetching the original.
+
+**An Instagram story is drawn here and posted by hand.** `npm run story`
+(`scripts/make-story.mjs`, pure parts in `scripts/lib/story.mjs`) reads the next
+City Council write-up, takes up to six of its linked agenda items -- the city's
+own titles, `details.highlights` first, then hearings, ordinances and unfinished
+business ahead of petitions and proclamations (`SECTION_WEIGHT`, hand-kept;
+`--items 8.1,10.1` overrides) -- and renders a card to
+`.cache/stories/<meeting id>/story.png`, printing the meeting page's URL. Nothing
+publishes: the Instagram API cannot attach the link sticker, which is the only
+tappable link in a story, so the intended use is the day before a sitting, once
+`transcribe` has written it up. `CHROMIUM_PATH` points at a browser when
+Playwright's own is not the installed build.
 
 ## What needs attention
 

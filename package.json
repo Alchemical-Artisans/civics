@@ -30,7 +30,8 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "glossary:check": "node scripts/check-glossary.mjs",
-    "transcribe": "node scripts/transcribe-meeting.mjs"
+    "transcribe": "node scripts/transcribe-meeting.mjs",
+    "story": "node scripts/make-story.mjs"
   },
   "devDependencies": {
     "@chromatic-com/storybook": "latest",
