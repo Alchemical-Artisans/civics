@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-13T00:16:31.427Z",
+  "generatedAt": "2026-10-15T19:54:33.595Z",
   "rules": [
     {
       "board": "City Council",
@@ -501,11 +501,39 @@
       "time": "6:00 PM"
     },
     {
+      "board": "School Committee",
+      "date": "2026-10-19",
+      "title": "Haverhill School Committee Special Subcommittee on Superintendent Goals & Contract",
+      "url": "https://events.haverhillma.gov/default/Detail/2026-10-19-1800-Haverhill-School-Committee-Special-Subcommittee-on",
+      "time": "6:00 PM"
+    },
+    {
+      "board": "Bradford Elementary School Site Council",
+      "date": "2026-10-20",
+      "title": "Bradford Elementary School Site Council Meeting",
+      "url": "https://events.haverhillma.gov/default/Detail/2026-10-20-1630-Bradford-Elementary-School-Site-Council-Meeting",
+      "time": "4:30 PM"
+    },
+    {
+      "board": "Central Business District Parking Commission",
+      "date": "2026-10-20",
+      "title": "Central Business District Parking Commission Meeting",
+      "url": "https://events.haverhillma.gov/default/Detail/2026-10-20-1800-Central-Business-District-Parking-Commission-Meeti",
+      "time": "6:00 PM"
+    },
+    {
       "board": "City Council",
       "date": "2026-10-20",
       "title": "City Council Meeting",
       "url": "https://events.haverhillma.gov/default/Detail/2026-10-20-1900-City-Council-Meeting2",
       "time": "7:00 PM"
+    },
+    {
+      "board": "Cultural Council",
+      "date": "2026-10-21",
+      "title": "Haverhill Cultural Council Meeting",
+      "url": "https://events.haverhillma.gov/default/Detail/2026-10-21-1830-Haverhill-Cultural-Council-Meeting",
+      "time": "6:30 PM"
     },
     {
       "board": "School Committee Negotiating Subcommittee",
