@@ -99,13 +99,24 @@
     strip. Stacked below `lg`, where two of these would be half a card wide
     apiece and neither drawing survives that.
 
+    `grid-cols-1` when stacked, rather than leaving the column undeclared. An
+    implicit column is `auto`, which grows to what the cards would like to be
+    rather than to what the page has room for -- on a phone that was 480 pixels
+    of card on a 375-pixel screen, the whole page scrolling sideways, with
+    nothing inside either card actually needing it: the chips truncate and the
+    map scales. `grid-cols-1` is `minmax(0, 1fr)`, a column no wider than the
+    page.
+
     The whole card is the link, by way of the heading's own `::after` covering
     it -- which is what lets the things inside it be links too. A card wrapped
     in an `<a>` could hold no meeting link at all, and a week of the calendar
     whose sittings cannot be opened is a picture of a calendar rather than a
     way into one.
   -->
-  <nav class="mt-10 grid gap-5 lg:grid-cols-2" aria-label="The calendar and the current project">
+  <nav
+    class="mt-10 grid grid-cols-1 gap-5 lg:grid-cols-2"
+    aria-label="The calendar and the current project"
+  >
     <div
       class="relative flex min-h-[30rem] flex-col rounded-xl border border-slate-200 p-5 transition-colors focus-within:border-slate-400 hover:border-slate-300 hover:bg-slate-50 sm:p-6"
     >
