@@ -383,6 +383,27 @@ rather than guessing at what it points to. See
 whose "Doc. 41-a" links to the City Council item that referred the matter to
 it.
 
+**A hit in a "Documents referred to committee study" table is an index, not
+the destination.** Those tables are where a Doc. number is easiest to find,
+and they are also the one place that will never be what the reference points
+at: the row restates the motion and names the committee, but the sitting where
+the motion was actually made is its **Date Sent** column. Follow that date to
+the Council's own agenda for the day and link the item there — the report, the
+hearing, the departmental update that the motion came out of — not the table.
+Doc. 32-k reads "Motion by Vice President Michitson ... risk based assessment
+of the city's critical infrastructure", sent to Planning & Development on
+7/14/26; the item is `city-council-2026-07-14/force-main-sewer-break-update`,
+the Water/Wastewater Director's report on the 42" force main break, whose
+minutes carry the motion and the vote. The table's own row then links the same
+way, so the index points at the origin too.
+
+The referral's wording and the motion's own wording drift, so grep the subject
+rather than the sentence: the clerk's table says "work the Administration ...
+initial risk based assessment", the committee's notice "work with the
+administration ... an initial risk-based assessment". Two or three distinctive
+words ("risk based assessment", "force main") find what a quoted phrase will
+not.
+
 ### A matter that began in another body
 
 `grep` over `src/routes/` only finds what somebody has already written up, and
@@ -473,6 +494,14 @@ page for it**, `src/routes/calendar/meetings/<id>/`, with:
   under the same rules as any other page -- or, where it says nothing, a single
   `<p>` stating that no agenda has been published yet. Nothing of your own
   beyond that line.
+
+  **Those topics are referred matters, so run the search at the top of §6 on
+  each one before calling the placeholder done.** A committee meets on
+  business some other sitting sent it, which is what a chairperson's letter is
+  listing; a placeholder that quotes the Doc. number and stops leaves the
+  reader the one question the page exists to answer. This is the whole of the
+  page's content, not an aside in it, so it is the least excusable place to
+  skip the step.
 
 - `+page.ts` returning `{ details: … }` (§3) where the announcement states the
   hour, room or remote link.
@@ -699,6 +728,10 @@ read, say so in your report rather than highlighting on a guess.
   being read is somebody else's script tag in the build.
 - **A table gets transcribed, not linked.** A page whose write-up is a list of
   links to scans is not a write-up; §8.
+- **Resolve every Doc. number and referral before finishing.** A "Doc. 32-k"
+  with no link is a reference the reader cannot follow and the one thing they
+  came to the page for; §6. The answer is on the site more often than not, and
+  where it is not, say so in your reply rather than leaving it silently open.
 - **Render every excerpt and look at it before committing it.** A sideways scan
   cut out of a packet is still sideways, and nothing but the image will tell
   you; §7 has the render and the rotation snippet.
