@@ -202,8 +202,8 @@ test("the committee's agenda opens the risk assessment, which lists both steps",
   )
   expect(await entry.evaluate((el) => el.matches(":target"))).toBe(true)
   const timeline = page.getByRole("region", { name: "Timeline" })
-  // The motion is behind the reader, folded away until asked for.
-  await timeline.getByText(/earlier step/).click()
+  // Too young a project to fold: the motion is in view though it is past.
+  await expect(timeline.getByText(/earlier step/)).toHaveCount(0)
   await expect(timeline.getByRole("link", { name: "Motion to begin initiative" })).toBeVisible()
   await entry.getByRole("link", { name: "Determine scope and outcomes" }).click()
   await expect(page).toHaveURL(

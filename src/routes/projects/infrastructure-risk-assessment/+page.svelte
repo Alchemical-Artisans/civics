@@ -58,6 +58,7 @@
       </p>
     </section>
 
-    <ProjectTimeline project={PROJECT} today={data.today} />
+    <!-- Two steps so far: nothing to fold. -->
+    <ProjectTimeline project={PROJECT} today={data.today} fold={false} />
   </div>
 </div>
