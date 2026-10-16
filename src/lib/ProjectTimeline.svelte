@@ -22,8 +22,15 @@
     project,
     /** The build's date, from the page's server load. */
     today: builtOn,
+    /**
+     * Whether what is behind the reader is folded away. A project only a
+     * step or two old has no record long enough to be in the way of what is
+     * ahead, and folding its first step leaves its timeline looking emptier
+     * than it is, so such a project turns this off and lists every step.
+     */
+    fold = true,
     class: className = "",
-  }: { project: Project; today: string; class?: string } = $props()
+  }: { project: Project; today: string; fold?: boolean; class?: string } = $props()
 
   const entries = $derived(timeline(project))
 
@@ -42,7 +49,9 @@
    * The fold is a `<details>`, closed in the served HTML, so with no script it
    * is still a control that works and nothing is hidden for good.
    */
-  const { past, upcoming } = $derived(splitAtToday(entries, today))
+  const { past, upcoming } = $derived(
+    fold ? splitAtToday(entries, today) : { past: [], upcoming: entries },
+  )
 
   /**
    * The fold is a `<details>` so that it is a working control with no script,

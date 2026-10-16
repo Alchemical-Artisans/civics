@@ -571,11 +571,13 @@ moves forward -- `transcribe-meeting.md` asks this of every item. **The
 Infrastructure Risk Assessment** (`src/routes/projects/infrastructure-risk-assessment/`,
 `kind: "initiative"`) is the plain case: the Council's motion of 14 July 2026,
 quoted, and `ProjectTimeline` -- the timeline and its fold, taken out of the
-election's layout so every project draws the same one. Its two steps are the
+election's layout so every project draws the same one. It passes `fold={false}`:
+two steps are no record to get in the way of what is ahead, and folding the
+first left the timeline looking emptier than the project is. Its two steps are the
 motion (the force main item it was made on) and the Planning and Development
 Committee's sitting of 19 October, whose notice's single item, Doc. 32-k, is a
 page of its own so the step has somewhere to land; the sitting's page is one
-line, "Determine scope and outcomes of risk assessment", opening the project.
+line, "Determine scope and outcomes of infrastructure risk assessment", opening the project.
 
 **`PrecinctMap.svelte` is an SVG drawn at build time over OpenStreetMap's raster
 tiles**, not a map library: each precinct is an SVG `<a>`, a link before

@@ -545,7 +545,7 @@ and a timeline of `ItemEntry`s naming the item pages that are its steps.
 A step needs an item page, so a notice with a single item still gets one: the
 meeting page carries the line and the item page the item's text. See
 `planning-and-development-committee-2026-10-19/`, whose one item, Doc. 32-k, is
-its own page, and whose line reads "Determine scope and outcomes of risk
+its own page, and whose line reads "Determine scope and outcomes of infrastructure risk
 assessment" because the notice prints the whole motion where a name would go --
 the one place a label of ours stands in for the city's.
 

@@ -15,7 +15,7 @@
 <ul>
   <li>
     <a href={agendaHref(MEETING, "critical-infrastructure-risk-assessment")}>
-      Determine scope and outcomes of risk assessment
+      Determine scope and outcomes of infrastructure risk assessment
     </a>
   </li>
 </ul>
