@@ -162,8 +162,10 @@
       <th scope="row">32-K</th>
       <td>
         Motion by Vice President Michitson to work the Administration and appropriate departments on
-        initial risk based assessment of the city&rsquo;s critical infrastructure beginning with
-        Wastewater and Drinking water systems
+        <a href={Router.meetingItem("city-council-2026-07-14", "force-main-sewer-break-update")}
+          >initial risk based assessment of the city&rsquo;s critical infrastructure beginning with
+          Wastewater and Drinking water systems</a
+        >
       </td>
       <td>Planning &amp; Development</td>
       <td>7/14/26</td>

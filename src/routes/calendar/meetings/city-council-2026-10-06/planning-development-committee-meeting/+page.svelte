@@ -46,9 +46,13 @@
   <dt><strong>Doc. 32-k:</strong></dt>
   <dd>
     <p>
-      Motion by Vice President Michitson to work with the administration and appropriate departments
-      on an initial risk-based assessment of the City&rsquo;s critical infrastructure, beginning
-      with the wastewater and drinking water systems.
+      <!-- The motion the notice refers to, made at the Council's sitting of
+           14 July 2026 on the 42" force main break. -->
+      <a href={Router.meetingItem("city-council-2026-07-14", "force-main-sewer-break-update")}>
+        Motion by Vice President Michitson to work with the administration and appropriate
+        departments on an initial risk-based assessment of the City&rsquo;s critical infrastructure,
+        beginning with the wastewater and drinking water systems.</a
+      >
     </p>
     <p>
       <strong>
