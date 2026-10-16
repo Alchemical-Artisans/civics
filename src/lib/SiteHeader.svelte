@@ -54,7 +54,8 @@
   /**
    * The Projects menu, a group per kind, each newest first.
    *
-   * Elections are projects proper, from `$lib/projects`. Budgets are the
+   * Elections and initiatives are projects proper, from `$lib/projects`,
+   * a group per `kind`, an empty one left out. Budgets are the
    * fiscal years from `budget.json`, which were the bar's own Budget menu
    * until that was folded in here: one book a year, a project of its own, and
    * the list of them every bit as long as it was.
@@ -65,7 +66,10 @@
    * election being held, the budget being spent. For a budget that is the
    * newest book written up here, which is also where the old Budget link went.
    */
-  const elections = $derived(PROJECTS.filter((project) => project.kind === "election"))
+  const groups = [
+    { name: "Elections", projects: PROJECTS.filter((project) => project.kind === "election") },
+    { name: "Initiatives", projects: PROJECTS.filter((project) => project.kind === "initiative") },
+  ].filter((group) => group.projects.length)
   const currentYear = $derived(years.find((year) => year.written) ?? years[0])
 
   let showArchived = $state(false)
@@ -75,7 +79,9 @@
   let live = $state(false)
   onMount(() => (live = true))
   const hidden = (archived: boolean) => (archived && live && !showArchived ? "hidden" : "")
-  const archivedCount = $derived(elections.length - 1 + years.length - 1)
+  const archivedCount = $derived(
+    groups.reduce((n, group) => n + group.projects.length - 1, 0) + years.length - 1,
+  )
 </script>
 
 <header class="border-b border-slate-200 bg-white">
@@ -151,11 +157,15 @@
         id="project-list"
         toggle="every project"
       >
-        {#if elections.length}
-          <li class="px-2 pt-1.5 pb-0.5 text-[11px] tracking-wide text-slate-500 uppercase">
-            Elections
+        {#each groups as group, g (group.name)}
+          <li
+            class="px-2 {g
+              ? 'pt-2.5'
+              : 'pt-1.5'} pb-0.5 text-[11px] tracking-wide text-slate-500 uppercase"
+          >
+            {group.name}
           </li>
-          {#each elections as project, at (project.slug)}
+          {#each group.projects as project, at (project.slug)}
             <li class="px-2 py-1 hover:bg-slate-50 {hidden(at > 0)}">
               <a
                 class="font-medium text-slate-900 underline decoration-slate-300 hover:decoration-slate-900"
@@ -166,7 +176,7 @@
               </a>
             </li>
           {/each}
-        {/if}
+        {/each}
 
         <li class="px-2 pt-2.5 pb-0.5 text-[11px] tracking-wide text-slate-500 uppercase">
           Budgets

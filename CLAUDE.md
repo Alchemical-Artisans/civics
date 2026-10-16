@@ -525,9 +525,9 @@ entries more often than not. The agenda itself links such an item to the project
 a meeting page writes `agendaHref(meeting, item)` for an item's line, which
 opens the project on that item's entry when the item is on one and the item's
 own page otherwise; the write-up stays reachable from the timeline. There is
-no `/projects` index: the bar's **Projects** menu is the list, in two groups
--- "Elections" from `PROJECTS` and "Budgets" from `budget.json`'s fiscal
-years, which had a Budget menu of their own in the bar until budgets were
+no `/projects` index: the bar's **Projects** menu is the list, a group per
+`kind` -- "Elections" and "Initiatives" from `PROJECTS`, and "Budgets" from
+`budget.json`'s fiscal years, which had a Budget menu of their own in the bar until budgets were
 treated as one more kind of project (without moving their routes: books stay
 at `/budget/<year>`, and reading one marks Projects as the current section).
 Each group shows only its most recent entry -- the newest written book for
@@ -563,6 +563,19 @@ ten precincts and halves in the Fifteenth Essex; `ballotFor` lists that race
 marked "not on the warrant" rather than dropping it, and `election.spec.ts`
 pins the list. 3-2A is a MassGIS sub-precinct with no warrant row, and its page
 says so rather than guessing a room.
+
+**Projects, not mechanics, are where the site is heading.** As agendas arrive,
+each item that starts or advances an undertaking is a step on a project's
+timeline, and a meeting page is meant to read as which projects the sitting
+moves forward -- `transcribe-meeting.md` asks this of every item. **The
+Infrastructure Risk Assessment** (`src/routes/projects/infrastructure-risk-assessment/`,
+`kind: "initiative"`) is the plain case: the Council's motion of 14 July 2026,
+quoted, and `ProjectTimeline` -- the timeline and its fold, taken out of the
+election's layout so every project draws the same one. Its two steps are the
+motion (the force main item it was made on) and the Planning and Development
+Committee's sitting of 19 October, whose notice's single item, Doc. 32-k, is a
+page of its own so the step has somewhere to land; the sitting's page is one
+line, "Determine scope and outcomes of risk assessment", opening the project.
 
 **`PrecinctMap.svelte` is an SVG drawn at build time over OpenStreetMap's raster
 tiles**, not a map library: each precinct is an SVG `<a>`, a link before

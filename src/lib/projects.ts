@@ -61,10 +61,11 @@ export interface Project {
   title: string
   /**
    * What sort of undertaking it is, which is how the bar's Projects menu
-   * groups them. Elections are the one kind so far; the menu's budgets are
-   * fiscal years from `budget.json` rather than entries here.
+   * groups them: an election, or an initiative -- a study or a programme of
+   * work the Council has set going, followed until it reports. The menu's
+   * budgets are fiscal years from `budget.json` rather than entries here.
    */
-  kind: "election"
+  kind: "election" | "initiative"
   entries: Entry[]
 }
 
@@ -164,6 +165,32 @@ export const PROJECTS: Project[] = [
         date: "2026-11-03",
         title: "Election Day, 7:00 A.M. to 8:00 P.M.",
         from: { meeting: "city-council-2026-10-06", item: "election-warrant" },
+      },
+    ],
+  },
+  {
+    slug: "infrastructure-risk-assessment",
+    title: "Infrastructure Risk Assessment",
+    kind: "initiative",
+    entries: [
+      // The motion was made on the Water/Wastewater Director's report of the
+      // 42" force main break, so the item is the report's; the title is the
+      // step the motion is in this project, not the agenda's name for it.
+      {
+        kind: "item",
+        meeting: "city-council-2026-07-14",
+        item: "force-main-sewer-break-update",
+        board: "City Council",
+        number: "5.3",
+        title: "Motion to begin initiative",
+      },
+      {
+        kind: "item",
+        meeting: "planning-and-development-committee-2026-10-19",
+        item: "critical-infrastructure-risk-assessment",
+        board: "Planning and Development Committee",
+        number: "Doc. 32-k",
+        title: "Determine scope and outcomes",
       },
     ],
   },
