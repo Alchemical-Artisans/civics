@@ -191,7 +191,9 @@ test("the committee's agenda opens the risk assessment, which lists both steps",
   page,
 }) => {
   await page.goto("/calendar/meetings/planning-and-development-committee-2026-10-19")
-  await page.getByRole("link", { name: "Determine scope and outcomes of risk assessment" }).click()
+  await page
+    .getByRole("link", { name: "Determine scope and outcomes of infrastructure risk assessment" })
+    .click()
   await expect(page).toHaveURL(
     "/projects/infrastructure-risk-assessment#planning-and-development-committee-2026-10-19-critical-infrastructure-risk-assessment",
   )

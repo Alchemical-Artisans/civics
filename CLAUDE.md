@@ -575,7 +575,7 @@ election's layout so every project draws the same one. Its two steps are the
 motion (the force main item it was made on) and the Planning and Development
 Committee's sitting of 19 October, whose notice's single item, Doc. 32-k, is a
 page of its own so the step has somewhere to land; the sitting's page is one
-line, "Determine scope and outcomes of risk assessment", opening the project.
+line, "Determine scope and outcomes of infrastructure risk assessment", opening the project.
 
 **`PrecinctMap.svelte` is an SVG drawn at build time over OpenStreetMap's raster
 tiles**, not a map library: each precinct is an SVG `<a>`, a link before
