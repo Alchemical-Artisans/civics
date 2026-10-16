@@ -108,7 +108,7 @@
       target="_blank"
       rel="external noopener noreferrer"
       onclick={() => close()}
-      class="rounded px-2 py-1 text-slate-700 hover:bg-slate-50 hover:text-slate-900"
+      class="rounded px-2 py-1 text-slate-700 no-underline hover:bg-slate-50 hover:text-slate-900"
     >
       Google Calendar<span class="sr-only">, opens in a new tab</span>
     </a>

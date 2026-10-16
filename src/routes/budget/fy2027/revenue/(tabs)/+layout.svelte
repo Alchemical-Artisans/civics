@@ -80,7 +80,7 @@
         <a
           href={Router.revenueTab(data.book.id, tab.slug)}
           aria-current={current(tab.slug) ? "page" : undefined}
-          class="-mb-px border-b-2 px-1 py-2 text-sm font-medium {current(tab.slug)
+          class="-mb-px border-b-2 px-1 py-2 text-sm font-medium no-underline {current(tab.slug)
             ? 'border-slate-900 text-slate-900'
             : 'border-transparent text-slate-500 hover:text-slate-700'}"
         >

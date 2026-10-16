@@ -56,3 +56,40 @@
   max-width: 100%;
   overflow-x: auto;
 }
+
+/*
+ * A link inside a `not-prose` island still looks like a link.
+ *
+ * The typography plugin underlines links in a `prose` container and excludes
+ * `not-prose` islands from every rule it writes, which is usually what an
+ * island wants -- it is asking to control its own type. But it means the
+ * default inside one is a link styled exactly like the sentence around it:
+ * same colour, no underline, nothing to see. `BackgroundNote` had five of
+ * them and a reader could not tell any of them was there.
+ *
+ * The alternative was for each island to underline its own anchors, which is
+ * what `budget/fy2027/+page.svelte`'s contents list already does. The reason
+ * it is here instead is the asymmetry of getting it wrong. Forget the rule in
+ * an island that wanted underlines and the links vanish silently -- nothing
+ * looks broken, navigation is simply gone, and only a reader who already knew
+ * the links were there would report it. Forget `no-underline` on a card and
+ * there is a stray underline on a card: obvious to anyone who looks, and
+ * harmless until fixed. So visible is the default and the cards opt out, not
+ * the other way round.
+ *
+ * `@layer base`, unlike the rules above, precisely so a utility can win: the
+ * things that opt out do it with `no-underline`, which lands in
+ * `@layer utilities` and beats this whatever its specificity. The rules above
+ * are unlayered because they had to beat the plugin's own; this one has to
+ * lose to the page's.
+ *
+ * Scoped to `.prose` rather than every `a` on the site: that is where the
+ * transcribed content and all of these islands are, and widening it to the
+ * bar, the footer and the calendar's chips would be a different change with
+ * nothing asking for it.
+ */
+@layer base {
+  .prose a {
+    text-decoration-line: underline;
+  }
+}
