@@ -103,6 +103,17 @@ describe("agendaHref", () => {
     )
   })
 
+  it("sends the risk assessment's committee item to the project", () => {
+    expect(
+      agendaHref(
+        "planning-and-development-committee-2026-10-19",
+        "critical-infrastructure-risk-assessment",
+      ),
+    ).toBe(
+      "/projects/infrastructure-risk-assessment#planning-and-development-committee-2026-10-19-critical-infrastructure-risk-assessment",
+    )
+  })
+
   it("sends any other item to its own page", () => {
     expect(agendaHref("city-council-2026-10-06", "white-cane-awareness-day")).toBe(
       "/calendar/meetings/city-council-2026-10-06/white-cane-awareness-day",

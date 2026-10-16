@@ -186,3 +186,26 @@ test("open, the steps are one group under a summary that does not move, and it c
   await expect(fold).not.toHaveAttribute("open", "")
   expect(await summary.boundingBox()).toEqual(before)
 })
+
+test("the committee's agenda opens the risk assessment, which lists both steps", async ({
+  page,
+}) => {
+  await page.goto("/calendar/meetings/planning-and-development-committee-2026-10-19")
+  await page.getByRole("link", { name: "Determine scope and outcomes of risk assessment" }).click()
+  await expect(page).toHaveURL(
+    "/projects/infrastructure-risk-assessment#planning-and-development-committee-2026-10-19-critical-infrastructure-risk-assessment",
+  )
+  const entry = page.locator(
+    "#planning-and-development-committee-2026-10-19-critical-infrastructure-risk-assessment",
+  )
+  expect(await entry.evaluate((el) => el.matches(":target"))).toBe(true)
+  const timeline = page.getByRole("region", { name: "Timeline" })
+  // The motion is behind the reader, folded away until asked for.
+  await timeline.getByText(/earlier step/).click()
+  await expect(timeline.getByRole("link", { name: "Motion to begin initiative" })).toBeVisible()
+  await entry.getByRole("link", { name: "Determine scope and outcomes" }).click()
+  await expect(page).toHaveURL(
+    "/calendar/meetings/planning-and-development-committee-2026-10-19/critical-infrastructure-risk-assessment",
+  )
+  await expect(page.getByText("Doc. 32-k:")).toBeVisible()
+})

@@ -512,6 +512,43 @@ written page whose sitting is gone fails the build. An `announced.ts` keeps it.
 `planning-and-development-committee-2026-10-19/` is the worked example,
 announced from `city-council-2026-10-06/planning-development-committee-meeting/`.
 
+### A project the item advances
+
+The site is moving from the city's mechanics -- a sitting, its agenda, the
+items on it -- to the undertakings those items are steps in. A meeting page
+should say which projects the sitting advances; the project page says what
+has happened to each of them, in order. So for every item, ask whether it
+starts or advances something that runs across more than one sitting: an
+election, a study the Council has ordered, a building, a zoning change worked
+through committee. The §6 search is usually what answers it -- a matter that
+began in another body is already a project in all but name.
+
+Projects are registered in `PROJECTS` in `src/lib/projects.ts`, each with a
+`kind` (`election`, `initiative`) that the bar's Projects menu groups them by,
+and a timeline of `ItemEntry`s naming the item pages that are its steps.
+
+- **Where the item advances a project that exists**, add an `ItemEntry` for it
+  -- the item's meeting id and directory, its board and agenda number, and a
+  `title` naming the step it is in the project ("Determine scope and outcomes"),
+  not the agenda's name for the item -- and write the agenda's line for it with
+  `agendaHref(MEETING, item)` instead of `Router.meetingItem`. The line then
+  opens the project on that step, ringed, and the step links to the item page.
+- **Where it starts one**, or advances one that earlier sittings already have
+  pages for, register the project with every step the site has, and write its
+  page at `src/routes/projects/<slug>/` (`infrastructure-risk-assessment` is
+  the plain worked example: the motion that started it, quoted, and
+  `ProjectTimeline`; `2026-state-election` is the elaborate one). A matter
+  touched once and done -- a proclamation, a liquor licence, a pole location --
+  is not a project. Where you are unsure, say so in your report rather than
+  registering one.
+
+A step needs an item page, so a notice with a single item still gets one: the
+meeting page carries the line and the item page the item's text. See
+`planning-and-development-committee-2026-10-19/`, whose one item, Doc. 32-k, is
+its own page, and whose line reads "Determine scope and outcomes of risk
+assessment" because the notice prints the whole motion where a name would go --
+the one place a label of ours stands in for the city's.
+
 ## 7. Excerpts, where there is a packet
 
 An item resting on a letter or a plan can link to just those pages rather than a
