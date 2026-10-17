@@ -21,7 +21,8 @@
   </p>
 
   <p>
-    She is still wrapping up work with the Greater Haverhill Foundation, and according to WHAV "will abstain from working on any Harbor Place or other Greater Haverhill Foundation projects."
+    She is still wrapping up work with the Greater Haverhill Foundation, and according to WHAV "will
+    abstain from working on any Harbor Place or other Greater Haverhill Foundation projects."
   </p>
 </BackgroundNote>
 
