@@ -8,13 +8,19 @@
   const ITEM = "veterans-fundraiser-breakfast"
 
   // The agenda states both ends of the hour, so this is a timed event.
+  //
+  // `location` carries the street number the item itself does not, from the
+  // same two city records as the map below. A calendar entry is the one place
+  // here whose address has to be navigable -- it ends up in a reader's phone,
+  // away from the page and its map -- and "Primrose Street" alone routes to
+  // most of a mile of it.
   const event: CalendarEvent = {
     uid: `${MEETING}-${ITEM}@haverhill.alchemicalartisans.com`,
     title: "Veterans fundraiser breakfast, Amvets on Primrose Street",
     start: "20261101T090000",
     end: "20261101T110000",
     allDay: false,
-    location: "Amvets, Primrose Street, Haverhill, MA",
+    location: "AMVETS, 576 Primrose St, Haverhill, MA",
     description: `Pre-election Veterans fundraiser breakfast at the Amvets on Primrose Street.\nCity Council agenda item: ${Router.absolute(`/calendar/meetings/${MEETING}/${ITEM}`)}`,
     url: Router.absolute(`/calendar/meetings/${MEETING}/${ITEM}`),
   }
