@@ -6,16 +6,28 @@
   project needed the same list; every project page draws it, so it is one
   component rather than a copy per project.
 
-  An agenda item that belongs to a project links back with its own entry's id
-  as the fragment, and `:target` rings that entry -- so a reader arriving from
-  the warrant lands on the warrant, with what came before and after it in
-  view. No script: the highlight is CSS, and it is there in the served HTML.
+  What is left here is the fold, the project registry and today's date: the
+  rail itself is `Timeline`, which a continued public hearing's own record
+  draws too. An agenda item that belongs to a project links back with its own
+  entry's id as the fragment, and `:target` rings that entry -- so a reader
+  arriving from the warrant lands on the warrant, with what came before and
+  after it in view. No script: the highlight is CSS, and it is there in the
+  served HTML.
 -->
 <script lang="ts">
   import { onMount, tick } from "svelte"
   import { slide } from "svelte/transition"
-  import { easternDate, formatLongDate } from "$lib/calendar"
-  import { entryDate, entryId, splitAtToday, timeline, type Project } from "$lib/projects"
+  import Timeline from "$lib/Timeline.svelte"
+  import { easternDate } from "$lib/calendar"
+  import {
+    entryDate,
+    entryId,
+    splitAtToday,
+    timeline,
+    type Entry,
+    type Project,
+  } from "$lib/projects"
+  import type { TimelineEntry } from "$lib/timeline"
   import { Router } from "$lib/router"
 
   let {
@@ -33,6 +45,21 @@
   }: { project: Project; today: string; fold?: boolean; class?: string } = $props()
 
   const entries = $derived(timeline(project))
+
+  /**
+   * A project's entries as rail entries. An agenda item names its board and
+   * the agenda's own number above its title and links to its write-up; a date
+   * the documents set is a line of text, since nobody met.
+   */
+  const rows = (list: Entry[]): TimelineEntry[] =>
+    list.map((entry) => ({
+      id: entryId(entry),
+      date: entryDate(entry),
+      through: entry.kind === "date" ? entry.through : undefined,
+      eyebrow: entry.kind === "item" ? `${entry.board}, item ${entry.number}` : undefined,
+      title: entry.title,
+      href: entry.kind === "item" ? Router.meetingItem(entry.meeting, entry.item) : undefined,
+    }))
 
   /**
    * Today in the city: the build's date in the HTML that is served, the
@@ -66,13 +93,28 @@
   let expanded = $state(false)
   let closing = $state(false)
   let live = $state(false)
-  let duration = $state(250)
   const showPast = $derived(expanded || !live)
+
+  /**
+   * The slide is for the reader's own open and close, and for nothing else.
+   *
+   * Taking the fold over on mount closes it too -- `live` turning true is what
+   * drops `showPast` -- and animating that plays a slide nobody asked for on
+   * every load. Worse, the leaving entries sit in the page for as long as it
+   * runs, and the entries are the ones the arriving list is drawing: for that
+   * quarter-second the same agenda item is in the document twice under the
+   * same `id`, which is what `:target` and the fragment scroll both address.
+   * So the hand-over takes no time at all and `motion` is held back until the
+   * reader actually works the control.
+   */
+  let motion = $state(250)
+  let duration = $state(0)
 
   function toggle(event: MouseEvent) {
     // Only once live: before that the browser's own toggle is the control.
     if (!live) return
     event.preventDefault()
+    duration = motion
     expanded = !expanded
     if (!expanded) closing = true
   }
@@ -97,7 +139,7 @@
     inTheBrowser = easternDate()
     live = true
     // A reader who has asked their system for less motion gets none.
-    if (matchMedia("(prefers-reduced-motion: reduce)").matches) duration = 0
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) motion = 0
     void tick().then(openForFragment)
     window.addEventListener("hashchange", openForFragment)
     return () => window.removeEventListener("hashchange", openForFragment)
@@ -106,32 +148,6 @@
 
 <section aria-labelledby="timeline" class={className}>
   <h2 id="timeline" class="text-lg font-semibold text-slate-900">Timeline</h2>
-  {#snippet row(entry: (typeof entries)[number])}
-    <!-- `target:` is the entry an agenda item linked back to. -->
-    <li
-      id={entryId(entry)}
-      class="relative scroll-mt-24 rounded-md px-2 py-1.5 target:bg-amber-50 target:ring-2 target:ring-amber-400"
-    >
-      <span
-        aria-hidden="true"
-        class="absolute top-3 -left-[1.4rem] h-2.5 w-2.5 rounded-full border-2 border-white bg-slate-400"
-      ></span>
-      <p class="text-xs text-slate-500">
-        {formatLongDate(entryDate(entry))}{#if entry.kind === "date" && entry.through}
-          &ndash; {formatLongDate(entry.through)}{/if}
-      </p>
-      {#if entry.kind === "item"}
-        <p class="text-slate-500">{entry.board}, item {entry.number}</p>
-        <a
-          class="font-medium text-slate-900 underline hover:text-sky-800"
-          href={Router.meetingItem(entry.meeting, entry.item)}>{entry.title}</a
-        >
-      {:else}
-        <p class="text-slate-800">{entry.title}</p>
-      {/if}
-    </li>
-  {/snippet}
-
   {#if past.length}
     <!-- Past entries: the record, folded. The summary is a plain line that
          never moves; opening it slides out a tinted, bordered panel under
@@ -146,20 +162,12 @@
       {#if showPast}
         <div transition:slide={{ duration }} onoutroend={() => (closing = false)}>
           <div class="mt-2 rounded-lg border border-slate-200 bg-slate-50 p-3">
-            <ol class="space-y-3 border-l-2 border-slate-300 pl-4">
-              {#each past as entry (entryId(entry))}
-                {@render row(entry)}
-              {/each}
-            </ol>
+            <Timeline entries={rows(past)} class="space-y-3 border-l-2 border-slate-300 pl-4" />
           </div>
         </div>
       {/if}
     </details>
   {/if}
 
-  <ol class="mt-3 space-y-3 border-l-2 border-slate-200 pl-4 text-sm">
-    {#each upcoming as entry (entryId(entry))}
-      {@render row(entry)}
-    {/each}
-  </ol>
+  <Timeline entries={rows(upcoming)} />
 </section>
