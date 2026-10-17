@@ -8,31 +8,43 @@
   const ITEM = "marshland-st-special-permit"
 </script>
 
-<!-- The page asks for the window's width for the two columns below, which
-     stretches this to a line of reading nobody can track back; the item's own
-     sentence keeps the column every other write-up has. -->
-<p class="max-w-3xl">
-  <strong>Doc 21-J</strong>- <strong>CCSP-26-7</strong> &ndash;Matt Silva for Sterling Commonwealth Builders
-  requests approval to demolish existing single-family residence and construct three (3) attached townhouse
-  condominium units on a single parcel at 27 Marshland St in the RH (Residential High) Zone. Each unit
-  is proposed to contain three (3) bedrooms, 2 and one-half bathrooms, and an attached two-car garage
-</p>
-
 <!--
-  The hearing's own record, off the back of Document # 21-J, drawn on the same
-  rail a project's timeline uses. It replaced a right-aligned line reading
-  "Continued from October 6, 2026": a hearing opened in July and continued
-  twice is a sequence, and a sequence set as one bold line in the gutter says
-  only that something came before and leaves a reader to find out what. The
-  dates and the counts are the Council's own, the clerk's attestation under
-  each.
+  What the Council is deciding on the left, where it stands and where it is on
+  the right: the same shape a project page has, and for the same reason. The
+  page asks for the window's width for the columns below, and run full width
+  the item's own sentence becomes a line of reading nobody can track back, so
+  the split does double duty -- it puts the sentence back in a reading column
+  and gives the map and the record somewhere to sit beside it rather than
+  pushing the substance of the item further down the page. Stacked on a
+  phone, the order is the sentence, then the place, then the record.
 -->
-<section aria-labelledby="hearing" class="not-prose my-6">
-  <h2 id="hearing" class="text-lg font-semibold text-slate-900">The hearing</h2>
-  <Timeline entries={HEARING} />
-</section>
+<div class="grid gap-x-8 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
+  <p>
+    <strong>Doc 21-J</strong>- <strong>CCSP-26-7</strong> &ndash;Matt Silva for Sterling Commonwealth
+    Builders requests approval to demolish existing single-family residence and construct three (3) attached
+    townhouse condominium units on a single parcel at 27 Marshland St in the RH (Residential High) Zone.
+    Each unit is proposed to contain three (3) bedrooms, 2 and one-half bathrooms, and an attached two-car
+    garage
+  </p>
 
-<AddressMap address="27 Marshland St, Haverhill, MA" lat={42.7874681} lon={-71.0794599} />
+  <div>
+    <AddressMap address="27 Marshland St, Haverhill, MA" lat={42.7874681} lon={-71.0794599} />
+
+    <!--
+      The hearing's own record, off the back of Document # 21-J, drawn on the
+      same rail a project's timeline uses. It replaced a right-aligned line
+      reading "Continued from October 6, 2026": a hearing opened in July and
+      continued twice is a sequence, and a sequence set as one bold line in
+      the gutter says only that something came before and leaves a reader to
+      find out what. The dates and the counts are the Council's own, the
+      clerk's attestation under each.
+    -->
+    <section aria-labelledby="hearing" class="not-prose mb-6">
+      <h2 id="hearing" class="text-lg font-semibold text-slate-900">The hearing</h2>
+      <Timeline entries={HEARING} />
+    </section>
+  </div>
+</div>
 
 <hr />
 
