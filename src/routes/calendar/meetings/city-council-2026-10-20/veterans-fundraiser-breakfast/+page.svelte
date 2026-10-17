@@ -1,4 +1,5 @@
 <script lang="ts">
+  import AddressMap from "$lib/AddressMap.svelte"
   import AddToCalendar from "$lib/AddToCalendar.svelte"
   import type { CalendarEvent } from "$lib/ics"
   import { Router } from "$lib/router"
@@ -28,6 +29,19 @@
 <div class="not-prose my-4">
   <AddToCalendar {event} filename="veterans-fundraiser-breakfast-2026-11-01" />
 </div>
+
+<!--
+  The item names the venue and the street but no number, and "Amvets" is in
+  neither Nominatim nor OpenStreetMap, so the number is not this document's.
+  It is the city's: the License Commission's sitting of 1 October 2026 gives
+  the licensee as "American Veterans of Haverhill Massachusetts, Inc. d/b/a
+  AMVETS, 576 Primrose Street", and the Council's own FIXD-26-10 of 11 August
+  2026 puts "AmVets at 576 Primrose St". OSM has one building at that number,
+  which is the point below -- so this is the city's own record resolving its
+  own shorthand, not a business directory, and not the street centroid the
+  rule in docs/document-pages.md bars.
+-->
+<AddressMap address="AMVETS, 576 Primrose St, Haverhill, MA" lat={42.7929613} lon={-71.0882645} />
 
 <hr />
 
