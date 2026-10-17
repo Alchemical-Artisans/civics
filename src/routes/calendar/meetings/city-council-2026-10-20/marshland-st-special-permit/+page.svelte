@@ -64,7 +64,15 @@
     {/snippet}
 
     <section aria-labelledby="concerns" class="not-prose my-6">
-      <h2 id="concerns" class="text-lg font-semibold text-slate-900">What the review asked for</h2>
+      <!-- `sr-only`: the two column heads below say what this is, and a
+           heading over them saying it a third way was the same words again.
+           It stays in the markup because the pairs' own subjects are `h3`s
+           and the page's `h1` is the layout's, so taking it out altogether
+           would leave them hanging a level off -- and because a section
+           with no name is not a section to anyone reading by landmark. -->
+      <h2 id="concerns" class="sr-only">
+        Concerns raised in review, and the applicant&rsquo;s answers
+      </h2>
 
       <!-- The column heads are the pair's labels, and they sit above the first
        row rather than on every one; below `md` the two stack, where a head

@@ -88,6 +88,38 @@ export const HEARING: TimelineEntry[] = [
 
 export const CONCERNS: Concern[] = [
   {
+    // First, and the only pair where the two sides flatly disagree. The
+    // applicant's canvass is the applicant's own account of it; the Council
+    // Office's note is the city's record of what a Marshland Street owner
+    // told it, over the clerk's date stamp, and it is the one line on this
+    // page that comes from a neighbour rather than from somebody paid by the
+    // project. Nobody has yet said any of it to the Council: the hearing has
+    // been continued twice without being heard, so there is no testimony in
+    // the minutes to set beside either.
+    subject: "The neighbourhood",
+    raised: [
+      {
+        source:
+          "Lori A. Robertson, Administrative Assistant, Haverhill City Council, September 14, 2026",
+        href: excerpt(OCTOBER_6, "neighbourhood-communication"),
+        quotes: [
+          "Mark Dickinson, (copied on this email) a property owner on Marshland Street, contacted the Council Office this afternoon regarding the special permit for 27 Marshland Street.",
+          "Mr. Dickinson wanted you to be aware there is tremendous opposition to this project within the neighborhood.",
+        ],
+      },
+    ],
+    answered: [
+      {
+        source: "Jonathan R. Stark-Sachs, Johnson & Borenstein, LLC, October 15, 2026",
+        href: ATTORNEY,
+        quotes: [
+          "In addition to the required legal notice, the Applicant sent out mailings to property owners in the neighborhood detailing the Project plans and providing contact information if there were any concerns about the Project.",
+          "The Applicant also went door-to-door the weekend of October 3-4, 2026, and spoke with several neighbors about the Project. Most were overall supportive of the project, but concerns about the availability of on-street parking were also communicated.",
+        ],
+      },
+    ],
+  },
+  {
     subject: "Driveway spacing and front-yard coverage",
     raised: [
       {
@@ -116,13 +148,6 @@ export const CONCERNS: Concern[] = [
         source: "Lisa Demeo, Engineering Department, July 24, 2026",
         href: REVIEWS,
         quotes: ["The proposed driveways are taking on street parking away from all abutters."],
-      },
-      {
-        source: "Neighbours, as the applicant reports them, October 15, 2026",
-        href: ATTORNEY,
-        quotes: [
-          "Most were overall supportive of the project, but concerns about the availability of on-street parking were also communicated.",
-        ],
       },
     ],
     answered: [
