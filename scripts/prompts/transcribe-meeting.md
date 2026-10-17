@@ -300,7 +300,7 @@ printed -- a building, a house number, a feature of the right name. Where the
 document names a place with no street number of its own that the lookup
 cannot find _by name_ (a pumping station, an unnamed lot) and it only turns
 up the street or the neighbourhood it sits on, **leave the map off** rather than centring it on an approximation and calling it the
-place -- the same rule as §11's "do not guess": a map is a stronger claim of
+place -- the same rule as §12's "do not guess": a map is a stronger claim of
 precision than a sentence naming the street, and this codebase does not make
 claims the document does not support. Say in your report which addresses got
 a map and which were left out, and why.
@@ -549,7 +549,83 @@ its own page, and whose line reads "Determine scope and outcomes of infrastructu
 assessment" because the notice prints the whole motion where a name would go --
 the one place a label of ours stands in for the city's.
 
-## 7. Excerpts, where there is a packet
+## 7. Background the document does not carry
+
+Some items are a single true sentence that answers nothing. "Mayor Barrett
+wishes to introduce Alison Gulubicki, Economic Development Director" is the
+whole of what the city published about that item, and a reader finishes it
+still asking the obvious question -- who is she, and why now. The answer was
+public the whole time: the post had been vacant about a year, the job had been
+split in two, and the appointee ran the nonprofit behind Harbor Place. None of
+that is in a city document the calendar carries.
+
+Where that is true, the page can carry a short **background panel**:
+`$lib/BackgroundNote.svelte`, rendered inside the item's own page after the
+transcription and above the `<hr />` and the document links. It is a tinted
+`<aside>`, deliberately not the amber the layout gives highlights, so it cannot
+be mistaken for the city's words. See
+`city-council-2026-10-20/introduce-economic-development-director`.
+
+**This is the one place on the site that is neither quotation nor arrangement,
+so the sentences that ship are written by a person, not by you.** Your job is
+the research and a bulleted digest of it, left inside the component for the
+site owner to write over in place. Say plainly in your report (§14) that the
+panel is notes rather than finished copy. Never commit a panel of your own
+prose as though it were the page.
+
+### When it earns its place
+
+Rare. Most items need nothing: an order, a pole petition, a licence renewal
+and a hearing all say what they are. Add a panel only where both hold:
+
+- A reader would finish the item still asking an obvious question about it --
+  typically a one-line communication, an introduction, an appointment or a
+  resignation, where the city prints the fact and not the reason.
+- The answer is public and checkable. No motives, no inference from silence,
+  nothing you cannot link.
+
+### Where to look, in that order
+
+1. **This site's own record.** `grep -ril` across
+   `src/routes/calendar/meetings/` as in §6. The city often records the fact
+   somewhere without explaining it -- a Retirement Board new-member enrolment
+   is what a new hire generates, and a salary line left unspent is what a
+   vacancy looks like.
+2. **The city's own publications outside the agendas.** The budget book
+   (link into it at the page with `Router.pdfPage(book.budget, <page>)`, never
+   transcribe it -- the budget is already part of this site); HR job postings
+   under `haverhillma.gov/media/`; the ordinance code at `ecode360.com`, whose
+   amendment notes date every change and will tell you whether the Council
+   ever voted on a thing at all.
+3. **Local reporting**, WHAV above all (`whav.net`), which covers the Council
+   and the Mayor's office as a beat and quotes both directly.
+
+`WebFetch` gets a 403 from WHAV and from ecode360; `curl` with a browser
+`User-Agent` works. Council agendas on the city's CDN are mostly scans with no
+text layer, so `pdftotext` returns a byte a page -- render the index pages with
+`pdftoppm -png -r 100 -f 1 -l 6` and read them, the same as §1.
+
+### What goes in it
+
+Three or four facts, each the kind that changes how the item reads, and each
+carrying the link it came off. Prefer linking a fact in the sentence that
+states it; `sources` is an optional prop for a footed list where the prose
+reads better unbroken. A panel with no links at all is a panel making claims a
+reader has to take on faith.
+
+**Link, do not retell.** The first draft of the Gulubicki panel ran four
+paragraphs and amounted to a summary of the two articles it cited -- the
+mayor's quotes in full, the appointee's whole resume, the salary range, the
+duties. The sources are one click away, so restating them at length helps
+nobody and quietly turns a quotation-and-arrangement site into a second-hand
+news page. The shipped version is two sentences.
+
+Report what you found even when you decide against a panel, and say where the
+answer was not in the record: on that item the split of the job turned out to
+be in no agenda item at all, because the code lets the Mayor organise the
+department without a Council vote.
+
+## 8. Excerpts, where there is a packet
 
 An item resting on a letter or a plan can link to just those pages rather than a
 packet running to hundreds. Cut them out of the cached PDF and commit them:
@@ -606,7 +682,7 @@ signature, and ask where it would be if the sheet were upright. A heading
 running up the left edge, with the letters' tops pointing left, has been turned
 anticlockwise and wants `rotate(90)`; running down the right edge, `rotate(270)`.
 
-## 8. A document that is a table
+## 9. A document that is a table
 
 Some of what the city attaches is not prose with a table in it — it _is_ a
 table: the Auditor's monthly revenue and expense reports, a fee schedule, a
@@ -645,7 +721,7 @@ scans has not been written up.
 five tables, the two reports' own headings as `<h2>`s, and the scans still
 linked at the foot.
 
-## 9. An order that replaces text already on the books
+## 10. An order that replaces text already on the books
 
 An order that amends, repeals or replaces something the city already has in
 force -- an article of the Code, a policy, a fee schedule, a set of
@@ -717,9 +793,9 @@ Labels are the city's words or none. Where the two versions letter a list
 differently and no shared label exists that either document actually prints,
 leave the row unlabelled and let each side carry its own numbering in its own
 text -- a handle invented to span them would be my words sitting in the
-record's typeface, which §11 bars.
+record's typeface, which §12 bars.
 
-## 10. Highlights
+## 11. Highlights
 
 A sitting can have a few items a reader should see before the agenda's full
 outline, and deciding which is part of writing the sitting up. The layout draws
@@ -751,7 +827,7 @@ ordinance, order and study on the agenda before deciding, not only for items
 you would have looked up anyway. Where the earlier minutes cannot be found or
 read, say so in your report rather than highlighting on a guess.
 
-## 11. The rules that bite
+## 12. The rules that bite
 
 - **Transcribe verbatim.** Do not paraphrase, summarise, correct, or tidy. The
   city's spelling, punctuation and slips stay as printed — "dover use" for Dover
@@ -759,21 +835,23 @@ read, say so in your report rather than highlighting on a guess.
   city's; the arrangement is ours.
 - **Write no prose of your own.** A heading the city prints with nothing under
   it stays empty. Do not write "None scheduled" unless the document says it.
+  The one exception is a background panel (§7), and even there the sentences
+  that ship are the site owner's -- you leave sourced notes, not copy.
 - **Do not restate the dataset.** Title, board, date, kind and the links to the
   city come from `meetings.json` through the layout.
 - **Read what you paste.** A PDF can be copied out of, and markup pasted without
   being read is somebody else's script tag in the build.
 - **A table gets transcribed, not linked.** A page whose write-up is a list of
-  links to scans is not a write-up; §8.
+  links to scans is not a write-up; §9.
 - **Resolve every Doc. number and referral before finishing.** A "Doc. 32-k"
   with no link is a reference the reader cannot follow and the one thing they
   came to the page for; §6. The answer is on the site more often than not, and
   where it is not, say so in your reply rather than leaving it silently open.
 - **Render every excerpt and look at it before committing it.** A sideways scan
   cut out of a packet is still sideways, and nothing but the image will tell
-  you; §7 has the render and the rotation snippet.
+  you; §8 has the render and the rotation snippet.
 
-## 12. Check it
+## 13. Check it
 
 ```sh
 npx prettier --write src/routes/calendar/meetings/<meeting id>/
@@ -790,12 +868,12 @@ the budget book defines without linking it. The build is what proves the new
 routes prerender — check `build/calendar/meetings/<meeting id>/` holds one file
 per item page.
 
-## 13. Commit, and report
+## 14. Commit, and report
 
 Commit directly to `main`, in the repo's voice: what changed and **why**, not a
 list of files. Do not push, and do not open a pull request.
 
 Then tell the user, briefly: which pages you created, which items you highlighted
-and on what evidence (§10), any judgement call you
+and on what evidence (§11), any judgement call you
 made about slugs or about what did not get its own page, anything the document
 states that you could not read, and the result of the checks.
