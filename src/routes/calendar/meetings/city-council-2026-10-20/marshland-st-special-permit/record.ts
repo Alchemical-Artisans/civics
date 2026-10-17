@@ -48,7 +48,14 @@ export interface Passage {
   source: string
   /** The file the words are in. */
   href: string
-  /** Their words, one entry per paragraph. */
+  /**
+   * Their words. One entry per passage quoted -- a paragraph of a letter, a
+   * numbered item of one, a callout on a plan sheet. **Never one passage cut
+   * into two:** the entries are drawn as separate paragraphs, so splitting a
+   * paragraph here puts a break in the source that the source does not have.
+   * Quoting part of a passage is fine; where the part taken stops short of
+   * the end, it simply stops.
+   */
   quotes: string[]
 }
 
@@ -113,8 +120,7 @@ export const CONCERNS: Concern[] = [
         source: "Jonathan R. Stark-Sachs, Johnson & Borenstein, LLC, October 15, 2026",
         href: ATTORNEY,
         quotes: [
-          "In addition to the required legal notice, the Applicant sent out mailings to property owners in the neighborhood detailing the Project plans and providing contact information if there were any concerns about the Project.",
-          "The Applicant also went door-to-door the weekend of October 3-4, 2026, and spoke with several neighbors about the Project. Most were overall supportive of the project, but concerns about the availability of on-street parking were also communicated.",
+          "In addition to the required legal notice, the Applicant sent out mailings to property owners in the neighborhood detailing the Project plans and providing contact information if there were any concerns about the Project. The Applicant also went door-to-door the weekend of October 3-4, 2026, and spoke with several neighbors about the Project. Most were overall supportive of the project, but concerns about the availability of on-street parking were also communicated.",
         ],
       },
     ],
@@ -249,8 +255,8 @@ export const CONCERNS: Concern[] = [
         source: "Revised conceptual civil site plan, sheet 3, October 13, 2026",
         href: PLAN,
         quotes: [
-          "NEW 1” COPPER WATER, TYP.",
-          "NEW 6” SDR 35 PVC, TYP.",
+          'NEW 1" COPPER WATER, TYP.',
+          'NEW 6" SDR 35 PVC, TYP.',
           "CUT AND CAP EX. SEWER SERVICE AT MAIN",
           "CUT AND CAP EX. WATER SERVICE AT CORP",
         ],
