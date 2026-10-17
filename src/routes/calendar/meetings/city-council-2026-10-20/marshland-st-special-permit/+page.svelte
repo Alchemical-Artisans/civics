@@ -1,181 +1,111 @@
 <script lang="ts">
   import AddressMap from "$lib/AddressMap.svelte"
+  import Timeline from "$lib/Timeline.svelte"
   import { Router } from "$lib/router"
+  import { CONCERNS, HEARING, type Passage } from "./record"
 
   const MEETING = "city-council-2026-10-20"
   const ITEM = "marshland-st-special-permit"
 </script>
 
-<p>
+<!-- The page asks for the window's width for the two columns below, which
+     stretches this to a line of reading nobody can track back; the item's own
+     sentence keeps the column every other write-up has. -->
+<p class="max-w-3xl">
   <strong>Doc 21-J</strong>- <strong>CCSP-26-7</strong> &ndash;Matt Silva for Sterling Commonwealth Builders
   requests approval to demolish existing single-family residence and construct three (3) attached townhouse
   condominium units on a single parcel at 27 Marshland St in the RH (Residential High) Zone. Each unit
   is proposed to contain three (3) bedrooms, 2 and one-half bathrooms, and an attached two-car garage
 </p>
 
-<p class="text-right">
-  <strong>
-    Continued from <a href={Router.meeting("city-council-2026-10-06")}>October 6 , 2026</a>
-  </strong>
-</p>
+<!--
+  The hearing's own record, off the back of Document # 21-J, drawn on the same
+  rail a project's timeline uses. It replaced a right-aligned line reading
+  "Continued from October 6, 2026": a hearing opened in July and continued
+  twice is a sequence, and a sequence set as one bold line in the gutter says
+  only that something came before and leaves a reader to find out what. The
+  dates and the counts are the Council's own, the clerk's attestation under
+  each.
+-->
+<section aria-labelledby="hearing" class="not-prose my-6">
+  <h2 id="hearing" class="text-lg font-semibold text-slate-900">The hearing</h2>
+  <Timeline entries={HEARING} />
+</section>
 
 <AddressMap address="27 Marshland St, Haverhill, MA" lat={42.7874681} lon={-71.0794599} />
 
 <hr />
 
-<!-- The hearing was opened on 15 September and continued twice. What this
-     packet adds to the one the Council had on 6 October is the applicant's
-     answer to the departments: the attorney's overview of the revisions and
-     the civil engineer's point-by-point response, both transcribed below. The
-     Planning Director's memo and the rest of the permit record are the same
-     documents the 6 October packet carried and are linked rather than set down
-     a second time. -->
+<!--
+  What the departments and the neighbours asked for, beside what the applicant
+  has filed in answer -- the question actually in front of the Council tonight,
+  and the one thing neither packet puts in one place. The comments are in the
+  6 October packet's departmental review record; the answers are in the two
+  letters filed for tonight. `record.ts` holds the pairs and says where each
+  line comes from.
 
-<h2>Letter from Jonathan R. Stark-Sachs, Johnson &amp; Borenstein, LLC, October 15, 2026</h2>
+  This page used to set both of tonight's letters down in full, some eleven
+  hundred words of them, which is every word the packet's prose contains and
+  far more than a reader needs to see what is being decided. The letters are
+  linked below and are the place for the whole of them.
+-->
+{#snippet passage(item: Passage)}
+  <figure class="not-last:mb-4">
+    <blockquote class="border-l-2 border-slate-300 pl-3 text-slate-800">
+      {#each item.quotes as quote (quote)}
+        <p class="not-last:mb-2">{quote}</p>
+      {/each}
+    </blockquote>
+    <figcaption class="mt-1 pl-3 text-xs text-slate-500">
+      <a href={item.href} target="_blank" rel="noopener">
+        {item.source}<span class="sr-only">, PDF, opens in a new tab</span>
+      </a>
+    </figcaption>
+  </figure>
+{/snippet}
 
-<p>Re: Overview of Project Revisions &ndash; Special Permit for 27 Marshland Street</p>
+<section aria-labelledby="concerns" class="not-prose my-6">
+  <h2 id="concerns" class="text-lg font-semibold text-slate-900">What the review asked for</h2>
 
-<p>Dear President Jordan and members of the Council,</p>
+  <!-- The column heads are the pair's labels, and they sit above the first
+       row rather than on every one; below `md` the two stack, where a head
+       over a single column would be a head over half a pair, so they go. -->
+  <div
+    class="mt-4 hidden gap-x-8 border-b border-slate-200 pb-2 text-xs font-semibold tracking-wide text-slate-500 uppercase md:grid md:grid-cols-2"
+  >
+    <h3>Concerns raised</h3>
+    <h3>The applicant&rsquo;s answer</h3>
+  </div>
 
-<p>
-  I write on behalf of Sterling Commonwealth Builders (the &ldquo;Applicant&rdquo;) regarding the
-  pending special permit application to construct a three-family home at 27 Marshland Street (the
-  &ldquo;Project&rdquo;) to provide an overview of revisions to Project. Following initial
-  submission of the Applicant&rsquo;s special permit materials, comments were received from the
-  various city departments regarding the placement of the driveways serving the three separate
-  proposed townhomes and compliance with stormwater and landscaping requirements in Section 6.3 of
-  the Haverhill Zoning Ordinance (the &ldquo;Ordinance&rdquo;). The Applicant provides the following
-  responses and adjustments to Project plans. Lastly, the Applicant sought feedback from neighbors
-  regarding the Project in advance of the hearing.
-</p>
-
-<p>A. The Applicant will seek a Subsequent Zoning Variance from Driveway Requirements.</p>
-
-<p>
-  The Project provides for three separate driveways and two-car garages to serve each proposed
-  townhome, supporting up to four parking spaces for residents and guests of each unit. The design
-  and provision of ample parking ensures that the Project will not contribute to demand for public
-  on-street parking in the neighborhood, which is often a concern of neighbors when additional
-  housing units are proposed. This driveway placement is also consistent with the townhome design,
-  with differentiated facades for each unit, which was chosen to better fit within the existing
-  neighborhood mix of single- and two-family homes.
-</p>
-
-<p>
-  Should the Council grant the special permit, the Applicant therefore plans to seek a variance from
-  the Haverhill Zoning Board of Appeals to allow for greater driveway coverage and closer spacing
-  than normally allowed by the Ordinance.
-</p>
-
-<p>B. Plan Revisions to Provide for Stormwater Infrastructure and Additional Landscaping.</p>
-
-<p>
-  Accompanying this letter are revised civil engineering and landscape plans that the Applicant
-  believes address all comments made by relevant city departments regarding compliance with
-  standards set forth in Section 6.3 of the Ordinance. Each townhome will be provided with separate
-  stormwater management infrastructure, and pavement in both the front and rear has been reduced and
-  pitched to provide for managed stormwater runoff, along with other minor changes to utility
-  placement. The Applicant&rsquo;s civil engineer has also provided a letter with detailed responses
-  to staff comments. The Applicant will plant four street trees along the frontage of the property
-  along with additional landscaping, as well as additional tree plantings in the rear yard to
-  provide shade and attractive vegetation in association with the Project.
-</p>
-
-<p>
-  All common infrastructure and landscaping will be required to be maintained by the association
-  governing the proposed three-unit condominium.
-</p>
-
-<p>C. Neighborhood Outreach.</p>
-
-<p>
-  In addition to the required legal notice, the Applicant sent out mailings to property owners in
-  the neighborhood detailing the Project plans and providing contact information if there were any
-  concerns about the Project. The Applicant also went door-to-door the weekend of October 3-4, 2026,
-  and spoke with several neighbors about the Project. Most were overall supportive of the project,
-  but concerns about the availability of on-street parking were also communicated. The Applicant
-  believes that the ample off-street parking provided, which will not result in any additional
-  on-street parking demand, addresses this concern.
-</p>
-
-<p>
-  The Applicant looks forward to presenting the Project with these revisions at the next Council
-  hearing. Thank you for your attention to this matter.
-</p>
-
-<h2>Letter from Daniel Dragani, P.E., Engineering Solutions Group, October 13, 2026</h2>
-
-<p>Subject: Response to Request for Additional Information</p>
-
-<p>Project Location: 27 Marshland St, Haverhill MA</p>
-
-<p>Dear Ms. Stokes,</p>
-
-<p>
-  This letter is in response to City comments relating to the project referenced above. Please note
-  that City comments have been restated below and an explanation of our response has been provided
-  in italics.
-</p>
-
-<ol>
-  <li>
-    <p>1/2&quot; Storm Requirements</p>
-    <p>
-      <em
-        >ESG Response: Please see attached plan which shows drainage calculations for the 1/2-inch
-        storm.</em
-      >
-    </p>
-  </li>
-  <li>
-    <p>Driveway Drainage Concerns</p>
-    <p>
-      <em
-        >ESG Response: The proposed driveways are to be crowned draining towards 12&rdquo;x24&rdquo;
-        french drains that will run along both edges of the driveway to mitigate storm runoff.</em
-      >
-    </p>
-  </li>
-  <li>
-    <p>Tree Conflict</p>
-    <p>
-      <em
-        >ESG Response: The proposed utilities have been relocated away from the tree to avoid any
-        potential conflicts.</em
-      >
-    </p>
-  </li>
-  <li>
-    <p>ESGHWT Concern</p>
-    <p>
-      <em
-        >ESG Response: The plan has been revised to now show the test pit data along with additional
-        grading. Subsequently, the proposed stormtech systems each have a minimum of 2ft separation
-        from ESGHWT to bottom of stone.</em
-      >
-    </p>
-  </li>
-  <li>
-    <p>Zoning Impervious Coverage</p>
-    <p>
-      <em
-        >ESG Response: Engineering Solutions Group does not perform zoning related work.
-        Nonetheless, we have reduced the impervious coverage to alleviate this concern.</em
-      >
-    </p>
-  </li>
-  <li>
-    <p>Erosion Control Measures</p>
-    <p>
-      <em
-        >ESG Response: The erosion control limits have been added to the plan along with details.
-        The additional details and notes will protect the construction area appropriately.</em
-      >
-    </p>
-  </li>
-</ol>
-
-<p>Please feel free to reach out should you have any questions or concerns.</p>
+  {#each CONCERNS as concern (concern.subject)}
+    <!-- The subject is ours and sits across both columns: on a phone the two
+         halves are one above the other, and it is what keeps them a pair. -->
+    <div class="border-b border-slate-200 py-4">
+      <h3 class="mb-3 font-semibold text-slate-900">{concern.subject}</h3>
+      <div class="grid gap-x-8 gap-y-4 text-sm md:grid-cols-2">
+        <div>
+          <!-- Stacked, the column heads above are gone and the two halves of a
+               pair run one into the other, so each says which it is. Hidden
+               where the heads are doing that job. -->
+          <p class="mb-1 text-xs font-semibold tracking-wide text-slate-500 uppercase md:hidden">
+            Concern
+          </p>
+          {#each concern.raised as item (item.source + item.quotes[0])}
+            {@render passage(item)}
+          {/each}
+        </div>
+        <div>
+          <p class="mb-1 text-xs font-semibold tracking-wide text-slate-500 uppercase md:hidden">
+            Answer
+          </p>
+          {#each concern.answered as item (item.source + item.quotes[0])}
+            {@render passage(item)}
+          {/each}
+        </div>
+      </div>
+    </div>
+  {/each}
+</section>
 
 <hr />
 
