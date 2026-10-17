@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-10-15T19:54:26.341Z",
+  "generatedAt": "2026-10-16T18:44:53.683Z",
   "source": "https://www.haverhillma.gov/government/agendas-and-minutes/",
-  "count": 3146,
+  "count": 3148,
   "meetings": [
     {
       "title": "Special Education Parental Advisory Council Meeting (SEPAC)",
@@ -112,6 +112,24 @@
       "needsReview": false,
       "source": "https://events.haverhillma.gov/",
       "docId": "2026-10-20-1800-central-business-district-parking-commission-meeti-6deb76dc"
+    },
+    {
+      "title": "City Council Agenda - October 20, 2027",
+      "pageUrl": "/document-manager/media-pages/agenda-and-minutes/city-council-agenda-october-20-2027/",
+      "fileUrl": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/530j24lw/full-agenda-color-102026.pdf",
+      "category": "City Council Agendas",
+      "description": "October 20, 2026",
+      "board": "City Council",
+      "kind": "agenda",
+      "date": "2026-10-20",
+      "dateSource": "meeting-date",
+      "rawMeetingDate": "10/20/2026 11:00 PM",
+      "dateAdjusted": false,
+      "dateConflict": false,
+      "filenameDate": "2026-10-20",
+      "needsReview": false,
+      "source": "https://www.haverhillma.gov/government/agendas-and-minutes/",
+      "docId": "city-council-agenda-october-20-2027-c6dd026f"
     },
     {
       "title": "Haverhill School Committee Special Subcommittee on Superintendent Goals & Contract",
@@ -1322,6 +1340,24 @@
       "source": "https://events.haverhillma.gov/",
       "settled": true,
       "docId": "2026-09-09-1900-planning-board-meeting-756391e6"
+    },
+    {
+      "title": "Planning Board Meeting Minutes 9.9.26",
+      "pageUrl": "/government/boards-committees-and-commissions/planning-board/",
+      "fileUrl": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/cldl1rmp/planning-board-meeting-minutes-9926.pdf",
+      "category": "Planning Board",
+      "description": "",
+      "board": "Planning Board",
+      "kind": "minutes",
+      "date": "2026-09-09",
+      "dateSource": "title",
+      "rawMeetingDate": null,
+      "dateAdjusted": false,
+      "dateConflict": false,
+      "filenameDate": "2026-09-09",
+      "needsReview": false,
+      "source": "https://www.haverhillma.gov/government/boards-committees-and-commissions/planning-board/",
+      "docId": "planning-board-ab420df7"
     },
     {
       "title": "Agenda and Minutes (27)",

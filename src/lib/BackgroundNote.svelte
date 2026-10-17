@@ -21,14 +21,20 @@
     footer, the attribution line), and pointedly not the amber the meeting
     layout gives `details.highlights`. Amber on these pages means "the city
     said something worth your attention"; this is the opposite claim.
-  - `sources` is required and rendered in full, and it is what marks the panel
-    as inferred. There was a line of small print above saying so in words --
-    "not the city's words" -- and it was cut: a panel that ends in a list of
-    somebody else's reporting has already told a reader where it came from,
-    and saying it twice spent the reader's attention on the caveat rather than
-    the content. Requiring the prop is the guarantee, not the sentence. An
-    inference a reader cannot chase is worse than no inference, so the links
-    are part of the panel rather than something a page might leave off.
+  - Every claim is chaseable. An inference a reader cannot check is worse than
+    no inference, so somewhere in the panel each fact carries the link it came
+    off. There was a line of small print saying "not the city's words" and it
+    was cut: a panel made of links to somebody else's reporting has already
+    told a reader where it came from, and saying it twice spent the reader's
+    attention on the caveat rather than the content.
+
+    `sources` is the footed list, for a panel whose prose is better read
+    unbroken. It is optional, because linking each fact in the sentence that
+    states it is the other way to meet the same rule, and the better one when
+    the panel is three sentences long -- `city-council-2026-10-20`'s
+    introduction item does that and passes no `sources` at all. What is not
+    optional is the links: a panel with neither is a panel making claims a
+    reader has to take on faith.
 
   **The prose here is written by a person, not generated.** The rest of the
   site is quotation, which is checkable; this panel is the one place that is
@@ -67,10 +73,10 @@
    * panel explaining what a vote would change wants its own name.
    */
   let {
-    sources,
+    sources = [],
     heading = "Background",
     children,
-  }: { sources: Source[]; heading?: string; children: Snippet } = $props()
+  }: { sources?: Source[]; heading?: string; children: Snippet } = $props()
 
   const id = $props.id()
 </script>
@@ -85,16 +91,20 @@
     {@render children()}
   </div>
 
-  <h3 class="mt-4 text-xs font-semibold tracking-wide text-slate-500 uppercase">Sources</h3>
+  <!-- No heading over an empty list: a panel that links its facts inline has
+       no footed sources, and "Sources" over nothing reads as an omission. -->
+  {#if sources.length}
+    <h3 class="mt-4 text-xs font-semibold tracking-wide text-slate-500 uppercase">Sources</h3>
 
-  <ul class="mt-1 space-y-1">
-    {#each sources as source (source.url)}
-      <li>
-        <a href={source.url} target="_blank" rel="external noopener noreferrer">
-          {source.title}<span class="sr-only">, opens in a new tab</span>
-        </a>
-        <span class="text-slate-500">&mdash; {source.publisher}, {source.date}</span>
-      </li>
-    {/each}
-  </ul>
+    <ul class="mt-1 space-y-1">
+      {#each sources as source (source.url)}
+        <li>
+          <a href={source.url} target="_blank" rel="external noopener noreferrer">
+            {source.title}<span class="sr-only">, opens in a new tab</span>
+          </a>
+          <span class="text-slate-500">&mdash; {source.publisher}, {source.date}</span>
+        </li>
+      {/each}
+    </ul>
+  {/if}
 </aside>
