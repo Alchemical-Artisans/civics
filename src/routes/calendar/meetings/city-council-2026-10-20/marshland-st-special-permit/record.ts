@@ -123,7 +123,7 @@ export const CONCERNS: Concern[] = [
     subject: "Driveway spacing and front-yard coverage",
     raised: [
       {
-        source: "Lisa Demeo, Engineering Department, July 24, 2026",
+        source: "Lisa E. DeMeo, P.E., City Engineer, July 24, 2026",
         href: REVIEWS,
         quotes: [
           "The alignment of the townhouses, and subsequent driveways is prohibited by Section 6.1.11.3. The proposed driveways take almost 100% of the front yard. Per code they cannot exceed 50% of the front yard,",
@@ -145,7 +145,7 @@ export const CONCERNS: Concern[] = [
     subject: "On-street parking",
     raised: [
       {
-        source: "Lisa Demeo, Engineering Department, July 24, 2026",
+        source: "Lisa E. DeMeo, P.E., City Engineer, July 24, 2026",
         href: REVIEWS,
         quotes: ["The proposed driveways are taking on street parking away from all abutters."],
       },
@@ -165,7 +165,7 @@ export const CONCERNS: Concern[] = [
     subject: "Stormwater",
     raised: [
       {
-        source: "Robert Moore, Storm Water Review, July 21, 2026",
+        source: "Robert E. Moore, Jr., Storm Water Review, July 21, 2026",
         href: REVIEWS,
         quotes: [
           "Could you please provide a civil plan demonstrating compliance with the design standards found under C. 255, s. 6.3.3. I particularly review for compliance with 6.3.3.3, .4, and .5.",
@@ -237,7 +237,7 @@ export const CONCERNS: Concern[] = [
     subject: "Utilities and service connections",
     raised: [
       {
-        source: "Lisa Demeo, Engineering Department, July 24, 2026",
+        source: "Lisa E. DeMeo, P.E., City Engineer, July 24, 2026",
         href: REVIEWS,
         quotes: [
           "Utilities are not shown. Separate sewer and water service connections are required for each unit.",
