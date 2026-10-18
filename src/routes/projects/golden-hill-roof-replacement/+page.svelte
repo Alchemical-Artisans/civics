@@ -23,26 +23,21 @@
   import AddressMap from "$lib/AddressMap.svelte"
   import ProjectTimeline from "$lib/ProjectTimeline.svelte"
   import { PROJECTS, type Project } from "$lib/projects"
-  import { Router } from "$lib/router"
   import FigureCards from "./FigureCards.svelte"
-  import { APPROPRIATION, SCHOOL, SHARES } from "./roof"
+  import { APPROPRIATION, SCHOOL, SCHOOLS_LETTER, SHARES } from "./roof"
 
   let { data } = $props()
 
   const PROJECT = PROJECTS.find((p) => p.slug === "golden-hill-roof-replacement") as Project
 
-  const MEETING = "city-council-2026-10-20"
-  const ITEM = "golden-hill-roof-replacement-bonds"
-
   /**
-   * The letter both quotations are from, as the city filed it. A quotation
-   * here cites the document rather than this site's transcription of it: the
-   * reader who follows a quotation is checking it, and what settles it is the
-   * paper the city sent, over the writer's own signature.
+   * Who wrote the letter both quotations are from, as the letterhead and the
+   * signature give them. A quotation here cites the document rather than this
+   * site's transcription of it: the reader who follows one is checking it,
+   * and what settles it is the paper the city sent, over the writer's own
+   * signature. `SCHOOLS_LETTER` is that file, named in `roof.ts` because the
+   * financing cards link it too.
    */
-  const SCHOOLS_LETTER = Router.excerpt(MEETING, `${ITEM}/schools-letter`)
-
-  /** Who wrote it, as the letterhead and the signature give them. */
   const WRITER = "Clancy Main, Chief Financial Officer, Haverhill Public Schools"
 </script>
 

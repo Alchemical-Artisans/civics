@@ -15,6 +15,19 @@
  * letter puts in front of it.
  */
 
+import { Router } from "$lib/router"
+
+const MEETING = "city-council-2026-10-20"
+const ITEM = "golden-hill-roof-replacement-bonds"
+
+/**
+ * The Schools' Chief Financial Officer's letter of 15 October 2026, as the
+ * city filed it with the order. Both quotations on the project page come from
+ * it, and both financing figures are read off it, so it is named once here
+ * rather than built again by every page that points at it.
+ */
+export const SCHOOLS_LETTER = Router.excerpt(MEETING, `${ITEM}/schools-letter`)
+
 /** One figure, as a card draws it. */
 export interface Figure {
   /**
@@ -35,6 +48,13 @@ export interface Figure {
   value: string
   /** What the document qualifies it with, in the document's own words. */
   note: string
+  /**
+   * The file the figure is read off, which the whole card links to. A figure
+   * stated on a page of its own, away from the document it comes from, has to
+   * carry the way back to it: the card is how a reader meets the number, so
+   * the card is what has to be the citation.
+   */
+  href: string
 }
 
 /**
@@ -69,11 +89,13 @@ export const SHARES: Figure[] = [
     label: "MSBA reimbursement",
     value: "up to 77.47%",
     note: "a non-entitlement, discretionary program based on need, as determined by the MSBA",
+    href: SCHOOLS_LETTER,
   },
   {
     label: "The city's share",
     value: "$803,000",
     note: "a projection, subject to final eligible project costs and MSBA approval; project costs in excess of any grant are the sole responsibility of the City",
+    href: SCHOOLS_LETTER,
   },
 ]
 
