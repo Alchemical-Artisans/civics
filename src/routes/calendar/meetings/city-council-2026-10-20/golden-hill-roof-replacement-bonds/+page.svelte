@@ -3,10 +3,9 @@
   import { Router } from "$lib/router"
   // The project's own module, the way the election warrant's write-up reads
   // the warrant's polling places out of `2026-state-election/election.ts`:
-  // the figures and the school's point are stated once, so this page and the
-  // project's cannot come to disagree about either.
-  import FigureCards from "../../../../projects/golden-hill-roof-replacement/FigureCards.svelte"
-  import { COST, SCHOOL } from "../../../../projects/golden-hill-roof-replacement/roof"
+  // the school's point is stated once, so the map here and the map on the
+  // project's page cannot come to show different buildings.
+  import { SCHOOL } from "../../../../projects/golden-hill-roof-replacement/roof"
 
   const MEETING = "city-council-2026-10-20"
   const ITEM = "golden-hill-roof-replacement-bonds"
@@ -22,33 +21,28 @@
 <hr />
 
 <!--
-  The reading on the left, how much and where in a column beside it -- the
-  shape the Marshland Street permit uses, and for the same reason: the sum and
-  the school's place are what the item is about rather than part of what the
-  Council is voting, and set above the order they pushed its first clause off
-  the screen while leaving a column of nothing next to it.
+  The reading on the left, where the school is in a column beside it -- the
+  shape the Marshland Street permit uses, and for the same reason: the place
+  is what the item is about rather than part of what the Council is voting,
+  and set above the order it pushed the first clause off the screen while
+  leaving a column of nothing next to it.
 
   The order's text keeps the site's reading measure instead of taking half of
   a wide page, so the left column is capped at 48rem and the rail takes
   whatever the window has left. Stacked below `lg` the rail comes first, which
-  is why it is first in the markup and placed into the second column by hand:
-  on a phone the figure belongs above eight hundred words of legal clause, not
-  after them.
+  is why it is first in the markup and placed into the second column by hand.
 -->
 <div class="grid gap-x-8 lg:grid-cols-[minmax(0,48rem)_minmax(0,1fr)]">
   <aside class="lg:col-start-2 lg:row-start-1">
     <!--
-      How much, before the eight hundred words that say it once in the middle
-      of a clause. The order writes the sum out in words and then in figures, a
-      third of the way into a single sentence running the length of the page,
-      and the two letters each state their own figures somewhere in their own
-      prose: what the roof costs and what the city is left paying are the
-      hardest things on the page to find. The cards are those figures and
-      nothing else -- the clauses they come from are transcribed beside them
-      like everything else.
+      The school, and nothing else. What the roof costs and what the city is
+      left paying were cards here while this item was the only page the roof
+      had; they are the project's now, where January's appropriation and the
+      publication date sit with them, and a second set of them above a
+      transcription would be the same figures in two places, free to drift.
+      What a reader of the order still wants beside it is where the building
+      is.
     -->
-    <FigureCards figures={COST} class="mb-4 lg:mt-4" />
-
     <AddressMap address={SCHOOL.address} lat={SCHOOL.lat} lon={SCHOOL.lon} />
   </aside>
 
