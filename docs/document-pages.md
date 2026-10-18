@@ -107,7 +107,10 @@ Everything it writes is under `.cache/`, which is gitignored and disposable.
 
    `details.highlights` lists the agenda items worth reading before the full
    outline, each as an item plus the evidence for it rather than a sentence;
-   the layout draws them in a "Highlights" section above the agenda. Whether
+   the layout draws them in a "Highlights" section above the agenda, each as
+   its title alone, linked -- the evidence is recorded in the source so the
+   choice can be checked, and shown to a reader by the item's own page, which
+   sets it out in the record's own words. Whether
    something qualifies is judged at transcription time, by the tests in
    `scripts/prompts/transcribe-meeting.md` (§11) -- today, that the matter was
    discussed at length at earlier sittings (`discussed-before`), or that

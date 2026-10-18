@@ -805,12 +805,15 @@ when nothing qualifies, which is the usual case for most boards.
 
 A highlight is **data, not prose**: an item (its directory name, its title as
 its own page gives it, and its agenda number) and one or more `reasons`. The
-layout words each kind of reason itself, so write no sentence of your own and
-do not call anything a highlight on a hunch. Each reason must be backed by a
-test below, and the evidence it names must be something you actually read.
+section draws the title alone, linked -- the item's own page is where the
+evidence is set out, in the record's own words -- so write no sentence of your
+own anywhere, and do not call anything a highlight on a hunch. `reasons` is
+written down all the same: it is what makes the choice checkable against the
+documents by whoever reads the source later. Each must be backed by a test
+below, and the evidence it names must be something you actually read.
 
 The tests so far -- there will be more, and each is a new `kind` in
-`HighlightReason` plus a wording in `meetings/+layout.svelte`:
+`HighlightReason`:
 
 - **`discussed-before`** -- the matter was discussed at length at an earlier
   sitting, which makes the sitting taking it up now likely to matter. §6's
@@ -830,7 +833,7 @@ The tests so far -- there will be more, and each is a new `kind` in
   a question, a request to be notified, or a department's review is not
   opposition. Cite the letter and nothing beyond it -- a single writer
   reporting that a street is against a project is evidence of the letter, not
-  of the street, and the layout's wording says only that it was written. Each
+  of the street. Each
   entry is the sitting whose packet carries the letter, the excerpt committed
   for it, and the writer and date as the document signs itself; the packet is
   often an earlier sitting's, where a hearing has been continued.

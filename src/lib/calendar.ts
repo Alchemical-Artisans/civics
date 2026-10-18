@@ -402,13 +402,13 @@ export interface MeetingDetails {
   notice?: string[]
   /**
    * The items on this sitting's agenda worth a reader's attention first, shown
-   * in a section above the agenda itself.
+   * in a section above the agenda itself -- each one its own title, linked.
    *
-   * Decided by whoever writes the sitting up (the transcribe prompt's §13 says
+   * Decided by whoever writes the sitting up (the transcribe prompt's §11 says
    * how), because it is a judgement about the record rather than a field in it,
    * and recorded here as data -- an item and the evidence for it -- so the page
-   * writes none of its own prose: the layout words each kind of reason once.
-   * Empty or absent when nothing met a test below, which is the usual case.
+   * writes none of its own prose. Empty or absent when nothing met a test
+   * below, which is the usual case.
    */
   highlights?: Highlight[]
 }
@@ -421,13 +421,23 @@ export interface Highlight {
   title: string
   /** The agenda's number for it, as printed, e.g. `"16.2"`. */
   number?: string
-  /** At least one; an item with several is highlighted for each. */
+  /**
+   * At least one; an item with several is highlighted for each.
+   *
+   * **Recorded rather than drawn.** The section shows the item's title and
+   * nothing else: a line under it saying why repeated what the item's own page
+   * already sets out at length and in the record's own words. What this field
+   * is for is the discipline -- an item is highlighted because a test below
+   * was met and the evidence for it written down, where a reader of the source
+   * can check it against the documents, rather than because somebody thought
+   * the item looked interesting.
+   */
   reasons: HighlightReason[]
 }
 
 /**
- * Why an item is a highlight. A union so a new test is a new `kind` here and a
- * new wording in the layout, and none of the existing write-ups change.
+ * Why an item is a highlight. A union so a new test is a new `kind` here and
+ * none of the existing write-ups change.
  *
  * - `discussed-before`: the matter came up at length at earlier sittings, so
  *   the sitting taking it up now is likely to be significant. "At length" is
@@ -439,8 +449,7 @@ export interface Highlight {
  *   sitting that takes it up one a reader has reason to see coming. What is
  *   cited is the letter itself, never a count of who opposes: a writer
  *   reporting that a neighbourhood is against a project is evidence of the
- *   letter, not of the neighbourhood, and the layout's wording says only what
- *   the letter is.
+ *   letter, not of the neighbourhood.
  */
 export type HighlightReason =
   | {
@@ -453,10 +462,10 @@ export type HighlightReason =
       /**
        * The communications, each one an excerpt committed under
        * `static/excerpts/`: `meeting` and `excerpt` are `Router.excerpt`'s two
-       * arguments, so a write-up names the document and the layout builds the
-       * URL, the same division by which it words the reason. The packet a
-       * letter is in is often an earlier sitting's, which is why the meeting
-       * is named rather than assumed to be this one.
+       * arguments, so the letter cited here is the one file a reader of this
+       * source can open and check. The packet a letter is in is often an
+       * earlier sitting's, which is why the meeting is named rather than
+       * assumed to be this one.
        */
       letters: {
         /** The sitting whose packet carries it. */
