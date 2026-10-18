@@ -20,11 +20,11 @@
   own file.
 -->
 <script lang="ts">
+  import type { Snippet } from "svelte"
   import AddressMap from "$lib/AddressMap.svelte"
   import ProjectTimeline from "$lib/ProjectTimeline.svelte"
   import { PROJECTS, type Project } from "$lib/projects"
-  import FigureCards from "./FigureCards.svelte"
-  import { APPROPRIATION, SCHOOL, SCHOOLS_LETTER, SHARES } from "./roof"
+  import { APPROPRIATION, SCHOOL, SCHOOLS_LETTER } from "./roof"
 
   let { data } = $props()
 
@@ -55,11 +55,28 @@
   without the letter's date or a sentence introducing it -- a reader following
   a quotation wants to see who said it and then the page they said it on, and
   the rest of the apparatus was this site talking over the person quoted.
+
+  The words come in as a snippet rather than a string because the letter sets
+  one of its figures in bold, and a transcription keeps what the document
+  does.
 -->
-{#snippet passage(quote: string)}
+{#snippet theRoof()}
+  The existing roof has exceeded its useful life and has experienced ongoing leaks and water
+  infiltration. The roof replacement is necessary to address these conditions, protect the building,
+  and prevent further deterioration.
+{/snippet}
+
+<!-- The bold is the letter's own, on this figure and on nothing else in it. -->
+{#snippet theFinancing()}
+  The City is eligible for an anticipated reimbursement rate of 77.47%, which would result in a
+  projected local contribution of approximately <strong>$803,000</strong>, subject to final eligible
+  project costs and MSBA approval.
+{/snippet}
+
+{#snippet passage(words: Snippet)}
   <figure class="mt-3">
     <blockquote class="border-l-4 border-slate-200 pl-4 text-slate-800">
-      <p>{quote}</p>
+      <p>{@render words()}</p>
     </blockquote>
     <figcaption class="mt-2 pl-4 text-sm text-slate-600">
       <a
@@ -92,9 +109,7 @@
            a quotation is after. -->
       <section aria-labelledby="the-roof">
         <h2 id="the-roof" class="text-lg font-semibold text-slate-900">The roof</h2>
-        {@render passage(
-          "The existing roof has exceeded its useful life and has experienced ongoing leaks and water infiltration. The roof replacement is necessary to address these conditions, protect the building, and prevent further deterioration.",
-        )}
+        {@render passage(theRoof)}
       </section>
 
       <!--
@@ -116,14 +131,21 @@
         <h2 id="the-cost" class="text-lg font-semibold text-slate-900">What it costs</h2>
         <p class="mt-2 text-4xl font-bold text-slate-900">{APPROPRIATION}</p>
 
-        <!-- The state's part, under a heading that says once what each card
-             would otherwise have to say for itself: nothing here has been
-             granted. -->
+        <!--
+          The state's part: the one sentence of the letter that states the
+          rate, what it would leave the city paying, and what both depend on.
+
+          It was two cards, a rate and a share, with the letter's
+          qualifications cut down to fit under them -- which put the site's
+          own words on the one thing here nobody has agreed to yet. The
+          sentence says all of it in the Schools' own voice, and the heading
+          over it keeps the condition where a reader cannot miss it.
+        -->
         <section aria-labelledby="msba" class="mt-6">
           <h3 id="msba" class="text-base font-semibold text-slate-900">
             MSBA financing <span class="font-normal text-slate-600">(if approved)</span>
           </h3>
-          <FigureCards figures={SHARES} class="mt-3 sm:flex-row" />
+          {@render passage(theFinancing)}
         </section>
       </section>
     </div>
