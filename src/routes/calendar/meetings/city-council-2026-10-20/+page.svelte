@@ -1,5 +1,6 @@
 <script lang="ts">
   import { Router } from "$lib/router"
+  import { agendaHref } from "$lib/projects"
 
   /** This page's own directory name, which is the document's id. */
   const MEETING = "city-council-2026-10-20"
@@ -24,7 +25,7 @@
   </li>
   <li>
     <strong>5.2</strong>
-    <a href={Router.meetingItem(MEETING, "golden-hill-roof-replacement-bonds")}>
+    <a href={agendaHref(MEETING, "golden-hill-roof-replacement-bonds")}>
       Golden Hill Elementary School Roof Replacement Bonds
     </a>
   </li>

@@ -194,6 +194,47 @@ export const PROJECTS: Project[] = [
       },
     ],
   },
+  {
+    slug: "golden-hill-roof-replacement",
+    title: "Golden Hill Roof Replacement",
+    kind: "initiative",
+    entries: [
+      // January's appropriation is a date rather than an item: the Council
+      // met and voted it, but nobody has written that sitting up, so there is
+      // no page for an item entry to link. The order of 20 October is where
+      // the city says it happened and what it was for, which is what `from`
+      // names. Writing 13 January up turns this into an ordinary item entry.
+      {
+        kind: "date",
+        date: "2026-01-13",
+        title: "$300,000 appropriated for feasibility study and schematic design costs",
+        from: {
+          meeting: "city-council-2026-10-20",
+          item: "golden-hill-roof-replacement-bonds",
+        },
+      },
+      {
+        kind: "item",
+        meeting: "city-council-2026-10-20",
+        item: "golden-hill-roof-replacement-bonds",
+        board: "City Council",
+        number: "5.2",
+        title: "Order to authorize borrowing",
+      },
+      // The Clerk placed this with the Gazette on 16 October and the paper
+      // scheduled it for the 22nd, both off the confirmation in the packet.
+      // The publication is the date a reader can act on, so it is the entry.
+      {
+        kind: "date",
+        date: "2026-10-22",
+        title: "The order published in the Haverhill Gazette's public notices",
+        from: {
+          meeting: "city-council-2026-10-20",
+          item: "golden-hill-roof-replacement-bonds",
+        },
+      },
+    ],
+  },
 ]
 
 /** The date an entry falls on: a sitting's is the tail of its meeting id. */
