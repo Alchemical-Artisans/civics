@@ -18,16 +18,24 @@
   let { figures, class: className = "" }: { figures: Figure[]; class?: string } = $props()
 </script>
 
-<div class="not-prose flex flex-col gap-3 {className}">
+<!--
+  A `<dl>`: each card is a term and what the documents say about it, which is
+  what a description list is for and what three `<span>`s in a box only looked
+  like. A `<div>` grouping a `<dt>` with its `<dd>` is allowed inside one, and
+  is what lets each pair be a card.
+-->
+<dl class="not-prose flex flex-col gap-3 {className}">
   {#each figures as figure (figure.label)}
     <!-- `flex-1` so that a row of them divides the width evenly: the labels
          and the notes are of very different lengths, and cards sized to
          their own text make three figures of one kind look like three
          unrelated things. -->
     <div class="flex min-w-0 flex-1 flex-col gap-1 rounded-lg border border-slate-200 px-5 py-4">
-      <span class="text-xs font-medium text-slate-500">{figure.label}</span>
-      <span class="text-3xl font-bold text-slate-900">{figure.value}</span>
-      <span class="text-xs text-slate-500">{figure.note}</span>
+      <dt class="text-xs font-medium text-slate-500">{figure.label}</dt>
+      <dd class="flex flex-col gap-1">
+        <span class="text-3xl font-bold text-slate-900">{figure.value}</span>
+        <span class="text-xs text-slate-500">{figure.note}</span>
+      </dd>
     </div>
   {/each}
-</div>
+</dl>

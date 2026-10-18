@@ -23,11 +23,12 @@ export interface Figure {
    * what the document is saying, and nothing is claimed in it that the
    * `value` and `note` below do not say in the document's own words.
    *
-   * **A condition belongs in the label**, not only in the small type under
-   * the figure. A card is read as a settled fact, and two of these are not
-   * settled at all: no grant has been approved, and the figure that depends
-   * on one is a projection. A reader who takes in the label and the figure
-   * and nothing else should still have been told that.
+   * **A condition has to be somewhere a reader cannot miss it**, not only in
+   * the small type under the figure: a card is read as a settled fact, and
+   * the two below are not settled at all -- no grant has been approved, and
+   * the figure that depends on one is a projection. Where a whole set of them
+   * shares the condition it goes in the heading over them, which is why
+   * neither of these labels carries it.
    */
   label: string
   /** The figure exactly as the document prints it. */
@@ -37,33 +38,40 @@ export interface Figure {
 }
 
 /**
- * What the roof costs and who pays for it: the order's appropriation, then
- * the two figures the Schools' Chief Financial Officer gives for how much of
- * it the city expects to carry itself.
+ * What the roof costs: the sum the order appropriates, and nothing beside it.
  *
- * **Only the first of the three is settled.** The city is borrowing
- * $3,564,770; the other two cards say what it hopes to get back and what it
- * expects to be left with, and nothing has been granted. The order is blunt
- * about it -- the program is discretionary, a grant is capped at the lesser
- * of 77.47% and whatever the MSBA decides, and anything the grant does not
- * cover is the city's -- and the letter projects the $803,000 subject to
- * costs not yet final and an approval not yet given. So the reimbursement is
- * "up to", both labels carry their condition, and the order's own sentence
- * about who pays the rest is under the third.
+ * It is the one figure here that is settled, and it is stated bare -- no
+ * label of ours, no caveat, no note that $300,000 of it was voted in January.
+ * All of that is true and all of it is in the order, which this project's
+ * page links twice over; none of it is what a reader asking what the roof
+ * costs is asking. The two figures below are a different question -- how much
+ * of this the city expects to carry -- and neither is settled at all.
  */
-export const COST: Figure[] = [
+export const APPROPRIATION = "$3,564,770"
+
+/**
+ * How much of it the city expects to carry: what the Schools' Chief Financial
+ * Officer gives for the state's share and for what would be left.
+ *
+ * **Neither is settled.** Nothing has been granted. The order is blunt about
+ * it -- the program is discretionary, a grant is capped at the lesser of
+ * 77.47% and whatever the MSBA decides, and anything the grant does not cover
+ * is the city's -- and the letter projects the $803,000 subject to costs not
+ * yet final and an approval not yet given. So the reimbursement is "up to",
+ * and the order's own sentence about who pays the rest is under the second.
+ *
+ * The condition itself is the subsection's heading -- "MSBA financing (if
+ * approved)" -- rather than a clause on each label, which said it twice under
+ * a heading that had just said it once.
+ */
+export const SHARES: Figure[] = [
   {
-    label: "Appropriation",
-    value: "$3,564,770",
-    note: "borrowed, including $300,000 already appropriated January 13, 2026",
-  },
-  {
-    label: "MSBA reimbursement, if approved",
+    label: "MSBA reimbursement",
     value: "up to 77.47%",
     note: "a non-entitlement, discretionary program based on need, as determined by the MSBA",
   },
   {
-    label: "The city's share, if approved",
+    label: "The city's share",
     value: "$803,000",
     note: "a projection, subject to final eligible project costs and MSBA approval; project costs in excess of any grant are the sole responsibility of the City",
   },

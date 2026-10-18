@@ -25,7 +25,7 @@
   import { PROJECTS, type Project } from "$lib/projects"
   import { Router } from "$lib/router"
   import FigureCards from "./FigureCards.svelte"
-  import { COST, SCHOOL } from "./roof"
+  import { APPROPRIATION, SCHOOL, SHARES } from "./roof"
 
   let { data } = $props()
 
@@ -79,7 +79,10 @@
   </figure>
 {/snippet}
 
-<div class="mx-auto max-w-6xl px-4 py-8">
+<!-- An `<article>`: the page is one undertaking followed from end to end, and
+     what is in it belongs to that and to nothing else on the site. Its
+     `<header>` names it, and the rail beside the reading is its `<aside>`. -->
+<article class="mx-auto max-w-6xl px-4 py-8">
   <header class="mb-6 border-b border-slate-200 pb-6">
     <p class="text-sm text-slate-500">Project</p>
     <h1 class="text-2xl font-bold tracking-tight text-slate-900">{PROJECT.title}</h1>
@@ -99,15 +102,34 @@
         )}
       </section>
 
-      <!-- What it costs and who pays, as three cards and nothing else. The
-           Schools' own sentence putting the three together was quoted under
-           them and said the same thing a second time, at greater length; what
-           it qualified each figure with is on the card it qualifies, which is
-           where a reader meets the figure. `roof.ts` says why two of the
-           three are conditions rather than facts. -->
+      <!--
+        What it costs, then who is expected to pay it.
+
+        The appropriation has a row to itself and is stated bare: it is the
+        one settled figure on the page, and the heading over it is the whole
+        of what it needs saying about it. It was a card among three, which
+        made the sum the city is actually borrowing one of a set of three
+        equal-looking numbers, two of which nobody has granted.
+
+        The Schools' own sentence putting the figures together was quoted
+        under them and said the same thing a second time, at greater length;
+        what it qualified each figure with is on the card it qualifies, which
+        is where a reader meets the figure. `roof.ts` says why both of those
+        are conditions rather than facts.
+      -->
       <section aria-labelledby="the-cost" class="mt-8">
         <h2 id="the-cost" class="text-lg font-semibold text-slate-900">What it costs</h2>
-        <FigureCards figures={COST} class="mt-3 sm:flex-row" />
+        <p class="mt-2 text-4xl font-bold text-slate-900">{APPROPRIATION}</p>
+
+        <!-- The state's part, under a heading that says once what each card
+             would otherwise have to say for itself: nothing here has been
+             granted. -->
+        <section aria-labelledby="msba" class="mt-6">
+          <h3 id="msba" class="text-base font-semibold text-slate-900">
+            MSBA financing <span class="font-normal text-slate-600">(if approved)</span>
+          </h3>
+          <FigureCards figures={SHARES} class="mt-3 sm:flex-row" />
+        </section>
       </section>
     </div>
 
@@ -122,7 +144,7 @@
       The point is `roof.ts`'s, the same one the loan order's write-up draws,
       so the two maps cannot come to show different buildings.
     -->
-    <div>
+    <aside aria-label="Where the school is, and what has happened so far">
       <AddressMap address={SCHOOL.address} lat={SCHOOL.lat} lon={SCHOOL.lon} />
 
       <!-- Three steps, one of them behind the reader: nothing worth folding,
@@ -130,6 +152,6 @@
            project is. The Infrastructure Risk Assessment's two are turned off
            for the same reason. -->
       <ProjectTimeline project={PROJECT} today={data.today} fold={false} />
-    </div>
+    </aside>
   </div>
-</div>
+</article>
