@@ -434,12 +434,39 @@ export interface Highlight {
  *   what the minutes of those sittings show -- the item has a section of its
  *   own and a discussion recorded in it, not a bare mention or a referral --
  *   which is read from the minutes, never inferred from the subject.
+ * - `opposition-on-record`: somebody the matter would affect has written to
+ *   the Council against it and the letter is in the record, which makes the
+ *   sitting that takes it up one a reader has reason to see coming. What is
+ *   cited is the letter itself, never a count of who opposes: a writer
+ *   reporting that a neighbourhood is against a project is evidence of the
+ *   letter, not of the neighbourhood, and the layout's wording says only what
+ *   the letter is.
  */
-export type HighlightReason = {
-  kind: "discussed-before"
-  /** The earlier sittings, each by meeting id and the label the minutes give it. */
-  meetings: { id: string; label: string }[]
-}
+export type HighlightReason =
+  | {
+      kind: "discussed-before"
+      /** The earlier sittings, each by meeting id and the label the minutes give it. */
+      meetings: { id: string; label: string }[]
+    }
+  | {
+      kind: "opposition-on-record"
+      /**
+       * The communications, each one an excerpt committed under
+       * `static/excerpts/`: `meeting` and `excerpt` are `Router.excerpt`'s two
+       * arguments, so a write-up names the document and the layout builds the
+       * URL, the same division by which it words the reason. The packet a
+       * letter is in is often an earlier sitting's, which is why the meeting
+       * is named rather than assumed to be this one.
+       */
+      letters: {
+        /** The sitting whose packet carries it. */
+        meeting: string
+        /** The excerpt's name under that sitting, `<item>/<file>`. */
+        excerpt: string
+        /** Who wrote it and when, as the document itself signs and dates it. */
+        source: string
+      }[]
+    }
 
 /**
  * Where a sitting can be watched live: Haverhill Community Television's

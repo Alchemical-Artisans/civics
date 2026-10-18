@@ -109,8 +109,10 @@ Everything it writes is under `.cache/`, which is gitignored and disposable.
    outline, each as an item plus the evidence for it rather than a sentence;
    the layout draws them in a "Highlights" section above the agenda. Whether
    something qualifies is judged at transcription time, by the tests in
-   `scripts/prompts/transcribe-meeting.md` (§10) -- today, that the matter was
-   discussed at length at earlier sittings.
+   `scripts/prompts/transcribe-meeting.md` (§11) -- today, that the matter was
+   discussed at length at earlier sittings (`discussed-before`), or that
+   somebody it would affect has written to the Council against it and the
+   letter is in a packet (`opposition-on-record`).
 
    Every field is optional, and the file itself is optional — skip it for a set
    of minutes that states none of this. `name` is shown and should be verbatim;

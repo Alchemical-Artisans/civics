@@ -822,10 +822,27 @@ The tests so far -- there will be more, and each is a new `kind` in
   referred to a committee and never taken up is not highlighted. List only the
   sittings where that was true, with the label the minutes title themselves by.
 
-Because this depends on the earlier minutes, do the §6 search for every
-ordinance, order and study on the agenda before deciding, not only for items
-you would have looked up anyway. Where the earlier minutes cannot be found or
-read, say so in your report rather than highlighting on a guess.
+- **`opposition-on-record`** -- somebody the matter would affect has written
+  to the Council against it, and the letter is in a packet. A hearing the
+  neighbourhood has already objected to in writing is one a reader has reason
+  to see coming, and the objection is often the only word in the record that
+  is not the applicant's or a department's. The letter has to say it opposes:
+  a question, a request to be notified, or a department's review is not
+  opposition. Cite the letter and nothing beyond it -- a single writer
+  reporting that a street is against a project is evidence of the letter, not
+  of the street, and the layout's wording says only that it was written. Each
+  entry is the sitting whose packet carries the letter, the excerpt committed
+  for it, and the writer and date as the document signs itself; the packet is
+  often an earlier sitting's, where a hearing has been continued.
+
+Because `discussed-before` depends on the earlier minutes, do the §6 search for
+every ordinance, order and study on the agenda before deciding, not only for
+items you would have looked up anyway. Where the earlier minutes cannot be
+found or read, say so in your report rather than highlighting on a guess.
+Correspondence for `opposition-on-record` is in the packet you already read, so
+there is nothing extra to fetch -- but read the letters, since a packet's
+correspondence is as often a department's review or an abutter's question as
+an objection.
 
 ## 12. The rules that bite
 

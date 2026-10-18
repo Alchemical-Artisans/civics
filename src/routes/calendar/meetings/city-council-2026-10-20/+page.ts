@@ -3,6 +3,33 @@ import type { PageLoad } from "./$types"
 export const load: PageLoad = () => ({
   details: {
     time: "7:00 PM",
+    // 10.1 is the only item tonight anybody has written to the Council
+    // against: a Marshland Street owner told the Council Office in September
+    // that the neighbourhood opposes the project, and the hearing has been
+    // continued twice since without being heard, so the objection is still
+    // the only word from the street in the record. The letter is in the 6
+    // October packet rather than tonight's, which is why it names that
+    // sitting.
+    highlights: [
+      {
+        item: "marshland-st-special-permit",
+        title: "Special Permit, 27 Marshland St",
+        number: "10.1",
+        reasons: [
+          {
+            kind: "opposition-on-record",
+            letters: [
+              {
+                meeting: "city-council-2026-10-06",
+                excerpt: "marshland-st-special-permit/neighbourhood-communication",
+                source:
+                  "Lori A. Robertson, Administrative Assistant, Haverhill City Council, September 14, 2026",
+              },
+            ],
+          },
+        ],
+      },
+    ],
     location: {
       name: "Theodore A. Pelosi, Jr. Council Chambers, 4 Summer St, Room 202",
       mapQuery: "4 Summer Street, Haverhill, MA 01830",

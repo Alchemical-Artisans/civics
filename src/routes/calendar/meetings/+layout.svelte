@@ -104,6 +104,15 @@
         : `${meeting.board} meeting on ${when}${documentKinds ? `. Published: ${documentKinds}` : ""}.`,
   )
 
+  /**
+   * What goes between two pieces of evidence for the same highlight reason.
+   * A constant rather than `{" "}&middot;{" "}` written inline: prettier will
+   * not leave the spaces around the dot as bare text, and the mustaches it
+   * needs instead are string literals, which `svelte/no-useless-mustaches`
+   * objects to.
+   */
+  const BETWEEN = " \u00b7 "
+
   const kindLabel = (kind: MeetingDocument["kind"]) =>
     kind === "agenda"
       ? "Agenda"
@@ -419,16 +428,30 @@
               class="font-medium text-slate-900 underline hover:text-slate-700"
               href={Router.meetingItem(meeting.id, highlight.item)}
             >
-              {#if highlight.number}{highlight.number}{" "}{/if}{highlight.title}
+              {highlight.number ? `${highlight.number} ` : ""}{highlight.title}
             </a>
             {#each highlight.reasons as reason, i (i)}
               {#if reason.kind === "discussed-before"}
                 <p class="mt-0.5 text-sm text-slate-700">
                   Discussed at length at an earlier meeting:
                   {#each reason.meetings as earlier, j (earlier.id)}
-                    {#if j > 0}{" "}&middot;{" "}{/if}<a
+                    {#if j > 0}{BETWEEN}{/if}<a
                       class="underline hover:text-slate-900"
                       href={Router.meeting(earlier.id)}>{earlier.label}</a
+                    >
+                  {/each}
+                </p>
+              {/if}
+              {#if reason.kind === "opposition-on-record"}
+                <p class="mt-0.5 text-sm text-slate-700">
+                  Written against it, on the Council's own record:
+                  {#each reason.letters as letter, j (letter.excerpt)}
+                    {#if j > 0}{BETWEEN}{/if}<a
+                      class="underline hover:text-slate-900"
+                      href={Router.excerpt(letter.meeting, letter.excerpt)}
+                      target="_blank"
+                      rel="noopener"
+                      >{letter.source}<span class="sr-only">, PDF, opens in a new tab</span></a
                     >
                   {/each}
                 </p>
