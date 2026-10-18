@@ -20,7 +20,11 @@
 
 <div class="not-prose flex flex-col gap-3 {className}">
   {#each figures as figure (figure.label)}
-    <div class="flex flex-col gap-1 rounded-lg border border-slate-200 px-5 py-4">
+    <!-- `flex-1` so that a row of them divides the width evenly: the labels
+         and the notes are of very different lengths, and cards sized to
+         their own text make three figures of one kind look like three
+         unrelated things. -->
+    <div class="flex min-w-0 flex-1 flex-col gap-1 rounded-lg border border-slate-200 px-5 py-4">
       <span class="text-xs font-medium text-slate-500">{figure.label}</span>
       <span class="text-3xl font-bold text-slate-900">{figure.value}</span>
       <span class="text-xs text-slate-500">{figure.note}</span>

@@ -99,30 +99,37 @@
         )}
       </section>
 
-      <!-- What it costs and who pays. The three cards are the figures; the
-           sentence under them is the one place any document puts all three
-           together, which is why it is quoted whole rather than cut up into
-           the cards' own captions. -->
+      <!-- What it costs and who pays, as three cards and nothing else. The
+           Schools' own sentence putting the three together was quoted under
+           them and said the same thing a second time, at greater length; what
+           it qualified each figure with is on the card it qualifies, which is
+           where a reader meets the figure. `roof.ts` says why two of the
+           three are conditions rather than facts. -->
       <section aria-labelledby="the-cost" class="mt-8">
         <h2 id="the-cost" class="text-lg font-semibold text-slate-900">What it costs</h2>
         <FigureCards figures={COST} class="mt-3 sm:flex-row" />
-        {@render passage(
-          "The project is currently in the schematic design phase. The estimated total cost of the roof replacement is $3,564,770, prior to reimbursement from the MSBA. The City is eligible for an anticipated reimbursement rate of 77.47%, which would result in a projected local contribution of approximately $803,000, subject to final eligible project costs and MSBA approval.",
-        )}
-      </section>
-
-      <!-- Where the school is. The same point the order's write-up draws,
-           from `roof.ts`, so the two cannot disagree about the building. -->
-      <section aria-labelledby="the-school" class="mt-8">
-        <h2 id="the-school" class="text-lg font-semibold text-slate-900">The school</h2>
-        <AddressMap address={SCHOOL.address} lat={SCHOOL.lat} lon={SCHOOL.lon} />
       </section>
     </div>
 
-    <!-- Three steps, one of them behind the reader: nothing worth folding,
-         and folding January would leave a timeline looking emptier than the
-         project is. The Infrastructure Risk Assessment's two are turned off
-         for the same reason. -->
-    <ProjectTimeline project={PROJECT} today={data.today} fold={false} />
+    <!--
+      The place and the record, the way the Marshland Street permit's rail
+      carries them: a reader asks where before they ask when, and neither is
+      what the project is about, which is why both sit beside the reading
+      rather than in it. The map takes no heading of its own -- its caption
+      names the school, and the rail is short enough that a title over it
+      would be the loudest thing in the column.
+
+      The point is `roof.ts`'s, the same one the loan order's write-up draws,
+      so the two maps cannot come to show different buildings.
+    -->
+    <div>
+      <AddressMap address={SCHOOL.address} lat={SCHOOL.lat} lon={SCHOOL.lon} />
+
+      <!-- Three steps, one of them behind the reader: nothing worth folding,
+           and folding January would leave a timeline looking emptier than the
+           project is. The Infrastructure Risk Assessment's two are turned off
+           for the same reason. -->
+      <ProjectTimeline project={PROJECT} today={data.today} fold={false} />
+    </div>
   </div>
 </div>

@@ -22,6 +22,12 @@ export interface Figure {
    * sentence and heads it with nothing -- so each is the plainest word for
    * what the document is saying, and nothing is claimed in it that the
    * `value` and `note` below do not say in the document's own words.
+   *
+   * **A condition belongs in the label**, not only in the small type under
+   * the figure. A card is read as a settled fact, and two of these are not
+   * settled at all: no grant has been approved, and the figure that depends
+   * on one is a projection. A reader who takes in the label and the figure
+   * and nothing else should still have been told that.
    */
   label: string
   /** The figure exactly as the document prints it. */
@@ -34,22 +40,32 @@ export interface Figure {
  * What the roof costs and who pays for it: the order's appropriation, then
  * the two figures the Schools' Chief Financial Officer gives for how much of
  * it the city expects to carry itself.
+ *
+ * **Only the first of the three is settled.** The city is borrowing
+ * $3,564,770; the other two cards say what it hopes to get back and what it
+ * expects to be left with, and nothing has been granted. The order is blunt
+ * about it -- the program is discretionary, a grant is capped at the lesser
+ * of 77.47% and whatever the MSBA decides, and anything the grant does not
+ * cover is the city's -- and the letter projects the $803,000 subject to
+ * costs not yet final and an approval not yet given. So the reimbursement is
+ * "up to", both labels carry their condition, and the order's own sentence
+ * about who pays the rest is under the third.
  */
 export const COST: Figure[] = [
   {
     label: "Appropriation",
     value: "$3,564,770",
-    note: "including $300,000 already appropriated January 13, 2026",
+    note: "borrowed, including $300,000 already appropriated January 13, 2026",
   },
   {
-    label: "MSBA reimbursement",
-    value: "77.47%",
-    note: "of eligible, approved project costs, as determined by the MSBA",
+    label: "MSBA reimbursement, if approved",
+    value: "up to 77.47%",
+    note: "a non-entitlement, discretionary program based on need, as determined by the MSBA",
   },
   {
-    label: "The city's share",
+    label: "The city's share, if approved",
     value: "$803,000",
-    note: "a projection, approximate, and subject to final eligible project costs and MSBA approval",
+    note: "a projection, subject to final eligible project costs and MSBA approval; project costs in excess of any grant are the sole responsibility of the City",
   },
 ]
 
