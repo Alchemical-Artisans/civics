@@ -13,6 +13,26 @@
 
 <p class="text-right"><strong>File 10 Days</strong></p>
 
+<!--
+  How much, before the eight hundred words that say it once in the middle of a
+  clause. The order writes the sum out in words and then in figures, a third of
+  the way into a single sentence running the length of the page, and the
+  Mayor's letter and the Schools' letter each state it again somewhere in their
+  own prose: the one number the Council is being asked to vote is the hardest
+  thing on the page to find. The card is the figure and the order's own label
+  for it, in the order's own figures -- nothing here is summarised, and the
+  clause it comes from is transcribed below like everything else.
+-->
+<div class="not-prose my-6">
+  <div class="inline-flex flex-col gap-1 rounded-lg border border-slate-200 px-5 py-4">
+    <span class="text-xs font-medium text-slate-500">Appropriation</span>
+    <span class="text-3xl font-bold text-slate-900">$3,564,770</span>
+    <span class="text-xs text-slate-500">
+      including $300,000 already appropriated January 13, 2026
+    </span>
+  </div>
+</div>
+
 <AddressMap
   address="Golden Hill Elementary School, 140 Boardman Street, Haverhill, MA"
   lat={42.7755343}
