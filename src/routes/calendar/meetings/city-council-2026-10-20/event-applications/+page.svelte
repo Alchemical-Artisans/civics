@@ -1,6 +1,6 @@
 <script lang="ts">
-  import AddressMap from "$lib/AddressMap.svelte"
   import AddToCalendar from "$lib/AddToCalendar.svelte"
+  import PlacesMap from "$lib/PlacesMap.svelte"
   import type { CalendarEvent } from "$lib/ics"
   import { Router } from "$lib/router"
 
@@ -52,9 +52,27 @@
   <AddToCalendar event={bigDogShow} filename="big-dog-show-2026-10-31" />
 </div>
 
-<AddressMap address="143 Essex St, Haverhill, MA" lat={42.775684} lon={-71.0859945} />
-
-<AddressMap address="Bradford Common, Haverhill, MA" lat={42.7673688} lon={-71.0761317} />
+<!-- Both events on one map. They were a map each, which showed each place
+     and hid the thing two places have to say: these are a mile apart on
+     opposite sides of the Merrimack, one downtown and one on the Bradford
+     common. -->
+<PlacesMap
+  title="Where the two events are: Historic New England on Essex Street, and Bradford Common"
+  places={[
+    {
+      name: "143 Essex St, Haverhill, MA",
+      label: "143 Essex St",
+      lat: 42.775684,
+      lon: -71.0859945,
+    },
+    {
+      name: "Bradford Common, Haverhill, MA",
+      label: "Bradford Common",
+      lat: 42.7673688,
+      lon: -71.0761317,
+    },
+  ]}
+/>
 
 <hr />
 
