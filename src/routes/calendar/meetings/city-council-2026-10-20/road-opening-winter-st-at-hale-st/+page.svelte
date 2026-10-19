@@ -1,4 +1,5 @@
 <script lang="ts">
+  import AddressMap from "$lib/AddressMap.svelte"
   import { Router } from "$lib/router"
 
   const MEETING = "city-council-2026-10-20"
@@ -14,6 +15,26 @@
 <ul>
   <li><strong>8.2.1</strong> Order- Approve request to excavate at Winter and Hale St</li>
 </ul>
+
+<!--
+  Where the street is to be opened. A road opening names a place and nothing
+  else -- there is no applicant's plan, no plot, no house number -- so the one
+  thing a reader wants to know about it is which corner of the city the gas
+  valve is under, and "Winter St at Hale St" answers that only for somebody
+  who already knows both streets.
+
+  The point is the junction itself, not an approximation of it: both streets
+  are ways in OpenStreetMap and they share exactly one node, which is the
+  intersection the memo and the order name. That is what §"Mapping an address"
+  asks for -- the place, never the street it sits on -- reached by the one
+  lookup an intersection admits, since geocoding "Winter Street & Hale Street"
+  returns nothing at all.
+-->
+<AddressMap
+  address="Intersection of Winter Street &amp; Hale Street, Haverhill, MA"
+  lat={42.777626}
+  lon={-71.086819}
+/>
 
 <hr />
 
