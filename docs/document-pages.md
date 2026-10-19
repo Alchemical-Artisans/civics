@@ -113,9 +113,10 @@ Everything it writes is under `.cache/`, which is gitignored and disposable.
    sets it out in the record's own words. Whether
    something qualifies is judged at transcription time, by the tests in
    `scripts/prompts/transcribe-meeting.md` (§11) -- today, that the matter was
-   discussed at length at earlier sittings (`discussed-before`), or that
-   somebody it would affect has written to the Council against it and the
-   letter is in a packet (`opposition-on-record`).
+   discussed at length at earlier sittings (`discussed-before`), that somebody
+   it would affect has written to the Council against it and the letter is in
+   a packet (`opposition-on-record`), or that the item commits a sum of money
+   to an undertaking the site follows as a project (`appropriation`).
 
    Every field is optional, and the file itself is optional — skip it for a set
    of minutes that states none of this. `name` is shown and should be verbatim;

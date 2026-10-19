@@ -838,6 +838,16 @@ The tests so far -- there will be more, and each is a new `kind` in
   for it, and the writer and date as the document signs itself; the packet is
   often an earlier sitting's, where a hearing has been continued.
 
+- **`appropriation`** -- the item asks the Council to commit a sum of money
+  to an undertaking the site follows as a project. The two tests above are
+  about an item people will turn up to speak on; a borrowing order for a
+  school roof draws no letters and no crowd, and is still among the largest
+  things the Council does that evening. The test is both halves together: a
+  sum the item itself states, and a project in `src/lib/projects.ts` that the
+  item is an entry on -- an appropriation for something the site does not
+  follow is not highlighted, and a project step that asks for no money is not
+  either. Cite the project's slug and the figure as the order prints it.
+
 Because `discussed-before` depends on the earlier minutes, do the §6 search for
 every ordinance, order and study on the agenda before deciding, not only for
 items you would have looked up anyway. Where the earlier minutes cannot be

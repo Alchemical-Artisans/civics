@@ -5,7 +5,7 @@
   import AddToCalendar from "$lib/AddToCalendar.svelte"
   import ShareButton from "$lib/ShareButton.svelte"
   import { Router } from "$lib/router"
-  import { entryId, projectsOf } from "$lib/projects"
+  import { agendaHref, entryId, projectsOf } from "$lib/projects"
   import {
     easternDate,
     formatLongDate,
@@ -413,7 +413,11 @@
        line here saying so repeated what the item's own page sets out in full
        and in the record's own words -- the neighbours' letter, the earlier
        minutes -- where a reader going on to the item sees the evidence itself
-       rather than our sentence about it. -->
+       rather than our sentence about it.
+
+       Where it goes is `agendaHref`'s business, not this section's: a
+       highlight is the agenda's own line for the item, drawn first, so an
+       item on a project opens the project here exactly as it does below. -->
   {#if !data.isItem && details?.highlights?.length}
     <section class="mb-8 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3">
       <h2 class="text-sm font-semibold tracking-wide text-amber-900 uppercase">Highlights</h2>
@@ -422,7 +426,7 @@
           <li>
             <a
               class="font-medium text-slate-900 underline hover:text-slate-700"
-              href={Router.meetingItem(meeting.id, highlight.item)}
+              href={agendaHref(meeting.id, highlight.item)}
             >
               {highlight.number ? `${highlight.number} ` : ""}{highlight.title}
             </a>

@@ -450,6 +450,12 @@ export interface Highlight {
  *   cited is the letter itself, never a count of who opposes: a writer
  *   reporting that a neighbourhood is against a project is evidence of the
  *   letter, not of the neighbourhood.
+ * - `appropriation`: the item asks the Council to commit a sum of money to an
+ *   undertaking this site follows as a project. The other two tests are about
+ *   an item people will come to speak on; this one is about the size of what
+ *   the city would be taking on, which a reader has as much reason to see
+ *   coming. What is cited is the project and the sum, both checkable: the
+ *   project is a slug in `projects.ts`, and the sum is the order's own figure.
  */
 export type HighlightReason =
   | {
@@ -475,6 +481,18 @@ export type HighlightReason =
         /** Who wrote it and when, as the document itself signs and dates it. */
         source: string
       }[]
+    }
+  | {
+      kind: "appropriation"
+      /**
+       * The undertaking the money is for, by its slug in `projects.ts`. A
+       * project rather than a sentence about one: what makes the sum worth
+       * seeing coming is the thing it buys, and the project page is where
+       * that is followed from the first sitting to the last.
+       */
+      project: string
+      /** The sum the item asks for, as the order prints it. */
+      amount: string
     }
 
 /**
