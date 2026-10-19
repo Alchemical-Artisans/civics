@@ -1,3 +1,4 @@
+import type { TableLine } from "$lib/diff"
 import type { Redline } from "$lib/redline"
 
 /**
@@ -11,24 +12,12 @@ import type { Redline } from "$lib/redline"
  * prints both in the one cell, the old struck through and the new emboldened;
  * that is what a `Rate` is.
  *
- * The schedule is not a `Redline`, which the conditions below are. A redline
- * is a run of paragraphs, and this is a four-column table: flattened to
- * "7,001 to 9,000 lbs. GVWR $91 $5 $96" a row would lose which column each
- * figure sits in, which is the whole of what the schedule says. So the table
- * keeps its own shape and its rows are the diff's lines.
+ * The schedule is `TableLine`s and the conditions a `Redline`, the two shapes
+ * `Diff` draws: a redline is a run of paragraphs, and this is a four-column
+ * table. Flattened to "7,001 to 9,000 lbs. GVWR $91 $5 $96" a row would lose
+ * which column each figure sits in, which is the whole of what the schedule
+ * says, so the table keeps its own shape and its rows are the diff's lines.
  */
-
-/** A cell of the schedule: a figure the order leaves alone, or one it replaces. */
-export type Cell = string | { was: string; now: string }
-
-/** A line of the schedule: a group's own heading, or a rate and its three columns. */
-export type Line = { heading: string } | { label: string; cells: [Cell, Cell, Cell] }
-
-export const isHeading = (line: Line): line is { heading: string } => "heading" in line
-
-/** Whether the order touches this line at all. */
-export const amended = (line: Line) =>
-  !isHeading(line) && line.cells.some((cell) => typeof cell !== "string")
 
 /** The table's own caption, "Sow" and all. */
 export const CAPTION = "Rates For Plowing, Clearing, and Hauling Sow"
@@ -36,7 +25,7 @@ export const CAPTION = "Rates For Plowing, Clearing, and Hauling Sow"
 /** The three headed columns, as the copy prints them. */
 export const COLUMNS = ["Base Hourly Rate", "Early Sign-up Bonus", "Base Hourly with Sign-up Bonus"]
 
-export const SCHEDULE: Line[] = [
+export const SCHEDULE: TableLine[] = [
   { heading: "Vehicles" },
   {
     label: "7,001 to 9,000 lbs. GVWR",

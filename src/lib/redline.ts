@@ -315,6 +315,16 @@ export const diff = (redline: Redline, context = 1): Diff => {
   }
 }
 
+/**
+ * Every folded stretch of a diff, in page order: the unchanged text above
+ * each hunk that has any, then whatever follows the last. A drawing keeps
+ * their open state in one array, so "Expand all" can open the lot.
+ */
+export const folds = (shown: Diff): DiffLine[][] => [
+  ...shown.hunks.map((h) => h.hidden).filter((lines) => lines.length),
+  ...(shown.trailing.length ? [shown.trailing] : []),
+]
+
 /** One provision of a two-version comparison, as `ordinances.ts` keeps it. */
 type Row = {
   label?: string

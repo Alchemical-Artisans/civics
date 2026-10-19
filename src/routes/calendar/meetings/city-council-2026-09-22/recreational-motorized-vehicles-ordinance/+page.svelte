@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Router } from "$lib/router"
-  import OrdinanceDiff from "$lib/OrdinanceDiff.svelte"
+  import Diff from "$lib/Diff.svelte"
   import { HEADING, REDLINE } from "./ordinance"
 
   const MEETING = "city-council-2026-09-22"
@@ -24,8 +24,8 @@
      `ordinance.ts`. -->
 <h2>{HEADING.chapter}, {HEADING.article}, {HEADING.title}</h2>
 
-<OrdinanceDiff
-  redline={REDLINE}
+<Diff
+  parts={[{ kind: "text", redline: REDLINE }]}
   name="{HEADING.chapter}, {HEADING.article}, {HEADING.title}"
   strikeThrough={{
     href: Router.excerpt(MEETING, `${ITEM}/ordinance-amendments-marked`),

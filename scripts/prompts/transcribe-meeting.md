@@ -755,14 +755,30 @@ one depends on the packet:
   than the city's. `city-council-2026-09-22/water-use-restriction-ordinance/`
   is the worked example.
 
-`$lib/OrdinanceDiff.svelte` draws the diff the way GitHub draws one: a file
-header naming the text, with the `+`/`−` paragraph counts, a Split/Unified
-switch (split by default, unified on a phone, the reader's choice
-remembered), "Expand all", and the strike-through link; then each paragraph
-a line, red and minus for today's, green and plus for the amended, the moved
-words highlighted darker; unchanged stretches folded behind `@@` rows that
-open in place. It sits under an `<h2>` naming the article, ahead of the
-packet's links: the diff is what a reader came for, and the scans are its
+**Not every amended text is prose.** The snow plowing order amends a
+four-column rate schedule, and flattening a row of it to a paragraph --
+"7,001 to 9,000 lbs. GVWR $91 $5 $96" -- loses which column each figure sits
+in, which is the whole of what the schedule says. A table is the second shape
+a diff is drawn from (`TableLine` in `$lib/diff.ts`): a line is a group's own
+heading or a labelled row, and a cell is either a value the order leaves
+alone or `{ was, now }`. A row is then a line of the diff exactly as a
+paragraph is. `city-council-2026-10-20/snow-plowing-rates/rates.ts` is the
+worked example, and it is both shapes at once: the schedule as a table, the
+seven conditions printed under it as a redline.
+
+`$lib/Diff.svelte` draws every one of them -- it is the only component that
+draws a diff here, and a new kind of amendment is a new part shape in it
+rather than a drawing of its own. The document is `parts`, in the order it
+prints: `{ kind: "text", redline }`, `{ kind: "table", caption, columns,
+lines }`, or both, which is one box, since a reader should not have to learn
+two boxes to read one order. GitHub's file header names the text and carries
+the `+`/`−` counts, a Split/Unified switch (split by default, unified on a
+phone, the reader's choice remembered across every diff on the site),
+"Expand all", and the strike-through link; then each paragraph or row a line,
+red and minus for today's, green and plus for the amended, the moved words or
+figures highlighted darker; unchanged stretches of text folded behind `@@`
+rows that open in place. It sits under an `<h2>` naming the article, ahead of
+the packet's links: the diff is what a reader came for, and the scans are its
 sources. The item's `+page.ts` returns `wide: true`, since the split view
 halves the width of each side. Where the strike-through is generated, the
 button says so -- "View strike-through (generated)" -- so nobody takes it for

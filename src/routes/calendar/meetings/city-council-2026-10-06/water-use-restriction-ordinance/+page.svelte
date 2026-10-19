@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Router } from "$lib/router"
-  import OrdinanceDiff from "$lib/OrdinanceDiff.svelte"
+  import Diff from "$lib/Diff.svelte"
   // The order and the article it replaces are the same two documents the
   // Mayor filed on 22 September, rescanned into this packet at a different
   // resolution; the transcription and the pairing are read from there rather
@@ -47,8 +47,8 @@
 <h2>{HEADING.article}, {HEADING.title}</h2>
 <p class="text-sm text-slate-600">{HEADING.adopted}</p>
 
-<OrdinanceDiff
-  redline={REDLINE}
+<Diff
+  parts={[{ kind: "text", redline: REDLINE }]}
   name="Chapter 250, {HEADING.article}, {HEADING.title}"
   strikeThrough={{ href: Router.strikeThrough(MEETING, ITEM), external: false }}
 />

@@ -1,22 +1,13 @@
 <script lang="ts">
-  import DiffFrame from "$lib/DiffFrame.svelte"
-  import DiffLines from "$lib/DiffLines.svelte"
-  import { DIFF_BORDER } from "$lib/diff-style"
-  import { diffLines } from "$lib/redline"
+  import Diff from "$lib/Diff.svelte"
   import { Router } from "$lib/router"
-  import RateDiff from "./RateDiff.svelte"
-  import { CAPTION, COLUMNS, NOTES, SCHEDULE, amended } from "./rates"
+  import { CAPTION, COLUMNS, NOTES, SCHEDULE } from "./rates"
 
   const MEETING = "city-council-2026-10-20"
   const ITEM = "snow-plowing-rates"
 
   /** The marked copy, the diff's way out to the city's own paper. */
   const MARKED = { href: Router.excerpt(MEETING, `${ITEM}/order-marked`), external: true }
-
-  const notes = diffLines(NOTES)
-  const rows = SCHEDULE.filter(amended).length
-  const added = rows + notes.filter((line) => line.type === "added").length
-  const removed = rows + notes.filter((line) => line.type === "removed").length
 </script>
 
 <p>Mayor Barrett proposes an Order to amend Existing Snow Plowing Rates</p>
@@ -40,43 +31,26 @@
      order strikes in red, what it adds in green. The schedule is a
      four-column table and a row of it is a line of the diff, since flattening
      a row to a paragraph would lose which column each figure sits in; the
-     seven conditions under it are paragraphs and are drawn as `OrdinanceDiff`
-     draws paragraphs. See `rates.ts` and `RateDiff.svelte`. -->
+     seven conditions under it are paragraphs and are drawn as paragraphs.
+     Both are parts of one document and sit in one box. See `rates.ts`.
 
-<h2>An Order to Amend Document 94-O of 2025</h2>
+     The order's front matter is not here: a blank date, a document number the
+     city has not filled in, the line about what the fees shall be printed
+     twice, and a sentence explaining that the copy emboldens what it inserts
+     and strikes what it removes -- which the diff below says in colour. Seven
+     lines of it stood between the agenda and the figures, and none of them
+     said anything the schedule does not. The order as filed and the marked
+     copy are both at the foot of the page, and the header opens the marked
+     one. -->
 
-<p>October___, 2026</p>
-
-<p>AN ORDER TO AMEND DOCUMENT ___ OF 2026</p>
-
-<p>That the fees for private snow plowing and hauling by the City shall be as follows:</p>
-
-<!-- The order's own account of how its copy is marked up. Kept although the
-     marks here are a diff's rather than the copy's: it is the order's
-     sentence, and the copy it describes is one button away. -->
-<p>
-  <em>
-    Amended by inserting the following <strong>emboldened</strong> language and removing the
-    language <del>stricken through</del>:
-  </em>
-</p>
-
-<p>That the fees for private snow plowing and hauling by the City shall be as follows:</p>
-
-<DiffFrame
+<Diff
   name="An Order to Amend Document 94-O of 2025"
-  {added}
-  {removed}
-  unit={{ one: "line", many: "lines" }}
+  parts={[
+    { kind: "table", caption: CAPTION, columns: COLUMNS, lines: SCHEDULE },
+    { kind: "text", redline: NOTES },
+  ]}
   strikeThrough={MARKED}
->
-  <RateDiff lines={SCHEDULE} columns={COLUMNS} caption={CAPTION} />
-  <!-- The conditions follow the schedule in the order and follow it here,
-       inside the same box: one document, one diff. -->
-  <div class="border-t {DIFF_BORDER} pt-1">
-    <DiffLines items={notes} />
-  </div>
-</DiffFrame>
+/>
 
 <hr />
 

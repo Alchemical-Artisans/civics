@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Router } from "$lib/router"
-  import OrdinanceDiff from "$lib/OrdinanceDiff.svelte"
+  import Diff from "$lib/Diff.svelte"
   import {
     HEADING,
     REDLINE,
@@ -27,8 +27,8 @@
      `ordinance.ts` under the 22 September item, where the same copy was first filed. -->
 <h2>{HEADING.chapter}, {HEADING.article}, {HEADING.title}</h2>
 
-<OrdinanceDiff
-  redline={REDLINE}
+<Diff
+  parts={[{ kind: "text", redline: REDLINE }]}
   name="{HEADING.chapter}, {HEADING.article}, {HEADING.title}"
   strikeThrough={{
     href: Router.excerpt(MEETING, `${ITEM}/ordinance-amendments-marked`),
