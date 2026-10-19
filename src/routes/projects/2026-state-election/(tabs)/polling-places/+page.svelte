@@ -4,22 +4,27 @@
   this tab is that link and, beneath it, a way to each precinct's ballot.
 -->
 <script lang="ts">
+  import ShareMeta from "$lib/ShareMeta.svelte"
   import { formatLongDate } from "$lib/calendar"
   import { Router } from "$lib/router"
   import { ELECTION, POLLING_PLACES, PROJECT } from "../../election"
 
   /** The precinct page a warrant row links to: the row's first precinct, less any `A`. */
   const pageOf = (serves: string[]) => serves[0].replace(/A$/, "")
+
+  const description = `Where each of Haverhill's precincts votes in the ${PROJECT.title} on ${formatLongDate(ELECTION.date)}, from the City Clerk's website.`
 </script>
+
+<!-- The layout's "Share" posts this same address. -->
+<ShareMeta
+  url={Router.sharedProject(PROJECT.slug, "polling-places")}
+  title="Polling places - {PROJECT.title}"
+  {description}
+/>
 
 <svelte:head>
   <title>Polling places - {PROJECT.title} - Haverhill</title>
-  <meta
-    name="description"
-    content="Where each of Haverhill's precincts votes in the {PROJECT.title} on {formatLongDate(
-      ELECTION.date,
-    )}, from the City Clerk's website."
-  />
+  <meta name="description" content={description} />
 </svelte:head>
 
 <p class="text-sm text-slate-700">

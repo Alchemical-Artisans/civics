@@ -1,5 +1,6 @@
 <script lang="ts">
   import PrecinctMap from "$lib/PrecinctMap.svelte"
+  import ShareMeta from "$lib/ShareMeta.svelte"
   import { formatLongDate } from "$lib/calendar"
   import { boundsOf } from "$lib/map"
   import { Router } from "$lib/router"
@@ -14,16 +15,15 @@
   } from "../election"
 
   const bounds = boundsOf(WARDS.map((w) => w.shape))
+  const description = `Haverhill's ${PROJECT.title} on ${formatLongDate(ELECTION.date)}: every ward and precinct on a map, and the City Council agenda items that set it up.`
 </script>
+
+<!-- The layout's "Share" posts this same address. -->
+<ShareMeta url={Router.sharedProject(PROJECT.slug)} title={PROJECT.title} {description} />
 
 <svelte:head>
   <title>{PROJECT.title} - Haverhill</title>
-  <meta
-    name="description"
-    content="Haverhill's {PROJECT.title} on {formatLongDate(
-      ELECTION.date,
-    )}: every ward and precinct on a map, and the City Council agenda items that set it up."
-  />
+  <meta name="description" content={description} />
 </svelte:head>
 
 <!-- The map takes whatever height the header and the tabs leave. -->

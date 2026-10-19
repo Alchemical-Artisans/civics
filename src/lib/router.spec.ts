@@ -34,13 +34,19 @@ describe("Router", () => {
     )
   })
 
-  it("builds the public address of a meeting or item, and each network's share link", () => {
+  it("builds the public address of a meeting, item or project, and each network's share link", () => {
     const url = Router.sharedMeeting("city-council-2026-10-06", "wreaths-across-america")
     expect(url).toBe(
       "https://haverhill.alchemicalartisans.com/calendar/meetings/city-council-2026-10-06/wreaths-across-america",
     )
     expect(Router.sharedMeeting("city-council-2026-10-06")).toBe(
       "https://haverhill.alchemicalartisans.com/calendar/meetings/city-council-2026-10-06",
+    )
+    expect(Router.sharedProject("2026-state-election", "precincts/7-2")).toBe(
+      "https://haverhill.alchemicalartisans.com/projects/2026-state-election/precincts/7-2",
+    )
+    expect(Router.sharedProject("infrastructure-risk-assessment")).toBe(
+      "https://haverhill.alchemicalartisans.com/projects/infrastructure-risk-assessment",
     )
     expect(Router.shareFacebook(url)).toContain("sharer.php?u=https%3A%2F%2Fhaverhill")
     expect(Router.shareX(url, "A & B")).toContain("text=A+%26+B&url=https%3A%2F%2F")

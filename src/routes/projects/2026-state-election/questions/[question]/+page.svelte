@@ -5,19 +5,25 @@
   here, in the warrant's words.
 -->
 <script lang="ts">
+  import ShareButton from "$lib/ShareButton.svelte"
+  import ShareMeta from "$lib/ShareMeta.svelte"
   import { Router } from "$lib/router"
   import { PROJECT } from "../../election"
 
   let { data } = $props()
   const q = $derived(data.question)
+  const sharedUrl = $derived(Router.sharedProject(PROJECT.slug, `questions/${q.number}`))
+  const shareTitle = $derived(`Question ${q.number}: ${q.title} - ${PROJECT.title}`)
+  const description = $derived(
+    `Question ${q.number} on Haverhill's ballot in the ${PROJECT.title}, as the warrant prints it.`,
+  )
 </script>
+
+<ShareMeta url={sharedUrl} title={shareTitle} {description} />
 
 <svelte:head>
   <title>Question {q.number}: {q.title} - {PROJECT.title} - Haverhill</title>
-  <meta
-    name="description"
-    content="Question {q.number} on Haverhill's ballot in the {PROJECT.title}, as the warrant prints it."
-  />
+  <meta name="description" content={description} />
 </svelte:head>
 
 <div class="mx-auto max-w-3xl px-4 py-8">
@@ -31,7 +37,10 @@
   </nav>
 
   <h1 class="text-2xl font-bold tracking-tight text-slate-900">Question {q.number}: {q.title}</h1>
-  <p class="mt-1 text-sm text-slate-600">Haverhill's own question, on every ballot in the city.</p>
+  <div class="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1">
+    <p class="text-sm text-slate-600">Haverhill's own question, on every ballot in the city.</p>
+    <ShareButton url={sharedUrl} text={shareTitle} />
+  </div>
 
   <div class="prose mt-6 max-w-none prose-slate">
     <p>{q.question}</p>

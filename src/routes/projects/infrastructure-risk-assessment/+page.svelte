@@ -11,26 +11,32 @@
 -->
 <script lang="ts">
   import ProjectTimeline from "$lib/ProjectTimeline.svelte"
+  import ShareButton from "$lib/ShareButton.svelte"
+  import ShareMeta from "$lib/ShareMeta.svelte"
   import { PROJECTS, type Project } from "$lib/projects"
   import { Router } from "$lib/router"
 
   let { data } = $props()
 
   const PROJECT = PROJECTS.find((p) => p.slug === "infrastructure-risk-assessment") as Project
+  const sharedUrl = Router.sharedProject(PROJECT.slug)
+  const description = `Haverhill's ${PROJECT.title}: the City Council's motion for a risk-based assessment of the city's critical infrastructure, and every sitting that has taken it up.`
 </script>
+
+<ShareMeta url={sharedUrl} title={PROJECT.title} {description} />
 
 <svelte:head>
   <title>{PROJECT.title} - Haverhill</title>
-  <meta
-    name="description"
-    content="Haverhill's {PROJECT.title}: the City Council's motion for a risk-based assessment of the city's critical infrastructure, and every sitting that has taken it up."
-  />
+  <meta name="description" content={description} />
 </svelte:head>
 
 <div class="mx-auto max-w-6xl px-4 py-8">
   <header class="mb-6 border-b border-slate-200 pb-6">
     <p class="text-sm text-slate-500">Project</p>
     <h1 class="text-2xl font-bold tracking-tight text-slate-900">{PROJECT.title}</h1>
+    <div class="mt-2">
+      <ShareButton url={sharedUrl} text={PROJECT.title} />
+    </div>
   </header>
 
   <div class="grid gap-8 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">

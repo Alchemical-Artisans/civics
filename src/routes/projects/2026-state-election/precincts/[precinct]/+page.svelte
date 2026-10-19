@@ -14,6 +14,8 @@
   import { onMount } from "svelte"
   import PrecinctMap from "$lib/PrecinctMap.svelte"
   import AddToCalendar from "$lib/AddToCalendar.svelte"
+  import ShareButton from "$lib/ShareButton.svelte"
+  import ShareMeta from "$lib/ShareMeta.svelte"
   import { formatLongDate } from "$lib/calendar"
   import { boundsOf } from "$lib/map"
   import { Router } from "$lib/router"
@@ -97,14 +99,18 @@
   ])
 
   const title = $derived(precinctName(precinct.id))
+  const sharedUrl = $derived(Router.sharedProject(PROJECT.slug, `precincts/${precinct.id}`))
+  const shareTitle = $derived(`${title} - ${PROJECT.title}`)
+  const description = $derived(
+    `Haverhill ${title} in the ${PROJECT.title}: a link to its polling location, its place in Ward ${precinct.ward}, and every office and question on its ballot.`,
+  )
 </script>
+
+<ShareMeta url={sharedUrl} title={shareTitle} {description} />
 
 <svelte:head>
   <title>{title} - {PROJECT.title} - Haverhill</title>
-  <meta
-    name="description"
-    content="Haverhill {title} in the {PROJECT.title}: a link to its polling location, its place in Ward {precinct.ward}, and every office and question on its ballot."
-  />
+  <meta name="description" content={description} />
 </svelte:head>
 
 <!-- On a wide window the page is one screen: the header, then the map and the
@@ -127,6 +133,7 @@
     <div class="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
       <p class="text-sm text-slate-600">{formatLongDate(ELECTION.date)}, {ELECTION.hours}</p>
       <AddToCalendar event={electionEvent(precinct.id)} filename="{PROJECT.slug}-{precinct.id}" />
+      <ShareButton url={sharedUrl} text={shareTitle} />
     </div>
 
     <!-- Where to go, first: it is what most readers came for, and it is the

@@ -222,6 +222,15 @@ export class Router {
   }
 
   /**
+   * The public address of a project, or of one page beneath it -- `page` is
+   * the path after the slug, `polling-places` or `precincts/7-2` -- for the
+   * same sharing a meeting gets, and absolute for the same reason.
+   */
+  static sharedProject(slug: string, page?: string): string {
+    return Router.absolute(`/projects/${slug}${page ? `/${page}` : ""}`)
+  }
+
+  /**
    * Where each network takes a link to be posted. None of these is a route
    * here; they are the networks' own documented "share" addresses, spelled in
    * this class with the other outbound URL builders. `url` is the page being
