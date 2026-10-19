@@ -268,14 +268,13 @@ calling it the place: this is the same rule as §5 of the transcribe prompt --
 nothing here is guessed at, and a map is a stronger claim of precision than a
 sentence naming the street.
 
-**Two places on one page are one map, not two.** Where an item names more
-than one -- two events on one agenda line, a route with both ends stated --
-`$lib/PlacesMap.svelte` takes them all and draws one map with a labelled pin
-on each, framed around whatever box holds them: two maps of one city answer
-where each place is and hide the only thing two places have to say, which is
-how far apart they are. It is an SVG over OpenStreetMap's tiles rather than
-the embed, which takes a single marker; everything above about looking a
-point up by hand applies to each of them unchanged.
+**Where an item names more than one place, each gets its own map, under the
+line that names it** -- inside the agenda's own list where that is where the
+line is. Both maps after the list leaves a reader carrying an address down
+the page to work out which map is which. They are separate embeds rather than
+one drawing with both pins on it: the embed pans and zooms where the reader
+stands, which is worth more than showing at a glance how far apart the two
+are.
 
 A meeting's own `location.mapQuery` (§3 above) is a different thing and
 keeps its own Google Maps search link -- that is where the sitting is held,

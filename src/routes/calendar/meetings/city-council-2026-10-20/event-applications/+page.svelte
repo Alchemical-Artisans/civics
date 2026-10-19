@@ -1,6 +1,6 @@
 <script lang="ts">
+  import AddressMap from "$lib/AddressMap.svelte"
   import AddToCalendar from "$lib/AddToCalendar.svelte"
-  import PlacesMap from "$lib/PlacesMap.svelte"
   import type { CalendarEvent } from "$lib/ics"
   import { Router } from "$lib/router"
 
@@ -22,6 +22,16 @@
   }
 </script>
 
+<!-- A map under the item that names its place, inside the agenda's own list,
+     rather than both of them in a run after it. Two events are two places,
+     and a reader meeting the second map three lines below the second event
+     has to carry the address down the page to know which is which. The
+     calendar button sits with its own event for the same reason: it is the
+     Big Dog Show's day, not the item's.
+
+     One map each, not one map with both pins: a drawn map is a picture framed
+     at build time, and the embed a reader can pan and zoom is worth more here
+     than seeing at a glance that the two are a mile apart. -->
 <p><strong>Amusement/Event Application:</strong> <em>with Police approval</em></p>
 
 <ul>
@@ -32,6 +42,7 @@
     >
     requests to hold Winter Haverhill Farmers Market on every third Saturday &ndash; November 21, December
     19, January 16, and February 20, from 10 AM to 1 PM at Historic New England 143 Essex St
+    <AddressMap address="143 Essex St, Haverhill, MA" lat={42.775684} lon={-71.0859945} />
   </li>
   <li>
     <strong>12.3.2</strong> <strong>EVNT-26-31</strong> &ndash; Jimmy Carbone for
@@ -43,36 +54,14 @@
         >Whittier Birthplace<span class="sr-only">, opens in a new tab</span></a
       ></em
     >
-    requests to hold Big Dog Show, public art exhibit, on Saturday October 31<sup>st</sup> from 8:30 AM
-    to 2 PM at Bradford Common
+    requests to hold Big Dog Show, public art exhibit, on Saturday October 31<sup>st</sup> from 8:30
+    AM to 2 PM at Bradford Common
+    <div class="not-prose my-4">
+      <AddToCalendar event={bigDogShow} filename="big-dog-show-2026-10-31" />
+    </div>
+    <AddressMap address="Bradford Common, Haverhill, MA" lat={42.7673688} lon={-71.0761317} />
   </li>
 </ul>
-
-<div class="not-prose my-4">
-  <AddToCalendar event={bigDogShow} filename="big-dog-show-2026-10-31" />
-</div>
-
-<!-- Both events on one map. They were a map each, which showed each place
-     and hid the thing two places have to say: these are a mile apart on
-     opposite sides of the Merrimack, one downtown and one on the Bradford
-     common. -->
-<PlacesMap
-  title="Where the two events are: Historic New England on Essex Street, and Bradford Common"
-  places={[
-    {
-      name: "143 Essex St, Haverhill, MA",
-      label: "143 Essex St",
-      lat: 42.775684,
-      lon: -71.0859945,
-    },
-    {
-      name: "Bradford Common, Haverhill, MA",
-      label: "Bradford Common",
-      lat: 42.7673688,
-      lon: -71.0761317,
-    },
-  ]}
-/>
 
 <hr />
 
