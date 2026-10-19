@@ -123,13 +123,13 @@
     <ul>
       <li>
         <strong>12.3.1</strong>
-        <a href={Router.meetingItem(MEETING, "event-applications")}>
+        <a href={Router.meetingItem(MEETING, "winter-haverhill-farmers-market")}>
           Winter Haverhill Farmers Market, Creative Haverhill
         </a>
       </li>
       <li>
         <strong>12.3.2</strong>
-        <a href={Router.meetingItem(MEETING, "event-applications")}>
+        <a href={Router.meetingItem(MEETING, "big-dog-show")}>
           Big Dog Show, Whittier Birthplace
         </a>
       </li>
