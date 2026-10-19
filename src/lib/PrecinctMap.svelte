@@ -21,7 +21,17 @@
   import { onMount, untrack } from "svelte"
   import { SvelteMap } from "svelte/reactivity"
   import { Router } from "$lib/router"
-  import { frame, labelPoint, pathOf, project, tiles, type Bounds, type Shape } from "$lib/map"
+  import {
+    frame,
+    labelPoint,
+    pathOf,
+    pathOfLine,
+    project,
+    tiles,
+    type Bounds,
+    type LonLat,
+    type Shape,
+  } from "$lib/map"
 
   interface Area {
     id: string
@@ -42,10 +52,31 @@
     label?: string
   }
 
+  interface Line {
+    /** The run of the street, in the order it runs. */
+    points: LonLat[]
+    /** Its accessible name, and the tooltip on hover. */
+    name: string
+    /** The short text drawn at its middle, if any. */
+    label?: string
+  }
+
   interface Marker {
     lon: number
     lat: number
+    /** Its accessible name, and the tooltip on hover. */
     name: string
+    /** The short text drawn beside it, if any. */
+    label?: string
+    /** Where the pin goes when it is clicked. */
+    href?: string
+    /** Whether `href` leaves the site, which decides the new tab and the warning. */
+    external?: boolean
+    /**
+     * Called when the pin is clicked, for one that reveals something on the
+     * page rather than going anywhere. Ignored where there is an `href`.
+     */
+    onselect?: () => void
   }
 
   let {
@@ -53,10 +84,11 @@
     bounds,
     areas,
     outlines = [],
+    lines = [],
     markers = [],
     width = 800,
     height = 560,
-    caption,
+    caption = "",
     interactive = false,
   }: {
     /** What the map shows, as one phrase: the figure's accessible name. */
@@ -65,12 +97,21 @@
     areas: Area[]
     /** Heavier lines drawn over the areas -- wards around precincts. */
     outlines?: { shape: Shape; name: string }[]
+    /**
+     * Runs of street drawn over the map: the stretch an ordinance names, from
+     * one cross street to the next. A line rather than a shape, because that
+     * is what a stretch of road is.
+     */
+    lines?: Line[]
     markers?: Marker[]
     /** The size it is laid out for, which picks the zoom; it scales to its container. */
     width?: number
     height?: number
-    /** Credit for the shapes, which the tiles' own credit does not cover. */
-    caption: string
+    /**
+     * Credit for the shapes, which the tiles' own credit does not cover. A map
+     * of pins alone has nothing of ours in it to credit, and leaves it out.
+     */
+    caption?: string
     /** Fill the parent's height and, once hydrated, pan and zoom. */
     interactive?: boolean
   } = $props()
@@ -228,7 +269,12 @@
       onpointercancel={up}
       onclickcapture={swallowDragClick}
     >
-      <g class="tiles" aria-hidden="true" transform="scale({1 / tileScale})">
+      <g
+        class="tiles"
+        class:muted={areas.length > 0 || outlines.length > 0 || lines.length > 0}
+        aria-hidden="true"
+        transform="scale({1 / tileScale})"
+      >
         {#each tileList as t (`${t.z}/${t.x}/${t.y}`)}
           <image
             href={Router.osmTile(t.z, t.x, t.y)}
@@ -285,6 +331,26 @@
         />
       {/each}
 
+      <!-- A stretch of street: the road's own line, cased in white so it reads
+           over whatever it runs across. The casing is drawn first and wider;
+           both are the same path. -->
+      {#each lines as line (line.name)}
+        {@const d = pathOfLine(line.points, f.z)}
+        <g class="street" role="img" aria-label={line.name}>
+          <title>{line.name}</title>
+          <path class="casing" {d} fill="none" stroke-width={live ? 12 : unit * 1.8} />
+          <path class="run" {d} fill="none" stroke-width={live ? 8 : unit * 1.2} />
+        </g>
+      {/each}
+
+      <g aria-hidden="true" class="labels" font-size={unit}>
+        {#each lines.filter((l) => l.label) as line (line.name)}
+          {@const middle = line.points[Math.floor(line.points.length / 2)]}
+          {@const [x, y] = project(middle, f.z)}
+          <text x={x + unit} {y} dominant-baseline="central">{line.label}</text>
+        {/each}
+      </g>
+
       <!-- Labels are the link's own name in shorter form, so they are hidden
          from a screen reader, which already has the long one; and they let a
          click through to the shape underneath. -->
@@ -295,12 +361,61 @@
         {/each}
       </g>
 
+      <!-- A pin is a link or a button where it is given one, so a place on the
+           map is reachable the way a shape is: `<a>` inside an SVG is a link
+           before anything hydrates, for a keyboard and a screen reader as
+           much as a mouse. Its label is the name in shorter form and is
+           hidden from a screen reader, which has the long one from the pin
+           itself; it sits on whichever side of the pin has more of the frame,
+           so it never runs off the edge it is nearest. -->
       {#each markers as marker (`${marker.lon},${marker.lat}`)}
         {@const [x, y] = project([marker.lon, marker.lat], f.z)}
-        <g class="marker" role="img" aria-label={marker.name}>
+        {@const before = x > f.x + f.width / 2}
+        {#snippet pin()}
           <title>{marker.name}</title>
           <circle cx={x} cy={y} r={unit / 2.2} stroke-width={unit / 6} />
-        </g>
+          {#if marker.label}
+            <text
+              x={before ? x - unit : x + unit}
+              {y}
+              text-anchor={before ? "end" : "start"}
+              dominant-baseline="central"
+              font-size={unit}
+              aria-hidden="true">{marker.label}</text
+            >
+          {/if}
+        {/snippet}
+        {#if marker.href}
+          <a
+            class="marker"
+            href={marker.href}
+            aria-label={marker.external ? `${marker.name}, opens in a new tab` : marker.name}
+            target={marker.external ? "_blank" : undefined}
+            rel={marker.external ? "external noopener noreferrer" : undefined}
+          >
+            {@render pin()}
+          </a>
+        {:else if marker.onselect}
+          <g
+            class="marker selectable"
+            role="button"
+            tabindex="0"
+            aria-label={marker.name}
+            onclick={marker.onselect}
+            onkeydown={(event) => {
+              if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault()
+                marker.onselect?.()
+              }
+            }}
+          >
+            {@render pin()}
+          </g>
+        {:else}
+          <g class="marker" role="img" aria-label={marker.name}>
+            {@render pin()}
+          </g>
+        {/if}
       {/each}
     </svg>
     {#if live}
@@ -323,7 +438,7 @@
     {/if}
   </div>
   <figcaption class="mt-1 text-xs text-slate-500">
-    {caption} Street map &copy;
+    {caption ? `${caption} ` : ""}Street map &copy;
     <a
       class="underline hover:text-slate-900"
       href={Router.osmCopyright()}
@@ -336,8 +451,10 @@
 <style>
   /* The street map is context for the shapes, not the subject, so it is
      greyed back: in full colour its parks and main roads compete with the
-     precincts drawn over them. */
-  .tiles {
+     precincts drawn over them. A map carrying nothing but pins has no such
+     competition, and there the street map is what the reader came to look
+     at, so it keeps its colour. */
+  .tiles.muted {
     filter: grayscale(1);
     opacity: 0.6;
   }
@@ -377,6 +494,17 @@
     stroke: #0f172a;
     pointer-events: none;
   }
+  .street path {
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .street .casing {
+    stroke: white;
+    opacity: 0.9;
+  }
+  .street .run {
+    stroke: #dc2626;
+  }
   .labels text {
     fill: #0f172a;
     font-weight: 600;
@@ -388,5 +516,34 @@
   .marker circle {
     fill: #dc2626;
     stroke: white;
+  }
+  /* A pin's own label is read over whatever the street map has under it, so
+     it carries a white outline, as a shape's label does. */
+  .marker text {
+    fill: #0f172a;
+    font-weight: 600;
+    paint-order: stroke;
+    stroke: white;
+    stroke-width: 3px;
+    pointer-events: none;
+  }
+  a.marker,
+  .marker.selectable {
+    cursor: pointer;
+  }
+  a.marker:hover circle,
+  a.marker:focus-visible circle,
+  .marker.selectable:hover circle,
+  .marker.selectable:focus-visible circle {
+    fill: #991b1b;
+  }
+  a.marker:focus-visible,
+  .marker.selectable:focus-visible {
+    outline: none;
+  }
+  a.marker:focus-visible circle,
+  .marker.selectable:focus-visible circle {
+    stroke: #0f172a;
+    stroke-width: 3;
   }
 </style>

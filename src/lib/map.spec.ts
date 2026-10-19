@@ -1,5 +1,16 @@
 import { describe, expect, it } from "vitest"
-import { boundsOf, contains, frame, labelPoint, pathOf, project, tiles, type Shape } from "./map"
+import {
+  boundsAround,
+  boundsOf,
+  contains,
+  frame,
+  labelPoint,
+  pathOf,
+  pathOfLine,
+  project,
+  tiles,
+  type Shape,
+} from "./map"
 
 // A square with a square hole in it, a degree on a side, near Haverhill.
 const square: Shape = [
@@ -83,5 +94,43 @@ describe("pathOf", () => {
   it("draws one closed subpath per ring", () => {
     expect(pathOf(square, 10).match(/M/g)).toHaveLength(2)
     expect(pathOf(square, 10).match(/Z/g)).toHaveLength(2)
+  })
+})
+
+describe("boundsAround", () => {
+  it("gives a single place the ground around it rather than a box of nothing", () => {
+    const [x0, y0, x1, y1] = boundsAround([[-71.0859945, 42.775684]])
+    expect(x1 - x0).toBeCloseTo(0.0036, 10)
+    expect(y1 - y0).toBeCloseTo(0.0036, 10)
+    expect((x0 + x1) / 2).toBeCloseTo(-71.0859945, 10)
+    expect((y0 + y1) / 2).toBeCloseTo(42.775684, 10)
+  })
+
+  it("leaves a box already wider than the span alone", () => {
+    expect(
+      boundsAround([
+        [-71.09, 42.76],
+        [-71.07, 42.78],
+      ]),
+    ).toEqual([-71.09, 42.76, -71.07, 42.78])
+  })
+})
+
+describe("pathOfLine", () => {
+  it("draws an open path, which is what a street is", () => {
+    const d = pathOfLine(
+      [
+        [-71.104605, 42.76726],
+        [-71.104614, 42.770916],
+      ],
+      17,
+    )
+    expect(d.startsWith("M")).toBe(true)
+    expect(d).toContain("L")
+    expect(d).not.toContain("Z")
+  })
+
+  it("has nothing to draw for no points", () => {
+    expect(pathOfLine([], 17)).toBe("")
   })
 })

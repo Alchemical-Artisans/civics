@@ -582,7 +582,13 @@ line, "Determine scope and outcomes of infrastructure risk assessment", opening 
 **`PrecinctMap.svelte` is an SVG drawn at build time over OpenStreetMap's raster
 tiles**, not a map library: each precinct is an SVG `<a>`, a link before
 anything hydrates, and `$lib/map.ts` does the Web Mercator arithmetic that lays
-shapes onto the tile grid. The reader's browser fetches the tiles, as it already
+shapes onto the tile grid. It draws three things now, not one -- shapes, pins
+and runs of street -- which is what lets a meeting page use it where
+`AddressMap`'s embed cannot go: a pin that carries a label and a link of its
+own, or the stretch of road a parking ordinance names, drawn as the street
+runs between the two cross streets it is bounded by. The street map under it
+is greyed only where something of ours covers it; a map of pins alone keeps
+its colour, being what the reader came to look at. The reader's browser fetches the tiles, as it already
 does for `AddressMap`'s embed. Do not name an SVG class after a Tailwind utility
 (`outline` drew a rectangle round every ward).
 

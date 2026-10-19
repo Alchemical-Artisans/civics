@@ -61,6 +61,26 @@ export function boundsOf(shapes: Shape[], points: LonLat[] = []): Bounds {
   return [minX, minY, maxX, maxY]
 }
 
+/**
+ * The box around some places, never narrower than `span` degrees.
+ *
+ * `boundsOf` on a single point is a box of nothing, which `frame` answers with
+ * its closest zoom and a frame the size of its own padding -- a map of one
+ * rooftop. A place is a point and the map of it is the ground around it, so
+ * the span says how much: 0.0036 degrees is the box OpenStreetMap's own embed
+ * draws around a marker, which is the view `AddressMap` has always given.
+ */
+export function boundsAround(points: LonLat[], span = 0.0036): Bounds {
+  const [minX, minY, maxX, maxY] = boundsOf([], points)
+  const grow = (lo: number, hi: number) => {
+    const missing = span - (hi - lo)
+    return missing > 0 ? ([lo - missing / 2, hi + missing / 2] as const) : ([lo, hi] as const)
+  }
+  const [x0, x1] = grow(minX, maxX)
+  const [y0, y1] = grow(minY, maxY)
+  return [x0, y0, x1, y1]
+}
+
 /** A framed map: the zoom its tiles are drawn at and the pixel box it shows at that zoom. */
 export interface Frame {
   z: number
@@ -129,6 +149,21 @@ export function pathOf(shape: Shape, z: number): string {
       }),
     )
     .join("")
+}
+
+/**
+ * A run of points as an open SVG path in the frame's pixel coordinates, to
+ * one decimal, the way `pathOf` draws a closed one.
+ *
+ * A street is a line and not a shape: an ordinance that bans parking from one
+ * cross street to another names a stretch of road, and the only honest
+ * drawing of it is the road's own line between those two junctions.
+ */
+export function pathOfLine(points: LonLat[], z: number): string {
+  const r = (n: number) => Math.round(n * 10) / 10
+  const [first, ...rest] = points.map((p) => project(p, z))
+  if (!first) return ""
+  return `M${r(first[0])} ${r(first[1])}` + rest.map(([x, y]) => `L${r(x)} ${r(y)}`).join("")
 }
 
 /** Ray casting against every ring of a shape, holes included. */

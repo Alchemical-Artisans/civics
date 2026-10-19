@@ -268,6 +268,18 @@ calling it the place: this is the same rule as §5 of the transcribe prompt --
 nothing here is guessed at, and a map is a stronger claim of precision than a
 sentence naming the street.
 
+**Where an item names a stretch of street rather than an address** -- a
+parking ordinance running from one cross street to the next -- the map is the
+stretch itself, drawn as a line. `$lib/PrecinctMap.svelte` (the election's
+map, which is ours rather than an embed) takes `lines` as well as shapes and
+pins, so the drawing is the road's own run between the two junctions: a point
+on it would claim a precision the ordinance does not have, and a straight
+line between the ends would cut the corners the street takes. Take the
+geometry once by hand, the way a point is taken, and say in the data file
+where it came from; `city-council-2026-10-20/parking-ordinance-washington-st-niagara-to-pleasant-view/stretch.ts`
+is the worked example. A pin on that map can carry a label and a link of its
+own, which the embed's cannot.
+
 **Where an item names more than one place, each gets its own map, under the
 line that names it** -- inside the agenda's own list where that is where the
 line is. Both maps after the list leaves a reader carrying an address down
