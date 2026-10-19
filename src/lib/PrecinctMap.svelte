@@ -269,12 +269,7 @@
       onpointercancel={up}
       onclickcapture={swallowDragClick}
     >
-      <g
-        class="tiles"
-        class:muted={areas.length > 0 || outlines.length > 0 || lines.length > 0}
-        aria-hidden="true"
-        transform="scale({1 / tileScale})"
-      >
+      <g class="tiles" aria-hidden="true" transform="scale({1 / tileScale})">
         {#each tileList as t (`${t.z}/${t.x}/${t.y}`)}
           <image
             href={Router.osmTile(t.z, t.x, t.y)}
@@ -449,15 +444,11 @@
 </figure>
 
 <style>
-  /* The street map is context for the shapes, not the subject, so it is
-     greyed back: in full colour its parks and main roads compete with the
-     precincts drawn over them. A map carrying nothing but pins has no such
-     competition, and there the street map is what the reader came to look
-     at, so it keeps its colour. */
-  .tiles.muted {
-    filter: grayscale(1);
-    opacity: 0.6;
-  }
+  /* The street map is drawn in its own colours, under shapes as under pins:
+     a park that is green and a school that is not are what a reader is
+     reading the map for, and greying them to let our own drawing stand out
+     spends the city to flatter the shape on top of it. The shapes carry
+     their own opacity, which is what keeps both readable. */
   .selectable {
     cursor: pointer;
   }
