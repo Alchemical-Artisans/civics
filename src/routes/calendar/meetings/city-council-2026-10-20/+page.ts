@@ -56,23 +56,26 @@ export const load: PageLoad = () => ({
     remote: {
       url: "https://meet.google.com/fae-tbvj-sqe",
     },
-    // An agenda prints no roll call, so this is the roster alone: everyone the
-    // minutes of 11 August 2026 name as present, remote or absent, the latest
-    // roll call the site carries. No councillor has resigned or been sworn in
-    // at any sitting written up since.
-    council: {
-      members: [
-        "Jordan",
-        "Basiliere",
-        "Diodati",
-        "Sullivan",
-        "Ferreira",
-        "Michitson",
-        "Lewandowski",
-        "Toohey",
-        "McGonagle",
-        "LePage",
-        "Rogers",
+    // An agenda prints no roll call, so this is the roster alone, in the city's
+    // own order. It agrees with the minutes of 11 August 2026, the latest roll
+    // call the site carries, which names the same eleven by surname.
+    members: {
+      source: {
+        title: "the city's City Councilors page",
+        url: "https://www.haverhillma.gov/government/mayor-and-council/city-councilors/",
+      },
+      roster: [
+        { name: "Timothy J. Jordan", role: "President, Councilor At-Large" },
+        { name: "John A. Michitson", role: "Vice President, Councilor At-Large" },
+        { name: "Colin LePage", role: "Councilor At-Large" },
+        { name: "Thomas J. Sullivan", role: "Councilor At-Large" },
+        { name: "Ralph T. Basiliere", role: "Councilor Ward 1" },
+        { name: "Daniel R. Diodati", role: "Councilor Ward 2" },
+        { name: "Devan Ferreira", role: "Councilor Ward 3" },
+        { name: "Melissa J. Lewandowski", role: "Councilor Ward 4" },
+        { name: "Shaun P. Toohey", role: "Councilor Ward 5" },
+        { name: "Michael S. McGonagle", role: "Councilor Ward 6" },
+        { name: "Catherine P. Rogers", role: "Councilor Ward 7" },
       ],
     },
     notice: [

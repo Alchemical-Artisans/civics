@@ -412,22 +412,45 @@ export interface MeetingDetails {
    */
   highlights?: Highlight[]
   /**
-   * Who the City Council is, and who sat at this sitting, read off the Council's
-   * own minutes. Only the Council's write-ups carry it, which is why it is not
-   * a field every board has.
+   * Who sits on the body, and where minutes print a roll call, who sat at this
+   * sitting. Any board can carry it; the transcribe prompt's §3 says where each
+   * part comes from.
    *
-   * `members` is the roster: every councillor the latest printed roll call
-   * names, as printed. The attendance lists are that sitting's roll call and
-   * are set only where a document prints one -- an agenda does not, and a
-   * sitting not yet held has none. So for a future sitting the page shows the
-   * roster and nothing about attendance.
+   * The roster is the body's membership as a page the body or the city
+   * publishes names it -- the City Councilors page, the Retirement Board's,
+   * the library's list of trustees -- and that page is `source`, linked beside
+   * the list, because it is the one part of a meeting page that is not read off
+   * the sitting's own documents and a reader is owed where it came from. It is
+   * the membership as published when the page was written, so for a sitting
+   * already past the roll call is the better evidence; the roster is what a
+   * sitting not yet held can show. `partial` is set where the source names
+   * fewer people than the body has, which it sometimes says itself (the
+   * library: "a seven-member ... Board of Trustees", over six names), so the
+   * list is not read as the whole of it.
+   *
+   * The attendance lists are a roll call as the minutes print it, names as
+   * printed, and are set only where a document prints one.
    */
-  council?: {
-    members: string[]
+  members?: {
+    roster: Member[]
+    source: { title: string; url: string }
+    partial?: boolean
     present?: string[]
     remote?: string[]
     absent?: string[]
   }
+}
+
+/** One person on a body's roster, as its source prints them. */
+export interface Member {
+  /**
+   * The name as printed, honorific included where the source gives one -- but
+   * not a "Councilor" the role beside it already says, which the City
+   * Councilors page prints on some names and not others.
+   */
+  name: string
+  /** The seat or office the source gives beside it, e.g. `"Ward 4"`, `"Chair"`. */
+  role?: string
 }
 
 /** One agenda item singled out, and why. */

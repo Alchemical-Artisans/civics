@@ -48,12 +48,18 @@
   // from, but the rule states the hour it sits at -- which is what lets a
   // reader put a sitting on their own calendar before there is an agenda for
   // it. No room: the rule names none, and the last agenda's room is not
-  // evidence about a Tuesday that has not happened. A write-up always wins,
-  // having been read off the notice for that particular sitting.
+  // evidence about a Tuesday that has not happened. A write-up's own fields
+  // win, having been read off the documents for that particular sitting; but a
+  // write-up that states only who sits on the body -- a placeholder for a
+  // sitting announced without an hour, say -- must not take away the hour a
+  // notice gives it later, so the two are merged rather than one replacing the
+  // other.
   const expected = $derived(meeting.scheduled)
+  const fallback = $derived<MeetingDetails | undefined>(
+    expected ? { time: expected.time } : meeting.time ? { time: meeting.time } : undefined,
+  )
   const details = $derived<MeetingDetails | undefined>(
-    page.data.details ??
-      (expected ? { time: expected.time } : meeting.time ? { time: meeting.time } : undefined),
+    page.data.details ? { ...fallback, ...page.data.details } : fallback,
   )
 
   // A page for a single agenda item titles itself after the item. The meeting
@@ -260,23 +266,57 @@
       </p>
     {/if}
 
-    <!-- Who sat, for the Council: the roll call the minutes print where there is
-         one, else the roster the latest roll call names. A sitting not yet held
-         has no attendance, and naming who was absent from it would be a claim. -->
-    {#if !data.isItem && details?.council}
-      <div class="mt-2 max-w-prose space-y-1 text-sm text-slate-600">
-        {#if details.council.present}
-          <p>Present: {details.council.present.join(", ")}</p>
-          {#if details.council.remote?.length}
-            <p>Remote: {details.council.remote.join(", ")}</p>
+    <!-- Who sits on the body. A roll call is the sitting's own record and is
+         short, so it is shown as it stands; the roster is the body's membership
+         as some other page publishes it, so it arrives closed, the way the
+         remote instructions below do, with that page linked under it. -->
+    {#if !data.isItem && details?.members}
+      {@const members = details.members}
+      {#if members.present}
+        <div class="mt-2 max-w-prose space-y-1 text-sm text-slate-600">
+          <p>Present: {members.present.join(", ")}</p>
+          {#if members.remote?.length}
+            <p>Remote: {members.remote.join(", ")}</p>
           {/if}
-          {#if details.council.absent?.length}
-            <p>Absent: {details.council.absent.join(", ")}</p>
+          {#if members.absent?.length}
+            <p>Absent: {members.absent.join(", ")}</p>
           {/if}
-        {:else}
-          <p>Councilors: {details.council.members.join(", ")}</p>
-        {/if}
-      </div>
+        </div>
+      {/if}
+      <details class="group mt-2 max-w-prose rounded-lg border border-slate-200 text-sm">
+        <summary
+          class="flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-slate-600 select-none hover:text-slate-900 [&::-webkit-details-marker]:hidden"
+        >
+          <span class="underline">Members ({members.roster.length})</span>
+          <span
+            aria-hidden="true"
+            class="text-slate-400 transition-transform duration-150 group-open:rotate-180"
+            >&#9662;</span
+          >
+        </summary>
+        <div class="border-t border-slate-100 px-3 pt-3 pb-2 text-slate-600">
+          <ul class="space-y-1">
+            {#each members.roster as member (member.name)}
+              <li>
+                {member.name}{#if member.role}<span class="text-slate-500">
+                    &mdash; {member.role}</span
+                  >{/if}
+              </li>
+            {/each}
+          </ul>
+          <p class="mt-3 text-xs text-slate-500">
+            {members.partial ? "Not the full membership: as" : "As"} listed on
+            <a
+              class="underline hover:text-slate-900"
+              href={members.source.url}
+              target="_blank"
+              rel="external noopener noreferrer"
+            >
+              {members.source.title}<span class="sr-only">, opens in a new tab</span>
+            </a>
+          </p>
+        </div>
+      </details>
     {/if}
 
     <!-- A remote option that takes more than a link: the School Committee's is

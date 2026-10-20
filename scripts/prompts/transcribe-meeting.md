@@ -121,30 +121,57 @@ paragraph that recites them is dropped, and any signature under it goes with it.
 and it is a mix of real times and placeholders, so nothing on the site displays
 it. Do not copy it in here.
 
-**Who sat, for the City Council.** A City Council sitting's `+page.ts` also
-carries `council`, which the header draws as "Present:", "Remote:" and "Absent:"
-lines, or as "Councilors:" when there is no roll call to draw. It is a
-structured fact like the time, so it goes in `details` and is never written into
-the prose. Other boards have no `council` field and get none.
+**Who sits on the body.** Every sitting's `+page.ts` should say who sits on the
+body that holds it, as `members` (`MeetingDetails` in `src/lib/calendar.ts`).
+The header shows it as a closed "Members" list with its source linked under it,
+and, where minutes print a roll call, "Present:", "Remote:" and "Absent:" lines
+above that. It is a structured fact like the time, so it goes in `details` and
+never into the prose. Two parts, from two places:
 
-- **Minutes that print a roll call** ("Present: …", "Remote: …", "Absent: …"):
-  transcribe each list as printed into `present`, `remote` and `absent`, with
-  `members` the names across all of them. A list the minutes print as "None" is
-  left out. Names are as printed, the surname alone, in the order printed.
-- **An agenda, or minutes with no roll call**: there is no attendance to record,
-  so set `members` alone, to the roster as of the latest sitting the site has a
-  roll call for. Find it with
-  `grep -l "^ *Present: " src/routes/calendar/meetings/city-council-*/+page.svelte | sort | tail -1`
-  -- the line-start anchor is what keeps out a committee's "Councilors Present:
-  None", and the sort is by date since every directory ends in one. Then check
-  each later sitting's minutes for a resignation, a swearing-in or a vacancy:
-  the roster changes only when the Council says so, and a councillor who has
-  left is still printed on the older roll. Say in the `+page.ts` comment which
-  sitting the roster came from.
+- **The roster** -- `roster`, `source`, and `partial` where it applies -- is
+  the body's membership as a page the body or the city publishes it, and that
+  page is `source`. A sitting's own documents almost never list the members,
+  so look in this order, and read the page itself rather than a search
+  result's summary of it, which will name people the page does not:
+  1. The city's own page for the body. `haverhillma.gov` has one for the City
+     Council (`/government/mayor-and-council/city-councilors/`, full names and
+     seats), one for the Council's committees
+     (`…/city-councilors/city-council-committees/`), the Retirement Board on its
+     Retirement page, and a few under
+     `/government/boards-committees-and-commissions/`. The site answers a
+     request with no browser `User-Agent` with a 502, as CLAUDE.md says of the
+     events calendar.
+  2. The body's own site where it has one off the city's: the library's
+     Trustees page (`haverhillpl.org/trustees/`), the School Committee's members
+     and its subcommittee and negotiating-team assignments
+     (`haverhill-ps.org/school-committee`, `/subcommittees-and-negotiating-team`).
+  3. A state page that names the body's officers, such as Mass Cultural
+     Council's page for a local cultural council.
 
-Say in your report which of the two you took, and for an agenda which sitting
-the roster came from. Where a roll call's names do not match the roster you
-found, stop and report it rather than picking one.
+  Take each name as the source prints it, with the seat or office it prints
+  beside it as `role`, in the source's order. A "Councilor" the role already
+  says is dropped from the name; other honorifics stay. Staff listed beside a
+  board (an administrator, a secretary, clerks) are not members. **Set
+  `partial: true` wherever the source names fewer people than the body has** --
+  the library's page calls its board seven-member and names six; the state's
+  page for the Cultural Council names only the chair -- and say in the comment
+  above it how you know. Where no source names anyone, leave `members` off; a
+  roster read out of old minutes, a news story or a guess is not one. So is a
+  subcommittee whose membership the source does not settle: the School
+  Committee's grievance hearings sit across several negotiating teams' units,
+  and choosing one team would be a guess.
+
+- **The roll call** -- `present`, `remote`, `absent` -- is the sitting's own
+  attendance and is set only from minutes that print one ("Present: …",
+  "Remote: …", "Absent: …"): each list as printed, in the order printed, with a
+  list printed as "None" left out. An agenda has none, and neither has a sitting
+  not yet held. A roll call is not a substitute for the roster, since it gives
+  surnames alone; give both. Where its names do not match the roster you found
+  -- somebody on the roll call the source does not list, or the reverse -- do
+  not choose between them: report it, since one of the two is out of date.
+
+Say in your report which bodies got a roster and from where, which were left
+without one and why, and any roll call that disagreed with its roster.
 
 ## 4. A page for each item
 
