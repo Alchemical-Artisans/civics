@@ -260,6 +260,25 @@
       </p>
     {/if}
 
+    <!-- Who sat, for the Council: the roll call the minutes print where there is
+         one, else the roster the latest roll call names. A sitting not yet held
+         has no attendance, and naming who was absent from it would be a claim. -->
+    {#if !data.isItem && details?.council}
+      <div class="mt-2 max-w-prose space-y-1 text-sm text-slate-600">
+        {#if details.council.present}
+          <p>Present: {details.council.present.join(", ")}</p>
+          {#if details.council.remote?.length}
+            <p>Remote: {details.council.remote.join(", ")}</p>
+          {/if}
+          {#if details.council.absent?.length}
+            <p>Absent: {details.council.absent.join(", ")}</p>
+          {/if}
+        {:else}
+          <p>Councilors: {details.council.members.join(", ")}</p>
+        {/if}
+      </div>
+    {/if}
+
     <!-- A remote option that takes more than a link: the School Committee's is
          a form to register on six hours ahead, the join link emailed after, and
          the sitting broadcast besides. It belongs in the same part of the page

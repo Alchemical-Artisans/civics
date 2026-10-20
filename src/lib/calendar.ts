@@ -411,6 +411,23 @@ export interface MeetingDetails {
    * below, which is the usual case.
    */
   highlights?: Highlight[]
+  /**
+   * Who the City Council is, and who sat at this sitting, read off the Council's
+   * own minutes. Only the Council's write-ups carry it, which is why it is not
+   * a field every board has.
+   *
+   * `members` is the roster: every councillor the latest printed roll call
+   * names, as printed. The attendance lists are that sitting's roll call and
+   * are set only where a document prints one -- an agenda does not, and a
+   * sitting not yet held has none. So for a future sitting the page shows the
+   * roster and nothing about attendance.
+   */
+  council?: {
+    members: string[]
+    present?: string[]
+    remote?: string[]
+    absent?: string[]
+  }
 }
 
 /** One agenda item singled out, and why. */

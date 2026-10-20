@@ -121,6 +121,31 @@ paragraph that recites them is dropped, and any signature under it goes with it.
 and it is a mix of real times and placeholders, so nothing on the site displays
 it. Do not copy it in here.
 
+**Who sat, for the City Council.** A City Council sitting's `+page.ts` also
+carries `council`, which the header draws as "Present:", "Remote:" and "Absent:"
+lines, or as "Councilors:" when there is no roll call to draw. It is a
+structured fact like the time, so it goes in `details` and is never written into
+the prose. Other boards have no `council` field and get none.
+
+- **Minutes that print a roll call** ("Present: …", "Remote: …", "Absent: …"):
+  transcribe each list as printed into `present`, `remote` and `absent`, with
+  `members` the names across all of them. A list the minutes print as "None" is
+  left out. Names are as printed, the surname alone, in the order printed.
+- **An agenda, or minutes with no roll call**: there is no attendance to record,
+  so set `members` alone, to the roster as of the latest sitting the site has a
+  roll call for. Find it with
+  `grep -l "^ *Present: " src/routes/calendar/meetings/city-council-*/+page.svelte | sort | tail -1`
+  -- the line-start anchor is what keeps out a committee's "Councilors Present:
+  None", and the sort is by date since every directory ends in one. Then check
+  each later sitting's minutes for a resignation, a swearing-in or a vacancy:
+  the roster changes only when the Council says so, and a councillor who has
+  left is still printed on the older roll. Say in the `+page.ts` comment which
+  sitting the roster came from.
+
+Say in your report which of the two you took, and for an agenda which sitting
+the roster came from. Where a roll call's names do not match the roster you
+found, stop and report it rather than picking one.
+
 ## 4. A page for each item
 
 Every item with something under it gets its own page, so a reader can link or

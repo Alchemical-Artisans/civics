@@ -118,6 +118,13 @@ Everything it writes is under `.cache/`, which is gitignored and disposable.
    a packet (`opposition-on-record`), or that the item commits a sum of money
    to an undertaking the site follows as a project (`appropriation`).
 
+   `details.council` is the City Council's own roster, and on a sitting whose
+   minutes print a roll call, who was present, remote and absent. The header
+   draws it as those lines, or as "Councilors:" with the roster when there is
+   no roll call -- an agenda, or a sitting not yet held. Only the Council's
+   write-ups carry it; `scripts/prompts/transcribe-meeting.md` (§3) says where
+   each list comes from.
+
    Every field is optional, and the file itself is optional — skip it for a set
    of minutes that states none of this. `name` is shown and should be verbatim;
    `mapQuery` is what gets handed to the map, so drop the room number and add
