@@ -14,7 +14,7 @@
  * come back are estimates, and the page-level counts are the ones to trust
  * least. See docs/analytics.md before reading anything into them.
  */
-export const GA_MEASUREMENT_ID = ""
+export const GA_MEASUREMENT_ID = "G-E5GNQLES7G"
 
 /**
  * The `<head>` markup that loads Google Analytics with consent denied, as an
