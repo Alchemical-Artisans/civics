@@ -26,7 +26,7 @@ arrangement is editorial. There is no page listing the fiscal years: the list is
 `docs/` is the authoritative reference and is unusually complete. Start at
 [docs/README.md](docs/README.md), which maps the rest:
 `scraping.md`, `dates.md`, `data-format.md`, `document-pages.md`,
-`budget-pages.md`, `calendar-page.md`, `operations.md`, `deployment.md`.
+`budget-pages.md`, `calendar-page.md`, `operations.md`, `deployment.md`, `analytics.md`.
 
 ## Commands
 

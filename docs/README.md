@@ -19,6 +19,7 @@ link to the original at the top, or as the city's own PDF.
 | [calendar-page.md](./calendar-page.md)   | How the page renders, filters, and prerenders                       |
 | [operations.md](./operations.md)         | Running the scripts, refreshing data, and what to do when it breaks |
 | [deployment.md](./deployment.md)         | How the site is published to GitHub Pages                           |
+| [analytics.md](./analytics.md)           | Google Analytics with consent denied, and what that leaves measured |
 
 ## The shape of the system
 
