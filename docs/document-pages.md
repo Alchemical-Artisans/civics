@@ -118,6 +118,14 @@ Everything it writes is under `.cache/`, which is gitignored and disposable.
    a packet (`opposition-on-record`), or that the item commits a sum of money
    to an undertaking the site follows as a project (`appropriation`).
 
+   `details.members` is who sits on the body: its roster as a page the body or
+   the city publishes it, with that page linked as `source` and `partial` set
+   where the page names fewer people than the body has; and, on a sitting whose
+   minutes print a roll call, who was present, remote and absent. The header
+   draws the roll call as lines and the roster as a closed "Members" list with
+   its source under it. `scripts/prompts/transcribe-meeting.md` (§3) says where
+   to find a roster and what does not count as one.
+
    Every field is optional, and the file itself is optional — skip it for a set
    of minutes that states none of this. `name` is shown and should be verbatim;
    `mapQuery` is what gets handed to the map, so drop the room number and add
