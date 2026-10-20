@@ -1,5 +1,7 @@
 <!--
-  "Share" for a meeting's agenda or one item on it, in the meeting header.
+  "Share" for a meeting's agenda or one item on it, in the meeting header, and
+  for a project or one of its pages, in the project's. What a shared link
+  unfurls as is `ShareMeta`'s, which each of those pages renders beside it.
 
   A panel of links in the shape `AddToCalendar` uses, dismissed the same way
   (Escape or a click outside) and for the same reason: it is a handful of links

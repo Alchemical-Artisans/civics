@@ -23,12 +23,18 @@
   import type { Snippet } from "svelte"
   import AddressMap from "$lib/AddressMap.svelte"
   import ProjectTimeline from "$lib/ProjectTimeline.svelte"
+  import ShareButton from "$lib/ShareButton.svelte"
+  import ShareMeta from "$lib/ShareMeta.svelte"
   import { PROJECTS, type Project } from "$lib/projects"
+  import { Router } from "$lib/router"
   import { APPROPRIATION, SCHOOL, SCHOOLS_LETTER } from "./roof"
 
   let { data } = $props()
 
   const PROJECT = PROJECTS.find((p) => p.slug === "golden-hill-roof-replacement") as Project
+  const sharedUrl = Router.sharedProject(PROJECT.slug)
+  const description =
+    "Haverhill's Golden Hill Elementary School roof replacement: what the city has appropriated for it, what the MSBA is expected to reimburse, and every sitting that has taken it up."
 
   /**
    * Who wrote the letter both quotations are from, as the letterhead and the
@@ -43,11 +49,10 @@
 
 <svelte:head>
   <title>{PROJECT.title} - Haverhill</title>
-  <meta
-    name="description"
-    content="Haverhill's Golden Hill Elementary School roof replacement: what the city has appropriated for it, what the MSBA is expected to reimburse, and every sitting that has taken it up."
-  />
+  <meta name="description" content={description} />
 </svelte:head>
+
+<ShareMeta url={sharedUrl} title={PROJECT.title} {description} />
 
 <!--
   A passage of the letter, cited the way the Marshland permit's pairs are: the
@@ -98,6 +103,9 @@
   <header class="mb-6 border-b border-slate-200 pb-6">
     <p class="text-sm text-slate-500">Project</p>
     <h1 class="text-2xl font-bold tracking-tight text-slate-900">{PROJECT.title}</h1>
+    <div class="mt-2">
+      <ShareButton url={sharedUrl} text={PROJECT.title} />
+    </div>
   </header>
 
   <div class="grid gap-8 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">

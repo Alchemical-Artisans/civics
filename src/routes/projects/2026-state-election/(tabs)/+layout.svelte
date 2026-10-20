@@ -14,6 +14,7 @@
   import { page } from "$app/state"
   import AddToCalendar from "$lib/AddToCalendar.svelte"
   import ProjectTimeline from "$lib/ProjectTimeline.svelte"
+  import ShareButton from "$lib/ShareButton.svelte"
   import { formatLongDate } from "$lib/calendar"
   import { Router } from "$lib/router"
   import { ELECTION, PROJECT, electionEvent } from "../election"
@@ -31,6 +32,9 @@
     },
   ]
   const current = $derived((page.route.id ?? "").replace(/^.*\/\(tabs\)/, ""))
+  // The open tab's own address, so a shared link lands where the sharer was,
+  // the way an agenda item's does rather than its sitting's.
+  const sharedUrl = $derived(Router.sharedProject(PROJECT.slug, current.slice(1) || undefined))
 </script>
 
 <!-- On a wide window the page is one screen: the header, then the map (or the
@@ -48,6 +52,7 @@
     <div class="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
       <p class="text-sm text-slate-600">{formatLongDate(ELECTION.date)}, {ELECTION.hours}</p>
       <AddToCalendar event={electionEvent()} filename={PROJECT.slug} />
+      <ShareButton url={sharedUrl} text={PROJECT.title} />
     </div>
   </header>
 

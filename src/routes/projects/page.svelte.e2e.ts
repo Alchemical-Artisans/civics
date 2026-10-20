@@ -211,3 +211,14 @@ test("the committee's agenda opens the risk assessment, which lists both steps",
   )
   await expect(page.getByText("Doc. 32-k:")).toBeVisible()
 })
+
+test("a project shares the page it is on, the way an agenda item does", async ({ page }) => {
+  await page.goto(`${PROJECT}/polling-places`)
+  const address = `https://haverhill.alchemicalartisans.com${PROJECT}/polling-places`
+  await expect(page.locator('meta[property="og:url"]')).toHaveAttribute("content", address)
+  await page.getByRole("button", { name: "Share" }).click()
+  await expect(page.getByRole("link", { name: /^Facebook/ })).toHaveAttribute(
+    "href",
+    `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(address)}`,
+  )
+})
