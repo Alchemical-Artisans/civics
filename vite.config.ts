@@ -40,6 +40,11 @@ export default defineConfig({
       project: "./project.inlang",
       outdir: "./src/lib/paraglide",
       emitTsDeclarations: true,
+      // The default starts with "cookie", which reads and writes a
+      // PARAGLIDE_LOCALE cookie. With one locale there is nothing to remember,
+      // so the site reads the base locale alone and sets no cookie. Put
+      // "cookie" back here when a second locale is added.
+      strategy: ["baseLocale"],
     }),
   ],
   test: {
