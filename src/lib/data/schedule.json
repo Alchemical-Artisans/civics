@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-16T18:44:59.182Z",
+  "generatedAt": "2026-10-23T14:38:27.947Z",
   "rules": [
     {
       "board": "City Council",
@@ -536,24 +536,59 @@
       "time": "6:30 PM"
     },
     {
-      "board": "School Committee Negotiating Subcommittee",
+      "board": "School Committee",
       "date": "2026-10-22",
-      "title": "Haverhill School Committee Subcommittee for HEA Grievances Meeting",
-      "url": "https://events.haverhillma.gov/default/Detail/2026-10-22-1700-Haverhill-School-Committee-Subcommittee-for-HEA-Gr",
-      "time": "5:00 PM"
+      "title": "Haverhill School Committee Meeting",
+      "url": "https://events.haverhillma.gov/default/Detail/2026-10-22-1900-Haverhill-School-Committee-Meeting",
+      "time": "7:00 PM"
     },
     {
-      "board": "City Council",
+      "board": "School Committee Negotiating Subcommittee",
+      "date": "2026-10-22",
+      "title": "Haverhill School Committee Subcommittee for HEA Grievances",
+      "url": "https://events.haverhillma.gov/default/Detail/2026-10-22-1630-Haverhill-School-Committee-Subcommittee-for-HEA-Gr",
+      "time": "4:30 PM"
+    },
+    {
+      "board": "Board of Assessors",
       "date": "2026-10-27",
-      "title": "City Council Meeting",
-      "url": "https://events.haverhillma.gov/default/Detail/2026-10-27-1900-City-Council-Meeting2",
-      "time": "7:00 PM"
+      "title": "Board of Assessors Public Meeting",
+      "url": "https://events.haverhillma.gov/default/Detail/2026-10-27-1000-Board-of-Assessors-Public-Meeting",
+      "time": "10:00 AM"
+    },
+    {
+      "board": "Hunking School Site Council",
+      "date": "2026-10-27",
+      "title": "Hunking School Site Council Meeting",
+      "url": "https://events.haverhillma.gov/default/Detail/2026-10-27-1715-Hunking-School-Site-Council-Meeting",
+      "time": "5:15 PM"
+    },
+    {
+      "board": "Planning and Development Committee",
+      "date": "2026-11-09",
+      "title": "Planning and Development Committee Meeting",
+      "url": "https://events.haverhillma.gov/default/Detail/2026-11-09-1800-Planning-and-Development-Committee-Meeting",
+      "time": "6:00 PM"
     },
     {
       "board": "Special Education Parent Advisory Council",
       "date": "2026-11-09",
       "title": "Special Education Parental Advisory Council Meeting (SEPAC)",
       "url": "https://events.haverhillma.gov/default/Detail/2026-11-09-1830-Special-Education-Parental-Advisory-Council-Meetin",
+      "time": "6:30 PM"
+    },
+    {
+      "board": "Consentino Middle School Site Council",
+      "date": "2026-11-10",
+      "title": "Consentino School Site Council Meeting",
+      "url": "https://events.haverhillma.gov/default/Detail/2026-11-10-1800-Consentino-School-Site-Council-Meeting",
+      "time": "6:00 PM"
+    },
+    {
+      "board": "School Committee Budget & Finance Subcommittee",
+      "date": "2026-11-12",
+      "title": "Haverhill School Committee Budget & Finance Subcommittee Meeting",
+      "url": "https://events.haverhillma.gov/default/Detail/2026-11-12-1830-Haverhill-School-Committee-Budget-amp-Finance-Subc",
       "time": "6:30 PM"
     },
     {
