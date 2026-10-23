@@ -195,6 +195,55 @@ export const PROJECTS: Project[] = [
     ],
   },
   {
+    slug: "whittier-middle-school-project",
+    title: "Whittier Middle School Project",
+    kind: "initiative",
+    entries: [
+      // The city's own name for the undertaking is the Whittier Middle School
+      // Project; the School Committee's agenda calls the same thing
+      // "JGW/Tilton School Building Updates", since what is being decided is
+      // partly whether Tilton closes.
+      //
+      // The two earlier sittings the project has on this site -- the School
+      // Committee's of 8 October, where the Superintendent first set out the
+      // three enrollment options, and the School Building Committee's of 14
+      // October -- are not entries here, because neither has an item page for
+      // a step to point at: 8 October's packet carried nothing behind the
+      // line, and 14 October's posting is four bare agenda lines. Writing
+      // either up turns it into an ordinary item entry.
+      {
+        kind: "item",
+        meeting: "school-committee-2026-10-22",
+        item: "jgw-tilton-school-building-updates",
+        board: "School Committee",
+        number: "4 (C)",
+        title: "Feasibility study, enrollment options and existing conditions",
+      },
+      {
+        kind: "date",
+        date: "2026-11-05",
+        title: "Public information session at Whittier Middle School, 6:00 PM",
+        from: {
+          meeting: "school-committee-2026-10-22",
+          item: "jgw-tilton-school-building-updates",
+        },
+      },
+      // The designer's schedule names this as the next thing the city owes the
+      // MSBA. March 2028's funding votes are on the same schedule but as a
+      // week rather than a day, and the deck's own two charts disagree about
+      // which week, so they are left off rather than picked between.
+      {
+        kind: "date",
+        date: "2026-12-09",
+        title: "Preliminary Design Program due to the MSBA",
+        from: {
+          meeting: "school-committee-2026-10-22",
+          item: "jgw-tilton-school-building-updates",
+        },
+      },
+    ],
+  },
+  {
     slug: "golden-hill-roof-replacement",
     title: "Golden Hill Roof Replacement",
     kind: "initiative",
