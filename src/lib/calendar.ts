@@ -496,6 +496,10 @@ export interface Highlight {
  *   the city would be taking on, which a reader has as much reason to see
  *   coming. What is cited is the project and the sum, both checkable: the
  *   project is a slug in `projects.ts`, and the sum is the order's own figure.
+ *
+ * No test overrides the "File 10 Days" stamp: an item carrying it is placed
+ * on file and voted on at a later sitting, so it is never a highlight at the
+ * sitting that files it (`file-ten-days.spec.ts`).
  */
 export type HighlightReason =
   | {

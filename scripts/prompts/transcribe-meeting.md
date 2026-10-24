@@ -253,6 +253,20 @@ table repeated under it when that table is already on the page the link
 goes to. The outline is a table of contents; the page it points to is where
 an item's content — table, stamp, sub-item, or note — actually lives.
 
+**"File 10 Days" is the one exception, and it goes in both places.** That
+stamp means the Council will read the item and place it on file, with the vote
+at a later sitting. A reader of the outline needs that more than anything on
+the item's page. The Golden Hill roof bonds of 20 October 2026 sat under
+"Communications from the Mayor" with nothing on the outline saying so, and
+read as that evening's business. Transcribe the stamp on the item's page as
+usual, and put `<FileTenDays />` (`$lib/FileTenDays.svelte`) after the item's
+link on the outline. Leave the badge off where the section heading above the
+item already says it ("14. Ordinances (File 10 days)"). The plain "File 10
+Days" after "IN CITY COUNCIL:" on a returning item is the clerk's record of
+the earlier sitting, not a stamp for this one, and takes no badge: the item is
+back for its vote. `file-ten-days.spec.ts` fails on a stamped item the outline
+leaves unmarked.
+
 **Two agenda lines can be the same matter.** The License Commission's own
 agenda puts one applicant's request under two headings — a Common Victualler
 amendment and an Alcohol/ABCC application for the same change of hours — because
@@ -915,6 +929,15 @@ The tests so far -- there will be more, and each is a new `kind` in
   item is an entry on -- an appropriation for something the site does not
   follow is not highlighted, and a project step that asks for no money is not
   either. Cite the project's slug and the figure as the order prints it.
+
+**An item stamped "File 10 Days" is never a highlight**, whatever test it
+meets. The Council places it on file that evening and votes on it at a later
+sitting, so highlighting it tells a reader to expect business that will not
+happen. The Golden Hill roof bonds of 20 October 2026 met the `appropriation`
+test and were filed without discussion. Highlight the item at the sitting that
+takes it up, usually under "Unfinished Business", where its page records the
+earlier filing after "IN CITY COUNCIL:". `file-ten-days.spec.ts` fails on a
+stamped item that is highlighted.
 
 Because `discussed-before` depends on the earlier minutes, do the §6 search for
 every ordinance, order and study on the agenda before deciding, not only for

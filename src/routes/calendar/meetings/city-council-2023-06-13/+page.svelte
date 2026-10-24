@@ -1,4 +1,5 @@
 <script lang="ts">
+  import FileTenDays from "$lib/FileTenDays.svelte"
   import { Router } from "$lib/router"
 
   /** This page's own directory name, which is the document's id. */
@@ -56,12 +57,14 @@
     <a href={Router.meetingItem(MEETING, "south-elm-comeau-bridge-loan-order")}>
       South Elm-Comeau Bridge Loan Order
     </a>
+    <FileTenDays />
   </li>
   <li>
     <strong>8.5</strong>
     <a href={Router.meetingItem(MEETING, "sewer-pumping-stations-loan-order")}>
       Sewer Pumping Stations Loan Order
     </a>
+    <FileTenDays />
   </li>
   <li>
     <strong>8.6</strong>

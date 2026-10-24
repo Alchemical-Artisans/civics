@@ -3,12 +3,11 @@ import type { PageLoad } from "./$types"
 export const load: PageLoad = () => ({
   details: {
     time: "7:00 PM",
-    // 5.2 borrows $3,564,770 to replace a school's roof -- the largest sum
-    // the Council is asked for tonight, and a step in an undertaking that
-    // began with January's $300,000 for the design and does not end with this
-    // vote. Nobody has written about it either way; it is here because of
-    // what it commits the city to, not because anybody is coming to speak on
-    // it.
+    // 5.2, the $3,564,770 Golden Hill roof bonds, was highlighted here as an
+    // appropriation and taken off: the order is stamped "File 10 Days", so
+    // the Council placed it on file rather than taking it up, and the vote
+    // comes at a later sitting. `file-ten-days.spec.ts` keeps any stamped
+    // item out of highlights.
     //
     // 10.1 is the only item tonight anybody has written to the Council
     // against: a Marshland Street owner told the Council Office in September
@@ -18,18 +17,6 @@ export const load: PageLoad = () => ({
     // October packet rather than tonight's, which is why it names that
     // sitting.
     highlights: [
-      {
-        item: "golden-hill-roof-replacement-bonds",
-        title: "Golden Hill Elementary School Roof Replacement Bonds",
-        number: "5.2",
-        reasons: [
-          {
-            kind: "appropriation",
-            project: "golden-hill-roof-replacement",
-            amount: "$3,564,770",
-          },
-        ],
-      },
       {
         item: "marshland-st-special-permit",
         title: "Special Permit, 27 Marshland St",

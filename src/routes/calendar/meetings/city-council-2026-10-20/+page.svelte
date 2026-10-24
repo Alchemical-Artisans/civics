@@ -1,4 +1,5 @@
 <script lang="ts">
+  import FileTenDays from "$lib/FileTenDays.svelte"
   import { Router } from "$lib/router"
   import { agendaHref } from "$lib/projects"
 
@@ -28,6 +29,7 @@
     <a href={agendaHref(MEETING, "golden-hill-roof-replacement-bonds")}>
       Golden Hill Elementary School Roof Replacement Bonds
     </a>
+    <FileTenDays />
   </li>
   <li>
     <strong>5.3</strong>
