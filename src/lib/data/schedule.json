@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-23T14:38:27.947Z",
+  "generatedAt": "2026-10-23T21:58:11.877Z",
   "rules": [
     {
       "board": "City Council",
@@ -582,6 +582,13 @@
       "date": "2026-11-10",
       "title": "Consentino School Site Council Meeting",
       "url": "https://events.haverhillma.gov/default/Detail/2026-11-10-1800-Consentino-School-Site-Council-Meeting",
+      "time": "6:00 PM"
+    },
+    {
+      "board": "School Committee Policy Subcommittee",
+      "date": "2026-11-10",
+      "title": "Haverhill School Committee Policy Subcommittee Meeting",
+      "url": "https://events.haverhillma.gov/default/Detail/2026-11-10-1800-Haverhill-School-Committee-Policy-Subcommittee-Mee",
       "time": "6:00 PM"
     },
     {

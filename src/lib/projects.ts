@@ -161,6 +161,14 @@ export const PROJECTS: Project[] = [
         from: { meeting: "city-council-2026-10-06", item: "election-warrant" },
       },
       {
+        kind: "item",
+        meeting: "city-council-2026-10-27",
+        item: "state-election-reminder",
+        board: "City Council",
+        number: "8.2",
+        title: "Last Week of Early Voting, and the Two-Card Ballot",
+      },
+      {
         kind: "date",
         date: "2026-11-03",
         title: "Election Day, 7:00 A.M. to 8:00 P.M.",
