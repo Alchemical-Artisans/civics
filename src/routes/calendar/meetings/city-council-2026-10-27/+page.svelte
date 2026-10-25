@@ -1,4 +1,5 @@
 <script lang="ts">
+  import FileTenDays from "$lib/FileTenDays.svelte"
   import { Router } from "$lib/router"
   import { agendaHref } from "$lib/projects"
 
@@ -37,6 +38,7 @@
     <a href={Router.meetingItem(MEETING, "high-school-fire-alarm-bonds")}>
       Haverhill High School Fire Alarm Project Bonds
     </a>
+    <FileTenDays />
   </li>
 </ul>
 
