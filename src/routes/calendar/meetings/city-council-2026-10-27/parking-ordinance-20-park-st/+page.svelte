@@ -13,6 +13,8 @@
 
 <p class="text-right"><strong>File 10 days</strong></p>
 
+<AddressMap address="20 Park Street, Haverhill, MA" lat={42.7796054} lon={-71.0730276} />
+
 <hr />
 
 <h2>Memo from the City Engineer</h2>
@@ -63,8 +65,6 @@
 <p>APPROVED AS TO LEGALITY</p>
 
 <p>City Solicitor</p>
-
-<AddressMap address="20 Park Street, Haverhill, MA" lat={42.7796054} lon={-71.0730276} />
 
 <hr />
 
