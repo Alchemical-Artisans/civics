@@ -33,7 +33,10 @@ export interface ItemEntry {
   /** The item page's directory name beneath the meeting. */
   item: string
   board: string
-  /** The agenda's own number for the item, as printed. */
+  /**
+   * The agenda's own number for the item, as printed. Empty where the board
+   * prints none -- the Planning Board's agendas number nothing.
+   */
   number: string
   title: string
 }
@@ -289,6 +292,134 @@ export const PROJECTS: Project[] = [
           meeting: "city-council-2026-10-20",
           item: "golden-hill-roof-replacement-bonds",
         },
+      },
+    ],
+  },
+  {
+    // Filed as a zoning petition rather than a study, but "initiative" is the
+    // menu's group for a matter followed across sittings, which this is: it is
+    // continued from one Council sitting to the next, with the Planning Board's
+    // hearing between two of them.
+    slug: "pentucket-north-planned-development-district",
+    title: "Pentucket North Planned Development District",
+    kind: "initiative",
+    entries: [
+      {
+        kind: "date",
+        date: "2026-06-30",
+        title: "Referred to the Planning Board, with a hearing set for August 25",
+        from: {
+          meeting: "city-council-2026-08-25",
+          item: "pentucket-north-planned-development-district",
+        },
+      },
+      {
+        kind: "item",
+        meeting: "city-council-2026-08-25",
+        item: "pentucket-north-planned-development-district",
+        board: "City Council",
+        number: "10.2",
+        title: "Hearing continued to October 27",
+      },
+      {
+        kind: "item",
+        meeting: "planning-board-2026-09-09",
+        item: "pentucket-north-planned-development-district",
+        board: "Planning Board",
+        number: "",
+        title: "Continued public hearing",
+      },
+      {
+        kind: "item",
+        meeting: "planning-board-2026-10-14",
+        item: "pentucket-north-planned-development-district",
+        board: "Planning Board",
+        number: "",
+        title: "Recommended for approval, with conditions",
+      },
+      {
+        kind: "item",
+        meeting: "city-council-2026-10-27",
+        item: "pentucket-north-planned-development-district",
+        board: "City Council",
+        number: "10.2",
+        title: "Public hearing",
+      },
+    ],
+  },
+  {
+    slug: "battery-energy-storage-systems-ordinance",
+    title: "Battery Energy Storage Systems Ordinance",
+    kind: "initiative",
+    entries: [
+      // The January hearing on the ordinance of 2025 is not on this timeline:
+      // it is Doc. 5-B, a different submission, which the City Solicitor asked
+      // the Council to table indefinitely when she sent this one.
+      {
+        kind: "date",
+        date: "2026-03-24",
+        title: "Filed for 14 days, with a Council hearing set for May 19",
+        from: {
+          meeting: "city-council-2026-10-27",
+          item: "battery-energy-storage-systems-ordinance",
+        },
+      },
+      {
+        kind: "date",
+        date: "2026-05-19",
+        title: "Hearing continued to July 14, and sent to the Planning and Development Committee",
+        from: {
+          meeting: "city-council-2026-10-27",
+          item: "battery-energy-storage-systems-ordinance",
+        },
+      },
+      {
+        kind: "item",
+        meeting: "city-council-2026-07-14",
+        item: "battery-energy-storage-systems-ordinance",
+        board: "City Council",
+        number: "10.2",
+        title: "Hearing continued to August 25",
+      },
+      {
+        kind: "item",
+        meeting: "city-council-2026-08-25",
+        item: "battery-energy-storage-systems-ordinance",
+        board: "City Council",
+        number: "10.1",
+        title: "Hearing continued to September 15",
+      },
+      {
+        kind: "item",
+        meeting: "city-council-2026-09-15",
+        item: "battery-energy-storage-systems-ordinance",
+        board: "City Council",
+        number: "10.3",
+        title: "Hearing continued to October 27",
+      },
+      {
+        kind: "item",
+        meeting: "planning-board-2026-10-14",
+        item: "battery-energy-storage-systems-ordinance",
+        board: "Planning Board",
+        number: "",
+        title: "Public hearing",
+      },
+      {
+        kind: "item",
+        meeting: "city-council-2026-10-27",
+        item: "battery-energy-storage-systems-ordinance",
+        board: "City Council",
+        number: "10.3",
+        title: "Public hearing",
+      },
+      {
+        kind: "item",
+        meeting: "city-council-2026-10-27",
+        item: "battery-energy-storage-systems-ordinance-hilldale-ave",
+        board: "City Council",
+        number: "10.4",
+        title: "Hilldale Avenue location",
       },
     ],
   },

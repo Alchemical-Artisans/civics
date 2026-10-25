@@ -615,6 +615,42 @@ its own page, and whose line reads "Determine scope and outcomes of infrastructu
 assessment" because the notice prints the whole motion where a name would go --
 the one place a label of ours stands in for the city's.
 
+### A matter heard, continued, and objected to
+
+A public hearing is often continued from sitting to sitting, and the public
+writes to the Council about it in between. Where the item is a hearing on a
+petition, an ordinance or a permit, and correspondence is attached to it, write
+the page in the paired form the 27 October 2026 pages use
+(`city-council-2026-10-27/pentucket-north-planned-development-district/`,
+`city-council-2026-10-27/battery-energy-storage-systems-ordinance/`, and the
+special permit `city-council-2026-10-20/marshland-st-special-permit/`).
+
+- **The substance is a `record.ts` beside the page**, exporting `CONCERNS` and
+  `HEARING`. Each concern pairs the words of those who raised it (`raised`)
+  with the words that answer it (`answered`), each a `Passage` naming who said
+  it and when, the file it is in (`Router.excerpt`), and the quoted paragraphs.
+  Quotes are verbatim and never split one paragraph across two entries.
+- **The answer is whoever answers.** An applicant's letter, a department's
+  comment, a Planning Board recommendation, or an ordinance's own section
+  (cite the section number in `source`). Quote only the sentence that answers
+  the concern, not the whole letter; the full documents stay linked.
+- **Where nothing in the packet answers a concern, leave `answered` empty and
+  write a `note` in our voice saying so.** Do not invent an answer, and do not
+  borrow one from a different concern. A note is the one place a sentence of
+  ours belongs on a page, and it states what the packet holds and no more.
+- **The `HEARING` timeline** lists the vote that referred or set the hearing
+  and one line per continuance, each with its count as the clerk attests it,
+  then the sitting the page is from. A sitting with a link to its item page
+  carries `href`.
+- **Drop the prose the pairs replace.** A letter quoted line by line is not
+  also transcribed in full in the left column; the links at the foot are where
+  the whole letter lives. The ordinance text stays where it is the thing being
+  decided.
+- **Where the matter spans sittings**, it is also a project (§6): register it
+  with an `ItemEntry` for each sitting's item, the dates its documents set as
+  `DateEntry`s, and `kind: "initiative"` unless the matter is an election. The
+  page's agenda line is written with `agendaHref`.
+
 ## 7. Background the document does not carry
 
 Some items are a single true sentence that answers nothing. "Mayor Barrett

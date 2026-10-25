@@ -93,19 +93,19 @@
   </li>
   <li>
     <strong>10.2</strong>
-    <a href={Router.meetingItem(MEETING, "pentucket-north-planned-development-district")}>
+    <a href={agendaHref(MEETING, "pentucket-north-planned-development-district")}>
       Pentucket North Planned Development District
     </a>
   </li>
   <li>
     <strong>10.3</strong>
-    <a href={Router.meetingItem(MEETING, "battery-energy-storage-systems-ordinance")}>
+    <a href={agendaHref(MEETING, "battery-energy-storage-systems-ordinance")}>
       Battery Energy Storage Systems Ordinance
     </a>
   </li>
   <li>
     <strong>10.4</strong>
-    <a href={Router.meetingItem(MEETING, "battery-energy-storage-systems-ordinance-hilldale-ave")}>
+    <a href={agendaHref(MEETING, "battery-energy-storage-systems-ordinance-hilldale-ave")}>
       Battery Energy Storage Systems Ordinance, Hilldale Ave Location
     </a>
   </li>
