@@ -20,8 +20,9 @@ export const load: PageLoad = () => ({
     // against it, and the committee's own minutes of 24 August -- attached to
     // Doc 41-B -- record a sitting given over to the site comparison, with the
     // Fire Chief, the City Solicitor, the Planning Director and four residents
-    // heard before the vote. The committee minutes sit on 10.4's page, which
-    // is why the `discussed-before` reason is on that item rather than 10.3.
+    // heard before the vote. The matter a reader is coming to see is the site,
+    // so it is one highlight, 10.4, carrying both reasons; the letters stay
+    // cited on it rather than being dropped with 10.3's entry.
     //
     // 5.3 borrows $800,000 for the Haverhill High School fire alarm, the
     // largest sum asked for tonight, but `projects.ts` follows no undertaking
@@ -51,10 +52,25 @@ export const load: PageLoad = () => ({
         ],
       },
       {
-        item: "battery-energy-storage-systems-ordinance",
-        title: "Battery Energy Storage Systems Ordinance",
-        number: "10.3",
+        item: "battery-energy-storage-systems-ordinance-hilldale-ave",
+        title: "Battery Energy Storage Systems Ordinance, Hilldale Ave Location",
+        number: "10.4",
         reasons: [
+          {
+            // The committee did not merely receive this: its minutes of 24
+            // August give the site comparison the whole of the sitting, with
+            // the Planning Director's departmental reviews of six candidate
+            // areas, the Fire Chief on water supply and lot size, the City
+            // Solicitor on what a zoning framework settles, four residents
+            // heard, and a recorded vote naming Hilldale Avenue.
+            kind: "discussed-before",
+            meetings: [
+              {
+                id: "planning-and-development-committee-2026-08-24",
+                label: "Planning and Development Committee, August 24, 2026",
+              },
+            ],
+          },
           {
             kind: "opposition-on-record",
             letters: [
@@ -72,28 +88,6 @@ export const load: PageLoad = () => ({
                 meeting: "city-council-2026-10-27",
                 excerpt: "battery-energy-storage-systems-ordinance/desjardins-communication",
                 source: "Diane Desjardins, 28 Country Meadow Road, September 14, 2026",
-              },
-            ],
-          },
-        ],
-      },
-      {
-        item: "battery-energy-storage-systems-ordinance-hilldale-ave",
-        title: "Battery Energy Storage Systems Ordinance, Hilldale Ave Location",
-        number: "10.4",
-        reasons: [
-          {
-            // The committee did not merely receive this: its minutes of 24
-            // August give the site comparison the whole of the sitting, with
-            // the Planning Director's departmental reviews of six candidate
-            // areas, the Fire Chief on water supply and lot size, the City
-            // Solicitor on what a zoning framework settles, four residents
-            // heard, and a recorded vote naming Hilldale Avenue.
-            kind: "discussed-before",
-            meetings: [
-              {
-                id: "planning-and-development-committee-2026-08-24",
-                label: "Planning and Development Committee, August 24, 2026",
               },
             ],
           },
