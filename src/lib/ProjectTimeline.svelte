@@ -56,7 +56,12 @@
       id: entryId(entry),
       date: entryDate(entry),
       through: entry.kind === "date" ? entry.through : undefined,
-      eyebrow: entry.kind === "item" ? `${entry.board}, item ${entry.number}` : undefined,
+      eyebrow:
+        entry.kind === "item"
+          ? entry.number
+            ? `${entry.board}, item ${entry.number}`
+            : entry.board
+          : undefined,
       title: entry.title,
       href: entry.kind === "item" ? Router.meetingItem(entry.meeting, entry.item) : undefined,
     }))
