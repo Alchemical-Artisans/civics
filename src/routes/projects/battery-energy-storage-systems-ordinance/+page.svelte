@@ -8,6 +8,7 @@
   of its own, and the ordinance is not decided until both are.
 -->
 <script lang="ts">
+  import AddressMap from "$lib/AddressMap.svelte"
   import ProjectTimeline from "$lib/ProjectTimeline.svelte"
   import ShareButton from "$lib/ShareButton.svelte"
   import ShareMeta from "$lib/ShareMeta.svelte"
@@ -21,6 +22,13 @@
   ) as Project
   const sharedUrl = Router.sharedProject(PROJECT.slug)
   const description = `Haverhill's ${PROJECT.title}: the zoning amendment that would create a BESS Overlay District, and every sitting that has taken it up.`
+
+  /**
+   * The Hilldale Avenue location the Committee recommended. The record gives no
+   * address for the site itself, so this is a point on the avenue (OpenStreetMap's
+   * own way for it, looked up once against Nominatim), and the map says so.
+   */
+  const HILLDALE = { lat: 42.8016262, lon: -71.1155236 }
 </script>
 
 <ShareMeta url={sharedUrl} title={PROJECT.title} {description} />
@@ -62,6 +70,152 @@
       </p>
     </section>
 
-    <ProjectTimeline project={PROJECT} today={data.today} />
+    <aside aria-label="Where the site is, and what has happened so far" class="space-y-6">
+      <AddressMap address="Hilldale Avenue, Haverhill, MA" lat={HILLDALE.lat} lon={HILLDALE.lon} />
+
+      <ProjectTimeline project={PROJECT} today={data.today} />
+    </aside>
   </div>
+
+  <section aria-labelledby="sources" class="mt-10 border-t border-slate-200 pt-6">
+    <h2 id="sources" class="text-lg font-semibold text-slate-900">Sources</h2>
+    <ul class="mt-3 space-y-2 text-sm">
+      <li>
+        <a
+          class="text-sky-800 underline hover:text-slate-900"
+          href={Router.meetingItem(
+            "city-council-2026-10-27",
+            "battery-energy-storage-systems-ordinance",
+          )}>City Council agenda of October 27, 2026, Doc. 21-B</a
+        >
+      </li>
+      <li>
+        <a
+          class="text-sky-800 underline hover:text-slate-900"
+          href={Router.excerpt(
+            "city-council-2026-10-27",
+            "battery-energy-storage-systems-ordinance/cover-sheet",
+          )}
+          target="_blank"
+          rel="external noopener noreferrer"
+          >Document # 21-B, with the record of continuances, PDF</a
+        >
+      </li>
+      <li>
+        <a
+          class="text-sky-800 underline hover:text-slate-900"
+          href={Router.excerpt(
+            "city-council-2026-10-27",
+            "battery-energy-storage-systems-ordinance/proposed-ordinance",
+          )}
+          target="_blank"
+          rel="external noopener noreferrer"
+          >Proposed ordinance, &sect;7.9 Battery Energy Storage Systems, PDF</a
+        >
+      </li>
+      <li>
+        <a
+          class="text-sky-800 underline hover:text-slate-900"
+          href={Router.excerpt(
+            "city-council-2026-10-27",
+            "battery-energy-storage-systems-ordinance/solicitors-letter",
+          )}
+          target="_blank"
+          rel="external noopener noreferrer"
+          >Letter from Atty. Lisa Mead, City Solicitor, March 16, 2026, PDF</a
+        >
+      </li>
+      <li>
+        <a
+          class="text-sky-800 underline hover:text-slate-900"
+          href={Router.meetingItem(
+            "city-council-2026-10-27",
+            "battery-energy-storage-systems-ordinance-hilldale-ave",
+          )}>City Council agenda of October 27, 2026, Doc. 41-B, the Hilldale Avenue location</a
+        >
+      </li>
+      <li>
+        <a
+          class="text-sky-800 underline hover:text-slate-900"
+          href={Router.excerpt(
+            "city-council-2026-10-27",
+            "battery-energy-storage-systems-ordinance-hilldale-ave/minutes",
+          )}
+          target="_blank"
+          rel="external noopener noreferrer"
+          >Minutes of the Planning and Development Committee, August 24, 2026, Doc. 41-B, PDF</a
+        >
+      </li>
+      <li>
+        <a
+          class="text-sky-800 underline hover:text-slate-900"
+          href={Router.excerpt(
+            "city-council-2026-10-27",
+            "battery-energy-storage-systems-ordinance-hilldale-ave/planning-board-recommendation",
+          )}
+          target="_blank"
+          rel="external noopener noreferrer"
+          >Planning Board recommendation on the Hilldale Avenue location, PDF</a
+        >
+      </li>
+      <li>
+        <a
+          class="text-sky-800 underline hover:text-slate-900"
+          href={Router.meetingItem(
+            "planning-board-2026-10-14",
+            "battery-energy-storage-systems-ordinance",
+          )}>Planning Board public hearing, October 14, 2026</a
+        >
+      </li>
+      <li>
+        <a
+          class="text-sky-800 underline hover:text-slate-900"
+          href={Router.excerpt(
+            "city-council-2026-10-27",
+            "battery-energy-storage-systems-ordinance/walsh-opposition",
+          )}
+          target="_blank"
+          rel="external noopener noreferrer"
+          >Email from Joe Walsh, 26 Dawn Circle, August 26, 2026, PDF</a
+        >
+      </li>
+      <li>
+        <a
+          class="text-sky-800 underline hover:text-slate-900"
+          href={Router.excerpt(
+            "city-council-2026-10-27",
+            "battery-energy-storage-systems-ordinance/carr-communication",
+          )}
+          target="_blank"
+          rel="external noopener noreferrer"
+          >Email from Pamela J Carr, 60 Atlanta Street, September 14, 2026, PDF</a
+        >
+      </li>
+      <li>
+        <a
+          class="text-sky-800 underline hover:text-slate-900"
+          href={Router.excerpt(
+            "city-council-2026-10-27",
+            "battery-energy-storage-systems-ordinance/desjardins-communication",
+          )}
+          target="_blank"
+          rel="external noopener noreferrer"
+          >Email from Diane Desjardins, 28 Country Meadow Road, September 14, 2026, PDF</a
+        >
+      </li>
+      <li>
+        <a
+          class="text-sky-800 underline hover:text-slate-900"
+          href={Router.excerpt(
+            "city-council-2026-10-27",
+            "battery-energy-storage-systems-ordinance/walsh-amendment-request",
+          )}
+          target="_blank"
+          rel="external noopener noreferrer"
+          >Email from Joe Walsh, 26 Dawn Circle, requesting noise protections, September 14, 2026,
+          PDF</a
+        >
+      </li>
+    </ul>
+  </section>
 </div>
