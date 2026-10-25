@@ -9,17 +9,17 @@ link to the original at the top, or as the city's own PDF.
 
 ## Documentation map
 
-| Document                                 | What it covers                                                      |
-| ---------------------------------------- | ------------------------------------------------------------------- |
-| [scraping.md](./scraping.md)             | How documents are pulled off the city's site                        |
-| [dates.md](./dates.md)                   | How a meeting date is determined, and why that is hard              |
-| [data-format.md](./data-format.md)       | The `meetings.json` and `schedule.json` schemas, field by field     |
-| [document-pages.md](./document-pages.md) | Writing a page for a meeting document, and why they are hand-made   |
-| [budget-pages.md](./budget-pages.md)     | The budget half, and writing up a section of a budget book          |
-| [calendar-page.md](./calendar-page.md)   | How the page renders, filters, and prerenders                       |
-| [operations.md](./operations.md)         | Running the scripts, refreshing data, and what to do when it breaks |
-| [deployment.md](./deployment.md)         | How the site is published to GitHub Pages                           |
-| [analytics.md](./analytics.md)           | Google Analytics with consent denied, and what that leaves measured |
+| Document                                 | What it covers                                                        |
+| ---------------------------------------- | --------------------------------------------------------------------- |
+| [scraping.md](./scraping.md)             | How documents are pulled off the city's site                          |
+| [dates.md](./dates.md)                   | How a meeting date is determined, and why that is hard                |
+| [data-format.md](./data-format.md)       | The `meetings.json` and `schedule.json` schemas, field by field       |
+| [document-pages.md](./document-pages.md) | Writing a page for a meeting document, and why they are hand-made     |
+| [budget-pages.md](./budget-pages.md)     | The budget half, and writing up a section of a budget book            |
+| [calendar-page.md](./calendar-page.md)   | How the page renders, filters, and prerenders                         |
+| [operations.md](./operations.md)         | Running the scripts, refreshing data, and what to do when it breaks   |
+| [deployment.md](./deployment.md)         | How the site is published to GitHub Pages                             |
+| [analytics.md](./analytics.md)           | Umami, a cookieless page-view counter, and how to change or remove it |
 
 ## The shape of the system
 

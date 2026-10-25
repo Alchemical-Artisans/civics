@@ -5,15 +5,9 @@
   import favicon from "$lib/assets/favicon.svg"
   import SiteHeader from "$lib/SiteHeader.svelte"
   import SiteFooter from "$lib/SiteFooter.svelte"
-  import { GA_MEASUREMENT_ID, analyticsHead } from "$lib/analytics"
   import { dev } from "$app/environment"
 
   let { data, children } = $props()
-
-  // Analytics only when there is an ID and this is the built site, so running
-  // the site locally does not count the developer's own visits. Consent is
-  // denied and nothing grants it: there is no banner, and see analytics.ts.
-  const analytics = !dev && GA_MEASUREMENT_ID !== ""
 
   // The budget half renders the footer itself, above the budget calendar that
   // is fixed to the bottom of every one of its pages; a second copy here would
@@ -24,10 +18,15 @@
 
 <svelte:head>
   <link rel="icon" href={favicon} />
-  <!-- The head markup is a string built from our own constant in analytics.ts,
-       never from anything a reader supplies. -->
-  <!-- eslint-disable-next-line svelte/no-at-html-tags -->
-  {#if analytics}{@html analyticsHead(GA_MEASUREMENT_ID)}{/if}
+  <!-- Umami, on the built site only, so running it locally does not count the
+       developer's own visits. docs/analytics.md says what it measures. -->
+  {#if !dev}
+    <script
+      defer
+      src="https://cloud.umami.is/script.js"
+      data-website-id="f60433e7-985a-456f-8f49-ccb955e2dc65"
+    ></script>
+  {/if}
 </svelte:head>
 
 <!-- First focusable thing on every page, for a keyboard user who does not want
