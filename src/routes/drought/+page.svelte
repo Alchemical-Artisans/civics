@@ -46,19 +46,14 @@
   another significant source.
 </p>
 
-<h3>Rainfall, this year against the last three</h3>
+<h3>Rainfall, this year against the last two</h3>
 
-<RainfallYearsChart
-  years={data.rainfallYears}
-  normal={data.rainfallNormal}
-  normalToDate={data.rainfallNormalToDate}
-/>
+<RainfallYearsChart years={data.rainfallYears} />
 
 <p>
   Inches of precipitation each month, as the city's own gauge measured them.
-  {current.year} has had {current.toDateInches} inches through {throughLabel};
-  {previous.year} had {previous.toDateInches} inches by the same day, and the 1991&ndash;2020 normal for
-  that span is {data.rainfallNormalToDate} inches. The last point on
+  {current.year} has had {current.toDateInches} inches through {throughLabel}, and
+  {previous.year} had {previous.toDateInches} inches by the same day. The last point on
   {current.year}'s line is dashed because the month is not over.
 </p>
 

@@ -82,7 +82,12 @@ changed against the previous commit.
   30.64: four inches drier, and the driest of the last four years. Filled,
   it comes to 30.48 against 2025's 30.81 -- level with it, and the finding
   becomes two consecutive dry years about ten inches below normal rather
-  than one collapsing year. That is a large enough difference to the story
+  than one collapsing year.
+
+  The normal file is no longer read by anything the site renders: the chart
+  drew the 1991-2020 curve as a dashed reference and it was dropped as a
+  distraction. It is still refreshed on every run, and still the obvious
+  thing to reach for if a reference line comes back. That is a large enough difference to the story
   that leaving the gaps unfilled would have been the misleading choice.
 
   **Chosen on agreement, not distance.** Seven candidates within nine miles

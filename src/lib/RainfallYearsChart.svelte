@@ -1,10 +1,10 @@
 <!--
-  Four years of Haverhill's rainfall across the calendar, one line each, a
-  point per month, against the 1991-2020 normal.
+  Haverhill's rainfall across the calendar, a line per year, a point per
+  month.
 
   **Each month's own inches, not a running total.** The question this answers
-  is when it rained, not how far behind a year is by now: a month at 11.23 in
-  and a month at 0.36 are the thing being looked at, and accumulating them
+  is when it rained, not how far behind a year is by now: a month at 8.90 in
+  and a month at 1.25 are the thing being looked at, and accumulating them
   hides both inside a curve that can only rise. The year's total is still
   reported, in the legend and in the page's own prose beneath, so the
   magnitude comparison a monthly line cannot make is not lost -- it is just
@@ -16,39 +16,47 @@
   `$lib/precipitation.ts` for the two calendar problems months also dispose
   of.
 
+  **Three years and no reference curve.** This drew four years against the
+  1991-2020 normal, and both the fourth year and the normal were dropped as
+  distractions: five lines is more than a reader compares at once, 2023 was
+  wet enough (11.23 in in one August) to set a scale the other years then sat
+  low against, and a dashed thirty-year mean invited a second comparison
+  beside the one being asked for. What is left is the years themselves. The
+  normal curve is still scraped into `data/weather/` and still documented
+  there; nothing reads it now, so the two functions that bucketed it were
+  deleted rather than left as unread exports.
+
   **A month short of its own length is drawn dashed, with a hollow point.**
   The current year's last month is almost always incomplete -- October read
   to the 25th is six days short of the Octobers it sits beside -- and an
   unmarked point there would show the current month as unusually dry on
-  every build. The dash is the same device the normal uses, for the same
-  reason: this is not quite a figure of the same kind as the solid ones
-  around it.
+  every build.
 
-  Colour runs oldest to newest through the site's own palette, with the
-  current year in the orange `drought-colours.ts` builds its stage ramp on
-  -- the drought year drawn in the drought hue -- heavier and fully opaque,
-  the three behind it lighter. The normal is slate and dashed: a reference,
-  not a fifth year.
+  Colour runs oldest to newest, the current year always in the orange
+  `drought-colours.ts` builds its stage ramp on -- the drought year drawn in
+  the drought hue -- heavier and fully opaque, the years behind it lighter.
+  The current year's colour is picked out by name rather than by position, so
+  it stays orange whether three years are drawn or six.
 -->
 <script lang="ts">
   import { COLOURS } from "./chart-colours"
-  import { type PrecipitationMonth, type PrecipitationYear, longDate } from "./precipitation"
+  import {
+    MONTH_NAMES,
+    type PrecipitationMonth,
+    type PrecipitationYear,
+    longDate,
+  } from "./precipitation"
 
   let {
     years,
-    normal,
-    normalToDate,
-    normalLabel = "1991–2020 normal",
   }: {
     years: PrecipitationYear[]
-    normal: PrecipitationMonth[]
-    /** The normal summed to the same day the newest year reaches. */
-    normalToDate: number
-    normalLabel?: string
   } = $props()
 
-  /** Oldest to newest; the last entry is the year being asked about. */
-  const PALETTE = [COLOURS[0], COLOURS[2], COLOURS[3], COLOURS[1]]
+  /** The drought hue, for whichever year is the current one. */
+  const CURRENT_COLOUR = COLOURS[1]
+  /** The years behind it, oldest first. */
+  const EARLIER_COLOURS = [COLOURS[0], COLOURS[2], COLOURS[3], COLOURS[4], COLOURS[5]]
 
   const WIDTH = 760
   const HEIGHT = 320
@@ -64,18 +72,13 @@
   const inches = new Intl.NumberFormat("en-US", { maximumFractionDigits: 2 })
 
   /**
-   * Rounded up to the next whole inch. The wettest month of these four years
-   * is August 2023 at 11.23 in, nearly three times the normal for the month
-   * -- the scale has to hold it, and a year's dry months then sit low on the
-   * chart, which is the honest picture rather than a cramped one.
+   * Rounded up to the next whole inch. With 2023 and its 11.23-inch August
+   * out of the set the wettest month drawn is March 2024 at 8.90, so the
+   * remaining years use most of the height rather than crowding the floor --
+   * which is half of why dropping that year helped.
    */
   const ceiling = $derived.by(() =>
-    Math.ceil(
-      Math.max(
-        ...years.flatMap((year) => year.months.map((month) => month.inches)),
-        ...normal.map((month) => month.inches),
-      ),
-    ),
+    Math.ceil(Math.max(...years.flatMap((year) => year.months.map((month) => month.inches)))),
   )
 
   const x = (month: number) => PAD.left + ((month - 1) / (MONTHS - 1)) * PLOT.width
@@ -110,18 +113,24 @@
    * year is seven inches drier when at the same point it is level with it.
    */
   const series = $derived(
-    years.map((year, i) => ({
-      year,
-      colour: PALETTE[i % PALETTE.length],
-      isCurrent: i === years.length - 1,
-      ...paths(year.months),
-    })),
+    years.map((year, i) => {
+      const isCurrent = i === years.length - 1
+      return {
+        year,
+        isCurrent,
+        colour: isCurrent ? CURRENT_COLOUR : EARLIER_COLOURS[i % EARLIER_COLOURS.length],
+        ...paths(year.months),
+      }
+    }),
   )
 
-  /** Every other inch; one line per inch is twelve lines at this ceiling. */
+  /** Every other inch; one line per inch is nine lines at this ceiling. */
   const gridLines = $derived(
     Array.from({ length: ceiling + 1 }, (_, i) => i).filter((v) => v > 0 && v % 2 === 0),
   )
+
+  /** The twelve month labels on the axis, by number so `x()` can place them. */
+  const axisMonths = MONTH_NAMES.map((label, i) => ({ month: i + 1, label }))
 
   /** The month under the pointer, 1-12, or null when the pointer is away. */
   let hovered = $state<number | null>(null)
@@ -135,9 +144,9 @@
   }
 
   /**
-   * What the readout lists: every year that has this month, plus the normal.
-   * A partial month says how many days it is standing on, since that is what
-   * makes it not comparable with the others in its own column.
+   * What the readout lists: every year that has this month. A partial month
+   * says how many days it is standing on, since that is what makes it not
+   * comparable with the others in its own column.
    */
   const readout = $derived.by(() => {
     if (hovered === null) return null
@@ -149,24 +158,19 @@
         month: year.months.find((row) => row.month === hovered) ?? null,
       }))
       .filter((row) => row.month !== null)
-    return {
-      rows,
-      normalMonth: normal.find((row) => row.month === hovered) ?? null,
-      month: hovered,
-    }
+    return { rows, label: MONTH_NAMES[hovered - 1], month: hovered }
   })
 
   /**
    * The table's own rows: one per month, which is what the lines draw. Built
    * here rather than in the markup because a `{@const}` may only sit as the
-   * immediate child of a block, and a cell needing one per series plus one
-   * for the normal does not qualify.
+   * immediate child of a block, and a cell needing one per series does not
+   * qualify.
    */
   const spokenRows = $derived(
-    normal.map((month) => ({
-      label: month.label,
-      cells: series.map(({ year }) => year.months.find((row) => row.month === month.month) ?? null),
-      normal: month,
+    axisMonths.map(({ month, label }) => ({
+      label,
+      cells: series.map(({ year }) => year.months.find((row) => row.month === month) ?? null),
     })),
   )
 </script>
@@ -203,7 +207,7 @@
         stroke="#94a3b8"
         stroke-width="1"
       />
-      {#each normal as month (month.month)}
+      {#each axisMonths as month (month.month)}
         <text
           x={x(month.month)}
           y={HEIGHT - 10}
@@ -213,22 +217,6 @@
           {month.label}
         </text>
       {/each}
-
-      <!-- The normal, under the years: a reference, not a fifth year. It is
-           flatter than the years are, 3.53 in in January to 5.32 in in
-           October, so a month above the line was wetter than a month of its
-           own name usually is. -->
-      <path
-        d={normal.map((month, i) => `${i === 0 ? "M" : "L"}${point(month)}`).join(" ")}
-        fill="none"
-        stroke="#64748b"
-        stroke-width="1.5"
-        stroke-dasharray="5 4"
-        role="img"
-        aria-label="{normalLabel}: {inches.format(
-          normal.at(-1)?.cumulativeInches ?? 0,
-        )} inches over a full year"
-      />
 
       {#if readout}
         <line
@@ -313,7 +301,7 @@
         class="pointer-events-none absolute top-2 right-2 rounded-md bg-white/95 px-3 py-2 text-xs shadow-md ring-1 ring-slate-200"
         aria-hidden="true"
       >
-        <p class="m-0 font-medium text-slate-900">{readout.normalMonth?.label}</p>
+        <p class="m-0 font-medium text-slate-900">{readout.label}</p>
         <table class="mt-1 border-separate border-spacing-x-2 border-spacing-y-0.5">
           <tbody>
             {#each [...readout.rows].reverse() as row (row.label)}
@@ -338,16 +326,6 @@
                 </td>
               </tr>
             {/each}
-            {#if readout.normalMonth}
-              <tr>
-                <td><span class="inline-block h-px w-2 bg-slate-500 align-middle"></span></td>
-                <th scope="row" class="text-left font-normal text-slate-500">normal</th>
-                <td class="text-right text-slate-500 tabular-nums">
-                  {inches.format(readout.normalMonth.inches)}"
-                </td>
-                <td></td>
-              </tr>
-            {/if}
           </tbody>
         </table>
       </div>
@@ -374,14 +352,6 @@
         </span>
       </li>
     {/each}
-    <li class="m-0 flex items-center gap-1.5">
-      <span
-        class="inline-block h-0 w-4 border-t-2 border-dashed border-slate-500"
-        aria-hidden="true"
-      ></span>
-      <span class="text-slate-600">{normalLabel}</span>
-      <span class="text-slate-500 tabular-nums">{inches.format(normalToDate)}"</span>
-    </li>
   </ul>
 
   <!-- Every figure the lines carry, for a screen reader: one row per month,
@@ -395,7 +365,6 @@
         {#each series as line (line.year.year)}
           <th scope="col">{line.year.year}</th>
         {/each}
-        <th scope="col">{normalLabel}</th>
       </tr>
     </thead>
     <tbody>
@@ -409,7 +378,6 @@
                 : "—"}
             </td>
           {/each}
-          <td>{inches.format(row.normal.inches)} in</td>
         </tr>
       {/each}
     </tbody>

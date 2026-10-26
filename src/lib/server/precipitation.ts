@@ -30,6 +30,13 @@
  * noise at four years on one axis -- see the comment in
  * `$lib/precipitation.ts` for that and for the two calendar problems months
  * also dispose of.
+ *
+ * `haverhill-daily-normal.json` is deliberately not read here. The chart drew
+ * the 1991-2020 normal as a dashed reference and it was dropped as a
+ * distraction, so nothing on the site reads the normal curve today -- the
+ * scrape still refreshes it (see `data/weather/README.md`) and bucketing it
+ * the same way these years are bucketed is a short function away if it is
+ * ever wanted back.
  */
 import {
   type PrecipitationDay,
@@ -39,19 +46,13 @@ import {
   daysInMonth,
 } from "$lib/precipitation"
 import observedWeather from "../../../data/weather/haverhill-daily-observed.json"
-import normalWeather from "../../../data/weather/haverhill-daily-normal.json"
 import neighbourPrecipitation from "../../../data/weather/haverhill-neighbours-daily-precip.json"
 
 /** weather.mjs's own ELEMENTS order: date, maxt, mint, avgt, obst, pcpn, snow, snwd. */
 const PCPN = 5
 
 const WEATHER_ROWS = observedWeather.data as string[][]
-const NORMAL_ROWS = normalWeather.data as string[][]
 const NEIGHBOUR_ROWS = neighbourPrecipitation.data as unknown as Record<string, [string, string][]>
-
-/** The normal file's own element order, so `pcpn` is found rather than assumed. */
-const NORMAL_PCPN =
-  normalWeather.elements.findIndex((label: string) => label.startsWith("pcpn")) + 1
 
 /**
  * A day's precipitation in inches, or `null` where the gauge recorded none.
@@ -180,60 +181,6 @@ export function precipitationByYear(years: number[]): PrecipitationYear[] {
     )
   }
   return built
-}
-
-/**
- * The normal accumulated to the same month and day, so the legend's own
- * reference figure is the same measurement as the years beside it. February
- * 29th is skipped: the normal file hangs on a leap year, the comparison
- * rarely does, and one day of a thirty-year mean either way is noise against
- * the point being made.
- */
-export function normalToDate(monthDay: string): number {
-  return round(
-    NORMAL_ROWS.filter((row) => row[0].slice(5) <= monthDay && row[0].slice(5) !== "02-29").reduce(
-      (sum, row) => sum + (parsePrecipitation(row[NORMAL_PCPN]) ?? 0),
-      0,
-    ),
-  )
-}
-
-/**
- * NCEI's 1991-2020 normal, bucketed the same way, as the line the four years
- * are read against. The date in each row of the normal file is arbitrary --
- * only the month and day matter -- so this is read on the file's own
- * reference year, which is a leap year and so has every calendar day in it.
- */
-export function normalByMonth(): PrecipitationMonth[] {
-  const buckets = new Map<number, PrecipitationMonth>()
-  for (const row of NORMAL_ROWS) {
-    const month = Number(row[0].slice(5, 7))
-    let bucket = buckets.get(month)
-    if (!bucket) {
-      bucket = {
-        month,
-        label: MONTH_NAMES[month - 1],
-        inches: 0,
-        cumulativeInches: 0,
-        days: 0,
-        partial: false,
-        filledDays: 0,
-        unreadDays: 0,
-      }
-      buckets.set(month, bucket)
-    }
-    bucket.days++
-    bucket.inches += parsePrecipitation(row[NORMAL_PCPN]) ?? 0
-  }
-
-  const months = [...buckets.values()].sort((a, b) => a.month - b.month)
-  let running = 0
-  for (const bucket of months) {
-    running += bucket.inches
-    bucket.inches = round(bucket.inches)
-    bucket.cumulativeInches = round(running)
-  }
-  return months
 }
 
 /** Where the three gauges behind all of this came from, for the page's Sources. */

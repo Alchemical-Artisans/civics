@@ -44,24 +44,42 @@ const year = (
 })
 
 const YEARS = [
-  year(2023, [2, 5, 9, 4], { toDateInches: 16 }),
   year(2024, [1, 3, 6, 2], { toDateInches: 10 }),
   year(2025, [1, 2, 4, 3], { toDateInches: 7 }),
   // The current year: one month short, and its last month incomplete.
   year(2026, [1, 2, 4], { toDateInches: 7, filledDays: 36 }, true),
 ]
 
-const NORMAL = months([1.5, 3, 5, 4, 4, 4, 4, 4, 4, 4, 4, 4])
-
-const props = { years: YEARS, normal: NORMAL, normalToDate: 9.5 }
+const props = { years: YEARS }
 
 describe("RainfallYearsChart.svelte", () => {
-  it("draws a line per year plus the normal", async () => {
+  it("draws one line per year and nothing else", async () => {
     render(RainfallYearsChart, props)
 
     const lines = page.getByRole("img")
     await expect.element(lines.nth(0)).toBeInTheDocument()
-    expect(lines.elements().length).toBe(5)
+    expect(lines.elements().length).toBe(3)
+  })
+
+  /**
+   * The normal was a dashed reference line and was dropped as a distraction;
+   * the only dashes left belong to an incomplete month. If a reference curve
+   * ever comes back this is the test that should be rewritten, not deleted.
+   */
+  it("draws no reference curve", async () => {
+    const { container } = render(RainfallYearsChart, props)
+
+    expect([...container.querySelectorAll("path[stroke-dasharray='5 4']")].length).toBe(0)
+    expect([...container.querySelectorAll("path[stroke='#64748b']")].length).toBe(0)
+  })
+
+  /** The drought hue belongs to the current year whatever the span's length. */
+  it("gives the current year the drought colour, picked by name not position", async () => {
+    const { container } = render(RainfallYearsChart, props)
+
+    const widest = [...container.querySelectorAll("path[stroke-width='2.5']")]
+    expect(widest.length).toBeGreaterThan(0)
+    for (const path of widest) expect(path.getAttribute("stroke")).toBe("#ea580c")
   })
 
   const labels = () =>
@@ -85,7 +103,7 @@ describe("RainfallYearsChart.svelte", () => {
   it("still names a completed year's own full-year total", async () => {
     render(RainfallYearsChart, props)
 
-    expect(labels().find((l) => l.startsWith("2023:"))).toContain("20 inches over the full year")
+    expect(labels().find((l) => l.startsWith("2024:"))).toContain("12 inches over the full year")
   })
 
   it("says how many of the current year's days came from a neighbouring gauge", async () => {

@@ -1,11 +1,5 @@
 import { describe, expect, it } from "vitest"
-import {
-  dailyPrecipitation,
-  normalByMonth,
-  normalToDate,
-  parsePrecipitation,
-  precipitationByYear,
-} from "./precipitation"
+import { dailyPrecipitation, parsePrecipitation, precipitationByYear } from "./precipitation"
 
 describe("parsePrecipitation", () => {
   it("reads a plain figure", () => {
@@ -64,12 +58,25 @@ describe("dailyPrecipitation", () => {
   })
 })
 
+/**
+ * The page asks for three years, not four: 2023 and the 1991-2020 normal were
+ * both dropped from the chart as distractions. The module itself takes any
+ * span, so this still exercises a four-year call where that is the clearer
+ * test, and `precipitationByYear` is given exactly what the route gives it
+ * where the figures matter.
+ */
 describe("precipitationByYear", () => {
   const years = precipitationByYear([2023, 2024, 2025, 2026])
   const [y2023, y2024, y2025, y2026] = years
 
   it("returns the years asked for, in order", () => {
     expect(years.map((year) => year.year)).toEqual([2023, 2024, 2025, 2026])
+  })
+
+  it("takes any span, the three the page asks for included", () => {
+    const three = precipitationByYear([2024, 2025, 2026])
+    expect(three.map((year) => year.year)).toEqual([2024, 2025, 2026])
+    expect(three.at(-1)?.toDateInches).toBe(y2026.toDateInches)
   })
 
   it("gives a completed year all twelve months", () => {
@@ -145,45 +152,5 @@ describe("precipitationByYear", () => {
 
   it("leaves no day of the four years unread, the two gauges between them covering it", () => {
     for (const year of years) expect(year.unreadDays).toBe(0)
-  })
-})
-
-describe("normalByMonth", () => {
-  const normal = normalByMonth()
-
-  it("covers the whole calendar", () => {
-    expect(normal.length).toBe(12)
-    expect(normal[0].label).toBe("Jan")
-    expect(normal.at(-1)?.label).toBe("Dec")
-  })
-
-  /**
-   * The normal file's own `annual.pcpn` is 49.58 in; bucketing the daily
-   * curve by month has to land on the same figure, or a month is dropping
-   * days.
-   */
-  it("accumulates to the normal file's own annual figure", () => {
-    expect(normal.at(-1)?.cumulativeInches).toBeCloseTo(49.58, 1)
-  })
-
-  /**
-   * Flatter than any of the four years: 3.53 in in January to 5.32 in in
-   * October, against a single month of August 2023 at 11.23. That flatness
-   * is what makes it useful as a reference line on a monthly chart.
-   */
-  it("is flatter than the years it is drawn against", () => {
-    const sorted = [...normal].sort((a, b) => a.inches - b.inches)
-    expect(sorted[0].label).toBe("Jan")
-    expect(sorted[0].inches).toBeCloseTo(3.53, 1)
-    expect(sorted.at(-1)?.label).toBe("Oct")
-    expect(sorted.at(-1)?.inches).toBeCloseTo(5.32, 1)
-  })
-})
-
-describe("normalToDate", () => {
-  it("reads the normal to a given day, not to the end of the year", () => {
-    expect(normalToDate("12-31")).toBeCloseTo(49.58, 1)
-    expect(normalToDate("10-25")).toBeLessThan(normalToDate("12-31"))
-    expect(normalToDate("01-31")).toBeLessThan(normalToDate("10-25"))
   })
 })
