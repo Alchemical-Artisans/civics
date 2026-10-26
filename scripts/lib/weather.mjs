@@ -62,6 +62,59 @@ export const ELEMENTS = [
 export const NORMAL_ELEMENTS = ELEMENTS.filter((e) => e.normal)
 
 /**
+ * The two volunteer gauges that fill the city station's unread days.
+ *
+ * The COOP observer reads the gauge by hand, so the record has gaps -- 35 of
+ * 2026's first 298 days, 30 of them in January through March, where a missed
+ * reading is usually a multi-day stretch of winter precipitation. Left
+ * unfilled those gaps understate 2026 by about four inches, enough to draw
+ * it as the driest of the last four years when it is in fact level with
+ * 2025. The weather did not stop; only the reading did, so the honest fix is
+ * another gauge's reading of the same day rather than an estimate.
+ *
+ * Both are CoCoRaHS stations inside Haverhill, chosen over five other
+ * candidates on how closely they track the city station on the days both
+ * read, 2023 through 2026 -- not on distance, which turned out to be a poor
+ * guide: the nearest gauge of all (GROVELAND 0.5 WSW, 1.2 miles) correlates
+ * at only r=0.38, while these two sit at r=0.96 with a mean absolute
+ * difference of about a thirtieth of an inch. Lawrence Municipal Airport was
+ * rejected despite never gapping -- an automated ASOS gauge, r=0.16, and it
+ * under-catches snow, which is precisely what the winter gaps are.
+ *
+ * Two rather than one because neither alone is complete: 0.8 SW has 11 unread
+ * days of its own in 2026. Where both read a day, their mean is used; where
+ * one does, its own figure is.
+ */
+export const NEIGHBOUR_STATIONS = [
+  { sid: "US1MAES0020", name: "HAVERHILL 0.7 N", network: "CoCoRaHS", miles: 2.8 },
+  { sid: "US1MAES0090", name: "HAVERHILL 0.8 SW", network: "CoCoRaHS", miles: 2.2 },
+]
+
+/**
+ * Daily precipitation alone for each station in `NEIGHBOUR_STATIONS`, whole
+ * period of record. Precipitation only -- these gauges exist here to fill
+ * one column of the city station's record, and a CoCoRaHS volunteer reports
+ * little else. One POST per station, the same whole-file replace the two
+ * city files get.
+ */
+export async function fetchNeighbourPrecipitation({ edate = todayISO() } = {}) {
+  const stations = []
+  for (const station of NEIGHBOUR_STATIONS) {
+    const json = await postAcis(`ACIS daily precipitation, ${station.name}`, {
+      sid: station.sid,
+      sdate: "por",
+      edate,
+      elems: [{ name: "pcpn", interval: "dly" }],
+    })
+    if (!Array.isArray(json?.data)) {
+      throw new Error(`ACIS response for ${station.name} carried no data array`)
+    }
+    stations.push({ ...station, count: json.data.length, data: json.data })
+  }
+  return stations
+}
+
+/**
  * A leap year to hang the 366-day normal curve on. NCEI's daily normal is a
  * calendar-day curve, not tied to any one year -- 2024 is picked only
  * because it is a leap year, which is what gets Feb 29 its own value

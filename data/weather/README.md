@@ -1,14 +1,18 @@
 # Haverhill weather data
 
-Committed, and kept current by `npm run weather:update`
-(`scripts/update-weather.mjs`, `scripts/lib/weather.mjs`), a step of
-`npm run metadata:update`. Research data toward a water-balance model for
-`/water` -- one of four pillars (rainfall, snowfall, temperature,
-consumption) toward a "gallons/day the city would need to stay at or under to
-start regaining Kenoza Lake level" figure, discussed but not yet built.
-**Nothing here is cited on the site yet** -- see `docs/water-pages.md` and
-`src/lib/rainfall.ts` for the committed, cited half of the water section,
-which this does not feed.
+Committed, and kept current by `node scripts/update-weather.mjs`
+(`scripts/lib/weather.mjs`), a step of `npm run metadata:update`. There is no
+`npm run weather:update` shortcut at the moment: that `package.json` entry was
+lost when this work was rebased onto main, and nothing has needed it since the
+`metadata:update` step calls the script by filename.
+
+**The precipitation column is cited on the site**, by `/drought`'s
+year-against-year rainfall chart -- see `docs/drought-pages.md` and
+`src/lib/server/precipitation.ts`, which reads all three files below. The rest
+of what is here is still research data toward a water-balance model for
+`/water`: one of four pillars (rainfall, snowfall, temperature, consumption)
+toward a "gallons/day the city would need to stay at or under to start
+regaining Kenoza Lake level" figure, discussed but not yet built.
 
 ## Source
 
@@ -62,6 +66,42 @@ changed against the previous commit.
   noticeably wetter than the statewide Jan-Aug figure `rainfall.ts`
   currently charts, which is a different period and a statewide blend, not a
   discrepancy to reconcile.
+
+- **`haverhill-neighbours-daily-precip.json`** -- daily precipitation, and
+  nothing else, from the two CoCoRaHS gauges inside Haverhill that fill the
+  COOP station's unread days: **HAVERHILL 0.7 N** (`US1MAES0020`, 2.8 miles,
+  record from October 2015) and **HAVERHILL 0.8 SW** (`US1MAES0090`, 2.2
+  miles, from April 2022). Keyed by station id under `data`, each value the
+  same `[date, value]` rows ACIS returns, flags and all.
+
+  **The gaps are why this file exists.** The COOP observer reads the gauge by
+  hand, so the record misses days -- 35 of 2026's first 298, and 30 of those
+  fall in January, February and March, where a missed reading is usually a
+  multi-day stretch of winter precipitation rather than a dry day. Summed as
+  they stand, 2026 comes to 26.58 inches by October 25th against 2025's
+  30.64: four inches drier, and the driest of the last four years. Filled,
+  it comes to 30.49 against 2025's 30.81 -- level with it, and the finding
+  becomes two consecutive dry years about ten inches below normal rather
+  than one collapsing year. That is a large enough difference to the story
+  that leaving the gaps unfilled would have been the misleading choice.
+
+  **Chosen on agreement, not distance.** Seven candidates within nine miles
+  were measured against the city gauge on the days both read, 2023 through 2026. These two correlate at r=0.96 with a mean absolute difference around
+  0.03 in. The nearest gauge of all, GROVELAND 0.5 WSW at 1.2 miles,
+  manages only r=0.38 -- and GROVELAND (COOP, `USC00193276`) returns
+  identical figures, so the two look like one physical gauge filed under two
+  network ids. Lawrence Municipal Airport (`USW00094723`) never gaps, being
+  automated, but correlates at r=0.16 and adds the least of any candidate
+  over the gap days, which is what an ASOS gauge under-catching snow looks
+  like -- and snow is precisely what these winter gaps are. LAWRENCE
+  (`USC00194105`) covers only 25 of the 35 days and has 71 gaps of its own.
+
+  Two gauges rather than one because neither is complete on its own: 0.8 SW
+  has 11 unread days of its own in 2026. Where both read a day their mean is
+  used, where one does its own figure is, and a day neither read is left
+  unread and counted -- never filled from the long-term normal, which would
+  be inventing rainfall. `src/lib/server/precipitation.ts` carries the merge
+  and labels every day `city`, `neighbour` or `unread`.
 
 ## Not yet a pillar this covers
 

@@ -21,6 +21,7 @@ import {
   diffObserved,
   fetchDailyNormal,
   fetchDailyObserved,
+  fetchNeighbourPrecipitation,
   summarizeNormal,
 } from "./lib/weather.mjs"
 import { createLog } from "./lib/log.mjs"
@@ -28,6 +29,7 @@ import { createLog } from "./lib/log.mjs"
 const DATA_DIR = path.join(import.meta.dirname, "..", "data", "weather")
 export const OBSERVED_FILE = path.join(DATA_DIR, "haverhill-daily-observed.json")
 export const NORMAL_FILE = path.join(DATA_DIR, "haverhill-daily-normal.json")
+export const NEIGHBOUR_FILE = path.join(DATA_DIR, "haverhill-neighbours-daily-precip.json")
 
 const readData = (file) =>
   readFile(file, "utf8")
@@ -40,10 +42,11 @@ const readData = (file) =>
 const log = createLog("weather")
 console.log("  reading Haverhill's station-level weather record from RCC-ACIS...")
 
-const [beforeObserved, observed, normal] = await Promise.all([
+const [beforeObserved, observed, normal, neighbours] = await Promise.all([
   readData(OBSERVED_FILE),
   fetchDailyObserved(),
   fetchDailyNormal(),
+  fetchNeighbourPrecipitation(),
 ])
 
 await mkdir(DATA_DIR, { recursive: true })
@@ -85,6 +88,31 @@ await writeFile(
   ) + "\n",
 )
 
+await writeFile(
+  NEIGHBOUR_FILE,
+  JSON.stringify(
+    {
+      generatedAt: new Date().toISOString(),
+      source: ACIS_URL,
+      note:
+        "Daily precipitation from the two CoCoRaHS gauges inside Haverhill that fill the " +
+        "COOP station's unread days. See the comment on NEIGHBOUR_STATIONS in " +
+        "scripts/lib/weather.mjs for why these two and not the five other candidates.",
+      element: "pcpn: Total precipitation, liquid-water-equivalent (inches)",
+      stations: neighbours.map(({ sid, name, network, miles, count }) => ({
+        sid,
+        name,
+        network,
+        miles,
+        count,
+      })),
+      data: Object.fromEntries(neighbours.map((s) => [s.sid, s.data])),
+    },
+    null,
+    2,
+  ) + "\n",
+)
+
 const diff = diffObserved(beforeObserved, observed)
 if (!beforeObserved) {
   log.write(`  no previous file; wrote all ${diff.afterCount} days`)
@@ -100,6 +128,14 @@ log.write(`  normal curve: ${normal.length} days`)
 for (const s of normalSummary) {
   log.write(`    ${s.name} (${s.reduce}): ${s.value}`)
 }
+for (const station of neighbours) {
+  const missing = station.data.filter((row) => row[1] === "M").length
+  log.write(
+    `  ${station.name} (${station.miles} mi, ${station.network}): ${station.count} days, ` +
+      `${station.data.at(-1)?.[0] ?? "(none)"} latest, ${missing} unread`,
+  )
+}
 log.write(`\n  wrote ${OBSERVED_FILE}`)
 log.write(`  wrote ${NORMAL_FILE}`)
+log.write(`  wrote ${NEIGHBOUR_FILE}`)
 console.log(`  full run detail: ${log.file}`)
