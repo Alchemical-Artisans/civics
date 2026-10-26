@@ -2,118 +2,143 @@ import { page } from "vitest/browser"
 import { describe, expect, it } from "vitest"
 import { render } from "vitest-browser-svelte"
 import RainfallYearsChart from "./RainfallYearsChart.svelte"
-import type { PrecipitationWeek, PrecipitationYear } from "./precipitation"
+import { MONTH_NAMES, type PrecipitationMonth, type PrecipitationYear } from "./precipitation"
 
 /**
- * Four weeks a year rather than the real fifty-three: the component's job
- * here is the comparison it draws and the labels it writes, and a fixture
- * small enough to read by eye is what makes a wrong figure obvious. The
- * shape is the real one -- `cumulativeInches` already accumulated, the
- * current year stopping short, which is the case the chart has to get right.
+ * A fixture small enough to read by eye, in the real shape: monthly inches
+ * with a running total beside them, and a current year stopping short on an
+ * incomplete month -- the case the chart has to get right.
  */
-const weeks = (values: number[]): PrecipitationWeek[] =>
-  values.map((cumulativeInches, i) => ({
-    week: i + 1,
-    startMonthDay: ["01-01", "01-08", "01-15", "01-22"][i],
-    inches: i === 0 ? cumulativeInches : cumulativeInches - values[i - 1],
-    cumulativeInches,
-    filledDays: 0,
-    unreadDays: 0,
-  }))
+const months = (values: number[], partialLast = false): PrecipitationMonth[] => {
+  let running = 0
+  return values.map((inches, i) => {
+    running += inches
+    const month = i + 1
+    return {
+      month,
+      label: MONTH_NAMES[i],
+      inches,
+      cumulativeInches: Math.round(running * 100) / 100,
+      days: partialLast && i === values.length - 1 ? 12 : 31,
+      partial: partialLast && i === values.length - 1,
+      filledDays: 0,
+      unreadDays: 0,
+    }
+  })
+}
 
 const year = (
   y: number,
   values: number[],
   extra: Partial<PrecipitationYear> = {},
+  partialLast = false,
 ): PrecipitationYear => ({
   year: y,
-  weeks: weeks(values),
-  totalInches: values.at(-1)!,
-  throughDate: `${y}-01-${String(1 + (values.length - 1) * 7).padStart(2, "0")}`,
+  months: months(values, partialLast),
+  totalInches: Math.round(values.reduce((a, b) => a + b, 0) * 100) / 100,
+  toDateInches: Math.round(values.reduce((a, b) => a + b, 0) * 100) / 100,
+  throughDate: `${y}-${String(values.length).padStart(2, "0")}-12`,
   filledDays: 0,
   unreadDays: 0,
   ...extra,
 })
 
 const YEARS = [
-  year(2023, [2, 5, 9, 14]),
-  year(2024, [1, 3, 6, 10]),
-  year(2025, [1, 2, 4, 8]),
-  // The current year, two weeks short of the other three.
-  year(2026, [1, 2], { filledDays: 36 }),
+  year(2023, [2, 5, 9, 4], { toDateInches: 16 }),
+  year(2024, [1, 3, 6, 2], { toDateInches: 10 }),
+  year(2025, [1, 2, 4, 3], { toDateInches: 7 }),
+  // The current year: one month short, and its last month incomplete.
+  year(2026, [1, 2, 4], { toDateInches: 7, filledDays: 36 }, true),
 ]
 
-const NORMAL = weeks([1.5, 3, 5, 7])
+const NORMAL = months([1.5, 3, 5, 4, 4, 4, 4, 4, 4, 4, 4, 4])
+
+const props = { years: YEARS, normal: NORMAL, normalToDate: 9.5 }
 
 describe("RainfallYearsChart.svelte", () => {
   it("draws a line per year plus the normal", async () => {
-    render(RainfallYearsChart, { years: YEARS, normal: NORMAL })
+    render(RainfallYearsChart, props)
 
     const lines = page.getByRole("img")
     await expect.element(lines.nth(0)).toBeInTheDocument()
     expect(lines.elements().length).toBe(5)
   })
 
-  /**
-   * The comparison the chart exists for, and the one it must not get wrong:
-   * a part-year read against three whole ones. 2025 ends at 8 inches but had
-   * only reached 2 by the week 2026 stops at, which is 2026's own figure --
-   * so the two have to read as level, not as 2 against 8.
-   */
-  it("reads every year at the week the current year has reached", async () => {
-    render(RainfallYearsChart, { years: YEARS, normal: NORMAL })
-
-    const labels = page
+  const labels = () =>
+    page
       .getByRole("img")
       .elements()
       .map((el) => el.getAttribute("aria-label") ?? "")
 
-    const current = labels.find((label) => label.startsWith("2026:"))
-    const previous = labels.find((label) => label.startsWith("2025:"))
-    expect(current).toContain("2 inches by Jan 8")
-    expect(previous).toContain("2 inches by Jan 8")
+  /**
+   * The comparison the chart must not get wrong: a part-year read against
+   * three whole ones. 2025 ends at 10 inches but had only 7 by the point
+   * 2026 stops at, which is 2026's own figure -- so the two read as level.
+   */
+  it("reports each year's total read to the same day", async () => {
+    render(RainfallYearsChart, props)
+
+    expect(labels().find((l) => l.startsWith("2026:"))).toContain("7 inches by Mar 12")
+    expect(labels().find((l) => l.startsWith("2025:"))).toContain("7 inches by Mar 12")
   })
 
   it("still names a completed year's own full-year total", async () => {
-    render(RainfallYearsChart, { years: YEARS, normal: NORMAL })
+    render(RainfallYearsChart, props)
 
-    const labels = page
-      .getByRole("img")
-      .elements()
-      .map((el) => el.getAttribute("aria-label") ?? "")
-
-    expect(labels.find((label) => label.startsWith("2023:"))).toContain(
-      "14 inches over the full year",
-    )
+    expect(labels().find((l) => l.startsWith("2023:"))).toContain("20 inches over the full year")
   })
 
   it("says how many of the current year's days came from a neighbouring gauge", async () => {
-    render(RainfallYearsChart, { years: YEARS, normal: NORMAL })
+    render(RainfallYearsChart, props)
 
-    const labels = page
-      .getByRole("img")
-      .elements()
-      .map((el) => el.getAttribute("aria-label") ?? "")
-
-    expect(labels.find((label) => label.startsWith("2026:"))).toContain(
+    expect(labels().find((l) => l.startsWith("2026:"))).toContain(
       "36 days filled from a neighbouring gauge",
     )
   })
 
-  it("heads the legend with the week its figures are read at", async () => {
-    render(RainfallYearsChart, { years: YEARS, normal: NORMAL })
+  it("heads the legend with the day its totals are read to", async () => {
+    render(RainfallYearsChart, props)
 
     await expect
-      .element(page.getByText("Accumulated by Jan 8, each year read at the same week:"))
+      .element(page.getByText("Total by Mar 12, each year read to the same day:"))
       .toBeInTheDocument()
+  })
+
+  /**
+   * Queried off the SVG rather than by text: each month name appears twice
+   * on the page, once on the axis and once as a row header in the table
+   * below, and `getByText` cannot tell them apart.
+   */
+  it("labels the x axis with all twelve months", async () => {
+    const { container } = render(RainfallYearsChart, props)
+
+    const axis = [...container.querySelectorAll("svg text")]
+      .map((el) => el.textContent?.trim())
+      .filter((text) => text && !text.endsWith('"'))
+    expect(axis).toEqual(MONTH_NAMES)
+  })
+
+  /**
+   * An incomplete month must not read as a dry one. It is drawn on its own
+   * dashed path and with a hollow point, and the table says what it stands on.
+   */
+  it("marks the incomplete month rather than drawing it like the rest", async () => {
+    const { container } = render(RainfallYearsChart, props)
+
+    const dashed = [...container.querySelectorAll("path[stroke-dasharray='3 3']")]
+    expect(dashed.length).toBe(1)
+
+    const hollow = [...container.querySelectorAll("circle[fill='#fff']")]
+    expect(hollow.length).toBe(1)
   })
 
   /** Nothing the pointer reveals may be only the pointer's -- the site's rule. */
   it("carries every figure in a table for a reader who hovers nothing", async () => {
-    render(RainfallYearsChart, { years: YEARS, normal: NORMAL })
+    render(RainfallYearsChart, props)
 
     await expect
-      .element(page.getByRole("table", { name: /Rainfall accumulated since January 1st/ }))
+      .element(page.getByRole("table", { name: /Rainfall by month, in inches/ }))
       .toBeInTheDocument()
+    await expect.element(page.getByText("(12 days)")).toBeInTheDocument()
   })
 })

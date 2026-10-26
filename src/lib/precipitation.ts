@@ -5,9 +5,18 @@
  * and a component may import them without pulling the several megabytes of
  * station record that `$lib/server/precipitation.ts` reads.
  *
- * All dates here are `MM-DD` or `YYYY-MM-DD` strings and every computation
- * goes through `Date.UTC` -- the local-time constructor would shift a day
- * west of UTC, which is the same trap `calendar.ts` documents.
+ * **A month is the bucket.** Weekly buckets were tried first and were too
+ * noisy to read four years of at once -- a week swings between 0.00 and 4.37
+ * inches, and four such lines over one axis obscure each other. Months also
+ * take two awkward problems off the table that weeks had: seven-day runs
+ * counted from January 1st drift against the calendar, so February 29th had
+ * to be folded into a neighbouring bucket to keep four years aligned on one
+ * axis, and an ISO week starts on a Monday and so covers different dates
+ * each year. A month is the same month in every year, leap or not.
+ *
+ * All dates here are `YYYY-MM-DD` strings and every computation goes through
+ * `Date.UTC` -- the local-time constructor would shift a day west of UTC,
+ * which is the same trap `calendar.ts` documents.
  */
 
 /** Which gauge a day's figure came from. */
@@ -22,26 +31,46 @@ export interface PrecipitationDay {
   gauges: number
 }
 
-export interface PrecipitationWeek {
-  /** 1-53. Week 1 is January 1st to 7th, so a week means the same days in every year. */
-  week: number
-  /** The `MM-DD` the week opens on -- what the axis is labelled from. */
-  startMonthDay: string
-  /** Inches that fell in this week alone. */
+export interface PrecipitationMonth {
+  /** 1-12. */
+  month: number
+  /** "Jan" -- what the axis is labelled with. */
+  label: string
+  /** Inches that fell in this month -- what the chart plots. */
   inches: number
-  /** Inches since January 1st, this week included -- what the chart plots. */
+  /** Inches since January 1st, this month included. */
   cumulativeInches: number
-  /** Days of this week whose figure came from a neighbour gauge, not the city's. */
+  /** Days of the month a gauge read. */
+  days: number
+  /**
+   * True where the month is not over, or not covered to its end by the
+   * record. A partial month's total is not comparable with a whole one --
+   * October read to the 25th is six days short of the Octobers it is drawn
+   * against -- so the chart marks it rather than letting it read as dry.
+   */
+  partial: boolean
+  /** Days of this month whose figure came from a neighbour gauge. */
   filledDays: number
-  /** Days of this week no gauge read at all. */
+  /** Days of this month no gauge read at all. */
   unreadDays: number
 }
 
 export interface PrecipitationYear {
   year: number
-  weeks: PrecipitationWeek[]
+  months: PrecipitationMonth[]
   /** Inches since January 1st through `throughDate`. */
   totalInches: number
+  /**
+   * Inches since January 1st, summed only to the same month and day the
+   * newest year of the set reaches -- the one figure of these that is
+   * comparable across all four years, and so the one the legend and the
+   * page's prose quote.
+   *
+   * Summing whole months instead would reintroduce the problem the `partial`
+   * flag exists for, one level up: 2025's October is 31 days against 2026's
+   * 25, and the two totals are not the same measurement.
+   */
+  toDateInches: number
   /** The last day of this year any gauge read. */
   throughDate: string
   /** Days of the year filled from a neighbour gauge. */
@@ -51,28 +80,6 @@ export interface PrecipitationYear {
 }
 
 export const isLeapYear = (year: number) => (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0
-
-/**
- * Which of the 53 week-buckets a date falls in. Buckets are seven-day runs
- * counted from January 1st rather than ISO weeks, because an ISO week starts
- * on a Monday and so covers different dates each year -- which is exactly
- * what a chart laying four years over one axis cannot have. February 29th
- * lands in week 9 along with the 23rd to the 28th, making that one bucket
- * eight days long in a leap year: a day's misalignment out of 365, taken in
- * preference to discarding a day of real rain to keep the buckets even.
- */
-export function weekOfYear(monthDay: string, year: number): number {
-  const start = Date.UTC(year, 0, 1)
-  const day = Date.UTC(year, Number(monthDay.slice(0, 2)) - 1, Number(monthDay.slice(3, 5)))
-  const index = Math.round((day - start) / 86_400_000)
-  const leapAdjusted = isLeapYear(year) && monthDay > "02-29" ? index - 1 : index
-  return Math.min(53, Math.floor(leapAdjusted / 7) + 1)
-}
-
-/** The `MM-DD` week `n` opens on, in a non-leap year -- the axis's own labels. */
-export function weekStartMonthDay(week: number): string {
-  return new Date(Date.UTC(2023, 0, 1 + (week - 1) * 7)).toISOString().slice(5, 10)
-}
 
 export const MONTH_NAMES = [
   "Jan",
@@ -89,19 +96,12 @@ export const MONTH_NAMES = [
   "Dec",
 ]
 
-/**
- * Where each month opens on a 1-53 week axis, for the ticks. Fractional on
- * purpose: March opens partway through week 9, and rounding it to a week
- * boundary would drift the later months visibly by December.
- */
-export function monthTicks(): { label: string; week: number }[] {
-  return MONTH_NAMES.map((label, month) => {
-    const dayOfYear = Math.round((Date.UTC(2023, month, 1) - Date.UTC(2023, 0, 1)) / 86_400_000)
-    return { label, week: dayOfYear / 7 + 1 }
-  })
+/** How many days month `m` (1-12) has in `year` -- February being the point. */
+export function daysInMonth(month: number, year: number): number {
+  return [31, isLeapYear(year) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][month - 1]
 }
 
-/** "October 26" -- a stored `YYYY-MM-DD` said the way a sentence wants it. */
+/** "Oct 26" -- a stored `YYYY-MM-DD` said the way a sentence wants it. */
 export function longDate(date: string): string {
   const [, month, day] = date.split("-")
   return `${MONTH_NAMES[Number(month) - 1]} ${Number(day)}`

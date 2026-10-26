@@ -1,5 +1,10 @@
 import type { PageServerLoad } from "./$types"
-import { PRECIPITATION_SOURCE, normalByWeek, precipitationByYear } from "$lib/server/precipitation"
+import {
+  PRECIPITATION_SOURCE,
+  normalByMonth,
+  normalToDate,
+  precipitationByYear,
+} from "$lib/server/precipitation"
 
 /**
  * The current year and the three before it, worked out from the last day the
@@ -17,9 +22,13 @@ export const load: PageServerLoad = () => {
   const latest = Number(PRECIPITATION_SOURCE.updated.slice(0, 4))
   const years = [latest - 3, latest - 2, latest - 1, latest]
 
+  const rainfallYears = precipitationByYear(years)
+
   return {
-    rainfallYears: precipitationByYear(years),
-    rainfallNormal: normalByWeek(),
+    rainfallYears,
+    rainfallNormal: normalByMonth(),
+    // The normal read to the same day, so the legend compares like with like.
+    rainfallNormalToDate: normalToDate(rainfallYears.at(-1)!.throughDate.slice(5)),
     rainfallSource: PRECIPITATION_SOURCE,
   }
 }

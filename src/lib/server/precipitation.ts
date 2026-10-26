@@ -1,5 +1,5 @@
 /**
- * Haverhill's own rainfall record, by week, for the drought page's
+ * Haverhill's own rainfall record, by month, for the drought page's
  * year-against-year chart.
  *
  * Under `$lib/server` for the same reason `water-series.ts` is: the station
@@ -25,13 +25,18 @@
  * read contributes nothing and is counted in `unreadDays`, rather than
  * being filled from the normal curve -- which would be this site inventing
  * rainfall, the thing it never does.
+ *
+ * Buckets are calendar months. Weekly ones were tried first and read as
+ * noise at four years on one axis -- see the comment in
+ * `$lib/precipitation.ts` for that and for the two calendar problems months
+ * also dispose of.
  */
 import {
   type PrecipitationDay,
-  type PrecipitationWeek,
+  type PrecipitationMonth,
   type PrecipitationYear,
-  weekOfYear,
-  weekStartMonthDay,
+  MONTH_NAMES,
+  daysInMonth,
 } from "$lib/precipitation"
 import observedWeather from "../../../data/weather/haverhill-daily-observed.json"
 import normalWeather from "../../../data/weather/haverhill-daily-normal.json"
@@ -98,10 +103,12 @@ export function dailyPrecipitation(): PrecipitationDay[] {
 }
 
 /**
- * One entry per year in `years`, each carrying its weeks of accumulating
- * rainfall. A year still in progress simply stops at its last read day --
- * the chart's own x axis is the date, so a line ending in October reads as
- * a year not finished rather than as a dry one.
+ * One entry per year in `years`, each carrying its months of rainfall.
+ *
+ * A year still in progress stops at its last read month, and that month is
+ * marked `partial` -- a total read to October 25th is six days short of the
+ * Octobers it is drawn against, and a chart that did not say so would show
+ * the current month as unusually dry every time it was built.
  */
 export function precipitationByYear(years: number[]): PrecipitationYear[] {
   const days = dailyPrecipitation()
@@ -113,84 +120,120 @@ export function precipitationByYear(years: number[]): PrecipitationYear[] {
     if (wanted.has(year)) byYear.get(year)!.push(day)
   }
 
-  return years.map((year) => {
+  const built = years.map((year) => {
     const rows = byYear.get(year) ?? []
-    const buckets = new Map<number, PrecipitationWeek>()
+    const buckets = new Map<number, PrecipitationMonth>()
 
     for (const day of rows) {
-      const week = weekOfYear(day.date.slice(5), year)
-      let bucket = buckets.get(week)
+      const month = Number(day.date.slice(5, 7))
+      let bucket = buckets.get(month)
       if (!bucket) {
         bucket = {
-          week,
-          startMonthDay: weekStartMonthDay(week),
+          month,
+          label: MONTH_NAMES[month - 1],
           inches: 0,
           cumulativeInches: 0,
+          days: 0,
+          partial: false,
           filledDays: 0,
           unreadDays: 0,
         }
-        buckets.set(week, bucket)
+        buckets.set(month, bucket)
       }
+      bucket.days++
       if (day.inches === null) bucket.unreadDays++
       else bucket.inches += day.inches
       if (day.source === "neighbour") bucket.filledDays++
     }
 
-    const weeks = [...buckets.values()].sort((a, b) => a.week - b.week)
+    const months = [...buckets.values()].sort((a, b) => a.month - b.month)
     let running = 0
-    for (const bucket of weeks) {
+    for (const bucket of months) {
       running += bucket.inches
       bucket.inches = round(bucket.inches)
       bucket.cumulativeInches = round(running)
+      // Short of its own length, or carrying days nothing read: either way the
+      // total is not one a whole month can be compared with.
+      bucket.partial = bucket.days < daysInMonth(bucket.month, year)
     }
 
     const read = rows.filter((day) => day.inches !== null)
     return {
       year,
-      weeks,
+      months,
       totalInches: round(running),
+      // Filled in below, once the whole set is known: it is defined against
+      // the newest year's own last day, which one year alone cannot see.
+      toDateInches: 0,
       throughDate: read.at(-1)?.date ?? `${year}-01-01`,
       filledDays: rows.filter((day) => day.source === "neighbour").length,
       unreadDays: rows.filter((day) => day.source === "unread").length,
     }
   })
+
+  const through = built.at(-1)?.throughDate.slice(5) ?? "12-31"
+  for (const year of built) {
+    year.toDateInches = round(
+      (byYear.get(year.year) ?? [])
+        .filter((day) => day.date.slice(5) <= through)
+        .reduce((sum, day) => sum + (day.inches ?? 0), 0),
+    )
+  }
+  return built
 }
 
 /**
- * NCEI's 1991-2020 normal, accumulated the same way, as the line the four
- * years are read against. The date in each row of the normal file is
- * arbitrary -- only the month and day matter -- so this is bucketed on a
- * non-leap year to match the labels.
+ * The normal accumulated to the same month and day, so the legend's own
+ * reference figure is the same measurement as the years beside it. February
+ * 29th is skipped: the normal file hangs on a leap year, the comparison
+ * rarely does, and one day of a thirty-year mean either way is noise against
+ * the point being made.
  */
-export function normalByWeek(): PrecipitationWeek[] {
-  const buckets = new Map<number, PrecipitationWeek>()
+export function normalToDate(monthDay: string): number {
+  return round(
+    NORMAL_ROWS.filter((row) => row[0].slice(5) <= monthDay && row[0].slice(5) !== "02-29").reduce(
+      (sum, row) => sum + (parsePrecipitation(row[NORMAL_PCPN]) ?? 0),
+      0,
+    ),
+  )
+}
+
+/**
+ * NCEI's 1991-2020 normal, bucketed the same way, as the line the four years
+ * are read against. The date in each row of the normal file is arbitrary --
+ * only the month and day matter -- so this is read on the file's own
+ * reference year, which is a leap year and so has every calendar day in it.
+ */
+export function normalByMonth(): PrecipitationMonth[] {
+  const buckets = new Map<number, PrecipitationMonth>()
   for (const row of NORMAL_ROWS) {
-    const monthDay = row[0].slice(5)
-    if (monthDay === "02-29") continue
-    const week = weekOfYear(monthDay, 2023)
-    let bucket = buckets.get(week)
+    const month = Number(row[0].slice(5, 7))
+    let bucket = buckets.get(month)
     if (!bucket) {
       bucket = {
-        week,
-        startMonthDay: weekStartMonthDay(week),
+        month,
+        label: MONTH_NAMES[month - 1],
         inches: 0,
         cumulativeInches: 0,
+        days: 0,
+        partial: false,
         filledDays: 0,
         unreadDays: 0,
       }
-      buckets.set(week, bucket)
+      buckets.set(month, bucket)
     }
+    bucket.days++
     bucket.inches += parsePrecipitation(row[NORMAL_PCPN]) ?? 0
   }
 
-  const weeks = [...buckets.values()].sort((a, b) => a.week - b.week)
+  const months = [...buckets.values()].sort((a, b) => a.month - b.month)
   let running = 0
-  for (const bucket of weeks) {
+  for (const bucket of months) {
     running += bucket.inches
     bucket.inches = round(bucket.inches)
     bucket.cumulativeInches = round(running)
   }
-  return weeks
+  return months
 }
 
 /** Where the three gauges behind all of this came from, for the page's Sources. */

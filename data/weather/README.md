@@ -78,9 +78,9 @@ changed against the previous commit.
   hand, so the record misses days -- 35 of 2026's first 298, and 30 of those
   fall in January, February and March, where a missed reading is usually a
   multi-day stretch of winter precipitation rather than a dry day. Summed as
-  they stand, 2026 comes to 26.58 inches by October 25th against 2025's
+  they stand, 2026 comes to 26.58 inches by late October against 2025's
   30.64: four inches drier, and the driest of the last four years. Filled,
-  it comes to 30.49 against 2025's 30.81 -- level with it, and the finding
+  it comes to 30.48 against 2025's 30.81 -- level with it, and the finding
   becomes two consecutive dry years about ten inches below normal rather
   than one collapsing year. That is a large enough difference to the story
   that leaving the gaps unfilled would have been the misleading choice.

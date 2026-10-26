@@ -1,53 +1,37 @@
 import { describe, expect, it } from "vitest"
-import { longDate, monthTicks, weekOfYear, weekStartMonthDay } from "./precipitation"
+import { MONTH_NAMES, daysInMonth, isLeapYear, longDate } from "./precipitation"
 
-describe("weekOfYear", () => {
-  it("opens week 1 on January 1st", () => {
-    expect(weekOfYear("01-01", 2023)).toBe(1)
-    expect(weekOfYear("01-07", 2023)).toBe(1)
-    expect(weekOfYear("01-08", 2023)).toBe(2)
+describe("daysInMonth", () => {
+  it("knows each month's length", () => {
+    expect(daysInMonth(1, 2026)).toBe(31)
+    expect(daysInMonth(4, 2026)).toBe(30)
+    expect(daysInMonth(12, 2026)).toBe(31)
   })
 
-  it("puts the same date in the same week in every year, leap or not", () => {
-    for (const year of [2023, 2024, 2025, 2026]) {
-      expect(weekOfYear("07-04", year)).toBe(weekOfYear("07-04", 2023))
-      expect(weekOfYear("12-25", year)).toBe(weekOfYear("12-25", 2023))
-    }
-  })
-
-  it("folds February 29th into week 9 rather than discarding the day", () => {
-    expect(weekOfYear("02-29", 2024)).toBe(9)
-    expect(weekOfYear("02-28", 2024)).toBe(9)
-    expect(weekOfYear("03-01", 2024)).toBe(9)
-  })
-
-  it("never runs past week 53", () => {
-    expect(weekOfYear("12-31", 2023)).toBe(53)
-    expect(weekOfYear("12-31", 2024)).toBe(53)
-  })
-
-  it("labels a week by the day it opens", () => {
-    expect(weekStartMonthDay(1)).toBe("01-01")
-    expect(weekStartMonthDay(2)).toBe("01-08")
+  /** The whole reason this is a function and not a constant array. */
+  it("gives February its leap day only in a leap year", () => {
+    expect(daysInMonth(2, 2024)).toBe(29)
+    expect(daysInMonth(2, 2025)).toBe(28)
+    expect(daysInMonth(2, 2026)).toBe(28)
+    expect(daysInMonth(2, 2000)).toBe(29)
+    expect(daysInMonth(2, 1900)).toBe(28)
   })
 })
 
-describe("monthTicks", () => {
-  const ticks = monthTicks()
-
-  it("gives one tick per month, January first", () => {
-    expect(ticks.length).toBe(12)
-    expect(ticks[0]).toMatchObject({ label: "Jan", week: 1 })
+describe("isLeapYear", () => {
+  it("follows the century rule, not just the four-year one", () => {
+    expect(isLeapYear(2024)).toBe(true)
+    expect(isLeapYear(2026)).toBe(false)
+    expect(isLeapYear(2000)).toBe(true)
+    expect(isLeapYear(1900)).toBe(false)
   })
+})
 
-  it("keeps the ticks in order across the year", () => {
-    for (let i = 1; i < ticks.length; i++) expect(ticks[i].week).toBeGreaterThan(ticks[i - 1].week)
-  })
-
-  /** Fractional on purpose: rounding each to a week boundary drifts by December. */
-  it("places December inside the 53-week axis", () => {
-    expect(ticks.at(-1)!.week).toBeGreaterThan(48)
-    expect(ticks.at(-1)!.week).toBeLessThanOrEqual(53)
+describe("MONTH_NAMES", () => {
+  it("runs January to December", () => {
+    expect(MONTH_NAMES.length).toBe(12)
+    expect(MONTH_NAMES[0]).toBe("Jan")
+    expect(MONTH_NAMES[11]).toBe("Dec")
   })
 })
 

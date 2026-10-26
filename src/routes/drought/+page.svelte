@@ -1,7 +1,7 @@
 <script lang="ts">
-  // The rainfall chart's weeks are aggregated in `+page.server.ts`: the three
-  // station files behind them run to megabytes, and a server load is what
-  // keeps them out of this page's own bundle.
+  // The rainfall chart's months are aggregated in `+page.server.ts`: the
+  // three station files behind them run to megabytes, and a server load is
+  // what keeps them out of this page's own bundle.
   import RainfallYearsChart from "$lib/RainfallYearsChart.svelte"
 
   let { data } = $props()
@@ -11,13 +11,10 @@
   const city = $derived(data.rainfallSource.cityStation)
   const gauges = $derived(data.rainfallSource.neighbourStations)
 
-  // Every year is read at the same week of the calendar as the current year
-  // has reached, so the figures in the sentence below compare like with like
-  // rather than a part-year against three whole ones.
-  const through = $derived(current.throughDate.slice(5))
-  const byNow = (weeks: { startMonthDay: string; cumulativeInches: number }[]) =>
-    weeks.filter((week) => week.startMonthDay <= through).at(-1)?.cumulativeInches
-
+  // `toDateInches` is each year summed only to the same month and day the
+  // current year reaches, which is the one figure of these comparable across
+  // all four -- see $lib/precipitation.ts. The sentence below must not put a
+  // part-year beside three whole ones.
   const throughLabel = $derived(
     new Date(`${current.throughDate}T00:00:00Z`).toLocaleDateString("en-US", {
       month: "long",
@@ -51,14 +48,18 @@
 
 <h3>Rainfall, this year against the last three</h3>
 
-<RainfallYearsChart years={data.rainfallYears} normal={data.rainfallNormal} />
+<RainfallYearsChart
+  years={data.rainfallYears}
+  normal={data.rainfallNormal}
+  normalToDate={data.rainfallNormalToDate}
+/>
 
 <p>
-  Inches of precipitation accumulating since January 1st. {current.year} stands at
-  {current.totalInches} inches through {throughLabel}; {previous.year} had reached
-  {byNow(previous.weeks)} inches by the same week, and the 1991&ndash;2020 normal for that week is {byNow(
-    data.rainfallNormal,
-  )} inches.
+  Inches of precipitation each month, as the city's own gauge measured them.
+  {current.year} has had {current.toDateInches} inches through {throughLabel};
+  {previous.year} had {previous.toDateInches} inches by the same day, and the 1991&ndash;2020 normal for
+  that span is {data.rainfallNormalToDate} inches. The last point on
+  {current.year}'s line is dashed because the month is not over.
 </p>
 
 <p>
