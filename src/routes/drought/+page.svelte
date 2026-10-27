@@ -2,9 +2,8 @@
   // The rainfall chart's months are aggregated in `+page.server.ts`: the
   // three station files behind them run to megabytes, and a server load is
   // what keeps them out of this page's own bundle.
-  import DroughtChart from "$lib/DroughtChart.svelte"
+  import RainfallChart from "$lib/RainfallChart.svelte"
   import PrecinctMap from "$lib/PrecinctMap.svelte"
-  import { KENOZA_LEVELS, KENOZA_SOURCE } from "$lib/kenoza-levels"
   import waterBodies from "$lib/data/water-bodies.json"
 
   let { data } = $props()
@@ -88,25 +87,28 @@
 
 <h2>Sources</h2>
 
-<p>
-  Our water is primarily replenished through rainfall, which runs into Crystal Lake, Millvale
-  Reservoir and Kenoza Lake. In the spring, snow melt also runs into these water supplies, making up
-  another significant source.
-</p>
+<!-- A grid rather than a float, because the chart has to sit *beside* the map
+     rather than below it. A float only shortens the line boxes of the text
+     that follows it: a block-level element -- which the chart's own <figure>
+     is -- lays its box out at full width underneath, and the browser then
+     pushes the whole thing clear of the float. Measured, before this was a
+     grid: at 1440 the map ended at y=581 and the chart began at y=589, full
+     window width. Two grid columns place both deterministically at every
+     size, and a single column below `md`, where the map goes back above the
+     text because a two-fifths map beside a two-fifths column is neither.
+     `md` and not `sm`: at a 640px window the two columns leave the chart 372px
+     to draw in, which rendered its labels at 8.9px -- stacked at that width it
+     gets the full column and they come out near 13.
 
-<h3>Where the water comes from</h3>
-
-<!-- `flow-root` so the float is contained: without it the heading below
-     would wrap around the map instead of starting under it. The map only
-     floats from `sm` up; at phone width it is full width above the text,
-     since a two-fifths map beside a two-fifths column is neither. -->
-<div class="flow-root">
-  <!-- `h-80` because an interactive map fills the height its parent gives it,
-       and has a 20rem floor of its own; without a height on the wrapper there
-       is nothing for it to fill. -->
-  <div class="mb-3 h-80 w-full sm:float-right sm:mb-2 sm:ml-5 sm:w-2/5">
+     `h-80` on the map's own cell because an interactive map fills the height
+     its parent gives it and has a 20rem floor of its own; `items-start` so
+     that height is its own rather than the taller column's. -->
+<div class="grid items-start gap-x-5 gap-y-3 md:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
+  <div class="h-80 md:col-start-2 md:row-start-1">
     <PrecinctMap
-      title="Haverhill, and the four bodies of water its public water supply draws from"
+      title="Haverhill, and the {COUNT_WORD[
+        waterBodies.bodies.length
+      ]} bodies of water its public water supply draws from"
       bounds={waterBodies.bounds as [number, number, number, number]}
       areas={supplyAreas}
       outlines={[{ shape: waterBodies.town.shape, name: "Haverhill" }]}
@@ -117,49 +119,38 @@
     />
   </div>
 
-  <p>
-    The Water Department names {COUNT_WORD[waterBodies.bodies.length]} surface sources for public water
-    system {waterBodies.pwsid}:
-    {waterBodies.bodies.map((body) => titleCase(body.name)).join(", ")} &mdash; largest first, which is
-    also how to read them off the map, since each is drawn at its own size inside the city boundary. Millvale
-    is the smallest of the {COUNT_WORD[waterBodies.bodies.length]} but sits in by far the largest protection
-    area, {acres(waterBodies.bodies.find((b) => b.name.startsWith("MILLVALE"))?.zoneAcres)} acres against
-    Kenoza's
-    {acres(waterBodies.bodies.find((b) => b.name.startsWith("KENOZA"))?.zoneAcres)} &mdash; a small reservoir
-    under a wide watershed. Which waters are the supply is the city's own list; the outlines and the protection-area
-    acreages are the state's and the federal hydrography dataset's.
-  </p>
+  <div class="md:col-start-1 md:row-start-1">
+    <p>
+      Our water is primarily replenished through rainfall, which runs into Crystal Lake, Millvale
+      Reservoir and Kenoza Lake. In the spring, snow melt also runs into these water supplies,
+      making up another significant source.
+    </p>
+
+    <RainfallChart years={data.rainfallYears} baseline={data.rainfallBaseline} />
+  </div>
 </div>
+
+<h3>Where the water comes from</h3>
+
+<p>
+  The Water Department names {COUNT_WORD[waterBodies.bodies.length]} surface sources for public water
+  system {waterBodies.pwsid}:
+  {waterBodies.bodies.map((body) => titleCase(body.name)).join(", ")} &mdash; largest first, which is
+  also how to read them off the map, since each is drawn at its own size inside the city boundary. Millvale
+  is the smallest of the {COUNT_WORD[waterBodies.bodies.length]} but sits in by far the largest protection
+  area, {acres(waterBodies.bodies.find((b) => b.name.startsWith("MILLVALE"))?.zoneAcres)} acres against
+  Kenoza's
+  {acres(waterBodies.bodies.find((b) => b.name.startsWith("KENOZA"))?.zoneAcres)} &mdash; a small reservoir
+  under a wide watershed. Which waters are the supply is the city's own list; the outlines and the protection-area
+  acreages are the state's and the federal hydrography dataset's.
+</p>
 
 <h3>Slop: Rainfall and reservoir level, this year against last</h3>
 
-<DroughtChart years={data.rainfallYears} levels={KENOZA_LEVELS} />
-
 <p>
-  Inches of precipitation each month, averaged across Haverhill's rain gauges, and the same rainfall
-  accumulating since January 1st beneath it. {current.year} has had
-  {current.toDateInches} inches through {throughLabel}, and {previous.year} had
-  {previous.toDateInches} inches by the same day. The last point on {current.year}'s line is dashed
-  in both because the month is not over.
-</p>
-
-<p>
-  The two rainfall panels answer different questions. A month's own inches shows when it rained
-  &mdash; {current.year}'s wettest month and its driest differ by several inches, and a running
-  total hides both. The accumulation shows how far behind a year is by now, which is the question
-  the reservoir is answering to, so it sits directly above the lake rather than beside its own
-  monthly chart.
-</p>
-
-<p>
-  The lower panel is Kenoza Lake's own level over the same months. Those figures are dotted because
-  they are weaker than the rest: the city has never published the series as numbers, so each one is
-  where a line sat on its published
-  <a href={KENOZA_SOURCE.url} target="_blank" rel="external noopener noreferrer">
-    drought-status chart
-  </a>, as of {KENOZA_SOURCE.asOf} &mdash; good to about a fifth of a foot and no better. The one level
-  the city states outright is the 99.8-foot low of mid-September, which that reading reproduces exactly.
-  {KENOZA_LEVELS.at(-1)!.year}'s line stops in September because that is when the chart was drawn.
+  Inches of precipitation, averaged across Haverhill's rain gauges.
+  {current.year} has had {current.toDateInches} inches through {throughLabel}, and {previous.year}
+  had {previous.toDateInches} inches by the same day.
 </p>
 
 <p>

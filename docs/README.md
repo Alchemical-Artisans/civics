@@ -140,8 +140,10 @@ src/lib/
   drought-colours.ts       its one-hue ordinal ramp, validated with the dataviz skill
   rainfall.ts              NOAA statewide precipitation, cited by API URL and access date
   rainfall.spec.ts         unit tests for it
-  RainfallChart.svelte     fifteen years of it, as a diverging bar against the normal
+  RainfallChart.svelte     /drought's bars: four years of Haverhill rainfall and a 10-year average
   RainfallChart.svelte.spec.ts    browser tests for it
+  precipitation.ts         its shapes, date arithmetic and averageToDate
+  server/precipitation.ts  the three station files aggregated into years
   data/meetings.json       the committed meeting dataset
   data/budget.json         the committed budget and audit listing
   data/reviews.json        human corrections, overlaid onto the meetings

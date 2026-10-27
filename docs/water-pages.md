@@ -44,16 +44,21 @@ figure as a doc comment, the same role a page-number comment plays in
   comment on `DROUGHT_ZONES` says so rather than implying all four are
   equally confirmed.
 
-- **Why now** — `src/lib/rainfall.ts` and `RainfallChart.svelte`: the Water
+- **Why now** — `src/lib/rainfall.ts`: the Water
   Department's own explanation for the drought is reduced rainfall, and this
   is the one figure on the page that isn't Haverhill's or even Haverhill
   Water's own -- it's NOAA's, statewide Massachusetts January-August
   precipitation back to 1895, read off NOAA's public Climate at a Glance API
   directly (`mass.gov`, which would carry the state's own regional figures,
   blocks every automated fetch tried against it, PDFs included -- see below).
-  Fifteen years drawn as a diverging bar, wet blue above a normal line and
-  dry orange below, so 2026 reads against recent memory rather than as an
-  isolated number.
+  The page states the figures in prose: 2026's January-August total, its
+  departure from the 1901-2000 average, and where it ranks in the 132-year
+  record. Fifteen years of it were drawn as a diverging bar -- wet blue above
+  a normal line, dry orange below -- and that chart is gone, at the site
+  owner's direction: `/drought` charts Haverhill's own gauges, which is better
+  evidence for a Haverhill page than a statewide figure, and the statewide
+  number is worth stating without being worth a chart. `rainfall.ts` and its
+  tests stay, being what the prose reads.
 - **Who uses the water** — the city's own residential/non-residential split
   (68%/32%), applied to its stated average daily production and drawn with
   `BudgetStack`.

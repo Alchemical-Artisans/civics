@@ -134,3 +134,24 @@ export function longDate(date: string): string {
   const [, month, day] = date.split("-")
   return `${MONTH_NAMES[Number(month) - 1]} ${Number(day)}`
 }
+
+/**
+ * The mean of several years' `toDateInches`, as a baseline a single year can
+ * be read against.
+ *
+ * **Every figure averaged here is already read to the same day**, because
+ * `precipitationByYear` defines `toDateInches` against the newest year in the
+ * set it was given -- so the average answers the same question each bar does
+ * ("how much rain by this date"), and a part-year can sit beside it without
+ * the comparison lying. Averaging `totalInches` instead would put ten whole
+ * years against the current year's ten months, which is the mistake this
+ * chart exists to avoid making.
+ *
+ * Rounded to hundredths like every other figure here, so the baseline prints
+ * at the same precision as the bars it stands behind.
+ */
+export function averageToDate(years: PrecipitationYear[]): number {
+  if (!years.length) return 0
+  const total = years.reduce((sum, year) => sum + year.toDateInches, 0)
+  return Math.round((total / years.length) * 100) / 100
+}

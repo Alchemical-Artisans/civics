@@ -8,81 +8,85 @@ deliberate while it is in progress.
 
 This document covers the one finished piece: the rainfall chart.
 
-## Rainfall, this year against the last three
+## Rainfall, four years against a ten-year average
 
-Three panels stacked on one calendar-year x axis, a line per year in each:
-monthly rainfall, the same rainfall accumulating since January 1st, and
-Kenoza Lake's own level, for the current year and the one before it. `src/lib/RainfallYearsChart.svelte`
-draws it; `src/lib/server/precipitation.ts` aggregates the months;
-`src/lib/precipitation.ts` holds the shapes and the date arithmetic, outside
-both so they unit-test without rendering -- the same arrangement `calendar.ts`
-has.
+Five vertical bars on one zero-based axis: the current year and the three
+before it, earliest on the left, then a gap and the ten-year average.
+`src/lib/RainfallChart.svelte` draws it; `src/lib/server/precipitation.ts`
+aggregates the years; `src/lib/precipitation.ts` holds the shapes, the date
+arithmetic and `averageToDate`, outside both so they unit-test without
+rendering -- the same arrangement `calendar.ts` has.
 
-**Two rainfall panels, because they answer different questions.** A month's
-own inches says when it rained: a month at 8.90 in and one at 1.25 are visible
-there and vanish into a running total. The accumulation says how far behind a
-year is by now, which is the question the lake is answering to -- which is why
-it sits directly above the lake panel rather than beside its own monthly
-chart. A cumulative line can only rise, so it says nothing about any single
-month; the two together say both things without either compromising. The
-accumulation was the chart's first and only shape, replaced by monthly amounts,
-and is now drawn alongside them rather than instead of them.
+Today it reads 53.71 in for 2023, then 35.55, 31.96 and 30.52 -- three
+declining years, each under the 37.49 in average of 2016-2025.
 
-`cumulativeInches` has been on every `PrecipitationMonth` since the first
-version, so the panel needed no change to the module -- only the component,
-which was restructured to be panel-driven rather than drawing each panel's
-lines, grid and axis by hand. A panel declares its range, step, unit and how
-to get a year's points; everything else is shared.
+**Bars per year, because that is the question.** "How has the rainfall
+changed year to year" is answered by one bar per year; a line per year across
+the months answers "when in the year does it rain", which is a different
+question and buries this one. The chart was that monthly line for a while --
+two years overlaid, with a cumulative panel and a Kenoza Lake panel stacked
+under them -- and the trend these five bars draw could not be read off it at
+all.
 
-**Two years, and no reference curve.** It drew four years against the
-1991-2020 normal first, and both the fourth year and the normal came off as
-distractions. Five lines is more than a reader compares at once; 2023 was wet
-enough -- 11.23 in in one August -- to set a vertical scale the other three
-then sat low against, so dropping it let them use most of the height; and a
-dashed thirty-year mean invited a second comparison beside the one being
-asked for, and the lake panel added beneath has only 2025 and 2026 to draw
-anyway. The route asks `precipitationByYear` for two years and the
-component takes no normal at all. Nothing on the site reads the normal curve
-now, so `normalByMonth()` and `normalToDate()` were deleted rather than left
-as unread exports -- `data/weather/haverhill-daily-normal.json` is still
-scraped and still documented, and bucketing it the same way is a short
-function away if a reference line is ever wanted back.
+**Every bar is read to the same day, and that is the whole integrity of it.**
+The current year is ten months old. Drawn against four whole years and a
+ten-whole-year average it would look like a catastrophe every time the page
+was built, in June as much as in December. So each bar is `toDateInches` --
+that year summed only through the current year's own last read day -- and the
+average is the mean of ten such figures, never of ten whole years. The
+`figcaption` prints the day, because a reader cannot infer it from bars.
 
-**Months, after two other shapes.** This drew cumulative weeks first, then
-weekly amounts. A week here swings between 0.00 and 4.37 in, and four such
-lines over one axis obscure each other rather than comparing; twelve points a
-line is legible. Months also dispose of two calendar problems weeks had:
-seven-day runs counted from January 1st drift against the calendar, so
-February 29th had to be folded into a neighbouring bucket to keep four years
-aligned on one axis, and an ISO week starts on a Monday and so covers
-different dates each year. A month is the same month in every year, leap or
-not.
+This is the same trap the chart's legend fell into three times in its line-
+chart form, and it is now pinned from both ends: `averageToDate` has a test
+whose fixtures make a whole year exactly nine inches wetter than its to-date
+figure, so averaging the wrong field is off by nine; and the component's own
+tests assert every bar's accessible name carries the day.
 
-**An incomplete month is drawn dashed, with a hollow point, and the readout
-says what it stands on.** The current year's last month is almost always
-short -- October read to the 25th is six days fewer than the Octobers beside
-it -- and an unmarked point there would show the current month as unusually
-dry on every build. `partial` on a `PrecipitationMonth` is set by comparing
-the days a gauge read against the month's own length, so it catches a month
-with unread days in the middle as well as one that has not finished. It is the
-only dashed thing on the chart now that the normal is gone, which is what the
-component's own test asserts.
+**Eleven years in, five figures out, one call.** `+page.server.ts` asks
+`precipitationByYear` for the eleven years at once rather than making two
+calls. That function defines `toDateInches` against the newest year of the set
+it is handed, so asking for the bars and the baseline separately would define
+each against a different day and the average would stop being a figure the
+bars could be compared with.
 
-**Every total quoted anywhere is read to the same day.** This is the one
-comparison the chart must not get wrong, and it got it wrong twice while being
-built. `toDateInches` sums each year only to the month and day the current
-year reaches; the legend and the prose both use it, and the legend says so
-above itself. Drawn with each year's own final total instead, the legend read
-`2026 30.48"` beside `2025 37.72"` and said the current year was seven inches
-drier when at the same point it was level. Summing whole months is not good
-enough either -- 2025's October is 31 days against 2026's 25.
+**The average is a bar and a rule.** A bar, set apart on the right by a gap
+and a neutral slate rather than a colour off the year ramp, because it is a
+fifth quantity on the same scale. A faint dashed rule at the same height
+across the year bars, because which years fall under it is the point, and
+tracking the eye from a bar at one end of a chart to a bar at the other is
+exactly the comparison bars are worst at.
 
-**The current year's colour is picked by name, not by position.** It is
-`COLOURS[1]`, the orange `drought-colours.ts` builds its stage ramp on -- the
-drought year drawn in the drought hue -- and the years behind it take the rest
-of the palette in order. Indexing one palette by position worked only while
-exactly four years were drawn, and silently handed 2026 a violet the moment
-the span became three.
+**Every bar prints its own figure**, so there is no tooltip and nothing is
+visible only to a mouse. The bars are focusable for a keyboard reader, each
+carrying its figure and how it stands against the average, and the `sr-only`
+table under the chart repeats all five.
+
+**Sized by its scale factor, not by its box.** The SVG is `w-full`, so the
+browser scales the whole drawing -- text included -- by rendered width over
+the `viewBox` width. A 700-wide box put 13.4px of label in the wide
+two-column layout and 5.9px at the `sm` breakpoint, where the left column is
+only 372px. The box is 460 wide instead and the figure is capped at
+`max-w-xl`, which holds the effective label between about 9 and 14px from a
+phone up; five bars never needed 850px of canvas.
+
+**The section is a grid, not a float.** The chart has to sit beside the
+supply map rather than below it, and a float cannot do that: it only shortens
+the line boxes of following text, so a block-level element -- which the
+chart's own `<figure>` is -- lays its box out at full width underneath and
+the browser pushes the whole thing clear. Measured before the change, at
+1440 the map ended at y=581 and the chart began at y=589 across the full
+window. Two grid columns, `3fr 2fr`, place both at every size; below `md` it
+is one column with the map above the text. `md` rather than `sm` because at a
+640px window the two columns left the chart 372px and its labels at 8.9px.
+
+**Four years, after two.** The chart drew four years against the 1991-2020
+normal, then two years with the normal dropped, and is back to four now that
+a year is one bar rather than twelve points -- four bars crowd nothing, where
+four seasonal lines obscured each other. Nothing reads the normal curve:
+`normalByMonth()` and `normalToDate()` were deleted rather than left as
+unread exports, and `data/weather/haverhill-daily-normal.json` is still
+scraped and documented if a reference line is ever wanted back. The ten-year
+average here is computed from the station record itself, not from that file.
 
 ## The supply map
 
@@ -176,21 +180,29 @@ which bodies to consider, and the shapes drawn are always the NHD's own.
 
 ## Kenoza Lake's level
 
-The lower panel, from `src/lib/kenoza-levels.ts`. **Stacked rather than drawn
-over the rainfall, because the two do not share a scale**: rainfall is inches
-falling in a month and belongs on an axis starting at zero, a reservoir level
-is feet above a gauge datum and does not. Together they would need two y axes
-and a reader would be left working out which line answered to which. Stacked,
-each panel keeps its own scale and the shared x axis does the comparing — a
-dry month above sits directly over what the lake did next. The months are
-drawn once, under the lower panel, and one hover guide runs through both,
-since the point of stacking is reading down a column.
+**Transcribed in `src/lib/kenoza-levels.ts`, and drawn nowhere.** It was a
+third panel stacked under the rainfall, on its own scale, sharing the x axis
+-- rainfall is inches and belongs on an axis starting at zero, a reservoir
+level is feet above a gauge datum and does not, so the two could not be
+overlaid. The panel came off when the chart became bars per year, and the
+module is now unread by anything. It is kept rather than deleted because the
+reading itself was the expensive part and nothing about it has gone stale.
+
+**There is also a reason not to put it back as it was.** Kenoza's level is
+mostly a record of what the Water Department pumped, not of what fell:
+Kenoza's own watershed is 697 acres against a 240-acre lake, Millvale's is
+2,698, and the city's Open Space & Recreation Plan states that Millvale and
+Crystal are pumped _into_ Kenoza while Round Pond drains into it. Monthly
+rainfall against monthly level change over 2025-26 comes out at r = 0.53, and
+every month the lake rose it rose by more than all the rain falling on its own
+watershed could supply. A rainfall panel stacked above a lake panel invites a
+causal reading the figures do not support.
 
 **These figures are read off a picture, and are the weakest thing on the
 site.** The city has never published this series as numbers; the only version
 of it anywhere is a chart image, so each figure is where a line sat on that
 image rather than a reading the Water Department wrote down. They are drawn
-dotted for exactly that reason, the page says so in its own prose, and
+dotted for exactly that reason while they were drawn, and
 `kenoza-levels.ts` carries the full provenance. Treat one as good to about a
 fifth of a foot and never quote it as the city's stated level.
 

@@ -6,7 +6,6 @@
   import BudgetTable from "$lib/BudgetTable.svelte"
   import DroughtScale from "$lib/DroughtScale.svelte"
   import ProductionChart from "$lib/ProductionChart.svelte"
-  import RainfallChart from "$lib/RainfallChart.svelte"
   import WaterCalculator from "$lib/WaterCalculator.svelte"
   import { Router } from "$lib/router"
   import {
@@ -160,10 +159,8 @@
         {rainfallInches.format(currentRainfall.inches)} inches of rain from January through August {CURRENT_RAINFALL_YEAR},
         {rainfallInches.format(rainfallDeficit)} inches below the 1901–2000 average — the
         {ordinal(CURRENT_RAINFALL_RANK)}-driest such stretch in the {RAINFALL_RECORD_YEARS} years NOAA
-        has measured it. The bars below are the same stretch for each of the last fifteen years, so this
-        year reads against recent memory rather than against one number alone.
+        has measured it.
       </p>
-      <RainfallChart />
     </section>
 
     <section class="mt-10">
