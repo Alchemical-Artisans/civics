@@ -88,9 +88,33 @@ the span became three.
 
 `/drought` opens with a map of Haverhill and the four bodies of water its
 public system draws from, drawn by **`src/lib/PrecinctMap.svelte`** -- the
-same component the election's precinct map uses, which already took shapes,
-outlines, names, fills and labels as props and needed no change at all. The
-water bodies are its `areas`, the city boundary its one `outline`.
+same component the election's precinct map uses. The water bodies are its
+`areas`, the city boundary its one `outline`. It floats right at two fifths
+of the column width beside the paragraph that explains it, inside a
+`flow-root` wrapper so the next heading starts under it rather than wrapping
+around it, and drops to full width above the text below `sm`.
+
+**It is `interactive`, like every other map on the site** -- pan, zoom, and
+finer tiles as a reader goes in. The float needs an explicit `h-80` for that:
+an interactive map fills the height its parent gives it and has a 20rem floor
+of its own, so without a height on the wrapper there is nothing to fill.
+
+**`hoverLabel` is new, and only this map passes it.** It names one area at a
+time, on hover or focus, drawn on the map rather than left to the browser's
+own `<title>` tooltip -- which every area has had all along and still has.
+The reason is size: standing `label` text is sized as a fraction of the map's
+width, so on a map a quarter the usual size it lands around six pixels, and
+Kenoza and Round Pond sit close enough that their labels would collide at the
+zoom this opens on. One name at a time, at a fixed readable size, has neither
+problem. It is off by default, because a map with room for standing labels is
+better off with them -- a reader should not have to hunt. It also puts a
+plain area in the tab order, so the names are reachable by keyboard; an area
+that is already a link or a button is focusable anyway.
+
+`nameSize` follows `unit`'s own bargain: `live ? 15 / v.s : f.width / 22`, so
+the name holds at fifteen screen pixels whatever the zoom rather than
+swelling as a reader goes in. The paragraph beside the map still names all
+four, largest first, for a reader who hovers nothing.
 
 **Two sources, because neither answers the whole question.** MassDEP knows
 which waters are a public supply and publishes nothing about their shape at

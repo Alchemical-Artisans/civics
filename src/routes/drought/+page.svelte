@@ -30,12 +30,11 @@
     name: `${titleCase(body.name)} — ${body.areaSqKm} square kilometres`,
     fill: WATER,
     opacity: 0.55,
-    // No label. PrecinctMap sizes label text as a fraction of the map's own
-    // width, so at a quarter size these come out around six pixels -- and
-    // Kenoza and Round Pond sit close enough together that their labels would
-    // collide anyway. The paragraph beside the map names all four in the
-    // order it draws them, and each shape keeps its name on hover and for a
-    // screen reader.
+    // No standing label: Kenoza and Round Pond sit close enough together that
+    // theirs would overlap at the zoom this opens on. `hoverLabel` names one
+    // at a time instead, on hover or focus, which is legible at any size and
+    // cannot collide. The paragraph beside the map also names all four,
+    // largest first, for a reader who hovers nothing.
   }))
 
   /**
@@ -92,14 +91,19 @@
      floats from `sm` up; at phone width it is full width above the text,
      since a two-fifths map beside a two-fifths column is neither. -->
 <div class="flow-root">
-  <div class="mb-2 w-full sm:float-right sm:mb-2 sm:ml-5 sm:w-2/5">
+  <!-- `h-80` because an interactive map fills the height its parent gives it,
+       and has a 20rem floor of its own; without a height on the wrapper there
+       is nothing for it to fill. -->
+  <div class="mb-3 h-80 w-full sm:float-right sm:mb-2 sm:ml-5 sm:w-2/5">
     <PrecinctMap
       title="Haverhill, and the four bodies of water its public water supply draws from"
       bounds={waterBodies.bounds as [number, number, number, number]}
       areas={supplyAreas}
       outlines={[{ shape: waterBodies.town.shape, name: "Haverhill" }]}
       width={400}
-      height={280}
+      height={320}
+      interactive
+      hoverLabel
       caption="MassDEP, USGS and MassGIS"
     />
   </div>
