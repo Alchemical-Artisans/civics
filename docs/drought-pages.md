@@ -116,41 +116,46 @@ This reverses a rule [water-pages.md](water-pages.md) used to state, and that
 document now records the reversal and the reasoning rather than contradicting
 this one.
 
-## Where the figures come from, and the gaps in them
+## Where the figures come from
 
-Readings are the National Weather Service Cooperative Observer station inside
-the city -- HAVERHILL, `USC00193505`, the same station `data/weather/` already
-held for the water-balance research. It is read by hand, so its record has
-gaps, and those gaps are not evenly spread: 36 of 2026's days carry no reading,
-and 30 of them fall in January through March, where a missed reading is usually
-a multi-day stretch of winter precipitation rather than a dry day.
-
-That matters to what the chart says. Summed as they stand, 2026 reaches 26.58
-inches by late October against 2025's 30.64 -- four inches drier, and the
-driest of the four years drawn. Filled, 2026 reaches 30.48 against 2025's
-30.81, level with it, and the finding becomes two consecutive dry years around
-ten inches below the 1991-2020 normal for the same span, rather than one
-collapsing year.
-
-So a day the city gauge did not read is filled from the two CoCoRaHS gauges also
-inside Haverhill, averaged where both read it. Which two, and why those rather
-than the five other candidates within nine miles -- the nearest gauge of all
-being among the worst-agreeing -- is in
+**Every day is the average of each rain gauge in Haverhill that read it**,
+all three counting equally: the National Weather Service Cooperative Observer
+station inside the city (HAVERHILL, `USC00193505`) and the two CoCoRaHS
+gauges beside it. Which two, and why those rather than the five other
+candidates within nine miles -- the nearest gauge of all being among the
+worst-agreeing -- is in
 [`data/weather/README.md`](../data/weather/README.md) and in the comment on
 `NEIGHBOUR_STATIONS` in `scripts/lib/weather.mjs`.
 
-**Nothing is estimated, interpolated or modelled.** Every figure on the chart is
-some gauge's own reading of that day. A day no gauge read contributes nothing
-and is counted as unread rather than filled from the normal curve, which would
-be this site inventing rainfall. `dailyPrecipitation()` labels every day `city`,
-`neighbour` or `unread`, and both a month and a year carry their own
-`filledDays` and `unreadDays` -- which is what lets the page state the gap
-count in its own prose rather than leaving a reader to trust the line.
+So these figures are a city-wide average and not any one station's record.
+That is a deliberate change from how this started, and it moves the numbers:
+for 2026 the average reads 30.52 inches through October 26 where the
+Cooperative Observer station alone reads 26.58, and for 2025 31.96 against
+30.64. Both are kept -- `cityInches` on a day and `cityOnlyToDateInches` on a
+year -- because the two differ on every day more than one gauge reported, not
+only on the days the city gauge missed, and the page says as much in its own
+prose.
 
-The page says all of this in two sentences under the chart, with the station ids
-and the gauge distances, because a figure read off a live gauge rather than a
-committed document has to name where it came from. That is the same rule
-`src/lib/water.ts` follows -- see [water-pages.md](water-pages.md).
+**The city station is read by hand, and has gaps.** 36 of 2026's 299 days
+carry no reading from it, 30 of them in January through March, where a missed
+reading is usually a multi-day stretch of winter precipitation rather than a
+dry day. Those days stand on the volunteer gauges alone. Before the series
+was averaged this mattered much more: the city gauge's own total was the
+series, and unfilled those gaps made 2026 read as the driest of the four
+years drawn when it was in fact level with 2025.
+
+The span is the city station's own, reaching back to 1899 where the volunteer
+gauges begin in 2015 and 2022 -- so for most of the record the "average" is
+of one reading and equals that station's figure exactly.
+
+**Nothing is estimated, interpolated or modelled.** Every figure is some
+gauge's own reading of that day. A day no gauge read contributes nothing and
+is counted as unread rather than filled from the normal curve, which would be
+this site inventing rainfall. Each day carries the number of gauges behind it
+and whether the city's own was among them; each month and year carry
+`cityDays`, `filledDays` and `unreadDays`, which is what lets the page state
+the composition in its own prose rather than leaving a reader to trust the
+line.
 
 ## Why a server load
 

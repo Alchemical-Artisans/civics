@@ -22,6 +22,7 @@ const months = (values: number[], partialLast = false): PrecipitationMonth[] => 
       cumulativeInches: Math.round(running * 100) / 100,
       days: partialLast && i === values.length - 1 ? 12 : 31,
       partial: partialLast && i === values.length - 1,
+      cityDays: partialLast && i === values.length - 1 ? 12 : 31,
       filledDays: 0,
       unreadDays: 0,
     }
@@ -38,7 +39,9 @@ const year = (
   months: months(values, partialLast),
   totalInches: Math.round(values.reduce((a, b) => a + b, 0) * 100) / 100,
   toDateInches: Math.round(values.reduce((a, b) => a + b, 0) * 100) / 100,
+  cityOnlyToDateInches: Math.round(values.reduce((a, b) => a + b, 0) * 100) / 100,
   throughDate: `${y}-${String(values.length).padStart(2, "0")}-12`,
+  cityDays: values.length * 31,
   filledDays: 0,
   unreadDays: 0,
   ...extra,

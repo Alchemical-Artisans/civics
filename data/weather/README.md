@@ -101,12 +101,13 @@ changed against the previous commit.
   like -- and snow is precisely what these winter gaps are. LAWRENCE
   (`USC00194105`) covers only 25 of the 35 days and has 71 gaps of its own.
 
-  Two gauges rather than one because neither is complete on its own: 0.8 SW
-  has 11 unread days of its own in 2026. Where both read a day their mean is
-  used, where one does its own figure is, and a day neither read is left
-  unread and counted -- never filled from the long-term normal, which would
-  be inventing rainfall. `src/lib/server/precipitation.ts` carries the merge
-  and labels every day `city`, `neighbour` or `unread`.
+  **These are no longer only gap-fill.** `/drought` averages all three gauges
+  on every day, equally weighted, rather than reading the COOP station and
+  patching its gaps -- so the series is a city-wide average and not any one
+  station's record. `src/lib/server/precipitation.ts` carries the merge, keeps
+  each day's gauge count and the COOP station's own reading beside the mean,
+  and still leaves a day no gauge read unread and counted rather than filling
+  it from the long-term normal.
 
 ## Not yet a pillar this covers
 

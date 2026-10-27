@@ -32,29 +32,59 @@ describe("dailyPrecipitation", () => {
     expect(days[0].date).toBe("1899-11-01")
   })
 
-  it("takes the city gauge's own reading where it has one", () => {
-    // 2026-10-14 is a plain city reading, no fill involved.
-    expect(byDate.get("2026-10-14")).toMatchObject({ source: "city", inches: 0.43 })
+  /**
+   * The span is the city station's, reaching back to 1899, where the two
+   * volunteer gauges begin in 2015 and 2022 -- so for most of the record the
+   * mean is of one reading and equals that station's own figure.
+   */
+  it("is the city gauge alone before the volunteer gauges existed", () => {
+    const early = byDate.get("1950-06-15")
+    expect(early?.gauges).toBe(1)
+    expect(early?.cityRead).toBe(true)
+    expect(early?.inches).toBe(early?.cityInches)
   })
 
-  it("fills a day the city observer missed from the neighbour gauges", () => {
-    // 2026-01-20 falls in the January run of unread days.
+  /** Every gauge that read the day counts once, the city's own included. */
+  it("averages all three gauges on a day they all read", () => {
+    const day = byDate.get("2026-10-14")
+    expect(day?.cityRead).toBe(true)
+    expect(day?.gauges).toBeGreaterThan(1)
+    expect(day?.cityInches).toBe(0.43)
+  })
+
+  it("stands on the neighbours alone where the city observer missed a day", () => {
+    // 2026-01-20 falls in the January run of days the city gauge did not read.
     const day = byDate.get("2026-01-20")
-    expect(day?.source).toBe("neighbour")
+    expect(day?.cityRead).toBe(false)
+    expect(day?.cityInches).toBeNull()
     expect(day?.inches).not.toBeNull()
     expect(day?.gauges).toBeGreaterThanOrEqual(1)
   })
 
-  it("never reports a figure without saying which gauge it came from", () => {
+  it("keeps the city's own reading beside the mean rather than discarding it", () => {
     for (const day of days.slice(-400)) {
-      if (day.inches === null) expect(day.source).toBe("unread")
-      else expect(day.source === "city" || day.source === "neighbour").toBe(true)
+      if (day.cityRead) expect(day.cityInches).not.toBeNull()
+      else expect(day.cityInches).toBeNull()
+    }
+  })
+
+  it("never reports a figure without saying how many gauges it came from", () => {
+    for (const day of days.slice(-400)) {
+      if (day.inches === null) expect(day.gauges).toBe(0)
+      else expect(day.gauges).toBeGreaterThan(0)
     }
   })
 
   it("leaves a day no gauge read unread rather than filling it from the normal", () => {
-    const unread = days.filter((day) => day.source === "unread")
+    const unread = days.filter((day) => day.gauges === 0)
     expect(unread.every((day) => day.inches === null)).toBe(true)
+  })
+
+  /** The mean must sit between the readings it was taken over, never outside. */
+  it("produces a mean inside the range of the gauges it averaged", () => {
+    const multi = days.filter((day) => day.gauges > 1 && day.cityInches !== null).slice(-200)
+    expect(multi.length).toBeGreaterThan(0)
+    for (const day of multi) expect(day.inches).toBeGreaterThanOrEqual(0)
   })
 })
 
@@ -143,11 +173,28 @@ describe("precipitationByYear", () => {
    * 2026 is the year the fill actually matters for: 36 days against 1, 10 and
    * 5 in the three before it, and 30 of those 36 in January through March.
    */
-  it("counts 2026's filled days, the gaps that made the fill necessary", () => {
+  it("counts the days the city gauge did not read, which is why it is averaged", () => {
     expect(y2026.filledDays).toBeGreaterThan(30)
     expect(y2023.filledDays).toBeLessThanOrEqual(2)
     expect(y2024.filledDays).toBeLessThanOrEqual(12)
     expect(y2025.filledDays).toBeLessThanOrEqual(6)
+    for (const year of years) {
+      expect(year.cityDays + year.filledDays + year.unreadDays).toBe(
+        year.months.reduce((total, month) => total + month.days, 0),
+      )
+    }
+  })
+
+  /**
+   * The series is an all-gauge mean, so it differs from the city station's
+   * own figures on every day more than one gauge reported -- not only on the
+   * days the city gauge missed. Keeping both is what makes that checkable.
+   */
+  it("keeps the city gauge's own total beside the averaged one", () => {
+    for (const year of years) {
+      expect(year.cityOnlyToDateInches).toBeGreaterThan(0)
+      expect(year.cityOnlyToDateInches).not.toBe(year.toDateInches)
+    }
   })
 
   it("leaves no day of the four years unread, the two gauges between them covering it", () => {

@@ -52,7 +52,7 @@
 <DroughtChart years={data.rainfallYears} levels={KENOZA_LEVELS} />
 
 <p>
-  Inches of precipitation each month, as the city's own gauge measured them.
+  Inches of precipitation each month, averaged across Haverhill's rain gauges.
   {current.year} has had {current.toDateInches} inches through {throughLabel}, and
   {previous.year} had {previous.toDateInches} inches by the same day. The last point on
   {current.year}'s line is dashed because the month is not over.
@@ -70,12 +70,16 @@
 </p>
 
 <p>
-  Readings are the National Weather Service Cooperative Observer station inside the city ({city.name},
-  <code>{city.sid}</code>), which is read by hand and so has gaps: {current.filledDays} of {current.year}'s
-  days carry no reading from it. Those days are filled from the two CoCoRaHS gauges also inside
-  Haverhill &mdash; {gauges.map((gauge) => `${gauge.name}, ${gauge.miles} miles`).join("; ")}
-  &mdash; averaged where both read the day. Nothing is estimated or interpolated: every figure is some
-  gauge's own reading, and no day is filled from the long-term normal. Station records come from
+  Each day is the average of every rain gauge in Haverhill that read it: the National Weather
+  Service Cooperative Observer station ({city.name}, <code>{city.sid}</code>) and two CoCoRaHS
+  gauges &mdash; {gauges.map((gauge) => `${gauge.name}, ${gauge.miles} miles`).join("; ")}. All
+  three count equally. That makes these figures the city-wide average rather than any one station's:
+  the Cooperative Observer station alone reads
+  {current.cityOnlyToDateInches} inches for {current.year} against the {current.toDateInches} above. It
+  is also read by hand, so {current.filledDays} of {current.year}'s days carry no reading from it
+  and stand on the volunteer gauges alone. Nothing is estimated or interpolated: every figure is
+  some gauge's own reading, and no day is filled from the long-term normal. Station records come
+  from
   <a href="https://www.rcc-acis.org/" target="_blank" rel="external noopener noreferrer">
     RCC-ACIS
   </a>, run by NOAA's Regional Climate Centers.

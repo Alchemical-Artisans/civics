@@ -5,6 +5,14 @@
  * and a component may import them without pulling the several megabytes of
  * station record that `$lib/server/precipitation.ts` reads.
  *
+ * **A day is the mean of every gauge that read it.** Not the city station's
+ * record with the others patched into its gaps, which is what this was first:
+ * every gauge reporting that day counts once, the city's COOP station
+ * included. That makes the series a Haverhill-area average rather than one
+ * station's own figures, so it will not match a level the city quotes off its
+ * own gauge -- which is why `cityInches` and `cityOnlyToDateInches` are kept
+ * beside it.
+ *
  * **A month is the bucket.** Weekly buckets were tried first and were too
  * noisy to read four years of at once -- a week swings between 0.00 and 4.37
  * inches, and four such lines over one axis obscure each other. Months also
@@ -19,16 +27,25 @@
  * which is the same trap `calendar.ts` documents.
  */
 
-/** Which gauge a day's figure came from. */
-export type DaySource = "city" | "neighbour" | "unread"
-
 export interface PrecipitationDay {
   date: string
-  /** Inches, or null where no gauge read the day. */
+  /**
+   * Inches: the mean of every Haverhill gauge that read the day, or null
+   * where none did. Equally weighted -- the city's own COOP station counts
+   * once, the same as each volunteer gauge beside it.
+   */
   inches: number | null
-  source: DaySource
-  /** How many gauges were averaged, where `source` is "neighbour". */
+  /** How many gauges that mean was taken over. 0 where the day is unread. */
   gauges: number
+  /** Whether the city's own COOP station was one of them. */
+  cityRead: boolean
+  /**
+   * What the city's own gauge alone recorded, kept beside the mean rather
+   * than thrown away: it is the figure any statement the city makes about
+   * its own station has to be reconciled against, and the series the chart
+   * draws is no longer that figure. Null where the city gauge did not read.
+   */
+  cityInches: number | null
 }
 
 export interface PrecipitationMonth {
@@ -49,7 +66,9 @@ export interface PrecipitationMonth {
    * against -- so the chart marks it rather than letting it read as dry.
    */
   partial: boolean
-  /** Days of this month whose figure came from a neighbour gauge. */
+  /** Days of this month the city's own COOP station read. */
+  cityDays: number
+  /** Days of this month with no city reading, standing on neighbours alone. */
   filledDays: number
   /** Days of this month no gauge read at all. */
   unreadDays: number
@@ -73,7 +92,16 @@ export interface PrecipitationYear {
   toDateInches: number
   /** The last day of this year any gauge read. */
   throughDate: string
-  /** Days of the year filled from a neighbour gauge. */
+  /**
+   * The same year summed from the city's own COOP station alone, to the same
+   * day as `toDateInches`. The chart draws the all-gauge mean; this is what
+   * the city's own gauge says on its own, and the two differ on every day
+   * more than one gauge reported, not only on the filled ones.
+   */
+  cityOnlyToDateInches: number
+  /** Days of the year the city's own COOP station read. */
+  cityDays: number
+  /** Days of the year with no city reading, standing on neighbours alone. */
   filledDays: number
   /** Days of the year no gauge read at all. */
   unreadDays: number

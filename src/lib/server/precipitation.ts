@@ -7,24 +7,32 @@
  * lines of fifty-odd points each. Importing it from anything the client
  * bundles is a build error rather than a quiet multi-megabyte page.
  *
- * **Three gauges, one series, and the page has to say which day came from
- * where.** The city's COOP station (`USC00193505`) is read by hand, so its
- * record has gaps -- 35 of 2026's first 298 days, 30 of them in January
- * through March, where a missed reading is usually a multi-day stretch of
- * winter precipitation. Left unfilled they understate 2026 by about four
- * inches, which is the difference between drawing it as the driest of four
- * years and drawing it level with 2025, where it actually sits. So a day the
- * city gauge did not read is filled from the two CoCoRaHS gauges inside
- * Haverhill -- their mean where both read it, the one figure where only one
- * did. See the comment on `NEIGHBOUR_STATIONS` in `scripts/lib/weather.mjs`
- * for why those two gauges and not the five other candidates nearby.
+ * **Three gauges, and a day is the mean of whichever of them read it.** The
+ * city's COOP station (`USC00193505`) plus the two CoCoRaHS gauges inside
+ * Haverhill, equally weighted -- see the comment on `NEIGHBOUR_STATIONS` in
+ * `scripts/lib/weather.mjs` for why those two and not the five other
+ * candidates nearby.
+ *
+ * This was first the city station's own record with the neighbours patched
+ * into its gaps, which mattered because that record is read by hand and has
+ * them: 36 of 2026's 299 days, 30 in January through March, where a missed
+ * reading is usually a multi-day stretch of winter precipitation. Unfilled
+ * they understate 2026 by about four inches -- the difference between
+ * drawing it as the driest of four years and drawing it level with 2025,
+ * where it sits.
+ *
+ * **Averaging all three instead makes this a Haverhill-area figure rather
+ * than one station's**, and the two differ on every day more than one gauge
+ * reported, not only on the 36. So each day keeps `cityInches` and each year
+ * keeps `cityOnlyToDateInches`: the city's own gauge standing alone is what
+ * any statement the city makes about its own station has to be reconciled
+ * against, and it is no longer what the chart draws.
  *
  * Nothing here is estimated, interpolated or modelled: every figure is some
- * gauge's own reading of that day, and `filledDays` says how many of a
- * week's came from a neighbour rather than the city's own. A day no gauge
- * read contributes nothing and is counted in `unreadDays`, rather than
- * being filled from the normal curve -- which would be this site inventing
- * rainfall, the thing it never does.
+ * gauge's own reading of that day. A day no gauge read contributes nothing
+ * and is counted in `unreadDays`, rather than being filled from the normal
+ * curve -- which would be this site inventing rainfall, the thing it never
+ * does.
  *
  * Buckets are calendar months. Weekly ones were tried first and read as
  * noise at four years on one axis -- see the comment in
@@ -78,8 +86,13 @@ export function parsePrecipitation(value: string): number | null {
 }
 
 /**
- * Every day the city gauge covers, with a neighbour's reading standing in
- * where the city's observer missed one. Oldest first.
+ * Every day the city gauge's record spans, each the mean of whichever of the
+ * three Haverhill gauges read it. Oldest first.
+ *
+ * The span is the city station's: it reaches back to 1899 where the two
+ * volunteer gauges begin in 2015 and 2022, so for most of the record the
+ * mean is of one reading and equals that station's own figure. Where all
+ * three read a day it is a mean of three.
  */
 export function dailyPrecipitation(): PrecipitationDay[] {
   const neighbours = Object.values(NEIGHBOUR_ROWS).map(
@@ -89,17 +102,22 @@ export function dailyPrecipitation(): PrecipitationDay[] {
   return WEATHER_ROWS.map((row) => {
     const date = row[0]
     const own = parsePrecipitation(row[PCPN])
-    if (own !== null) return { date, inches: own, source: "city" as const, gauges: 1 }
 
     const readings = neighbours
       .map((gauge) => gauge.get(date))
       .filter((value): value is number => value !== undefined && value !== null)
+    if (own !== null) readings.push(own)
 
     if (readings.length === 0) {
-      return { date, inches: null, source: "unread" as const, gauges: 0 }
+      return { date, inches: null, gauges: 0, cityRead: false, cityInches: null }
     }
-    const mean = readings.reduce((sum, value) => sum + value, 0) / readings.length
-    return { date, inches: mean, source: "neighbour" as const, gauges: readings.length }
+    return {
+      date,
+      inches: readings.reduce((sum, value) => sum + value, 0) / readings.length,
+      gauges: readings.length,
+      cityRead: own !== null,
+      cityInches: own,
+    }
   })
 }
 
@@ -136,6 +154,7 @@ export function precipitationByYear(years: number[]): PrecipitationYear[] {
           cumulativeInches: 0,
           days: 0,
           partial: false,
+          cityDays: 0,
           filledDays: 0,
           unreadDays: 0,
         }
@@ -144,7 +163,8 @@ export function precipitationByYear(years: number[]): PrecipitationYear[] {
       bucket.days++
       if (day.inches === null) bucket.unreadDays++
       else bucket.inches += day.inches
-      if (day.source === "neighbour") bucket.filledDays++
+      if (day.cityRead) bucket.cityDays++
+      else if (day.gauges > 0) bucket.filledDays++
     }
 
     const months = [...buckets.values()].sort((a, b) => a.month - b.month)
@@ -166,19 +186,19 @@ export function precipitationByYear(years: number[]): PrecipitationYear[] {
       // Filled in below, once the whole set is known: it is defined against
       // the newest year's own last day, which one year alone cannot see.
       toDateInches: 0,
+      cityOnlyToDateInches: 0,
       throughDate: read.at(-1)?.date ?? `${year}-01-01`,
-      filledDays: rows.filter((day) => day.source === "neighbour").length,
-      unreadDays: rows.filter((day) => day.source === "unread").length,
+      cityDays: rows.filter((day) => day.cityRead).length,
+      filledDays: rows.filter((day) => !day.cityRead && day.gauges > 0).length,
+      unreadDays: rows.filter((day) => day.gauges === 0).length,
     }
   })
 
   const through = built.at(-1)?.throughDate.slice(5) ?? "12-31"
   for (const year of built) {
-    year.toDateInches = round(
-      (byYear.get(year.year) ?? [])
-        .filter((day) => day.date.slice(5) <= through)
-        .reduce((sum, day) => sum + (day.inches ?? 0), 0),
-    )
+    const toDate = (byYear.get(year.year) ?? []).filter((day) => day.date.slice(5) <= through)
+    year.cityOnlyToDateInches = round(toDate.reduce((sum, day) => sum + (day.cityInches ?? 0), 0))
+    year.toDateInches = round(toDate.reduce((sum, day) => sum + (day.inches ?? 0), 0))
   }
   return built
 }
