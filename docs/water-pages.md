@@ -73,14 +73,25 @@ figure as a doc comment, the same role a page-number comment plays in
   where their own gap is likely to be without this site inventing a formula
   for it.
 
-There is deliberately no chart re-plotting the Kenoza Lake level over time.
-The only version of that curve committed anywhere is the PDF chart shown to
-the City Council on September 15, 2026
+There is no chart here re-plotting the Kenoza Lake level over time. The only
+version of that curve the city publishes is the chart shown to the City
+Council on September 15, 2026
 (`static/excerpts/city-council-2026-09-15/drought-emergency-update/`), and
-the page links to it and states the one point off it that matters —the
-current level and zone— rather than estimating the rest of the curve back off
-an image, which would be this site inventing data points the city never
-published as numbers.
+this page links to it and states the one point off it that matters — the
+current level and zone.
+
+**That is no longer a rule about the whole site.** This section used to say
+the curve would never be re-plotted, on the grounds that reading it back off
+an image would be inventing data points the city never published as numbers.
+`/drought` now does read it back, and the distinction that changed the answer
+is between transcription and invention: reading a published measurement off a
+published picture is the same act as transcribing a scanned agenda by eye,
+which is how most of the write-ups on this site were made, while the series
+under `data/lake-level/placeholder/` was generated and is fabricated. The
+reading is still weaker than a figure the city printed, which is why
+`src/lib/kenoza-levels.ts` carries its method and its precision, the page
+says so in its own prose, and the lines are drawn dotted. See
+[drought-pages.md](drought-pages.md).
 
 ## Reuse, and the one generalization it needed
 

@@ -10,8 +10,9 @@ This document covers the one finished piece: the rainfall chart.
 
 ## Rainfall, this year against the last three
 
-A line per year of monthly precipitation across one calendar-year x axis, for
-the current year and the two before it. `src/lib/RainfallYearsChart.svelte`
+Two panels stacked on one calendar-year x axis, a line per year in each:
+monthly rainfall above, Kenoza Lake's own level below, for the current year
+and the one before it. `src/lib/RainfallYearsChart.svelte`
 draws it; `src/lib/server/precipitation.ts` aggregates the months;
 `src/lib/precipitation.ts` holds the shapes and the date arithmetic, outside
 both so they unit-test without rendering -- the same arrangement `calendar.ts`
@@ -24,13 +25,14 @@ inside a curve that can only rise. The year's total is still reported, in the
 legend and in the page's own prose, so the magnitude comparison a monthly line
 cannot make is not lost -- it is just not what the lines are for.
 
-**Three years, and no reference curve.** It drew four years against the
+**Two years, and no reference curve.** It drew four years against the
 1991-2020 normal first, and both the fourth year and the normal came off as
 distractions. Five lines is more than a reader compares at once; 2023 was wet
 enough -- 11.23 in in one August -- to set a vertical scale the other three
 then sat low against, so dropping it let them use most of the height; and a
 dashed thirty-year mean invited a second comparison beside the one being
-asked for. The route asks `precipitationByYear` for three years and the
+asked for, and the lake panel added beneath has only 2025 and 2026 to draw
+anyway. The route asks `precipitationByYear` for two years and the
 component takes no normal at all. Nothing on the site reads the normal curve
 now, so `normalByMonth()` and `normalToDate()` were deleted rather than left
 as unread exports -- `data/weather/haverhill-daily-normal.json` is still
@@ -72,6 +74,47 @@ drought year drawn in the drought hue -- and the years behind it take the rest
 of the palette in order. Indexing one palette by position worked only while
 exactly four years were drawn, and silently handed 2026 a violet the moment
 the span became three.
+
+## Kenoza Lake's level
+
+The lower panel, from `src/lib/kenoza-levels.ts`. **Stacked rather than drawn
+over the rainfall, because the two do not share a scale**: rainfall is inches
+falling in a month and belongs on an axis starting at zero, a reservoir level
+is feet above a gauge datum and does not. Together they would need two y axes
+and a reader would be left working out which line answered to which. Stacked,
+each panel keeps its own scale and the shared x axis does the comparing — a
+dry month above sits directly over what the lake did next. The months are
+drawn once, under the lower panel, and one hover guide runs through both,
+since the point of stacking is reading down a column.
+
+**These figures are read off a picture, and are the weakest thing on the
+site.** The city has never published this series as numbers; the only version
+of it anywhere is a chart image, so each figure is where a line sat on that
+image rather than a reading the Water Department wrote down. They are drawn
+dotted for exactly that reason, the page says so in its own prose, and
+`kenoza-levels.ts` carries the full provenance. Treat one as good to about a
+fifth of a foot and never quote it as the city's stated level.
+
+**Read by pixel, not by eye**, so it is reproducible and its error is
+bounded. The three curves separate by colour against warm-toned zone bands
+that share no hue with any of them; each figure is the median row of that
+colour in the five pixel columns centred on the month's date. Both axes were
+calibrated from the chart's own furniture — vertically from the gridlines
+standing above the bands, at exactly 45.5 px per 2 ft, horizontally by
+fitting pixel column against day of year across eleven month labels, at
+1.664 px/day. Two facts the calibration was not fitted to then confirm it:
+the 2026 curve bottoms out at 99.80 ft, which is the one figure the chart
+prints as a label, and its last pixel lands on day 258 — September 15th, the
+date in the chart's own filename.
+
+2026's line stops in September for that reason, and the 36-year average line
+on the city's chart was read but deliberately not kept: the rainfall panel
+dropped its own thirty-year normal as a distraction, and a long-run average
+here would be the same distraction twice.
+
+This reverses a rule [water-pages.md](water-pages.md) used to state, and that
+document now records the reversal and the reasoning rather than contradicting
+this one.
 
 ## Where the figures come from, and the gaps in them
 

@@ -2,7 +2,8 @@
   // The rainfall chart's months are aggregated in `+page.server.ts`: the
   // three station files behind them run to megabytes, and a server load is
   // what keeps them out of this page's own bundle.
-  import RainfallYearsChart from "$lib/RainfallYearsChart.svelte"
+  import DroughtChart from "$lib/DroughtChart.svelte"
+  import { KENOZA_LEVELS, KENOZA_SOURCE } from "$lib/kenoza-levels"
 
   let { data } = $props()
 
@@ -46,15 +47,26 @@
   another significant source.
 </p>
 
-<h3>Rainfall, this year against the last two</h3>
+<h3>Rainfall and reservoir level, this year against last</h3>
 
-<RainfallYearsChart years={data.rainfallYears} />
+<DroughtChart years={data.rainfallYears} levels={KENOZA_LEVELS} />
 
 <p>
   Inches of precipitation each month, as the city's own gauge measured them.
   {current.year} has had {current.toDateInches} inches through {throughLabel}, and
   {previous.year} had {previous.toDateInches} inches by the same day. The last point on
   {current.year}'s line is dashed because the month is not over.
+</p>
+
+<p>
+  The lower panel is Kenoza Lake's own level over the same months. Those figures are dotted because
+  they are weaker than the rest: the city has never published the series as numbers, so each one is
+  where a line sat on its published
+  <a href={KENOZA_SOURCE.url} target="_blank" rel="external noopener noreferrer">
+    drought-status chart
+  </a>, as of {KENOZA_SOURCE.asOf} &mdash; good to about a fifth of a foot and no better. The one level
+  the city states outright is the 99.8-foot low of mid-September, which that reading reproduces exactly.
+  {KENOZA_LEVELS.at(-1)!.year}'s line stops in September because that is when the chart was drawn.
 </p>
 
 <p>
