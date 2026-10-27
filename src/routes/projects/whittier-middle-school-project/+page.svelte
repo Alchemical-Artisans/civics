@@ -42,7 +42,7 @@
 <div class="mx-auto max-w-6xl px-4 py-8">
   <header class="mb-6 border-b border-slate-200 pb-6">
     <p class="text-sm text-slate-500">Project</p>
-    <h1 class="text-2xl font-bold tracking-tight text-slate-900">{PROJECT.title}</h1>
+    <h1>{PROJECT.title}</h1>
     <div class="mt-2">
       <ShareButton url={sharedUrl} text={PROJECT.title} />
     </div>
@@ -54,7 +54,7 @@
          session; the rest of that sheet, and the School Building Committee's
          survey of the building, are on the item's page. -->
     <section aria-labelledby="overview">
-      <h2 id="overview" class="text-lg font-semibold text-slate-900">What is being considered</h2>
+      <h2 id="overview">What is being considered</h2>
       <blockquote class="mt-3 border-l-4 border-slate-200 pl-4 text-slate-800">
         <p>
           Built in 1957, Whittier Middle School has served generations of Haverhill students without

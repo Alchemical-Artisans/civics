@@ -53,7 +53,7 @@
   class="relative flex min-h-[30rem] flex-col rounded-xl border border-slate-200 p-5 transition-colors focus-within:border-slate-400 hover:border-slate-300 hover:bg-slate-50 sm:p-6"
 >
   <div class="flex items-baseline justify-between gap-3">
-    <h2 class="text-lg font-semibold text-slate-900">
+    <h2>
       <a
         class="after:absolute after:inset-0 after:content-['']"
         href={Router.project(PROJECT.slug)}

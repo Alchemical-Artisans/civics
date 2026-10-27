@@ -1197,3 +1197,27 @@ Prettier config is non-default and enforced by `npm run lint`: no semicolons,
 double quotes, 2-space indent, trailing commas, 100-column width. Comments in
 this codebase explain _why_ a thing is the way it is, often at length; match
 that when touching them.
+
+**There are two heading scales and `src/routes/layout.css` holds both.** A
+page here is either a **transcription** or **authored**, and a heading means
+the opposite thing in each. A transcription's headings are the city's own,
+sitting under a title the layout already drew, so inside a `prose` container
+h2 descends from 1rem and h3/h4 get quieter still. An authored page — `/drought`,
+each `/projects/*` write-up — draws its own `<h1>` and its h2s are section
+breaks in our structure, so they get _louder_: h1 `text-2xl`/bold/tight, h2
+`text-lg`, h3 `text-base`, h4 `text-sm`, all `font-semibold text-slate-900`.
+**Write a plain `<h2>` and the right one applies.** Every authored page used
+to hand-write those utilities on every heading and the copies had drifted —
+one page's h3 was `text-base font-semibold`, another's a bare `font-semibold`,
+a third's `font-medium` — while a page that wrote plain tags got neither scale
+and came out flat. Both scales now live in one file and the twelve call sites
+that duplicated them are gone, so a heading class on an element means a
+deliberate departure: `BackgroundNote`'s quiet `text-base` h2,
+`polling-places`' `text-sm`, the accordion summaries in `reserves` and `debt`,
+and the one meeting write-up that wants `text-lg` against the transcription
+scale. The authored rules are `@layer base`, so a utility always wins and
+every `prose` rule outranks them without being named — the typography plugin
+writes into `@layer utilities` and the transcription scale is unlayered to beat
+it. Spacing between plain blocks is there too, on `:not([class])` only:
+anything carrying a class lays itself out, which is what keeps the calendar's
+month-count line tight under its heading.

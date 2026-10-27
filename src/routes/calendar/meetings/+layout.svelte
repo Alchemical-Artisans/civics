@@ -175,7 +175,7 @@
 	     and so it takes the width of the content column rather than the width
 	     of the icon it hangs off. -->
     <div class="relative flex flex-wrap items-center gap-x-2">
-      <h1 class="text-2xl font-bold tracking-tight text-slate-900">{heading}</h1>
+      <h1>{heading}</h1>
       {#if !data.isItem && details?.notice?.length}
         <Note label="How this meeting is held, and how it is recorded">
           {#each details.notice as paragraph (paragraph)}

@@ -36,7 +36,7 @@
     </a>
   </nav>
 
-  <h1 class="text-2xl font-bold tracking-tight text-slate-900">Question {q.number}: {q.title}</h1>
+  <h1>Question {q.number}: {q.title}</h1>
   <div class="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1">
     <p class="text-sm text-slate-600">Haverhill's own question, on every ballot in the city.</p>
     <ShareButton url={sharedUrl} text={shareTitle} />

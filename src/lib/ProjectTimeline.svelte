@@ -152,7 +152,7 @@
 </script>
 
 <section aria-labelledby="timeline" class={className}>
-  <h2 id="timeline" class="text-lg font-semibold text-slate-900">Timeline</h2>
+  <h2 id="timeline">Timeline</h2>
   {#if past.length}
     <!-- Past entries: the record, folded. The summary is a plain line that
          never moves; opening it slides out a tinted, bordered panel under
