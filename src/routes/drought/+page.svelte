@@ -30,7 +30,12 @@
     name: `${titleCase(body.name)} — ${body.areaSqKm} square kilometres`,
     fill: WATER,
     opacity: 0.55,
-    label: titleCase(body.name),
+    // No label. PrecinctMap sizes label text as a fraction of the map's own
+    // width, so at a quarter size these come out around six pixels -- and
+    // Kenoza and Round Pond sit close enough together that their labels would
+    // collide anyway. The paragraph beside the map names all four in the
+    // order it draws them, and each shape keeps its name on hover and for a
+    // screen reader.
   }))
 
   /**
@@ -82,35 +87,47 @@
 
 <h3>Where the water comes from</h3>
 
-<PrecinctMap
-  title="Haverhill, and the four bodies of water its public water supply draws from"
-  bounds={waterBodies.bounds as [number, number, number, number]}
-  areas={supplyAreas}
-  outlines={[{ shape: waterBodies.town.shape, name: "Haverhill" }]}
-  caption="Supply from MassDEP; outlines from the USGS National Hydrography Dataset; city boundary from MassGIS"
-/>
+<!-- `flow-root` so the float is contained: without it the heading below
+     would wrap around the map instead of starting under it. The map only
+     floats from `sm` up; at phone width it is full width above the text,
+     since a two-fifths map beside a two-fifths column is neither. -->
+<div class="flow-root">
+  <div class="mb-2 w-full sm:float-right sm:mb-2 sm:ml-5 sm:w-2/5">
+    <PrecinctMap
+      title="Haverhill, and the four bodies of water its public water supply draws from"
+      bounds={waterBodies.bounds as [number, number, number, number]}
+      areas={supplyAreas}
+      outlines={[{ shape: waterBodies.town.shape, name: "Haverhill" }]}
+      width={400}
+      height={280}
+      caption="MassDEP, USGS and MassGIS"
+    />
+  </div>
 
-<p>
-  Massachusetts DEP lists four surface sources against {titleCase(waterBodies.supplier)}, public
-  water system {waterBodies.pwsid}:
-  {waterBodies.bodies.map((body) => titleCase(body.name)).join(", ")}. Each is drawn here at its own
-  size, inside the city boundary. Millvale is the smallest body of the four but sits in by far the
-  largest protection area, {waterBodies.bodies.find((b) => b.name.startsWith("MILLVALE"))
-    ?.zoneAcres} acres against Kenoza's {waterBodies.bodies.find((b) => b.name.startsWith("KENOZA"))
-    ?.zoneAcres} &mdash; a small reservoir under a wide watershed.
-</p>
-
-{#if renamed.length}
   <p>
-    One caution on the names. The state's two agencies do not agree on all of them: what MassDEP
-    files as {renamed.map((body) => titleCase(body.name)).join(", ")} is the water the federal hydrography
-    dataset calls
-    {renamed.map((body) => body.mappedName).join(", ")}. The shapes here are matched to the sources
-    by position rather than by name, so the outline is the right water whichever name is used
-    &mdash; but if you are asking the city about it, it is worth naming the location as well as the
-    pond.
+    Massachusetts DEP lists four surface sources against {titleCase(waterBodies.supplier)}, public
+    water system {waterBodies.pwsid}:
+    {waterBodies.bodies.map((body) => titleCase(body.name)).join(", ")} &mdash; largest first, which is
+    also how to read them off the map, since each is drawn at its own size inside the city boundary. Millvale
+    is the smallest body of the four but sits in by far the largest protection area, {waterBodies.bodies.find(
+      (b) => b.name.startsWith("MILLVALE"),
+    )?.zoneAcres} acres against Kenoza's {waterBodies.bodies.find((b) =>
+      b.name.startsWith("KENOZA"),
+    )?.zoneAcres} &mdash; a small reservoir under a wide watershed.
   </p>
-{/if}
+
+  {#if renamed.length}
+    <p>
+      One caution on the names. The state's two agencies do not agree on all of them: what MassDEP
+      files as {renamed.map((body) => titleCase(body.name)).join(", ")} is the water the federal hydrography
+      dataset calls
+      {renamed.map((body) => body.mappedName).join(", ")}. The shapes here are matched to the
+      sources by position rather than by name, so the outline is the right water whichever name is
+      used &mdash; but if you are asking the city about it, it is worth naming the location as well
+      as the pond.
+    </p>
+  {/if}
+</div>
 
 <h3>Rainfall and reservoir level, this year against last</h3>
 
