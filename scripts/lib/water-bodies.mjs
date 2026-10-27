@@ -37,6 +37,47 @@ export const PWSID = "3128000"
  */
 export const FTYPE_RESERVOIR = 436
 
+/**
+ * Sources MassDEP registers against Haverhill that this site does not draw.
+ *
+ * **MassDEP's four are not the city's three, and where they disagree the
+ * city's own current page wins.** The state's Zone A layer registers Round
+ * Pond as `3128000-07S`, a numbered surface source against PWSID 3128000, and
+ * the city's Open Space & Recreation Plan listed it as an "Active Primary
+ * Source" alongside the other three. But that plan ran July 2016 to July 2023
+ * and has expired, and the Water Department's own Water Supply page names
+ * Kenoza Lake, Crystal Lake and Millvale Reservoir and nothing else -- the
+ * words "Round Pond", "Pentucket" and "Winnekenni" are not on it. A map here
+ * drawing a fourth source the department does not currently name would be
+ * this site asserting something about the water supply rather than
+ * republishing what the city says about it.
+ *
+ * So it is left out, and left out *here* rather than filtered in the page, so
+ * the decision sits next to the query it overrides and the generated file
+ * records it. **To put it back, delete the entry.** That is the whole act, and
+ * it is what to do if the Water Department says the pond is in the supply:
+ * the shape, the Zone A acreage and the name matching all still work, having
+ * never been the reason it came out.
+ *
+ * Keyed on `SOURCE_ID` rather than on the name, because the name is the one
+ * field the two agencies disagree about: MassDEP's "ROUND POND" is the water
+ * USGS calls "Lake Pentucket", and the two ponds NHD does call Round Pond are
+ * in other towns twelve and twenty miles off.
+ */
+export const NOT_DRAWN = {
+  "3128000-07S": {
+    name: "ROUND POND",
+    reason:
+      "Registered by MassDEP and named in the city's expired 2016-2023 Open Space & " +
+      "Recreation Plan, but not on the Water Department's current Water Supply page.",
+  },
+}
+
+/** Whether MassDEP's source id is one the site leaves off the map. */
+export function isDrawn(sourceId) {
+  return !Object.hasOwn(NOT_DRAWN, sourceId)
+}
+
 const agent = { "User-Agent": "civics-calendar/1.0" }
 
 /**

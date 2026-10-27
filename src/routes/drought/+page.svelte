@@ -19,22 +19,34 @@
   // both -- see $lib/precipitation.ts. The sentence below must not put a
   // part-year beside a whole one.
 
-  // The four waters Haverhill's public system draws from, drawn as one system
-  // rather than four categories: same fill, each named on itself, with the
+  // The waters Haverhill's public system draws from, drawn as one system
+  // rather than one category each: same fill, each named on itself, with the
   // city's own boundary outlined around them. See scripts/lib/water-bodies.mjs
-  // for where the supply list and the shapes each come from.
+  // for where the supply list and the shapes each come from, and for why the
+  // list is the Water Department's own three rather than MassDEP's four.
   const WATER = "#0369a1"
+
+  // Spelled rather than numeric: "names 3 surface sources" reads as a count in
+  // a table and this is a sentence. Derived rather than written into the prose
+  // because the written version went stale the moment a source came off the
+  // map -- the paragraph below said "four" while the map drew three.
+  const COUNT_WORD = ["no", "one", "two", "three", "four", "five", "six"]
+
+  // A protection area runs to four figures, and "1541 acres" reads as a year
+  // rather than a quantity.
+  const acres = (value: number | undefined) => value?.toLocaleString("en-US") ?? ""
   const supplyAreas = waterBodies.bodies.map((body) => ({
     id: body.sourceId,
     shape: body.shape,
     name: `${titleCase(body.name)} — ${body.areaSqKm} square kilometres`,
     fill: WATER,
     opacity: 0.55,
-    // No standing label: Kenoza and Round Pond sit close enough together that
-    // theirs would overlap at the zoom this opens on. `hoverLabel` names one
-    // at a time instead, on hover or focus, which is legible at any size and
-    // cannot collide. The paragraph beside the map also names all four,
-    // largest first, for a reader who hovers nothing.
+    // No standing label: this map is a two-fifths float a few hundred pixels
+    // wide, and three names drawn on it at once crowd each other and the
+    // shapes they belong to. `hoverLabel` names one at a time instead, on
+    // hover or focus, which is legible at any size and cannot collide. The
+    // paragraph beside the map also names all three, largest first, for a
+    // reader who hovers nothing.
   }))
 
   /**
@@ -50,8 +62,6 @@
       .replace(/\bres\./, "reservoir")
       .replace(/\b[a-z]/g, (c) => c.toUpperCase())
   }
-
-  const renamed = $derived(waterBodies.bodies.filter((body) => body.namesDiffer))
 
   const throughLabel = $derived(
     new Date(`${current.throughDate}T00:00:00Z`).toLocaleDateString("en-US", {
@@ -108,31 +118,20 @@
   </div>
 
   <p>
-    Massachusetts DEP lists four surface sources against {titleCase(waterBodies.supplier)}, public
-    water system {waterBodies.pwsid}:
+    The Water Department names {COUNT_WORD[waterBodies.bodies.length]} surface sources for public water
+    system {waterBodies.pwsid}:
     {waterBodies.bodies.map((body) => titleCase(body.name)).join(", ")} &mdash; largest first, which is
     also how to read them off the map, since each is drawn at its own size inside the city boundary. Millvale
-    is the smallest body of the four but sits in by far the largest protection area, {waterBodies.bodies.find(
-      (b) => b.name.startsWith("MILLVALE"),
-    )?.zoneAcres} acres against Kenoza's {waterBodies.bodies.find((b) =>
-      b.name.startsWith("KENOZA"),
-    )?.zoneAcres} &mdash; a small reservoir under a wide watershed.
+    is the smallest of the {COUNT_WORD[waterBodies.bodies.length]} but sits in by far the largest protection
+    area, {acres(waterBodies.bodies.find((b) => b.name.startsWith("MILLVALE"))?.zoneAcres)} acres against
+    Kenoza's
+    {acres(waterBodies.bodies.find((b) => b.name.startsWith("KENOZA"))?.zoneAcres)} &mdash; a small reservoir
+    under a wide watershed. Which waters are the supply is the city's own list; the outlines and the protection-area
+    acreages are the state's and the federal hydrography dataset's.
   </p>
-
-  {#if renamed.length}
-    <p>
-      One caution on the names. The state's two agencies do not agree on all of them: what MassDEP
-      files as {renamed.map((body) => titleCase(body.name)).join(", ")} is the water the federal hydrography
-      dataset calls
-      {renamed.map((body) => body.mappedName).join(", ")}. The shapes here are matched to the
-      sources by position rather than by name, so the outline is the right water whichever name is
-      used &mdash; but if you are asking the city about it, it is worth naming the location as well
-      as the pond.
-    </p>
-  {/if}
 </div>
 
-<h3>Rainfall and reservoir level, this year against last</h3>
+<h3>Slop: Rainfall and reservoir level, this year against last</h3>
 
 <DroughtChart years={data.rainfallYears} levels={KENOZA_LEVELS} />
 
@@ -178,6 +177,8 @@
     RCC-ACIS
   </a>, run by NOAA's Regional Climate Centers.
 </p>
+
+<h2>Notes</h2>
 
 Well water: https://www.usgs.gov/water-science-school/science/aquifers-and-groundwater Planning
 committee 2026-03-30:

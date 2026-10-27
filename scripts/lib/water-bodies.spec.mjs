@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest"
-import { boundsOfRings, matchBodies, ringsToMulti, sameWater } from "./water-bodies.mjs"
+import {
+  NOT_DRAWN,
+  boundsOfRings,
+  isDrawn,
+  matchBodies,
+  ringsToMulti,
+  sameWater,
+} from "./water-bodies.mjs"
 
 describe("ringsToMulti", () => {
   it("wraps each Esri ring as its own GeoJSON polygon", () => {
@@ -125,5 +132,48 @@ describe("matchBodies", () => {
     const matched = matchBodies(zone, [body("Lake Pentucket", 0.15316319, 436, "a")])
     expect(matched.zoneAcres).toBe(88.8)
     expect(matched.areaSqKm).toBe(0.153)
+  })
+})
+
+describe("isDrawn", () => {
+  /**
+   * The three the Water Department's own page names. If one of these ever
+   * comes back false the map has quietly lost a source the city does name,
+   * which is the failure worth a test of its own.
+   */
+  it("draws every source the city currently names", () => {
+    for (const id of ["3128000-01S", "3128000-03S", "3128000-05S"]) {
+      expect(isDrawn(id)).toBe(true)
+    }
+  })
+
+  it("leaves out Round Pond, which the city's current page does not name", () => {
+    expect(isDrawn("3128000-07S")).toBe(false)
+  })
+
+  /** A source MassDEP has not registered is not excluded, merely absent. */
+  it("draws an id it has never heard of", () => {
+    expect(isDrawn("3128000-99S")).toBe(true)
+  })
+
+  /**
+   * Every exclusion is a judgement about what the city publishes, so each has
+   * to carry the reason with it -- the entry is the only record of why a
+   * registered source is not on the map.
+   */
+  it("gives a reason for everything it leaves out", () => {
+    const entries = Object.entries(NOT_DRAWN)
+    expect(entries.length).toBeGreaterThan(0)
+    for (const [id, entry] of entries) {
+      expect(id).toMatch(/^3128000-\d\d[A-Z]$/)
+      expect(entry.name).toBeTruthy()
+      expect(entry.reason.length).toBeGreaterThan(40)
+    }
+  })
+
+  /** Guards the prototype hole: `isDrawn("toString")` must not come back false. */
+  it("is not fooled by an inherited property name", () => {
+    expect(isDrawn("toString")).toBe(true)
+    expect(isDrawn("constructor")).toBe(true)
   })
 })

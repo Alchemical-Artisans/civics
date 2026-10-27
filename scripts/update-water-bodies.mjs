@@ -18,9 +18,11 @@ import { compact, simplifyRing } from "./lib/precincts.mjs"
 import {
   MASSGIS,
   NHD_WATERBODY,
+  NOT_DRAWN,
   PWSID,
   boundsOfRings,
   coarsenZone,
+  isDrawn,
   matchBodies,
   query,
   ringsToMulti,
@@ -62,6 +64,18 @@ log.write(`  MassDEP names ${zones.length} surface source(s) for PWSID ${PWSID}:
 // -- Each source's own shape, from the NHD, matched inside its Zone A. ------
 const bodies = []
 for (const zone of zones) {
+  // Left out on purpose, and said out loud rather than quietly filtered --
+  // see NOT_DRAWN for which source and why. Skipped before the NHD query
+  // rather than after, since there is no shape to go and fetch for a body
+  // nothing will draw.
+  if (!isDrawn(zone.attributes.SOURCE_ID)) {
+    log.write(
+      `    ${zone.attributes.SITE_NAME} (${zone.attributes.SOURCE_ID}): not drawn -- ` +
+        NOT_DRAWN[zone.attributes.SOURCE_ID].reason,
+    )
+    continue
+  }
+
   const geometry = JSON.stringify({
     rings: coarsenZone(zone.geometry.rings, simplifyRing),
     spatialReference: { wkid: 4326 },
@@ -121,6 +135,20 @@ await writeDataFile(DATA_FILE, {
   },
   pwsid: PWSID,
   supplier: zones[0].attributes.SUPPLIER,
+  /**
+   * Sources MassDEP registers that this file deliberately carries no shape
+   * for. Written out so the omission is visible in the data rather than only
+   * in the script that made it, and so a reader of the JSON can see that the
+   * state's list is longer than the city's.
+   */
+  notDrawn: zones
+    .filter((zone) => !isDrawn(zone.attributes.SOURCE_ID))
+    .map((zone) => ({
+      name: zone.attributes.SITE_NAME,
+      sourceId: zone.attributes.SOURCE_ID,
+      zoneAcres: Math.round(zone.attributes.ACRES * 10) / 10,
+      reason: NOT_DRAWN[zone.attributes.SOURCE_ID].reason,
+    })),
   town: { name: "Haverhill", shape: townShape },
   bounds: boundsOfRings([townShape, ...bodies.map((b) => b.shape)]),
   bodies: bodies.sort((a, b) => b.areaSqKm - a.areaSqKm),

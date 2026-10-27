@@ -86,7 +86,7 @@ the span became three.
 
 ## The supply map
 
-`/drought` opens with a map of Haverhill and the four bodies of water its
+`/drought` opens with a map of Haverhill and the three bodies of water its
 public system draws from, drawn by **`src/lib/PrecinctMap.svelte`** -- the
 same component the election's precinct map uses. The water bodies are its
 `areas`, the city boundary its one `outline`. It floats right at two fifths
@@ -110,9 +110,9 @@ time, on hover or focus, drawn on the map rather than left to the browser's
 own `<title>` tooltip -- which every area has had all along and still has.
 The reason is size: standing `label` text is sized as a fraction of the map's
 width, so on a map a quarter the usual size it lands around six pixels, and
-Kenoza and Round Pond sit close enough that their labels would collide at the
-zoom this opens on. One name at a time, at a fixed readable size, has neither
-problem. It is off by default, because a map with room for standing labels is
+three names drawn at once on a map a few hundred pixels wide crowd each other
+and the shapes they belong to. One name at a time, at a fixed readable size,
+has neither problem. It is off by default, because a map with room for standing labels is
 better off with them -- a reader should not have to hunt. It also puts a
 plain area in the tab order, so the names are reachable by keyboard; an area
 that is already a link or a button is focusable anyway.
@@ -120,7 +120,7 @@ that is already a link or a button is focusable anyway.
 `nameSize` follows `unit`'s own bargain: `live ? 15 / v.s : f.width / 22`, so
 the name holds at fifteen screen pixels whatever the zoom rather than
 swelling as a reader goes in. The paragraph beside the map still names all
-four, largest first, for a reader who hovers nothing.
+three, largest first, for a reader who hovers nothing.
 
 **Two sources, because neither answers the whole question.** MassDEP knows
 which waters are a public supply and publishes nothing about their shape at
@@ -131,11 +131,28 @@ lake and nothing about who drinks it. `npm run water-bodies:update`
 `src/lib/data/water-bodies.json`. Not a step of `metadata:update`, for the
 reason `precincts:update` is not: a reservoir does not move.
 
-**Which waters count is MassDEP's answer, not ours.** Its Surface Water Supply
-Protection Areas layer names four surface sources against Haverhill Water
-Dept, PWSID 3128000: Kenoza Lake, Crystal Lake, Millvale Reservoir and Round
-Pond. The city's own drought page names three of them -- Round Pond is the one
-it leaves out.
+**Which waters count is the city's answer, and the state's list is longer.**
+MassDEP's Surface Water Supply Protection Areas layer names four surface
+sources against Haverhill Water Dept, PWSID 3128000: Kenoza Lake, Crystal
+Lake, Millvale Reservoir and Round Pond. The Water Department's own Water
+Supply page names the first three and nothing else -- the words "Round Pond",
+"Pentucket" and "Winnekenni" are not on it -- so the map draws three.
+
+Round Pond is not a judgement call made lightly, and it is reversible in one
+line. The state registers it as `3128000-07S`, a numbered surface source, and
+the city's Open Space & Recreation Plan listed it under "Round Pond (Active
+Primary Source)" alongside the other three, noting that it "drains to Kenoza
+Lake, via Winnekenni Basin, through a gravity pipe system". But that plan ran
+July 2016 to July 2023 and has expired, and a map drawing a fourth source the
+department does not currently name would be this site asserting something
+about the water supply rather than republishing what the city says about it.
+So `NOT_DRAWN` in `scripts/lib/water-bodies.mjs` holds the one exclusion,
+keyed on `SOURCE_ID` because the name is the field the two agencies disagree
+about; the generator skips it before spending an NHD query on it and records
+it in the data file's `notDrawn`, so the omission is visible in the JSON and
+not only in the script. **To put it back -- if the Water Department says the
+pond is in the supply -- delete the entry.** Nothing else about it was ever
+broken.
 
 **The join is geometric, and it has to be.** A Zone A is a 400-foot buffer
 around its source, so the body it protects lies inside it; the largest
@@ -144,9 +161,10 @@ lake or pond and 466 for a marsh) is the source. Matching on names would have
 failed on exactly one of the four, and failed quietly: MassDEP's "ROUND POND"
 sits over the body NHD calls **Lake Pentucket**, and the two ponds NHD does
 call "Round Pond" are in other towns, twelve and twenty miles off. The data
-file keeps both names and a `namesDiffer` flag, and the page prints a caution
-naming the disagreement -- a reader asking the city about that pond needs to
-name the location, not just the pond.
+file keeps both names and a `namesDiffer` flag. The page used to print a
+caution naming the disagreement; with Round Pond off the map no remaining
+source has one, so that paragraph could never render and is gone. The flag
+and the geometric join stay, being what would catch the next one.
 
 MassGIS's own `Hydro_Major` was the first choice for shapes and was dropped:
 it is a major-waters subset carrying Crystal Lake and none of the other three,
