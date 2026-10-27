@@ -10,20 +10,29 @@ This document covers the one finished piece: the rainfall chart.
 
 ## Rainfall, this year against the last three
 
-Two panels stacked on one calendar-year x axis, a line per year in each:
-monthly rainfall above, Kenoza Lake's own level below, for the current year
-and the one before it. `src/lib/RainfallYearsChart.svelte`
+Three panels stacked on one calendar-year x axis, a line per year in each:
+monthly rainfall, the same rainfall accumulating since January 1st, and
+Kenoza Lake's own level, for the current year and the one before it. `src/lib/RainfallYearsChart.svelte`
 draws it; `src/lib/server/precipitation.ts` aggregates the months;
 `src/lib/precipitation.ts` holds the shapes and the date arithmetic, outside
 both so they unit-test without rendering -- the same arrangement `calendar.ts`
 has.
 
-**Each month's own inches, not a running total.** The question is when it
-rained, not how far behind the year is by now: March 2024 at 8.90 in and August
-2026 at 1.25 are the thing being looked at, and accumulating them hides both
-inside a curve that can only rise. The year's total is still reported, in the
-legend and in the page's own prose, so the magnitude comparison a monthly line
-cannot make is not lost -- it is just not what the lines are for.
+**Two rainfall panels, because they answer different questions.** A month's
+own inches says when it rained: a month at 8.90 in and one at 1.25 are visible
+there and vanish into a running total. The accumulation says how far behind a
+year is by now, which is the question the lake is answering to -- which is why
+it sits directly above the lake panel rather than beside its own monthly
+chart. A cumulative line can only rise, so it says nothing about any single
+month; the two together say both things without either compromising. The
+accumulation was the chart's first and only shape, replaced by monthly amounts,
+and is now drawn alongside them rather than instead of them.
+
+`cumulativeInches` has been on every `PrecipitationMonth` since the first
+version, so the panel needed no change to the module -- only the component,
+which was restructured to be panel-driven rather than drawing each panel's
+lines, grid and axis by hand. A panel declares its range, step, unit and how
+to get a year's points; everything else is shared.
 
 **Two years, and no reference curve.** It drew four years against the
 1991-2020 normal first, and both the fourth year and the normal came off as

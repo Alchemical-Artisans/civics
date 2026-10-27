@@ -52,10 +52,19 @@
 <DroughtChart years={data.rainfallYears} levels={KENOZA_LEVELS} />
 
 <p>
-  Inches of precipitation each month, averaged across Haverhill's rain gauges.
-  {current.year} has had {current.toDateInches} inches through {throughLabel}, and
-  {previous.year} had {previous.toDateInches} inches by the same day. The last point on
-  {current.year}'s line is dashed because the month is not over.
+  Inches of precipitation each month, averaged across Haverhill's rain gauges, and the same rainfall
+  accumulating since January 1st beneath it. {current.year} has had
+  {current.toDateInches} inches through {throughLabel}, and {previous.year} had
+  {previous.toDateInches} inches by the same day. The last point on {current.year}'s line is dashed
+  in both because the month is not over.
+</p>
+
+<p>
+  The two rainfall panels answer different questions. A month's own inches shows when it rained
+  &mdash; {current.year}'s wettest month and its driest differ by several inches, and a running
+  total hides both. The accumulation shows how far behind a year is by now, which is the question
+  the reservoir is answering to, so it sits directly above the lake rather than beside its own
+  monthly chart.
 </p>
 
 <p>

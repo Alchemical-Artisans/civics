@@ -1,23 +1,29 @@
 <!--
-  Two charts stacked on one calendar, a line per year in each: rainfall a
-  month at a time above, Kenoza Lake's own level below.
+  Three charts stacked on one calendar, a line per year in each: rainfall a
+  month at a time, the same rainfall accumulating since January 1st, and
+  Kenoza Lake's own level.
 
-  **Stacked rather than overlaid, because the two do not share a scale.**
-  Rainfall is inches falling in a month and belongs on an axis starting at
-  zero; a reservoir level is feet above a datum and belongs on one that does
-  not. Drawn together they would need two y axes, and a reader would be left
-  working out which line answered to which -- the usual trouble with a
-  twin-axis chart. Stacked, each panel keeps its own scale and the shared x
-  axis does the comparing: a dry month in the top panel sits directly above
-  what the lake did next.
+  **Stacked rather than overlaid, because they do not share a scale.**
+  Rainfall is inches and belongs on an axis starting at zero; a reservoir
+  level is feet above a datum and belongs on one that does not. Drawn
+  together they would need two y axes, and a reader would be left working out
+  which line answered to which -- the usual trouble with a twin-axis chart.
+  Stacked, each panel keeps its own scale and the shared x axis does the
+  comparing: a dry month in the top panel sits directly above what the lake
+  did next.
 
-  The months are drawn once, under the lower panel, and one hover guide runs
-  through both -- the point of stacking being that a reader reads down a
-  column, so the column has to be visible in both at once.
+  The months are drawn once, under the lowest panel, and one hover guide runs
+  through all three -- the point of stacking being that a reader reads down a
+  column, so the column has to be visible in every panel at once.
 
-  **Each month's own inches above, not a running total.** The question is
-  when it rained, not how far behind a year is by now. The year's total is
-  reported in the legend instead, each year read to the same day.
+  **The two rainfall panels answer different questions, which is why there
+  are two.** A month's own inches says when it rained: a month at 8.90 and a
+  month at 1.25 are visible there and vanish into a running total. The
+  accumulation says how far behind a year is by now, which is the question
+  the lake is actually answering to -- which is why it sits directly above
+  the lake panel rather than beside its own monthly chart. A cumulative line
+  can only rise, so it says nothing about any single month; the two together
+  say both things without either having to compromise.
 
   **The lake panel's lines are dotted**, and not only for looks: those
   figures are read off a picture of a chart rather than published as numbers,
@@ -29,8 +35,8 @@
   gauge read, and its lake level at September 15th, the day the city's chart
   was drawn. The x axis is the date, so a line ending early reads as a year
   not finished rather than a year that went to zero. A rainfall month short
-  of its own length is drawn dashed with a hollow point, so the current
-  month is not read as a dry one.
+  of its own length is drawn dashed with a hollow point, in both rainfall
+  panels, so the current month is not read as a dry one.
 
   Colour runs oldest to newest, the current year always in the orange
   `drought-colours.ts` builds its stage ramp on -- the drought year drawn in
@@ -40,13 +46,8 @@
 -->
 <script lang="ts">
   import { COLOURS } from "./chart-colours"
-  import type { LakeLevelMonth, LakeLevelYear } from "./kenoza-levels"
-  import {
-    MONTH_NAMES,
-    type PrecipitationMonth,
-    type PrecipitationYear,
-    longDate,
-  } from "./precipitation"
+  import type { LakeLevelYear } from "./kenoza-levels"
+  import { MONTH_NAMES, type PrecipitationYear, longDate } from "./precipitation"
 
   let {
     years,
@@ -62,14 +63,10 @@
   const EARLIER_COLOURS = [COLOURS[0], COLOURS[2], COLOURS[3], COLOURS[4], COLOURS[5]]
 
   const WIDTH = 760
-  const PAD = { top: 14, right: 12, bottom: 30, left: 46 }
-  /** The two plot boxes and the gap between them, top to bottom. */
-  const RAIN_H = 190
-  const GAP = 44
-  const LAKE_H = 150
-  const HEIGHT = PAD.top + RAIN_H + GAP + LAKE_H + PAD.bottom
-  const RAIN_TOP = PAD.top
-  const LAKE_TOP = PAD.top + RAIN_H + GAP
+  const PAD = { top: 16, right: 12, bottom: 30, left: 46 }
+  const PANEL_H = 148
+  const GAP = 42
+  const HEIGHT = PAD.top + PANEL_H * 3 + GAP * 2 + PAD.bottom
 
   const PLOT_W = WIDTH - PAD.left - PAD.right
   const MONTHS = 12
@@ -84,73 +81,123 @@
 
   const x = (month: number) => PAD.left + ((month - 1) / (MONTHS - 1)) * PLOT_W
 
-  // --- rainfall panel, zero-based because inches in a month is a quantity ---
-  const rainCeiling = $derived(
-    Math.ceil(Math.max(...years.flatMap((year) => year.months.map((month) => month.inches)))),
-  )
-  const yRain = (value: number) => RAIN_TOP + RAIN_H - (value / rainCeiling) * RAIN_H
-  const rainGrid = $derived(
-    Array.from({ length: rainCeiling + 1 }, (_, i) => i).filter((v) => v > 0 && v % 2 === 0),
-  )
+  /** One point of one year's line, in one panel. */
+  interface Point {
+    month: number
+    value: number
+    /** The month is short of its own length, so the point is not a month-end. */
+    partial: boolean
+  }
+
+  const rainPoints = (year: PrecipitationYear): Point[] =>
+    year.months.map((m) => ({ month: m.month, value: m.inches, partial: m.partial }))
+
+  const cumulativePoints = (year: PrecipitationYear): Point[] =>
+    year.months.map((m) => ({ month: m.month, value: m.cumulativeInches, partial: m.partial }))
+
+  const levelPoints = (year: LakeLevelYear | null): Point[] =>
+    year ? year.months.map((m) => ({ month: m.month, value: m.feet, partial: false })) : []
 
   /**
-   * The lake panel does not start at zero, and should not: a reservoir level
-   * is feet above a gauge datum, not an amount of water, and a zero-based
-   * axis would squeeze the whole drought into the top tenth of the box. It is
-   * padded a foot either side of the range actually drawn and rounded out to
-   * whole feet.
+   * Each panel's own vertical scale, and the gridlines it prints.
+   *
+   * The two rainfall panels start at zero, because inches of rain is a
+   * quantity. The lake panel does not and should not: a reservoir level is
+   * feet above a gauge datum, not an amount of water, and a zero-based axis
+   * would squeeze the whole drought into the top tenth of the box. It is
+   * padded a foot either side of the range drawn and rounded out to whole
+   * feet, and its floor is drawn as a gridline rather than an axis, which
+   * would imply a zero that is not there.
    */
-  const lakeRange = $derived.by(() => {
-    const all = levels.flatMap((year) => year.months.map((month) => month.feet))
-    return { low: Math.floor(Math.min(...all) - 1), high: Math.ceil(Math.max(...all) + 1) }
-  })
-  const yLake = (value: number) =>
-    LAKE_TOP + LAKE_H - ((value - lakeRange.low) / (lakeRange.high - lakeRange.low)) * LAKE_H
-  const lakeGrid = $derived.by(() => {
-    const ticks: number[] = []
-    for (let v = Math.ceil(lakeRange.low / 2) * 2; v <= lakeRange.high; v += 2) ticks.push(v)
-    return ticks
+  const panels = $derived.by(() => {
+    const rainMax = Math.max(...years.flatMap((y) => y.months.map((m) => m.inches)))
+    const cumMax = Math.max(...years.flatMap((y) => y.months.map((m) => m.cumulativeInches)))
+    const allFeet = levels.flatMap((y) => y.months.map((m) => m.feet))
+
+    const build = (
+      key: "rain" | "cumulative" | "lake",
+      title: string,
+      index: number,
+      low: number,
+      high: number,
+      step: number,
+      unit: "in" | "ft",
+      points: (year: PrecipitationYear, level: LakeLevelYear | null) => Point[],
+    ) => {
+      const top = PAD.top + index * (PANEL_H + GAP)
+      const y = (value: number) => top + PANEL_H - ((value - low) / (high - low)) * PANEL_H
+      const ticks: number[] = []
+      for (let v = Math.ceil(low / step) * step; v <= high; v += step) {
+        if (v > low || unit === "ft") ticks.push(v)
+      }
+      return { key, title, top, low, high, unit, y, ticks, points, zeroed: low === 0 }
+    }
+
+    return [
+      build("rain", "Rainfall, inches in the month", 0, 0, Math.ceil(rainMax), 2, "in", rainPoints),
+      build(
+        "cumulative",
+        "Rainfall, inches since January 1st",
+        1,
+        0,
+        Math.ceil(cumMax / 10) * 10,
+        10,
+        "in",
+        cumulativePoints,
+      ),
+      build(
+        "lake",
+        "Kenoza Lake, feet — read off the city's chart",
+        2,
+        Math.floor(Math.min(...allFeet) - 1),
+        Math.ceil(Math.max(...allFeet) + 1),
+        2,
+        "ft",
+        (_, level) => levelPoints(level),
+      ),
+    ]
   })
 
   /**
-   * A rainfall year draws as up to two paths: the whole months solid, and a
-   * dashed tail joining the last whole month to an incomplete one. One path
-   * cannot carry both, a `stroke-dasharray` applying to the whole of it.
+   * A line draws as up to two paths: the whole months solid, and a dashed
+   * tail joining the last whole month to an incomplete one. One path cannot
+   * carry both, a `stroke-dasharray` applying to the whole of it.
    */
-  const rainPaths = (months: PrecipitationMonth[]) => {
-    const at = (m: PrecipitationMonth) => `${x(m.month).toFixed(1)} ${yRain(m.inches).toFixed(1)}`
-    const whole = months.filter((month) => !month.partial)
-    const tail = months.filter((month) => month.partial)
-    const solid = whole.map((month, i) => `${i === 0 ? "M" : "L"}${at(month)}`).join(" ")
+  const pathsFor = (points: Point[], y: (v: number) => number) => {
+    const at = (p: Point) => `${x(p.month).toFixed(1)} ${y(p.value).toFixed(1)}`
+    const whole = points.filter((p) => !p.partial)
+    const tail = points.filter((p) => p.partial)
+    const solid = whole.map((p, i) => `${i === 0 ? "M" : "L"}${at(p)}`).join(" ")
     const from = whole.at(-1)
     const joined = tail.length
-      ? (from ? `M${at(from)} ` : `M${at(tail[0])} `) + tail.map((m) => `L${at(m)}`).join(" ")
+      ? (from ? `M${at(from)} ` : `M${at(tail[0])} `) + tail.map((p) => `L${at(p)}`).join(" ")
       : ""
     return { solid, tail: joined }
   }
 
-  const lakePath = (months: LakeLevelMonth[]) =>
-    months
-      .map((m, i) => `${i === 0 ? "M" : "L"}${x(m.month).toFixed(1)} ${yLake(m.feet).toFixed(1)}`)
-      .join(" ")
-
   /**
-   * The legend reports each year's rainfall total, since the lines draw
-   * monthly amounts and cannot. The figure is `toDateInches`, each year
-   * summed to the same month and day the current year reaches -- see
-   * `$lib/precipitation.ts`: a legend printing 2026's part-year beside 2025's
-   * full 37.72 would say the current year is seven inches drier when at the
-   * same point it is level with it.
+   * The legend reports each year's rainfall total, since the monthly lines
+   * cannot. The figure is `toDateInches`, each year summed to the same month
+   * and day the current year reaches -- see `$lib/precipitation.ts`: a legend
+   * printing 2026's part-year beside 2025's full total would say the current
+   * year is seven inches drier when at the same point it is level with it.
    */
   const series = $derived(
     years.map((year, i) => {
       const isCurrent = i === years.length - 1
+      const level = levels.find((row) => row.year === year.year) ?? null
       return {
         year,
+        level,
         isCurrent,
         colour: isCurrent ? CURRENT_COLOUR : EARLIER_COLOURS[i % EARLIER_COLOURS.length],
-        ...rainPaths(year.months),
-        level: levels.find((row) => row.year === year.year) ?? null,
+        lines: panels.map((panel) => ({
+          key: panel.key,
+          dotted: panel.key === "lake",
+          y: panel.y,
+          points: panel.points(year, level),
+          ...pathsFor(panel.points(year, level), panel.y),
+        })),
       }
     }),
   )
@@ -168,7 +215,7 @@
     hovered = Math.min(MONTHS, Math.max(1, Math.round(across * (MONTHS - 1) + 1)))
   }
 
-  /** Both panels' figures for the month under the pointer, in one readout. */
+  /** All three panels' figures for the month under the pointer, in one readout. */
   const readout = $derived.by(() => {
     if (hovered === null) return null
     const rows = series
@@ -201,60 +248,54 @@
       viewBox="0 0 {WIDTH} {HEIGHT}"
       class="block h-auto w-full"
       role="group"
-      aria-label="Rainfall by month and Kenoza Lake's level, {years[0]?.year} to {current?.year}"
+      aria-label="Rainfall by month, rainfall since January 1st, and Kenoza Lake's level, {years[0]
+        ?.year} to {current?.year}"
     >
-      <!-- Panel titles, inside the drawing so they scale with it. -->
-      <text x={PAD.left} y={RAIN_TOP - 3} class="fill-slate-600 text-[11px] font-medium">
-        Rainfall, inches in the month
-      </text>
-      <text x={PAD.left} y={LAKE_TOP - 3} class="fill-slate-600 text-[11px] font-medium">
-        Kenoza Lake, feet &mdash; read off the city's chart
-      </text>
+      {#each panels as panel (panel.key)}
+        <!-- Panel title, inside the drawing so it scales with it. -->
+        <text x={PAD.left} y={panel.top - 5} class="fill-slate-600 text-[11px] font-medium">
+          {panel.title}
+        </text>
 
-      <!-- Rainfall grid and baseline. -->
-      {#each rainGrid as line (line)}
-        <line
-          x1={PAD.left}
-          x2={WIDTH - PAD.right}
-          y1={yRain(line)}
-          y2={yRain(line)}
-          stroke="#e2e8f0"
-        />
-        <text
-          x={PAD.left - 8}
-          y={yRain(line) + 4}
-          text-anchor="end"
-          class="fill-slate-500 text-[11px]">{line}"</text
-        >
-      {/each}
-      <line x1={PAD.left} x2={WIDTH - PAD.right} y1={yRain(0)} y2={yRain(0)} stroke="#94a3b8" />
+        {#each panel.ticks as tick (tick)}
+          <line
+            x1={PAD.left}
+            x2={WIDTH - PAD.right}
+            y1={panel.y(tick)}
+            y2={panel.y(tick)}
+            stroke="#e2e8f0"
+          />
+          <text
+            x={PAD.left - 8}
+            y={panel.y(tick) + 4}
+            text-anchor="end"
+            class="fill-slate-500 text-[11px]"
+          >
+            {panel.unit === "in" ? `${tick}"` : tick}
+          </text>
+        {/each}
 
-      <!-- Lake grid and floor. The floor is not zero, so it is drawn as a
-           grid line rather than an axis, which would imply one. -->
-      {#each lakeGrid as line (line)}
-        <line
-          x1={PAD.left}
-          x2={WIDTH - PAD.right}
-          y1={yLake(line)}
-          y2={yLake(line)}
-          stroke="#e2e8f0"
-        />
-        <text
-          x={PAD.left - 8}
-          y={yLake(line) + 4}
-          text-anchor="end"
-          class="fill-slate-500 text-[11px]">{line}</text
-        >
+        <!-- Only a zero-based panel gets a baseline; the lake's floor is a
+             gridline, since drawing it as an axis would imply a zero. -->
+        {#if panel.zeroed}
+          <line
+            x1={PAD.left}
+            x2={WIDTH - PAD.right}
+            y1={panel.y(0)}
+            y2={panel.y(0)}
+            stroke="#94a3b8"
+          />
+        {/if}
       {/each}
 
-      <!-- One guide through both panels: the point of stacking is reading
-           down a column, so the column has to show in both. -->
+      <!-- One guide through every panel: the point of stacking is reading
+           down a column, so the column has to show in all of them. -->
       {#if readout}
         <line
           x1={x(readout.month)}
           x2={x(readout.month)}
-          y1={RAIN_TOP}
-          y2={LAKE_TOP + LAKE_H}
+          y1={PAD.top}
+          y2={HEIGHT - PAD.bottom}
           stroke="#0f172a"
           stroke-width="1"
           opacity="0.25"
@@ -276,70 +317,51 @@
             : `, ${inches.format(line.year.totalInches)} inches over the full year`}{line.level
             ? `. Kenoza Lake ${feet.format(line.level.months.at(-1)!.feet)} feet by ${line.level.months.at(-1)!.label}, low of ${feet.format(line.level.low.feet)} feet in ${line.level.low.note}`
             : ''}{line.year.filledDays
-            ? `. ${line.year.filledDays} rainfall day${line.year.filledDays === 1 ? '' : 's'} filled from a neighbouring gauge`
+            ? `. ${line.year.filledDays} rainfall day${line.year.filledDays === 1 ? '' : 's'} carry no reading from the city's own gauge`
             : ''}"
         >
-          <path
-            d={line.solid}
-            fill="none"
-            stroke={line.colour}
-            stroke-width={line.isCurrent ? 2.5 : 1.75}
-            stroke-linejoin="round"
-            stroke-linecap="round"
-          />
-          {#if line.tail}
-            <!-- The incomplete month: dashed, so it is not read as a dry one. -->
+          {#each line.lines as panelLine (panelLine.key)}
             <path
-              d={line.tail}
+              d={panelLine.solid}
               fill="none"
               stroke={line.colour}
               stroke-width={line.isCurrent ? 2.5 : 1.75}
-              stroke-dasharray="3 3"
-              stroke-linecap="round"
-            />
-          {/if}
-          {#each line.year.months as month (month.month)}
-            <circle
-              cx={x(month.month)}
-              cy={yRain(month.inches)}
-              r={hovered === month.month ? (line.isCurrent ? 4 : 3.25) : line.isCurrent ? 2.75 : 2}
-              fill={month.partial ? "#fff" : line.colour}
-              stroke={line.colour}
-              stroke-width={month.partial ? 1.75 : 1}
-            />
-          {/each}
-
-          {#if line.level}
-            <!-- Dotted: these are read off a picture, not published as
-                 numbers. See $lib/kenoza-levels.ts. -->
-            <path
-              d={lakePath(line.level.months)}
-              fill="none"
-              stroke={line.colour}
-              stroke-width={line.isCurrent ? 2.25 : 1.75}
-              stroke-dasharray="1.5 3.5"
-              stroke-linecap="round"
               stroke-linejoin="round"
+              stroke-linecap="round"
+              stroke-dasharray={panelLine.dotted ? "1.5 3.5" : undefined}
             />
-            {#each line.level.months as month (month.month)}
+            {#if panelLine.tail}
+              <!-- The incomplete month: dashed, so it is not read as a dry one. -->
+              <path
+                d={panelLine.tail}
+                fill="none"
+                stroke={line.colour}
+                stroke-width={line.isCurrent ? 2.5 : 1.75}
+                stroke-dasharray="3 3"
+                stroke-linecap="round"
+              />
+            {/if}
+            {#each panelLine.points as point (point.month)}
               <circle
-                cx={x(month.month)}
-                cy={yLake(month.feet)}
-                r={hovered === month.month
+                cx={x(point.month)}
+                cy={panelLine.y(point.value)}
+                r={hovered === point.month
                   ? line.isCurrent
-                    ? 3.5
-                    : 3
+                    ? 4
+                    : 3.25
                   : line.isCurrent
-                    ? 2.25
-                    : 1.75}
-                fill={line.colour}
+                    ? 2.75
+                    : 2}
+                fill={point.partial ? "#fff" : line.colour}
+                stroke={line.colour}
+                stroke-width={point.partial ? 1.75 : 1}
               />
             {/each}
-          {/if}
+          {/each}
         </g>
       {/each}
 
-      <!-- Months once, under the lower panel: one calendar for both. -->
+      <!-- Months once, under the lowest panel: one calendar for all three. -->
       {#each axisMonths as month (month.month)}
         <text
           x={x(month.month)}
@@ -351,7 +373,7 @@
         </text>
       {/each}
 
-      <!-- Transparent, on top, spanning both panels, and the only thing the
+      <!-- Transparent, on top, spanning every panel, and the only thing the
            pointer talks to. Hidden from assistive tech: it reveals nothing
            the focusable lines and the table below do not already carry. -->
       <rect
@@ -359,9 +381,9 @@
         aria-hidden="true"
         bind:this={plot}
         x={PAD.left}
-        y={RAIN_TOP}
+        y={PAD.top}
         width={PLOT_W}
-        height={LAKE_TOP + LAKE_H - RAIN_TOP}
+        height={HEIGHT - PAD.top - PAD.bottom}
         fill="transparent"
         onpointermove={track}
         onpointerleave={() => (hovered = null)}
@@ -380,6 +402,7 @@
               <td></td>
               <td></td>
               <th scope="col" class="text-right font-normal">rain</th>
+              <th scope="col" class="text-right font-normal">ytd</th>
               <th scope="col" class="text-right font-normal">lake</th>
             </tr>
           </thead>
@@ -400,6 +423,9 @@
                 </th>
                 <td class="text-right text-slate-900 tabular-nums">
                   {row.month ? `${inches.format(row.month.inches)}"` : "—"}
+                </td>
+                <td class="text-right text-slate-600 tabular-nums">
+                  {row.month ? `${inches.format(row.month.cumulativeInches)}"` : "—"}
                 </td>
                 <td class="text-right text-slate-600 tabular-nums">
                   {row.feet === null ? "—" : `${feet.format(row.feet)} ft`}
@@ -434,16 +460,19 @@
     {/each}
   </ul>
 
-  <!-- Every figure both panels carry, for a screen reader: one row per month,
+  <!-- Every figure the panels carry, for a screen reader: one row per month,
        which is what the lines draw. Here so nothing is only visible to a
        mouse, not to summarise. -->
   <table class="sr-only">
-    <caption> Rainfall in inches and Kenoza Lake's level in feet, by month </caption>
+    <caption>
+      Rainfall in inches, rainfall since January 1st, and Kenoza Lake's level in feet, by month
+    </caption>
     <thead>
       <tr>
         <th scope="col">Month</th>
         {#each series as line (line.year.year)}
           <th scope="col">{line.year.year} rainfall</th>
+          <th scope="col">{line.year.year} since January 1st</th>
           <th scope="col">{line.year.year} lake level</th>
         {/each}
       </tr>
@@ -458,6 +487,7 @@
                 ? `${inches.format(cell.rain.inches)} in${cell.rain.partial ? ` (${cell.rain.days} days)` : ""}`
                 : "—"}
             </td>
+            <td>{cell.rain ? `${inches.format(cell.rain.cumulativeInches)} in` : "—"}</td>
             <td>{cell.feet === null ? "—" : `${feet.format(cell.feet)} ft`}</td>
           {/each}
         </tr>

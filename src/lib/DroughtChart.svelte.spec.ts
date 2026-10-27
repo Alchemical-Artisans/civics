@@ -75,7 +75,7 @@ describe("DroughtChart.svelte", () => {
       .elements()
       .map((el) => el.getAttribute("aria-label") ?? "")
 
-  it("draws one focusable group per year, carrying both that year's lines", async () => {
+  it("draws one focusable group per year, carrying all three of its lines", async () => {
     render(DroughtChart, props)
 
     const lines = page.getByRole("img")
@@ -96,11 +96,28 @@ describe("DroughtChart.svelte", () => {
     expect(axis).toEqual(MONTH_NAMES)
   })
 
-  it("names each panel, since the two carry different units", async () => {
+  it("names each panel, since the three answer different questions", async () => {
     render(DroughtChart, props)
 
     await expect.element(page.getByText(/Rainfall, inches in the month/)).toBeInTheDocument()
+    await expect.element(page.getByText(/Rainfall, inches since January 1st/)).toBeInTheDocument()
     await expect.element(page.getByText(/Kenoza Lake, feet/)).toBeInTheDocument()
+  })
+
+  /**
+   * The accumulation can only rise, which is the whole reason it does not
+   * replace the monthly panel -- and the reason it is worth drawing beside
+   * it. If a cumulative line ever falls, a month went negative.
+   */
+  it("never lets the cumulative line fall", async () => {
+    render(DroughtChart, props)
+
+    for (const year of YEARS) {
+      const values = year.months.map((month) => month.cumulativeInches)
+      for (let i = 1; i < values.length; i++) {
+        expect(values[i]).toBeGreaterThanOrEqual(values[i - 1])
+      }
+    }
   })
 
   /**
@@ -111,17 +128,23 @@ describe("DroughtChart.svelte", () => {
   it("draws the lake level dotted and the rainfall solid", async () => {
     const { container } = render(DroughtChart, props)
 
+    // One dotted path per year, in the lake panel only -- not in either
+    // rainfall panel, whose figures are gauge readings rather than estimates.
     expect([...container.querySelectorAll("path[stroke-dasharray='1.5 3.5']")].length).toBe(2)
     expect([...container.querySelectorAll("path[stroke-linejoin='round']")].length).toBeGreaterThan(
       0,
     )
   })
 
-  it("marks the incomplete rainfall month rather than drawing it like the rest", async () => {
+  /**
+   * Marked in both rainfall panels, since the incomplete month is the last
+   * point of each -- one dashed tail and one hollow point per panel.
+   */
+  it("marks the incomplete rainfall month in both rainfall panels", async () => {
     const { container } = render(DroughtChart, props)
 
-    expect([...container.querySelectorAll("path[stroke-dasharray='3 3']")].length).toBe(1)
-    expect([...container.querySelectorAll("circle[fill='#fff']")].length).toBe(1)
+    expect([...container.querySelectorAll("path[stroke-dasharray='3 3']")].length).toBe(2)
+    expect([...container.querySelectorAll("circle[fill='#fff']")].length).toBe(2)
   })
 
   /** The drought hue belongs to the current year whatever the span's length. */
@@ -158,11 +181,16 @@ describe("DroughtChart.svelte", () => {
     expect(labels().find((l) => l.startsWith("2026:"))).toContain("low of 100.0 feet")
   })
 
-  it("says how many of the current year's rainfall days came from a neighbouring gauge", async () => {
+  /**
+   * Not "filled from a neighbouring gauge" any more: every day is an average
+   * of whatever read it, so what these days lack is the city's own reading,
+   * not a value.
+   */
+  it("says how many of the current year's days carry no city reading", async () => {
     render(DroughtChart, props)
 
     expect(labels().find((l) => l.startsWith("2026:"))).toContain(
-      "36 rainfall days filled from a neighbouring gauge",
+      "36 rainfall days carry no reading from the city's own gauge",
     )
   })
 
@@ -179,10 +207,13 @@ describe("DroughtChart.svelte", () => {
     render(DroughtChart, props)
 
     await expect
-      .element(page.getByRole("table", { name: /Rainfall in inches and Kenoza Lake's level/ }))
+      .element(page.getByRole("table", { name: /rainfall since January 1st, and Kenoza Lake/ }))
       .toBeInTheDocument()
     await expect
       .element(page.getByRole("columnheader", { name: "2026 lake level" }))
+      .toBeInTheDocument()
+    await expect
+      .element(page.getByRole("columnheader", { name: "2026 since January 1st" }))
       .toBeInTheDocument()
     await expect.element(page.getByText("(12 days)")).toBeInTheDocument()
   })
