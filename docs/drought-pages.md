@@ -84,6 +84,48 @@ of the palette in order. Indexing one palette by position worked only while
 exactly four years were drawn, and silently handed 2026 a violet the moment
 the span became three.
 
+## The supply map
+
+`/drought` opens with a map of Haverhill and the four bodies of water its
+public system draws from, drawn by **`src/lib/PrecinctMap.svelte`** -- the
+same component the election's precinct map uses, which already took shapes,
+outlines, names, fills and labels as props and needed no change at all. The
+water bodies are its `areas`, the city boundary its one `outline`.
+
+**Two sources, because neither answers the whole question.** MassDEP knows
+which waters are a public supply and publishes nothing about their shape at
+useful resolution; the USGS National Hydrography Dataset knows the shape of a
+lake and nothing about who drinks it. `npm run water-bodies:update`
+(`scripts/update-water-bodies.mjs`, pure parts in
+`scripts/lib/water-bodies.mjs`) reads both and writes
+`src/lib/data/water-bodies.json`. Not a step of `metadata:update`, for the
+reason `precincts:update` is not: a reservoir does not move.
+
+**Which waters count is MassDEP's answer, not ours.** Its Surface Water Supply
+Protection Areas layer names four surface sources against Haverhill Water
+Dept, PWSID 3128000: Kenoza Lake, Crystal Lake, Millvale Reservoir and Round
+Pond. The city's own drought page names three of them -- Round Pond is the one
+it leaves out.
+
+**The join is geometric, and it has to be.** A Zone A is a 400-foot buffer
+around its source, so the body it protects lies inside it; the largest
+intersecting body of NHD's reservoir type (`FTYPE` 436, as against 390 for a
+lake or pond and 466 for a marsh) is the source. Matching on names would have
+failed on exactly one of the four, and failed quietly: MassDEP's "ROUND POND"
+sits over the body NHD calls **Lake Pentucket**, and the two ponds NHD does
+call "Round Pond" are in other towns, twelve and twenty miles off. The data
+file keeps both names and a `namesDiffer` flag, and the page prints a caution
+naming the disagreement -- a reader asking the city about that pond needs to
+name the location, not just the pond.
+
+MassGIS's own `Hydro_Major` was the first choice for shapes and was dropped:
+it is a major-waters subset carrying Crystal Lake and none of the other three,
+and nothing finer is published on its REST server. The NHD's server will not
+clip against Millvale's 1,541-acre Zone A unsimplified -- it answers 504 -- so
+`coarsenZone` takes the buffer down to a fifty-metre tolerance before using it
+as a spatial filter. That costs the answer nothing: the zone only ever decides
+which bodies to consider, and the shapes drawn are always the NHD's own.
+
 ## Kenoza Lake's level
 
 The lower panel, from `src/lib/kenoza-levels.ts`. **Stacked rather than drawn

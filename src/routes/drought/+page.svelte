@@ -3,7 +3,9 @@
   // three station files behind them run to megabytes, and a server load is
   // what keeps them out of this page's own bundle.
   import DroughtChart from "$lib/DroughtChart.svelte"
+  import PrecinctMap from "$lib/PrecinctMap.svelte"
   import { KENOZA_LEVELS, KENOZA_SOURCE } from "$lib/kenoza-levels"
+  import waterBodies from "$lib/data/water-bodies.json"
 
   let { data } = $props()
 
@@ -14,8 +16,39 @@
 
   // `toDateInches` is each year summed only to the same month and day the
   // current year reaches, which is the one figure of these comparable across
-  // all four -- see $lib/precipitation.ts. The sentence below must not put a
-  // part-year beside three whole ones.
+  // both -- see $lib/precipitation.ts. The sentence below must not put a
+  // part-year beside a whole one.
+
+  // The four waters Haverhill's public system draws from, drawn as one system
+  // rather than four categories: same fill, each named on itself, with the
+  // city's own boundary outlined around them. See scripts/lib/water-bodies.mjs
+  // for where the supply list and the shapes each come from.
+  const WATER = "#0369a1"
+  const supplyAreas = waterBodies.bodies.map((body) => ({
+    id: body.sourceId,
+    shape: body.shape,
+    name: `${titleCase(body.name)} — ${body.areaSqKm} square kilometres`,
+    fill: WATER,
+    opacity: 0.55,
+    label: titleCase(body.name),
+  }))
+
+  /**
+   * MassDEP writes a source's name in capitals and abbreviates one of them; a
+   * map label should do neither. No `\b` after the full stop in `res\.` -- a
+   * word boundary needs a word character on the far side, and that
+   * abbreviation ends the string, so the anchored version silently never
+   * matched and the map read "Millvale Res."
+   */
+  function titleCase(name: string): string {
+    return name
+      .toLowerCase()
+      .replace(/\bres\./, "reservoir")
+      .replace(/\b[a-z]/g, (c) => c.toUpperCase())
+  }
+
+  const renamed = $derived(waterBodies.bodies.filter((body) => body.namesDiffer))
+
   const throughLabel = $derived(
     new Date(`${current.throughDate}T00:00:00Z`).toLocaleDateString("en-US", {
       month: "long",
@@ -46,6 +79,38 @@
   Reservoir and Kenoza Lake. In the spring, snow melt also runs into these water supplies, making up
   another significant source.
 </p>
+
+<h3>Where the water comes from</h3>
+
+<PrecinctMap
+  title="Haverhill, and the four bodies of water its public water supply draws from"
+  bounds={waterBodies.bounds as [number, number, number, number]}
+  areas={supplyAreas}
+  outlines={[{ shape: waterBodies.town.shape, name: "Haverhill" }]}
+  caption="Supply from MassDEP; outlines from the USGS National Hydrography Dataset; city boundary from MassGIS"
+/>
+
+<p>
+  Massachusetts DEP lists four surface sources against {titleCase(waterBodies.supplier)}, public
+  water system {waterBodies.pwsid}:
+  {waterBodies.bodies.map((body) => titleCase(body.name)).join(", ")}. Each is drawn here at its own
+  size, inside the city boundary. Millvale is the smallest body of the four but sits in by far the
+  largest protection area, {waterBodies.bodies.find((b) => b.name.startsWith("MILLVALE"))
+    ?.zoneAcres} acres against Kenoza's {waterBodies.bodies.find((b) => b.name.startsWith("KENOZA"))
+    ?.zoneAcres} &mdash; a small reservoir under a wide watershed.
+</p>
+
+{#if renamed.length}
+  <p>
+    One caution on the names. The state's two agencies do not agree on all of them: what MassDEP
+    files as {renamed.map((body) => titleCase(body.name)).join(", ")} is the water the federal hydrography
+    dataset calls
+    {renamed.map((body) => body.mappedName).join(", ")}. The shapes here are matched to the sources
+    by position rather than by name, so the outline is the right water whichever name is used
+    &mdash; but if you are asking the city about it, it is worth naming the location as well as the
+    pond.
+  </p>
+{/if}
 
 <h3>Rainfall and reservoir level, this year against last</h3>
 
