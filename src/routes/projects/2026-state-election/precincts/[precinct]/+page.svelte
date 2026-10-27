@@ -159,7 +159,6 @@
     <!-- The map takes whatever height the header leaves. -->
     <div class="h-[70dvh] lg:h-full lg:min-h-0">
       <PrecinctMap
-        interactive
         title="{title}, outlined within Ward {precinct.ward}"
         {bounds}
         {areas}

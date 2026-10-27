@@ -69,7 +69,14 @@
   </div>
 
   <div class="relative mt-2 flex flex-1 items-center">
+    <!-- The one map on the site that is not interactive. This card is itself a
+         single link -- the heading's own `::after` covers it -- so drag-to-pan
+         would fight a link that wants to be clicked, and wheel-zoom would
+         swallow the landing page's scroll. A reader who wants to move around
+         the map follows the card to the project, where the same component is
+         interactive. -->
     <PrecinctMap
+      interactive={false}
       title="Haverhill's twenty-one precincts, each a link to its ballot"
       {bounds}
       areas={PRECINCTS.map((p) => ({

@@ -102,7 +102,6 @@
       outlines={[{ shape: waterBodies.town.shape, name: "Haverhill" }]}
       width={400}
       height={320}
-      interactive
       hoverLabel
       caption="MassDEP, USGS and MassGIS"
     />

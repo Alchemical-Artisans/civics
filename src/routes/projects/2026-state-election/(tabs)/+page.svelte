@@ -29,7 +29,6 @@
 <!-- The map takes whatever height the header and the tabs leave. -->
 <div class="h-[70dvh] lg:h-full">
   <PrecinctMap
-    interactive
     title="Haverhill's seven wards and twenty-one precincts, "
     {bounds}
     areas={PRECINCTS.map((p) => ({

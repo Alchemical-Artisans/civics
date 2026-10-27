@@ -49,7 +49,6 @@
      embedded. -->
 <div class="not-prose my-4 h-80 max-w-xl">
   <PrecinctMap
-    interactive
     title="Where the Big Dog Show would be held: Bradford Common"
     bounds={boundsAround([[VENUE.lon, VENUE.lat]])}
     areas={[]}

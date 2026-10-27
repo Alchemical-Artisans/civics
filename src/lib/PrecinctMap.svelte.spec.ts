@@ -55,6 +55,35 @@ describe("PrecinctMap.svelte", () => {
   })
 
   /**
+   * The rule is that a map is interactive, so the default is, and the prop
+   * appears at a call site only where a map departs from it -- which is the
+   * landing page's own card and nowhere else.
+   */
+  describe("interactive", () => {
+    it("is on by default", async () => {
+      const { container } = render(PrecinctMap, base)
+
+      expect(container.querySelector("figure")?.className).toContain("h-full")
+      expect(container.querySelector("svg")?.getAttribute("class")).toContain("absolute")
+    })
+
+    it("can be turned off for a map that cannot have it", async () => {
+      const { container } = render(PrecinctMap, { ...base, interactive: false })
+
+      expect(container.querySelector("figure")?.className).not.toContain("h-full")
+      expect(container.querySelector("svg")?.getAttribute("class")).not.toContain("absolute")
+    })
+
+    /** Either way the shapes are drawn before anything hydrates. */
+    it("draws the shapes either way", async () => {
+      for (const interactive of [true, false]) {
+        const { container } = render(PrecinctMap, { ...base, interactive })
+        expect([...container.querySelectorAll("path.area")].length).toBe(2)
+      }
+    })
+  })
+
+  /**
    * Every area already carries a `<title>`, which is the browser's own tooltip.
    * `hoverLabel` is about drawing the name on the map instead; the title stays
    * either way.

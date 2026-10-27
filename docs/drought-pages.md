@@ -94,10 +94,16 @@ of the column width beside the paragraph that explains it, inside a
 `flow-root` wrapper so the next heading starts under it rather than wrapping
 around it, and drops to full width above the text below `sm`.
 
-**It is `interactive`, like every other map on the site** -- pan, zoom, and
-finer tiles as a reader goes in. The float needs an explicit `h-80` for that:
-an interactive map fills the height its parent gives it and has a 20rem floor
-of its own, so without a height on the wrapper there is nothing to fill.
+**It is interactive, which is now what a map is unless told otherwise** --
+pan, zoom, and finer tiles as a reader goes in. `PrecinctMap`'s own default
+flipped to `true` for this: a reader who wants detail should be able to go and
+get it, so the prop appears at a call site only where a map departs from that.
+Exactly one does -- the landing page's `ElectionCard`, which is itself a
+single link, where drag-to-pan would fight a link that wants to be clicked and
+wheel-zoom would swallow the page's scroll. The float needs an explicit `h-80`
+for interactivity: such a map fills the height its parent gives it and has a
+20rem floor of its own, so without a height on the wrapper there is nothing to
+fill.
 
 **`hoverLabel` is new, and only this map passes it.** It names one area at a
 time, on hover or focus, drawn on the map rather than left to the browser's

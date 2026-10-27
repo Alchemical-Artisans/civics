@@ -11,11 +11,18 @@
 
   `not-prose`: a picture, not a reading column, the same as `AddressMap`.
 
-  `interactive` is for a map that has a pane to itself: it fills the height its
+  **A map is interactive unless it is told not to be.** It fills the height its
   parent gives it and, once the page has hydrated, pans (drag), zooms (wheel,
   pinch, the buttons) and fetches finer tiles as it goes in. Until then it is
   the same static SVG as any other, framed in advance, so the links and the
   picture are there with no script.
+
+  `interactive={false}` is the exception, and the one place that takes it is
+  the landing page's own card, which is itself a single link: drag-to-pan
+  fights a link that wants to be clicked, and wheel-zoom would swallow the
+  page's scroll. Anywhere else, a reader who wants detail should be able to go
+  and get it, so the prop appears at a call site only where the map departs
+  from that.
 -->
 <script lang="ts">
   import { onMount, untrack } from "svelte"
@@ -89,7 +96,7 @@
     width = 800,
     height = 560,
     caption = "",
-    interactive = false,
+    interactive = true,
     hoverLabel = false,
   }: {
     /** What the map shows, as one phrase: the figure's accessible name. */
@@ -113,7 +120,15 @@
      * of pins alone has nothing of ours in it to credit, and leaves it out.
      */
     caption?: string
-    /** Fill the parent's height and, once hydrated, pan and zoom. */
+    /**
+     * Fill the parent's height and, once hydrated, pan and zoom. On by
+     * default; pass `false` only for a map that cannot have it -- see the
+     * comment at the top of this file for the one that cannot.
+     *
+     * An interactive map needs a height from its parent and has a 20rem floor
+     * of its own, so a container that sizes itself to its contents needs an
+     * explicit height.
+     */
     interactive?: boolean
     /**
      * Name each area as the pointer crosses it, drawn on the map rather than

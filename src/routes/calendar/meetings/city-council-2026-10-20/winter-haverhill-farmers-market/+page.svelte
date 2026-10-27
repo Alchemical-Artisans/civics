@@ -27,7 +27,6 @@
      carries the address as a label and opens the place on OpenStreetMap. -->
 <div class="not-prose my-4 h-80 max-w-xl">
   <PrecinctMap
-    interactive
     title="Where the Winter Haverhill Farmers Market would be held: 143 Essex St"
     bounds={boundsAround([[VENUE.lon, VENUE.lat]])}
     areas={[]}

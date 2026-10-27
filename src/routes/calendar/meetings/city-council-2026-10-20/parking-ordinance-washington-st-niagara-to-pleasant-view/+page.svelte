@@ -37,7 +37,6 @@
      Engineer's memo says. See `stretch.ts` for where the line comes from. -->
 <div class="not-prose my-4 h-96 max-w-xl">
   <PrecinctMap
-    interactive
     title="Washington Street from Niagara Street to Pleasant View Avenue, where the ordinance would prohibit parking"
     bounds={boundsAround(STRETCH)}
     areas={[]}
