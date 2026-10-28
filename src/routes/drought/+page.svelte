@@ -4,7 +4,17 @@
   // what keeps them out of this page's own bundle.
   import RainfallChart from "$lib/RainfallChart.svelte"
   import PrecinctMap from "$lib/PrecinctMap.svelte"
+  import { Router } from "$lib/router"
+  import { KENOZA_SOURCE } from "$lib/kenoza-levels"
   import waterBodies from "$lib/data/water-bodies.json"
+
+  // The city's own Kenoza chart, committed rather than hotlinked -- see
+  // `Router.excerptFile`. It is shown as the city drew it rather than redrawn
+  // here: the level series exists only as this picture, so a chart of ours
+  // would be a reading of it rather than the measurement, and the band
+  // shading is the Water Department's own definition of each drought stage.
+  const KENOZA_MEETING = "city-council-2026-09-15"
+  const KENOZA_CHART = "drought-emergency-update/drought-chart.png"
 
   let { data } = $props()
 
@@ -127,8 +137,40 @@
     </p>
 
     <RainfallChart years={data.rainfallYears} baseline={data.rainfallBaseline} />
+
+    <p>
+      Over the last three years, our rainfall has been consistently below average, and unfortunately
+      this means the water supply has not kept pace with our consumption. As a result, each year
+      we've had to draw on our reserves and these are diminishing.
+    </p>
   </div>
 </div>
+
+<!-- The city's own chart, shown rather than redrawn. `width` and `height` are
+     the file's own pixels, so the box is reserved before it loads and nothing
+     below it jumps; `h-auto w-full` scales it from there. It links to the
+     committed full-size copy because the axis labels stop being readable once
+     the column is narrow, and a reader who wants to read a figure off it
+     needs the original. -->
+<figure class="not-prose mx-auto my-6 max-w-3xl">
+  <a href={Router.excerptFile(KENOZA_MEETING, KENOZA_CHART)}>
+    <img
+      src={Router.excerptFile(KENOZA_MEETING, KENOZA_CHART)}
+      width="1650"
+      height="1275"
+      class="h-auto w-full rounded-lg ring-1 ring-slate-200"
+      alt="The Water Department's chart of Kenoza Lake's level through {KENOZA_SOURCE.asOf}. The vertical axis is feet above the gauge datum, 94 to 116, against the calendar year. Four coloured bands set the drought stage at each date, deepening downward from the 5 to 10 percent Watch zone through Warning and Emergency to the Critical zone beneath them. Three lines are drawn: the 36-year average, peaking near 113 feet in May; the 2025 trend, peaking near 112.6 feet at the start of July and falling to about 102 by the end of December; and the current level, which rises only to about 105.7 in June before falling to a labelled 99.8 feet in mid-September, below the foot of every band."
+    />
+  </a>
+  <figcaption class="mt-2 text-xs text-slate-500">
+    &ldquo;{KENOZA_SOURCE.title}&rdquo; &mdash; the City of Haverhill's own chart, as of
+    {KENOZA_SOURCE.asOf}, shown as the city drew it. Served from this site rather than the city's,
+    so the page does not depend on a file the city can move;
+    <a href={KENOZA_SOURCE.url} target="_blank" rel="external noopener noreferrer">
+      the original is here</a
+    >, read {KENOZA_SOURCE.accessed}.
+  </figcaption>
+</figure>
 
 <h3>Where the water comes from</h3>
 

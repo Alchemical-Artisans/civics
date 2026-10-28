@@ -137,6 +137,22 @@ export class Router {
   }
 
   /**
+   * The same store, for a file that is not a PDF: `excerpt` appends `.pdf`
+   * because almost everything the city publishes is one, and this takes the
+   * filename whole instead.
+   *
+   * What it is for is a figure the city drew. `/drought` shows the Water
+   * Department's own Kenoza Lake chart rather than redrawing it, and the
+   * image has to be served from here: the build is offline and the reader's
+   * browser never talks to the city's servers, so hotlinking the city's CDN
+   * would break the one promise the whole scrape is built on -- and leave the
+   * page dependent on a file the city can replace or move, which it does.
+   */
+  static excerptFile(id: string, file: string): string {
+    return path(`/excerpts/${id}/${file}`)
+  }
+
+  /**
    * One fiscal year's budget book, written up here. `id` is a `FiscalYear`'s
    * id from `$lib/budget` -- `fy2027`.
    *

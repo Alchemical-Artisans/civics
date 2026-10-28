@@ -180,6 +180,26 @@ which bodies to consider, and the shapes drawn are always the NHD's own.
 
 ## Kenoza Lake's level
 
+**The page shows the city's own chart, and does not redraw it.**
+`static/excerpts/city-council-2026-09-15/drought-emergency-update/drought-chart.png`
+is the Water Department's figure as published, committed beside the PDF of the
+same chart that was already there, and rendered with `Router.excerptFile` --
+`excerpt()` appends `.pdf`, so a non-PDF needed a door of its own.
+
+**Committed rather than hotlinked**, for the reason everything else here is:
+the build is offline and the reader's browser never talks to the city's
+servers. The caption still links the original and names the date it was read,
+so the citation is checkable; the page just does not depend on it resolving.
+
+Redrawing it would have been the wrong call even setting that aside. The
+level series exists only as this picture -- the city has never published it as
+numbers -- so a chart of ours would be a reading of the image rather than the
+measurement. The band shading is the Water Department's own definition of each
+drought stage, which is not ours to restate. `width` and `height` carry the
+file's own pixels so the box is reserved before it loads, and the image links
+to the full-size copy because its axis labels stop being readable in a narrow
+column.
+
 **Transcribed in `src/lib/kenoza-levels.ts`, and drawn nowhere.** It was a
 third panel stacked under the rainfall, on its own scale, sharing the x axis
 -- rainfall is inches and belongs on an axis starting at zero, a reservoir
