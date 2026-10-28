@@ -137,55 +137,63 @@
     </p>
 
     <RainfallChart years={data.rainfallYears} baseline={data.rainfallBaseline} />
-
-    <!-- Floated left, with the paragraph below wrapping to its right. A float
-         can do this where it could not do it for the rainfall chart: it
-         shortens the *line boxes* of the text that follows, which is exactly
-         what a paragraph is, where a block-level <figure> would have laid its
-         box out underneath instead. The grid cell is a grid item and so
-         establishes its own formatting context, which is what keeps the float
-         from escaping into the heading below.
-
-         `width` and `height` are the file's own pixels, so the box is reserved
-         before it loads and nothing jumps; `h-auto w-full` scales it from
-         there. It links to the committed full-size copy because the axis
-         labels stop being readable at this width, and a reader who wants to
-         read a figure off it needs the original.
-
-         Full width above the text below `sm`: half a narrow column is not a
-         chart, it is a thumbnail. -->
-    <figure class="not-prose mb-3 w-full sm:float-left sm:mt-1 sm:mr-5 sm:mb-2 sm:w-1/2">
-      <!-- Floated at half a column the chart is a few hundred pixels wide
-           against 1650 of original, so its axis labels cannot be read here and
-           the full-size copy stops being a nicety. `cursor-zoom-in` says the
-           image opens; the caption says so in words for a reader who never
-           hovers anything. -->
-      <a class="block cursor-zoom-in" href={Router.excerptFile(KENOZA_MEETING, KENOZA_CHART)}>
-        <img
-          src={Router.excerptFile(KENOZA_MEETING, KENOZA_CHART)}
-          width="1650"
-          height="1275"
-          class="h-auto w-full rounded-lg ring-1 ring-slate-200"
-          alt="The Water Department's chart of Kenoza Lake's level through {KENOZA_SOURCE.asOf}. The vertical axis is feet above the gauge datum, 94 to 116, against the calendar year. Four coloured bands set the drought stage at each date, deepening downward from the 5 to 10 percent Watch zone through Warning and Emergency to the Critical zone beneath them. Three lines are drawn: the 36-year average, peaking near 113 feet in May; the 2025 trend, peaking near 112.6 feet at the start of July and falling to about 102 by the end of December; and the current level, which rises only to about 105.7 in June before falling to a labelled 99.8 feet in mid-September, below the foot of every band."
-        />
-      </a>
-      <figcaption class="mt-2 text-xs text-slate-500">
-        &ldquo;{KENOZA_SOURCE.title}&rdquo; &mdash; the City of Haverhill's own chart, as of
-        {KENOZA_SOURCE.asOf}, shown as the city drew it &mdash; open it for the full-size copy,
-        which is the only size its axis labels can be read at. Served from this site rather than the
-        city's, so the page does not depend on a file the city can move;
-        <a href={KENOZA_SOURCE.url} target="_blank" rel="external noopener noreferrer">
-          the original is here</a
-        >, read {KENOZA_SOURCE.accessed}.
-      </figcaption>
-    </figure>
-
-    <p>
-      Over the last three years, our rainfall has been consistently below average, and unfortunately
-      this means the water supply has not kept pace with our consumption. As a result, each year
-      we've had to draw on our reserves and these are diminishing.
-    </p>
   </div>
+</div>
+
+<div class="flow-root">
+  <!-- Floated left, with the paragraph wrapping to its right. A float can do
+       this where it could not do it for the rainfall chart: it shortens the
+       *line boxes* of the text that follows, which is exactly what a
+       paragraph is, where a block-level <figure> would have laid its box out
+       underneath instead.
+
+       After the grid rather than inside its left column, which is where this
+       first went: in there the paragraph had a floated figure on one side and
+       the map's column on the other, and about 400px of the window to set
+       itself in. Out here it has the page's full width, the figure takes half
+       of that rather than half a column, and nothing is squeezed between two
+       figures. `flow-root` contains the float now that the grid cell's own
+       formatting context is gone -- without it the float runs on into the
+       heading below.
+
+       `width` and `height` are the file's own pixels, so the box is reserved
+       before it loads and nothing jumps; `h-auto w-full` scales it from
+       there. It links to the committed full-size copy because the axis
+       labels stop being readable at this width, and a reader who wants to
+       read a figure off it needs the original.
+
+       Full width above the text below `sm`: half a narrow column is not a
+       chart, it is a thumbnail. -->
+  <figure class="not-prose mb-3 w-full sm:float-left sm:mt-1 sm:mr-6 sm:mb-2 sm:w-1/2 sm:max-w-2xl">
+    <!-- Even at half the page the chart is well under its own 1650px, so the
+         fine axis labels still cannot be read here and the full-size copy is
+         not a nicety. `cursor-zoom-in` says the image opens; the caption says
+         so in words for a reader who never hovers anything. -->
+    <a class="block cursor-zoom-in" href={Router.excerptFile(KENOZA_MEETING, KENOZA_CHART)}>
+      <img
+        src={Router.excerptFile(KENOZA_MEETING, KENOZA_CHART)}
+        width="1650"
+        height="1275"
+        class="h-auto w-full rounded-lg ring-1 ring-slate-200"
+        alt="The Water Department's chart of Kenoza Lake's level through {KENOZA_SOURCE.asOf}. The vertical axis is feet above the gauge datum, 94 to 116, against the calendar year. Four coloured bands set the drought stage at each date, deepening downward from the 5 to 10 percent Watch zone through Warning and Emergency to the Critical zone beneath them. Three lines are drawn: the 36-year average, peaking near 113 feet in May; the 2025 trend, peaking near 112.6 feet at the start of July and falling to about 102 by the end of December; and the current level, which rises only to about 105.7 in June before falling to a labelled 99.8 feet in mid-September, below the foot of every band."
+      />
+    </a>
+    <figcaption class="mt-2 text-xs text-slate-500">
+      &ldquo;{KENOZA_SOURCE.title}&rdquo; &mdash; the City of Haverhill's own chart, as of
+      {KENOZA_SOURCE.asOf}, shown as the city drew it &mdash; open it for the full-size copy, which
+      is the only size its axis labels can be read at. Served from this site rather than the city's,
+      so the page does not depend on a file the city can move;
+      <a href={KENOZA_SOURCE.url} target="_blank" rel="external noopener noreferrer">
+        the original is here</a
+      >, read {KENOZA_SOURCE.accessed}.
+    </figcaption>
+  </figure>
+
+  <p>
+    Over the last three years, our rainfall has been consistently below average, and unfortunately
+    this means the water supply has not kept pace with our consumption. As a result, each year we've
+    had to draw on our reserves and these are diminishing.
+  </p>
 </div>
 
 <h3>Where the water comes from</h3>

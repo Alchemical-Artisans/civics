@@ -189,16 +189,22 @@ same chart that was already there, and rendered with `Router.excerptFile` --
 **Floated left of the paragraph beside it**, which a float can do here where
 it could not for the rainfall chart: a float shortens the _line boxes_ of the
 text that follows it, and a paragraph is exactly that, where the chart's
-block-level `<figure>` laid its box out underneath instead. The grid cell it
-sits in is a grid item and so establishes its own formatting context, which
-is what keeps the float out of the heading below. Measured: every line of the
-paragraph wraps to the right of it from `sm` up, and below `sm` it is full
-width above the text.
+block-level `<figure>` laid its box out underneath instead. Measured: every
+line of the paragraph wraps to the right of it from `sm` up, and below `sm`
+it is full width above the text.
 
-The cost is size. Floated at half a column the figure is 224 to 426px wide
-against 1650 of original, so its axis labels cannot be read at this size --
-which is why the image links to the full-size copy, carries `cursor-zoom-in`,
-and says so in its caption.
+**Both sit after the grid, not inside its left column.** That is where they
+first went, and it left the paragraph with a floated figure on one side and
+the map's column on the other, setting itself in about 400px of a 1440px
+window. After the grid it has the page's width and the figure takes half of
+that rather than half a column -- 320 to 672px against 224 to 426 -- and
+nothing is squeezed between two figures. A `flow-root` wrapper contains the
+float, the grid cell's own formatting context no longer being there to do it;
+without one the float runs on into the heading below.
+
+Even so the figure is well under its own 1650px and the fine axis labels
+cannot be read at this size, which is why the image links to the full-size
+copy, carries `cursor-zoom-in`, and says so in its caption.
 
 **Committed rather than hotlinked**, for the reason everything else here is:
 the build is offline and the reader's browser never talks to the city's
