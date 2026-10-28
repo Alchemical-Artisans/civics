@@ -62,6 +62,11 @@
   // 372px. So the box is drawn small and the figure is capped at `max-w-xl`
   // instead: the scale factor then sits near 1 from a phone up, and five bars
   // never needed 850px of canvas anyway.
+  //
+  // Being capped, the figure is narrower than the column it sits in, so it is
+  // centred there with `mx-auto` -- which is also why the figure's margin is
+  // `my-0` rather than `m-0`: the shorthand zeroes the side margins too, and
+  // auto is what does the centring.
   const WIDTH = 460
   const PAD = { top: 22, right: 10, bottom: 34, left: 34 }
   const PLOT_H = 144
@@ -131,7 +136,7 @@
   }
 </script>
 
-<figure class="not-prose m-0 max-w-xl">
+<figure class="not-prose mx-auto my-0 max-w-xl">
   <svg
     viewBox="0 0 {WIDTH} {HEIGHT}"
     class="block h-auto w-full"
