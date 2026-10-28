@@ -1,9 +1,10 @@
 import type { PageLoad } from "./$types"
 
 /**
- * When and where the meeting is, read off the head of the city's notice. The
- * layout renders these into the page header; see $lib/calendar's
- * MeetingDetails for why none of it can come from the scrape.
+ * When and where the meeting was, read off the head of the city's notice, and
+ * who sat at it, off the minutes the clerk published afterwards. The layout
+ * renders these into the page header; see $lib/calendar's MeetingDetails for
+ * why none of it can come from the scrape.
  */
 export const load: PageLoad = () => ({
   details: {
@@ -33,6 +34,17 @@ export const load: PageLoad = () => ({
         url: "https://www.haverhillma.gov/government/assessors/",
       },
       roster: [{ name: "Stephen Gullo" }, { name: "Roy Wright" }, { name: "Chris M. Loughnane" }],
+      // The minutes' own item 2, names and seats as it prints them, typo
+      // included. Item 8's later roll of the executive session says Roy Wright
+      // "joined telephonically"; item 2's roll of the open session says only
+      // that all three were present, so that is what this records -- reading
+      // the exec session's line back onto the open one would be a guess about a
+      // roll call the minutes took separately.
+      present: [
+        "Chris Loughnane-Chariman",
+        "Stephen Gullo-Board Member",
+        "Roy Wright-Board Member",
+      ],
     },
   },
 })
