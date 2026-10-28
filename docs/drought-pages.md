@@ -186,6 +186,20 @@ is the Water Department's figure as published, committed beside the PDF of the
 same chart that was already there, and rendered with `Router.excerptFile` --
 `excerpt()` appends `.pdf`, so a non-PDF needed a door of its own.
 
+**Floated left of the paragraph beside it**, which a float can do here where
+it could not for the rainfall chart: a float shortens the _line boxes_ of the
+text that follows it, and a paragraph is exactly that, where the chart's
+block-level `<figure>` laid its box out underneath instead. The grid cell it
+sits in is a grid item and so establishes its own formatting context, which
+is what keeps the float out of the heading below. Measured: every line of the
+paragraph wraps to the right of it from `sm` up, and below `sm` it is full
+width above the text.
+
+The cost is size. Floated at half a column the figure is 224 to 426px wide
+against 1650 of original, so its axis labels cannot be read at this size --
+which is why the image links to the full-size copy, carries `cursor-zoom-in`,
+and says so in its caption.
+
 **Committed rather than hotlinked**, for the reason everything else here is:
 the build is offline and the reader's browser never talks to the city's
 servers. The caption still links the original and names the date it was read,
