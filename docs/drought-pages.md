@@ -267,6 +267,42 @@ This reverses a rule [water-pages.md](water-pages.md) used to state, and that
 document now records the reversal and the reasoning rather than contradicting
 this one.
 
+## Water the city uses
+
+`src/lib/WaterUsageChart.svelte` draws three summers of daily production --
+2022, 2023 and 2026 -- from `src/lib/water-usage.ts`. Dotted, because like the
+Kenoza levels these are read off pictures rather than published as numbers.
+
+**Two slides, from Robert Ward's drought update to the Council of September
+15, 2026**: "Have the outdoor water use restrictions helped?" (2022 against
+2026, May 15th to September 13th) and "Wet Summer vs. Dry Summer" (2022
+against 2023, April 15th to October 15th). The deck was presented rather than
+filed, so it is on none of the city's document pages; the Kenoza chart already
+committed under that meeting is a third slide from the same presentation.
+
+**Three checks validate the reading, and the third measures its precision.**
+Each slide states a total the calibration was not fitted to -- 150 million
+gallons and 204 million gallons -- and summing the days reproduces them to
+0.2% and 2%. Better still, **2022 is drawn on both slides**, so it was read
+twice from different images at different scales: the two readings differ by a
+median of 0.047 MGD, 0.25 at the 90th percentile. That is the honest error bar
+on a day in this file, measured rather than asserted. `water-usage.spec.ts`
+pins the first two checks, so a future re-reading that stops matching the
+department's own totals fails rather than quietly replacing them.
+
+**One source per year, to avoid a seam.** 2022 appears on both slides and the
+first is sharper (3.85 px a day against 2.60), but splicing the sharper
+reading into the middle of the coarser one would have put a step of up to 0.48
+MGD at the join. The whole of 2022 comes from the second slide; the first is
+used only to check it.
+
+**The slide's own "(10%)" is not a share of the window it draws.** Over April
+15th to October 15th the gap between 2022 and 2023 is about 21.8% of 2023, not
+10%. A 10% share implies an annual total near 2,040 million gallons, so the
+parenthetical is a fraction of the year. The page quotes the 204 against the
+summer and says the percentage is annual; a test records it so nobody quotes
+the two against the same period.
+
 ## Where the figures come from
 
 **Every day is the average of each rain gauge in Haverhill that read it**,

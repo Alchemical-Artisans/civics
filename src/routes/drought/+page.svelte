@@ -3,6 +3,8 @@
   // three station files behind them run to megabytes, and a server load is
   // what keeps them out of this page's own bundle.
   import RainfallChart from "$lib/RainfallChart.svelte"
+  import WaterUsageChart from "$lib/WaterUsageChart.svelte"
+  import { WATER_USAGE } from "$lib/water-usage"
   import PrecinctMap from "$lib/PrecinctMap.svelte"
   import { Router } from "$lib/router"
   import { KENOZA_SOURCE } from "$lib/kenoza-levels"
@@ -194,6 +196,23 @@
     this means the water supply has not kept pace with our consumption. As a result, each year we've
     had to draw on our reserves and these are diminishing.
   </p>
+
+  <p>
+    Not all rainfall is created equal, though, as the pumps connected to these bodies of water have
+    limited capacity. Kenoza Lake has the capacity to receive everything given how low it is, but
+    other bodies of water have the potential to overflow in heavy rainfall. This is particularly
+    true of Millvale Reservoir, which is relatively small and has a large watershed.
+  </p>
+</div>
+
+<div class="flow-root">
+  <h2>Consumption</h2>
+
+  <p>Haverhill consumes approximately 6 million gallons of water a day</p>
+
+  <WaterUsageChart days={WATER_USAGE} />
+
+  TODO: Find commercial/residential split
 </div>
 
 <h3>Where the water comes from</h3>
@@ -257,4 +276,65 @@ clarification to public - 1:25 Al Pereira - 1:30 Business water usage, Ward: sig
 bill and so they're already conserving as much as they can Michitson: any data we can look at? Ward:
 meter readings Mayor: recruited food industries because we have good, cheap water Ward: commercial
 usage fairly steady, biggest factor for increased usage is when it's not raining - May-Oct usage
-2022 vs 2023 was 200M gallons Al: Independent audit
+2022 vs 2023 was 200M gallons Al: Independent audit Flume water index:
+https://flumewater.com/water-index/ - Boston: 38.1 Gallons Per Capita Per Day Indoor Radio well
+presentation at 6:10:
+http://haverhillcommunitytv.org/video/haverhill-city-council-meeting-june-2-2026 - Not the first
+time it's been in front of the council, Feb 10th and Mar 10th presented and rejected taking 4.5-5
+acres from property - 309 E Broadway - $900,000 for property - Imminent domain taking for the
+purpose of water supply - Ranney (or maybe rain-e, not sure) collector well - Councilors expressed
+concerns with eminent domain, prefer negotiation with property and willing to purchase entire parcel
+- Entire property $1.8M - Now negotiated agreement with property owner for $1.8M - July 31st
+transfer of ownership - Started well presentation at 13:00 - Studies have shown for a long time that
+we need more water - Only large source left is the Merrimack, but not by a direct intake - A few
+ways to do this, we're going with a radial collector well, which drills down vertically and then
+extends screens well below the river to draw ground water from there - Picture at 15:02 of what it
+would look like - Soundings of river bottom to find troughs beneath the river in the bedrock with
+material we can draw water from - 16:42 picture of tracklines from sounding - Pump test each
+promising candidate to identify material - 18:07 test well image of across river - Preliminary
+testing shows 5-10M gallons a day Sullivan: When will we know more about how much we can draw? -
+Construction bid later this year (now?) and then 9-12 months to complete Diodati: Water quality? -
+Currently doing testing of quality, including PFAS. Will catch anything - Takes decades for river
+water to migrate from river to where collection is happening Michitson: Total project cost? - $26M
+around 25:00, loan order doesn't cover it Michitson: Permitting risks? - Always risks, but confident
+we can jump through hoops - Already gone through extensive permitting Basiliere: How long have we
+known? - Excess of 10 years McGonagle: I was against loan order for ~$19M back in 2012/2013 - Just
+started tapping this loan order recently Michael Leon (attourney): - City outside council - 8 years
+- Determined 5.5 acres was necessary, but council rejected eminent domain - Recording an order of
+taking at the end of July - Agreement to acquire the entire property for $1.8M + moving costs
+Sullivan: What are city's options for the house? - Preserve and protect, no other plans Basiliere:
+Friendly eminent domain taking, 5th amendment, right? - Yes, and some legal details Basiliere:
+Protects land owners? - Yes, it ensures compensation Diodati: Unfriendly taking slower? - Could take
+1-3 years Lewandowski: Is this binding on both sides? - Yes, and this ensures supply for decades -
+Radial well protects river itself fairly effectively McGonagle: If we had done it sooner it would
+have been cheaper? - City could surplus the rest of the property later, but probably not something
+to do yet - Appraisal process was for entire parcel, they did math to determine value of 5.5 acres
+LePage: Notice that there's 2 oil tanks underneath property - Yes, it's the city's responsibility
+because we're taking it as is - Tests don't show impact to property Basiliere: Does article 97
+apply? - Open question if it does, disposing of it will have to be if city determines there is no
+valid public purpose Toohey: We as the city did the right thing Jordan: This meeting is to obtain
+additional money for rest of property? - Yes
+http://haverhillcommunitytv.org/video/haverhill-city-council-meeting-march-10-2026 34:36 Executive
+session: Purchase of property originally discussed - This means it was not a discussion open to the
+public - After session proposed to table for a week Diodati: Y Lewandowski: Y LePage: Y Rogers: Y
+Not a 2/3rds so didn't pass - Voted to reconsider item Revoted to table
+http://haverhillcommunitytv.org/video/haverhill-city-council-meeting-march-17-2026 1:29:40 Loan
+order for water main improvements 2:06:50 Revisit item - attorneys still discussing, continued to
+give that more time Could not find minutes in 2013 discussing the project originally, looks like
+2012 minutes are unavailable
+http://haverhillcommunitytv.org/video/haverhill-city-council-meeting-october-6-2026 41:51 Discussion
+of new water ordinance
+http://haverhillcommunitytv.org/video/haverhill-city-council-meeting-september-15-2026 29:17 Drought
+update (includes slideshow) Methuen providing water to get us through Announcement of entering the
+critical zone Water restrictions saved 150M gallons of water Slide showing timeline - Nov 2024
+Drought Watch - March 18, 2025 Declared Emergency Drought - May 14, 2025 Drought ended - September
+16, 2025 Drought Watch - Feb 13 2026 Critical Drought - Mar-Aug 2026 Drought Emergency - Sep 15,
+2026 Critical Drought (I added this based on mayor's announcement) 33:15 Water restriction savings
+slide 34:21 Rainfall statistics slide 35:12 Water level chart - Kenoza: 99.8'/114.5' - Millvale:
+39.1'/44.7' (offline) - Crystal Lake: 147.3'/151.1' (pumping 1M gallons per day) - Snow melt came
+and left quickly (TODO: he said he talked about it in city council meeting, find that) - Lowest it's
+been in Bob Ward's career (since 1995) 39:11 Methuen has to resolve water quality issue before we
+can start pulling from them DEP will get back end of Oct 42:26 What are we doing slide 43:04 Radial
+collector well fully permitted and online is 2 years 43:50 6-7M gallons per day projections 45:19
+2022 vs 2023 water usage (dry vs wet year) 0:51:32 Michitson: North Andover declared a water
+emergency today

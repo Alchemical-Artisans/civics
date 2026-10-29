@@ -1,51 +1,44 @@
 <!--
-  Daily water production in 2026 against 2022, over the months the outdoor
-  restrictions covered.
+  Daily water production across three summers: 2022 and 2023 as the Water
+  Department drew them, and 2026 under the outdoor restrictions.
 
-  **Two years a day at a time, where the rainfall chart is one bar a year.**
-  The question here is not how a year compares with another year -- the
-  department states that outright, and the caption quotes it -- but whether
-  the gap holds up day after day or rests on a few weeks. 122 points a line
-  shows that; a pair of bars cannot.
+  **A day at a time, where the rainfall chart is one bar a year.** The
+  question is not how a year compares with another year -- the department
+  states that outright and the caption quotes it -- but whether the gap holds
+  day after day or rests on a few weeks. Six months of daily points show
+  that; a pair of bars cannot.
 
-  **These are read off the department's slide, not published as numbers**, so
-  the lines are drawn dotted, the register this site draws a pixel reading in.
-  See `$lib/water-usage.ts` for the calibration, the precision and the check
-  that validates it: summing the day-by-day gap reproduces the department's
-  own stated 150 million gallons to within half a percent.
+  **These are read off the department's slides, not published as numbers**, so
+  every line is dotted, the register this site draws a pixel reading in. See
+  `$lib/water-usage.ts` for the calibration and for the three checks that
+  validate it -- including the one that measures the precision rather than
+  asserting it, 2022 being drawn on both slides and read twice.
 
-  Colour follows `chart-colours.ts` -- the current year in the drought orange,
-  the earlier year behind it -- which happens to be the way the city drew it
-  too. Where 2022 goes missing behind the 2026 line the path breaks rather
-  than bridging, so a gap reads as a gap.
+  A year is null where another line hides it, or outside the window its own
+  slide draws; the path breaks there rather than bridging, so a gap reads as
+  a gap and 2026 does not appear to begin at zero in April.
 -->
 <script lang="ts">
   import { COLOURS } from "./chart-colours"
   import { MONTH_NAMES } from "./precipitation"
-  import { WATER_USAGE_SAVING, type WaterUsageDay } from "./water-usage"
+  import { WATER_USAGE_SOURCE, WATER_USAGE_STATED, type WaterUsageDay } from "./water-usage"
 
   let { days }: { days: WaterUsageDay[] } = $props()
 
-  const CURRENT = COLOURS[1]
-  const EARLIER = COLOURS[0]
-
   const WIDTH = 460
-  const PAD = { top: 20, right: 10, bottom: 30, left: 32 }
+  const PAD = { top: 20, right: 10, bottom: 30, left: 30 }
   const PLOT_H = 150
   const HEIGHT = PAD.top + PLOT_H + PAD.bottom
   const PLOT_W = WIDTH - PAD.left - PAD.right
 
-  const mgd = new Intl.NumberFormat("en-US", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  })
+  const mgd = new Intl.NumberFormat("en-US", { maximumFractionDigits: 2 })
 
   const x = (i: number) => PAD.left + (i / (days.length - 1)) * PLOT_W
 
-  /** Zero-based: gallons is a quantity, and the gap is read against the floor. */
+  /** Zero-based: gallons is a quantity, and the gaps are read against the floor. */
   const scale = $derived.by(() => {
-    const max = Math.max(...days.flatMap((d) => [d.mgd2022 ?? 0, d.mgd2026]))
-    const high = Math.ceil(max / 2) * 2
+    const values = days.flatMap((d) => [d.mgd2022, d.mgd2023, d.mgd2026])
+    const high = Math.ceil(Math.max(...values.filter((v) => v !== null), 1) / 2) * 2
     const y = (v: number) => PAD.top + PLOT_H - (v / high) * PLOT_H
     const ticks: number[] = []
     for (let v = 2; v <= high; v += 2) ticks.push(v)
@@ -53,54 +46,62 @@
   })
 
   /**
-   * One path per unbroken run. A null is a day the other line hides, and
-   * joining across it would draw a straight segment the data does not have.
+   * One path per unbroken run. A null is a day another line hides, or a day
+   * outside that slide's own window; joining across either would draw a
+   * segment the data does not have.
    */
-  const runs = (pick: (d: WaterUsageDay) => number | null) =>
-    days
-      .reduce<string[]>(
-        (paths, day, i) => {
-          const v = pick(day)
-          if (v === null) return [...paths, ""]
-          const point = `${x(i).toFixed(1)} ${scale.y(v).toFixed(1)}`
-          const last = paths.at(-1)
-          return last
-            ? [...paths.slice(0, -1), `${last} L${point}`]
-            : [...paths.slice(0, -1), `M${point}`]
-        },
-        [""],
-      )
-      .filter((d) => d.includes("L"))
+  const runs = (pick: (d: WaterUsageDay) => number | null): string[] => {
+    const out: string[] = []
+    let open = ""
+    days.forEach((day, i) => {
+      const v = pick(day)
+      if (v === null) {
+        if (open.includes("L")) out.push(open)
+        open = ""
+        return
+      }
+      const point = `${x(i).toFixed(1)} ${scale.y(v).toFixed(1)}`
+      open = open ? `${open} L${point}` : `M${point}`
+    })
+    if (open.includes("L")) out.push(open)
+    return out
+  }
 
-  const series = $derived([
-    { year: 2026, colour: CURRENT, paths: runs((d) => d.mgd2026), isCurrent: true },
-    { year: 2022, colour: EARLIER, paths: runs((d) => d.mgd2022), isCurrent: false },
-  ])
+  const mean = (pick: (d: WaterUsageDay) => number | null) => {
+    const vs = days.map(pick).filter((v): v is number => v !== null)
+    return vs.reduce((s, v) => s + v, 0) / vs.length
+  }
 
-  /** Month starts, for the axis -- the slide's own 15th-of-the-month labels. */
-  const marks = $derived(
-    days
-      .map((d, i) => ({ i, day: d.date }))
-      .filter(({ day }) => day.endsWith("-15"))
-      .map(({ i, day }) => ({ i, label: `${MONTH_NAMES[Number(day.slice(0, 2)) - 1]} 15` })),
+  const series = $derived(
+    [
+      { year: 2022, colour: COLOURS[0], pick: (d: WaterUsageDay) => d.mgd2022, isCurrent: false },
+      { year: 2023, colour: COLOURS[2], pick: (d: WaterUsageDay) => d.mgd2023, isCurrent: false },
+      { year: 2026, colour: COLOURS[1], pick: (d: WaterUsageDay) => d.mgd2026, isCurrent: true },
+    ].map((s) => ({ ...s, paths: runs(s.pick), average: mean(s.pick) })),
   )
 
-  /** A month's mean, which is what the sr-only table carries. */
+  /** The 15th of each month, which is how both slides label their axis. */
+  const marks = $derived(
+    days
+      .map((d, i) => ({ i, date: d.date }))
+      .filter(({ date }) => date.endsWith("-15"))
+      .map(({ i, date }) => ({ i, label: MONTH_NAMES[Number(date.slice(0, 2)) - 1] })),
+  )
+
+  /** A month's mean per year -- what the table carries, the daily series being dense. */
   const monthly = $derived.by(() => {
-    const buckets = new Map<string, { a: number[]; b: number[] }>()
-    for (const d of days) {
-      const m = d.date.slice(0, 2)
-      const bucket = buckets.get(m) ?? { a: [], b: [] }
-      if (d.mgd2022 !== null) bucket.a.push(d.mgd2022)
-      bucket.b.push(d.mgd2026)
-      buckets.set(m, bucket)
-    }
-    const mean = (xs: number[]) => xs.reduce((s, v) => s + v, 0) / xs.length
-    return [...buckets.entries()].map(([m, { a, b }]) => ({
-      label: MONTH_NAMES[Number(m) - 1],
-      a: mean(a),
-      b: mean(b),
-    }))
+    const months = [...new Set(days.map((d) => d.date.slice(0, 2)))]
+    return months.map((m) => {
+      const inMonth = days.filter((d) => d.date.slice(0, 2) === m)
+      const avg = (pick: (d: WaterUsageDay) => number | null) => {
+        const vs = inMonth.map(pick).filter((v): v is number => v !== null)
+        return vs.length ? vs.reduce((s, v) => s + v, 0) / vs.length : null
+      }
+      return {
+        label: MONTH_NAMES[Number(m) - 1],
+        cells: series.map((s) => avg(s.pick)),
+      }
+    })
   })
 </script>
 
@@ -109,7 +110,7 @@
     viewBox="0 0 {WIDTH} {HEIGHT}"
     class="block h-auto w-full"
     role="group"
-    aria-label="Water production a day, {WATER_USAGE_SAVING.from} to {WATER_USAGE_SAVING.to}, 2026 against 2022"
+    aria-label="Water produced each day from April 15th to October 15th, in 2022, 2023 and 2026"
   >
     <text x={PAD.left} y={PAD.top - 7} class="fill-slate-600 text-[11px] font-medium">
       Water produced, million gallons a day
@@ -140,15 +141,15 @@
         tabindex="0"
         role="img"
         aria-label="{line.year}: {mgd.format(
-          monthly.reduce((s, m) => s + (line.isCurrent ? m.b : m.a), 0) / monthly.length,
-        )} million gallons a day on average over the period"
+          line.average,
+        )} million gallons a day on average over the days drawn"
       >
         {#each line.paths as d, i (i)}
           <path
             {d}
             fill="none"
             stroke={line.colour}
-            stroke-width={line.isCurrent ? 1.6 : 1.3}
+            stroke-width={line.isCurrent ? 1.7 : 1.3}
             stroke-dasharray="1.5 2"
             stroke-linecap="round"
           />
@@ -173,27 +174,39 @@
         <span class={line.isCurrent ? "font-semibold text-slate-900" : "text-slate-600"}>
           {line.year}
         </span>
+        <span class="text-slate-500 tabular-nums">{mgd.format(line.average)} avg</span>
       </li>
     {/each}
   </ul>
 
-  <!-- A month's mean rather than all 122 days: the daily series is dense and
-       its point is the shape, which 122 spoken rows do not convey. The figure
-       that matters is the department's own stated total, and the caption
-       carries that in words. -->
+  <!-- A month's mean rather than all 184 days in each of three years: the
+       point of the daily series is its shape, which 552 spoken figures do not
+       convey, and the totals that matter are the department's own, quoted in
+       the caption. -->
   <table class="sr-only">
     <caption>Average water produced each month, million gallons a day</caption>
     <thead>
-      <tr><th scope="col">Month</th><th scope="col">2022</th><th scope="col">2026</th></tr>
+      <tr>
+        <th scope="col">Month</th>
+        {#each series as line (line.year)}<th scope="col">{line.year}</th>{/each}
+      </tr>
     </thead>
     <tbody>
       {#each monthly as row (row.label)}
         <tr>
           <th scope="row">{row.label}</th>
-          <td>{mgd.format(row.a)}</td>
-          <td>{mgd.format(row.b)}</td>
+          {#each row.cells as cell, i (i)}
+            <td>{cell === null ? "—" : mgd.format(cell)}</td>
+          {/each}
         </tr>
       {/each}
     </tbody>
   </table>
+
+  <figcaption class="mt-2 text-xs text-slate-500">
+    Read off two charts the Water Department showed the {WATER_USAGE_SOURCE.meeting} &mdash; good to about
+    a twentieth of a million gallons on a typical day. The department states the totals: &ldquo;{WATER_USAGE_STATED
+      .restrictions.stated}&rdquo;, and &ldquo;{WATER_USAGE_STATED.wetAgainstDry.stated}&rdquo; over
+    April 15th to October 15th, whose percentage is a share of the year rather than of those months.
+  </figcaption>
 </figure>
