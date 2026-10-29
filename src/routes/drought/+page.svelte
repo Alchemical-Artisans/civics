@@ -256,12 +256,17 @@
 
 <h2>Notes</h2>
 
-<!-- Research notes, kept in the author's own line breaks. Prettier reflows
-     bare text to 100 columns, which once silently rewrapped this whole block
-     and destroyed its line structure; `prettier-ignore` below is what stops
-     that happening again, and it has to sit immediately before the text it
-     protects -- the directive applies to the next node and nothing further.
-     Leave it in place while these notes live on the page. -->
+<!-- TEMPORARY, and to be deleted with the notes themselves.
+
+     These are research notes in the author's own line breaks, not something
+     a reader is meant to find. Prettier reflows bare text to 100 columns and
+     silently rewrapped the whole block once, destroying its line structure,
+     so `prettier-ignore` below holds the formatting while the page is being
+     written. It has to sit immediately before the text it protects -- the
+     directive applies to the next node and nothing further.
+
+     When the page is finished, this comment, the directive and the notes all
+     come out together. Nothing else depends on any of them. -->
 <!-- prettier-ignore -->
 
 Well water: https://www.usgs.gov/water-science-school/science/aquifers-and-groundwater Planning
@@ -345,4 +350,17 @@ been in Bob Ward's career (since 1995) 39:11 Methuen has to resolve water qualit
 can start pulling from them DEP will get back end of Oct 42:26 What are we doing slide 43:04 Radial
 collector well fully permitted and online is 2 years 43:50 6-7M gallons per day projections 45:19
 2022 vs 2023 water usage (dry vs wet year) 0:51:32 Michitson: North Andover declared a water
-emergency today We're using less water today than 10 years ago
+emergency today 
+54:19 Basiliere: 
+We're using less water today than 10 years ago
+2022 permitted reworld to use an aquifer on the river that saved 250k GPD
+Took Covanter offline
+58:59 Rough calculations for Methuen water, $1.5M for 3-5 months
+1:02 Account of water usage leaks
+Less than 10% very good, which we've been well below
+1:17:40 Golf courses generally don't buy water from us
+1:19:30 We have some heavy industry users, they've been asked to perform voluntary conservation but it hasn't had much of an effect
+- Tiered rates would help with that
+1:23:50 Lewandowski moves to investigate tiered rates
+somewhere in these slides had the percentage of new development usage
+1:32:53 Motion is to get them under contract in 4 weeks
