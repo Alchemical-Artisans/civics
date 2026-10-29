@@ -170,6 +170,35 @@ describe("RainfallChart.svelte", () => {
     expect(labels().find((l) => l.startsWith("2026:"))).toContain("1 day carries no reading")
   })
 
+  /**
+   * The span grew from four years to six without the geometry being touched,
+   * so this pins what growing it costs: slots narrow, and the figure printed
+   * over each bar is the thing that runs out of room first.
+   */
+  it("still lays six years and the average out without bars touching", async () => {
+    const six = [
+      year(2021, 44.41),
+      year(2022, 30.33),
+      year(2023, 53.71),
+      year(2024, 35.55),
+      year(2025, 31.96),
+      year(2026, 30.52, { filledDays: 36 }),
+    ]
+    const { container } = render(RainfallChart, { years: six, baseline: BASELINE })
+
+    const bars = [...container.querySelectorAll("svg g[role='img'] rect")].map((r) => ({
+      x: Number(r.getAttribute("x")),
+      w: Number(r.getAttribute("width")),
+    }))
+    expect(bars.length).toBe(7)
+    for (let i = 1; i < bars.length; i++) {
+      expect(bars[i].x).toBeGreaterThan(bars[i - 1].x + bars[i - 1].w)
+    }
+    // Room for a five-character figure over each bar at 11px: roughly 33 units.
+    const gaps = bars.slice(1).map((b, i) => b.x - (bars[i].x + bars[i].w))
+    expect(Math.min(...bars.map((b) => b.w)) + Math.min(...gaps)).toBeGreaterThan(33)
+  })
+
   it("carries the same five figures in a table", async () => {
     render(RainfallChart, props)
 

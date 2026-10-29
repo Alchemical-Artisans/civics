@@ -2,8 +2,8 @@ import type { PageServerLoad } from "./$types"
 import { averageToDate } from "$lib/precipitation"
 import { PRECIPITATION_SOURCE, precipitationByYear } from "$lib/server/precipitation"
 
-/** Bars on the chart: the current year and the three before it. */
-const SPAN = 4
+/** Bars on the chart: the current year and the five before it. */
+const SPAN = 6
 /** Years behind the baseline bar, the current year excluded. */
 const BASELINE = 10
 
