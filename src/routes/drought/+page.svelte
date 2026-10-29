@@ -256,6 +256,14 @@
 
 <h2>Notes</h2>
 
+<!-- Research notes, kept in the author's own line breaks. Prettier reflows
+     bare text to 100 columns, which once silently rewrapped this whole block
+     and destroyed its line structure; `prettier-ignore` below is what stops
+     that happening again, and it has to sit immediately before the text it
+     protects -- the directive applies to the next node and nothing further.
+     Leave it in place while these notes live on the page. -->
+<!-- prettier-ignore -->
+
 Well water: https://www.usgs.gov/water-science-school/science/aquifers-and-groundwater Planning
 committee 2026-03-30:
 http://haverhillcommunitytv.org/video/haverhill-city-council-planning-development-meeting-march-30-2026
@@ -337,4 +345,4 @@ been in Bob Ward's career (since 1995) 39:11 Methuen has to resolve water qualit
 can start pulling from them DEP will get back end of Oct 42:26 What are we doing slide 43:04 Radial
 collector well fully permitted and online is 2 years 43:50 6-7M gallons per day projections 45:19
 2022 vs 2023 water usage (dry vs wet year) 0:51:32 Michitson: North Andover declared a water
-emergency today
+emergency today We're using less water today than 10 years ago
