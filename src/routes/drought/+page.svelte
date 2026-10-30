@@ -5,7 +5,7 @@
   import PopulationChart from "$lib/PopulationChart.svelte"
   import RainfallChart from "$lib/RainfallChart.svelte"
   import WaterUsageChart from "$lib/WaterUsageChart.svelte"
-  import { POPULATION, POPULATION_SOURCE } from "$lib/population"
+  import { CENSUS_COUNTS, POPULATION, POPULATION_SOURCE } from "$lib/population"
   import { WATER_USAGE } from "$lib/water-usage"
   import PrecinctMap from "$lib/PrecinctMap.svelte"
   import { Router } from "$lib/router"
@@ -382,13 +382,15 @@ Source: https://www.mass.gov/info-details/public-water-supply-tools-resources-pe
 <PopulationChart years={POPULATION} />
 
 <p>
-  <strong>The step at 2020 is not people arriving.</strong> The Census builds its annual estimates
-  forward from the last decennial count: the bars to the left of the break were built from the 2010
-  Census, those to the right from the 2020 Census, which found about 3,800 more people here than the
-  older series had projected. The two halves are measured from different anchors and the one-year
-  jump between them is the change of anchor. Over the decade the 2010 and 2020 counts themselves are
-  60,879 and 67,776 &mdash; 6,897 more people, about 11% &mdash; and that is the growth figure to
-  quote. Figures are the {POPULATION_SOURCE.agency}'s {POPULATION_SOURCE.program} estimates for
-  {POPULATION_SOURCE.place}, read {POPULATION_SOURCE.read}; the Bureau publishes no reconciled
-  series spanning the two bases, so the break cannot be smoothed away.
+  The bars start at 2020 because the estimates before that cannot be set beside them. The Census
+  rebuilds its annual estimates on each decennial count: the 2010-based series had Haverhill near
+  64,000 by 2019, and the 2020 Census then counted 67,776. Drawn end to end the two look like 3,762
+  people arriving in one year, which is a change of anchor rather than of population, and the Bureau
+  publishes no reconciled series spanning them. For the longer view the two counts themselves are
+  comparable, being counts rather than projections: {CENSUS_COUNTS[2010].toLocaleString("en-US")} in 2010
+  against {CENSUS_COUNTS[2020].toLocaleString("en-US")} in 2020, {(
+    CENSUS_COUNTS[2020] - CENSUS_COUNTS[2010]
+  ).toLocaleString("en-US")} more people, about 11% over the decade. Estimates are the
+  {POPULATION_SOURCE.agency}'s {POPULATION_SOURCE.program},
+  {POPULATION_SOURCE.vintage}, for {POPULATION_SOURCE.place}, read {POPULATION_SOURCE.read}.
 </p>
