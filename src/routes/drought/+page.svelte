@@ -2,8 +2,10 @@
   // The rainfall chart's months are aggregated in `+page.server.ts`: the
   // three station files behind them run to megabytes, and a server load is
   // what keeps them out of this page's own bundle.
+  import PopulationChart from "$lib/PopulationChart.svelte"
   import RainfallChart from "$lib/RainfallChart.svelte"
   import WaterUsageChart from "$lib/WaterUsageChart.svelte"
+  import { POPULATION, POPULATION_SOURCE } from "$lib/population"
   import { WATER_USAGE } from "$lib/water-usage"
   import PrecinctMap from "$lib/PrecinctMap.svelte"
   import { Router } from "$lib/router"
@@ -368,3 +370,25 @@ somewhere in these slides had the percentage of new development usage
 Water usage spreadsheet:
 /home/lackita/Downloads/rgpcd uaw 2025 web 9-1-26-a11y.xlsx
 Source: https://www.mass.gov/info-details/public-water-supply-tools-resources-performance-standards
+
+<h2>Population</h2>
+
+<p>
+  Haverhill had {POPULATION.at(-1)!.people.toLocaleString("en-US")} residents in
+  {POPULATION.at(-1)!.year}, against {POPULATION[0].people.toLocaleString("en-US")} in {POPULATION[0]
+    .year}.
+</p>
+
+<PopulationChart years={POPULATION} />
+
+<p>
+  <strong>The step at 2020 is not people arriving.</strong> The Census builds its annual estimates
+  forward from the last decennial count: the bars to the left of the break were built from the 2010
+  Census, those to the right from the 2020 Census, which found about 3,800 more people here than the
+  older series had projected. The two halves are measured from different anchors and the one-year
+  jump between them is the change of anchor. Over the decade the 2010 and 2020 counts themselves are
+  60,879 and 67,776 &mdash; 6,897 more people, about 11% &mdash; and that is the growth figure to
+  quote. Figures are the {POPULATION_SOURCE.agency}'s {POPULATION_SOURCE.program} estimates for
+  {POPULATION_SOURCE.place}, read {POPULATION_SOURCE.read}; the Bureau publishes no reconciled
+  series spanning the two bases, so the break cannot be smoothed away.
+</p>
