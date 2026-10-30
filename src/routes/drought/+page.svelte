@@ -364,3 +364,7 @@ Less than 10% very good, which we've been well below
 1:23:50 Lewandowski moves to investigate tiered rates
 somewhere in these slides had the percentage of new development usage
 1:32:53 Motion is to get them under contract in 4 weeks
+
+Water usage spreadsheet:
+/home/lackita/Downloads/rgpcd uaw 2025 web 9-1-26-a11y.xlsx
+Source: https://www.mass.gov/info-details/public-water-supply-tools-resources-performance-standards
