@@ -26,6 +26,20 @@ export const MASSGIS = "https://arcgisserver.digital.mass.gov/arcgisserver/rest/
  */
 export const NHD_WATERBODY = "https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/12"
 
+/**
+ * MassDEP's Surface Water Supply Watersheds -- the land that drains to each
+ * source, which is a different thing from the Zone A protection buffer the
+ * `ZoneABC` service draws. A watershed is where the water comes from; a Zone
+ * A is the strip around the source that regulation protects.
+ *
+ * Keyed on the same `SOURCE_ID` as the zones, so the two join without
+ * guessing. `TYPE` separates an active surface source (`SW`) from one held
+ * for emergencies (`ESW`), which is how the city's seven registered sources
+ * divide into the four it uses and the three it does not.
+ */
+export const WATERSHEDS =
+  "https://arcgisserver.digital.mass.gov/arcgisserver/rest/services/AGOL/Surface_Water_Supply_Watersheds/FeatureServer/0"
+
 /** Haverhill's public water system, as MassDEP numbers it. */
 export const PWSID = "3128000"
 

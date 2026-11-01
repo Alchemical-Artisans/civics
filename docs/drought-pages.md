@@ -126,6 +126,35 @@ the name holds at fifteen screen pixels whatever the zoom rather than
 swelling as a reader goes in. The paragraph beside the map still names all
 three, largest first, for a reader who hovers nothing.
 
+**The watersheds are a third layer and a different question.** Each source is
+drawn twice: the shoreline solid, and around it the land that drains into it,
+pale, in the same hue. MassDEP's `Surface_Water_Supply_Watersheds` service
+supplies those, keyed on the same `SOURCE_ID` as the protection zones so the
+join needs no guessing. A watershed is not a Zone A: the zone is the
+regulated strip around a source, the watershed is where the water comes from,
+and for Millvale they differ by a factor of three.
+
+That layer settled two things besides. Its `TYPE` field separates an active
+surface source (`SW`) from one held for emergencies (`ESW`), which is why the
+city's seven registered sources have odd-numbered ids for the four it uses and
+even for Johnsons Pond, Chadwick Pond and Hoveys Pond. And `MA_ACRES` against
+`WSHEDACRES` gives the share of each watershed inside Massachusetts: 817 acres
+of Millvale's and 362 of Crystal's are over the New Hampshire line, land
+Haverhill drinks from and cannot zone.
+
+**A hue per source, where the lakes alone took one fill.** With only the water
+there was one question -- where is it -- and one colour answered it. With the
+watersheds there is a second, which ground feeds which lake, and three shapes
+in a single colour cannot answer it. Each source keeps its hue across both
+shapes, the watershed at 0.34 opacity and the water at 0.85.
+
+Both of those numbers were measured rather than chosen. At 0.18 the watersheds
+washed out against the greyed street map entirely -- Crystal's was invisible.
+And the map was `h-80`: the watersheds push the frame north until the bounds
+are nearly square, and fitted into a box twice as wide as it is tall it zoomed
+out to fit the height and spent about forty per cent of its width on Salem and
+Methuen. `h-[26rem]` fixes that.
+
 **Two sources, because neither answers the whole question.** MassDEP knows
 which waters are a public supply and publishes nothing about their shape at
 useful resolution; the USGS National Hydrography Dataset knows the shape of a

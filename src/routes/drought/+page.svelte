@@ -10,6 +10,7 @@
   import PrecinctMap from "$lib/PrecinctMap.svelte"
   import { Router } from "$lib/router"
   import { KENOZA_SOURCE } from "$lib/kenoza-levels"
+  import { COLOURS } from "$lib/chart-colours"
   import waterBodies from "$lib/data/water-bodies.json"
 
   // The city's own Kenoza chart, committed rather than hotlinked -- see
@@ -32,12 +33,20 @@
   // both -- see $lib/precipitation.ts. The sentence below must not put a
   // part-year beside a whole one.
 
-  // The waters Haverhill's public system draws from, drawn as one system
-  // rather than one category each: same fill, each named on itself, with the
-  // city's own boundary outlined around them. See scripts/lib/water-bodies.mjs
-  // for where the supply list and the shapes each come from, and for why the
-  // list is the Water Department's own three rather than MassDEP's four.
-  const WATER = "#0369a1"
+  // The waters Haverhill's public system draws from, and the land that drains
+  // to each. See scripts/lib/water-bodies.mjs for where the supply list, the
+  // shorelines and the watersheds each come from, and for why the list is the
+  // Water Department's own three rather than MassDEP's four.
+  //
+  // A hue per source rather than one fill for the whole system, which is what
+  // this drew before the watersheds were on it. With only the lakes there was
+  // one question -- where is the water -- and one colour answered it. With
+  // the watersheds there is a second: which ground feeds which lake. That
+  // cannot be read off three shapes in a single colour, so each source keeps a
+  // hue across both of its shapes, the watershed pale and the water itself
+  // solid.
+  const SOURCE_HUES = [COLOURS[0], COLOURS[2], COLOURS[3], COLOURS[4]]
+  const hueFor = (i: number) => SOURCE_HUES[i % SOURCE_HUES.length]
 
   // Spelled rather than numeric: "names 3 surface sources" reads as a count in
   // a table and this is a sentence. Derived rather than written into the prose
@@ -48,19 +57,36 @@
   // A protection area runs to four figures, and "1541 acres" reads as a year
   // rather than a quantity.
   const acres = (value: number | undefined) => value?.toLocaleString("en-US") ?? ""
-  const supplyAreas = waterBodies.bodies.map((body) => ({
-    id: body.sourceId,
-    shape: body.shape,
-    name: `${titleCase(body.name)} — ${body.areaSqKm} square kilometres`,
-    fill: WATER,
-    opacity: 0.55,
-    // No standing label: this map is a two-fifths float a few hundred pixels
-    // wide, and three names drawn on it at once crowd each other and the
-    // shapes they belong to. `hoverLabel` names one at a time instead, on
-    // hover or focus, which is legible at any size and cannot collide. The
-    // paragraph beside the map also names all three, largest first, for a
-    // reader who hovers nothing.
-  }))
+  // Watersheds first so the water sits on top of the ground that feeds it;
+  // `areas` draws in order.
+  const supplyAreas = [
+    ...waterBodies.bodies
+      .filter((body) => body.watershed)
+      .map((body, i) => ({
+        id: `${body.sourceId}-watershed`,
+        shape: body.watershed!.shape,
+        name: `${titleCase(body.name)} watershed — ${body.watershed!.acres.toLocaleString("en-US")} acres`,
+        fill: hueFor(i),
+        // Against the greyed street map 0.18 washed out entirely -- Crystal's
+        // watershed was invisible at the size this draws. The water itself
+        // stays darker, so the pairing still reads as ground and the lake it
+        // feeds.
+        opacity: 0.34,
+      })),
+    ...waterBodies.bodies.map((body, i) => ({
+      id: body.sourceId,
+      shape: body.shape,
+      name: `${titleCase(body.name)} — ${body.areaSqKm} square kilometres`,
+      fill: hueFor(i),
+      opacity: 0.85,
+      // No standing label: this map is a two-fifths float a few hundred pixels
+      // wide, and three names drawn on it at once crowd each other and the
+      // shapes they belong to. `hoverLabel` names one at a time instead, on
+      // hover or focus, which is legible at any size and cannot collide. The
+      // paragraph beside the map also names all three, largest first, for a
+      // reader who hovers nothing.
+    })),
+  ]
 
   /**
    * MassDEP writes a source's name in capitals and abbreviates one of them; a
@@ -75,6 +101,11 @@
       .replace(/\bres\./, "reservoir")
       .replace(/\b[a-z]/g, (c) => c.toUpperCase())
   }
+
+  const bodyNamed = (prefix: string) => waterBodies.bodies.find((b) => b.name.startsWith(prefix))
+  const millvale = bodyNamed("MILLVALE")
+  const kenoza = bodyNamed("KENOZA")
+  const crystal = bodyNamed("CRYSTAL")
 
   const throughLabel = $derived(
     new Date(`${current.throughDate}T00:00:00Z`).toLocaleDateString("en-US", {
@@ -118,11 +149,15 @@
      its parent gives it and has a 20rem floor of its own; `items-start` so
      that height is its own rather than the taller column's. -->
 <div class="grid items-start gap-x-5 gap-y-3 md:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
-  <div class="h-80 md:col-start-2 md:row-start-1">
+  <!-- Taller than the h-80 it was: the watersheds pushed the frame north, and
+       the bounds are now nearly square. Fitted into a box twice as wide as it
+       is tall the map had to zoom out to fit the height, which spent about
+       forty per cent of the width on Salem and Methuen. -->
+  <div class="h-[26rem] md:col-start-2 md:row-start-1">
     <PrecinctMap
-      title="Haverhill, and the {COUNT_WORD[
+      title="Haverhill, the {COUNT_WORD[
         waterBodies.bodies.length
-      ]} bodies of water its public water supply draws from"
+      ]} bodies of water its public supply draws from, and the land draining to each"
       bounds={waterBodies.bounds as [number, number, number, number]}
       areas={supplyAreas}
       outlines={[{ shape: waterBodies.town.shape, name: "Haverhill" }]}
@@ -210,7 +245,11 @@
 <div class="flow-root">
   <h2>Consumption</h2>
 
-  <p>Haverhill consumes approximately 6 million gallons of water a day</p>
+  <p>
+    Haverhill consumes approximately 6 million gallons of water a day. In dry years, this goes up
+    significantly during the summer, when we had all of that rainfall in 2023 we used 204 million
+    gallons less than 2022 which was considerably more dry.
+  </p>
 
   <WaterUsageChart days={WATER_USAGE} />
 
@@ -223,13 +262,32 @@
   The Water Department names {COUNT_WORD[waterBodies.bodies.length]} surface sources for public water
   system {waterBodies.pwsid}:
   {waterBodies.bodies.map((body) => titleCase(body.name)).join(", ")} &mdash; largest first, which is
-  also how to read them off the map, since each is drawn at its own size inside the city boundary. Millvale
-  is the smallest of the {COUNT_WORD[waterBodies.bodies.length]} but sits in by far the largest protection
-  area, {acres(waterBodies.bodies.find((b) => b.name.startsWith("MILLVALE"))?.zoneAcres)} acres against
-  Kenoza's
-  {acres(waterBodies.bodies.find((b) => b.name.startsWith("KENOZA"))?.zoneAcres)} &mdash; a small reservoir
-  under a wide watershed. Which waters are the supply is the city's own list; the outlines and the protection-area
-  acreages are the state's and the federal hydrography dataset's.
+  also how to read them off the map, since each is drawn at its own size. Around each, in the same colour
+  but paler, is its watershed: the land that drains into it.
+</p>
+
+<p>
+  <strong>A reservoir is small and the ground feeding it is not.</strong> Millvale is the smallest
+  of the {COUNT_WORD[waterBodies.bodies.length]} waters and has by far the largest watershed &mdash;
+  {acres(millvale?.watershed?.acres)} acres draining into {acres(
+    Math.round((millvale?.areaSqKm ?? 0) * 247.105),
+  )} acres of reservoir, about a hundred to one. Kenoza's watershed is
+  {acres(kenoza?.watershed?.acres)} acres and Crystal's {acres(crystal?.watershed?.acres)}.
+</p>
+
+<p>
+  <strong>Some of that ground is not in Massachusetts.</strong> Of Millvale's watershed,
+  {acres((millvale?.watershed?.acres ?? 0) - (millvale?.watershed?.massachusettsAcres ?? 0))} acres lie
+  over the New Hampshire line, and {acres(
+    (crystal?.watershed?.acres ?? 0) - (crystal?.watershed?.massachusettsAcres ?? 0),
+  )} acres of Crystal's do &mdash; visible on the map where the violet and teal cross the city boundary
+  northward. The city's own Open Space &amp; Recreation Plan names the towns: Plaistow and Newton drain
+  to Millvale, Atkinson to Crystal. Kenoza's watershed is entirely in Haverhill.
+</p>
+
+<p>
+  Which waters are the supply is the city's own list. The shorelines are the federal hydrography
+  dataset's, and the watersheds and their acreages are MassDEP's Surface Water Supply Watersheds.
 </p>
 
 <h3>Slop: Rainfall and reservoir level, this year against last</h3>
@@ -339,6 +397,7 @@ give that more time Could not find minutes in 2013 discussing the project origin
 2012 minutes are unavailable
 http://haverhillcommunitytv.org/video/haverhill-city-council-meeting-october-6-2026 41:51 Discussion
 of new water ordinance
+
 http://haverhillcommunitytv.org/video/haverhill-city-council-meeting-september-15-2026 29:17 Drought
 update (includes slideshow) Methuen providing water to get us through Announcement of entering the
 critical zone Water restrictions saved 150M gallons of water Slide showing timeline - Nov 2024
@@ -350,13 +409,21 @@ slide 34:21 Rainfall statistics slide 35:12 Water level chart - Kenoza: 99.8'/11
 and left quickly (TODO: he said he talked about it in city council meeting, find that) - Lowest it's
 been in Bob Ward's career (since 1995) 39:11 Methuen has to resolve water quality issue before we
 can start pulling from them DEP will get back end of Oct 42:26 What are we doing slide 43:04 Radial
-collector well fully permitted and online is 2 years 43:50 6-7M gallons per day projections 45:19
-2022 vs 2023 water usage (dry vs wet year) 0:51:32 Michitson: North Andover declared a water
-emergency today 
+collector well fully permitted and online is 2 years 43:50 6-7M gallons per day projections
+45:19 2022 vs 2023 water usage (dry vs wet year), 204M gallons more in dry years
+0:51:32 Michitson: North Andover declared a water emergency today 
 54:19 Basiliere: 
 We're using less water today than 10 years ago
 2022 permitted reworld to use an aquifer on the river that saved 250k GPD
 Took Covanter offline
+44:24 New multi-unit residential developments usage per unit per day:
+- 2 Merrimack St: 11 units, 131
+- 20-44 Merrimack St: 84 units, 134
+- 160 Merrimack St: 49 units, 84
+- 12-20 Granite Ave: 61 units, 141
+- 40 Locke St: 258 units, 64
+- 10 Duncan St: 60 units, 83
+- This does not include all development, but this accounts for 0.82% of total water usage
 58:59 Rough calculations for Methuen water, $1.5M for 3-5 months
 1:02 Account of water usage leaks
 Less than 10% very good, which we've been well below
@@ -370,6 +437,8 @@ somewhere in these slides had the percentage of new development usage
 Water usage spreadsheet:
 /home/lackita/Downloads/rgpcd uaw 2025 web 9-1-26-a11y.xlsx
 Source: https://www.mass.gov/info-details/public-water-supply-tools-resources-performance-standards
+
+Ipswich well/stream connection study: https://pubs.usgs.gov/wri/wri004029/whole_report.pdf
 
 <h2>Population</h2>
 

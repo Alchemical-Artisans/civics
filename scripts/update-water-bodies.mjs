@@ -20,6 +20,7 @@ import {
   NHD_WATERBODY,
   NOT_DRAWN,
   PWSID,
+  WATERSHEDS,
   boundsOfRings,
   coarsenZone,
   isDrawn,
@@ -30,6 +31,9 @@ import {
 
 /** About two metres, and a metre's rounding -- the same as the precinct shapes. */
 const COMPACT = { tolerance: 0.00002, digits: 5 }
+
+/** About twenty metres: a watershed is drawn at a tenth the zoom a shoreline is. */
+const WATERSHED_COMPACT = { tolerance: 0.0002, digits: 5 }
 
 export const DATA_FILE = path.join(
   import.meta.dirname,
@@ -98,7 +102,31 @@ for (const zone of zones) {
   const shape = intersecting.find((f) => f.attributes.PERMANENT_IDENTIFIER === matched.nhdId)
     .geometry.rings
 
-  bodies.push({ ...matched, shape: compact(ringsToMulti(shape), COMPACT) })
+  // The land that drains to this source. A watershed is much larger than the
+  // body it feeds -- Millvale's is a hundred times its reservoir -- so it is
+  // simplified harder than the shorelines are: at this size on the page the
+  // difference is invisible, and the full rings run to tens of thousands of
+  // coordinates.
+  const [shed] = await query(WATERSHEDS, {
+    where: `SOURCE_ID = '${zone.attributes.SOURCE_ID}'`,
+    outFields: "SOURCE_ID,SITE_NAME,TYPE,WSHEDACRES,MA_ACRES",
+    returnGeometry: "true",
+  })
+  if (!shed) log.write(`    ${matched.name}: no watershed polygon`)
+
+  bodies.push({
+    ...matched,
+    shape: compact(ringsToMulti(shape), COMPACT),
+    watershed: shed
+      ? {
+          acres: Math.round(shed.attributes.WSHEDACRES),
+          /** Acres inside Massachusetts; the rest is over the New Hampshire line. */
+          massachusettsAcres: shed.attributes.MA_ACRES,
+          type: shed.attributes.TYPE,
+          shape: compact(ringsToMulti(shed.geometry.rings), WATERSHED_COMPACT),
+        }
+      : null,
+  })
   log.write(
     `    ${matched.name} (${matched.sourceId}) -> ${matched.mappedName ?? "unnamed"}, ` +
       `${matched.areaSqKm} km2, ${matched.candidates} reservoir-type candidate(s) in its Zone A` +
@@ -150,7 +178,13 @@ await writeDataFile(DATA_FILE, {
       reason: NOT_DRAWN[zone.attributes.SOURCE_ID].reason,
     })),
   town: { name: "Haverhill", shape: townShape },
-  bounds: boundsOfRings([townShape, ...bodies.map((b) => b.shape)]),
+  // The watersheds reach past the town line into New Hampshire, so they set
+  // the frame rather than the town does.
+  bounds: boundsOfRings([
+    townShape,
+    ...bodies.map((b) => b.shape),
+    ...bodies.filter((b) => b.watershed).map((b) => b.watershed.shape),
+  ]),
   bodies: bodies.sort((a, b) => b.areaSqKm - a.areaSqKm),
 })
 
