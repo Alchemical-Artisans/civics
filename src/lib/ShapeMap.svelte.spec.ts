@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest"
 import { tick } from "svelte"
 import { render } from "vitest-browser-svelte"
-import PrecinctMap from "./PrecinctMap.svelte"
+import ShapeMap from "./ShapeMap.svelte"
 import type { Bounds, Shape } from "./map"
 
 /** Two squares far enough apart that nothing about them is ambiguous. */
@@ -43,9 +43,9 @@ const fire = async (el: Element, type: string) => {
   await tick()
 }
 
-describe("PrecinctMap.svelte", () => {
+describe("ShapeMap.svelte", () => {
   it("draws a shape per area", async () => {
-    const { container } = render(PrecinctMap, base)
+    const { container } = render(ShapeMap, base)
 
     // The accessible name is on the <svg role="group">, not on the <figure>.
     const svg = container.querySelector("svg")!
@@ -61,14 +61,14 @@ describe("PrecinctMap.svelte", () => {
    */
   describe("interactive", () => {
     it("is on by default", async () => {
-      const { container } = render(PrecinctMap, base)
+      const { container } = render(ShapeMap, base)
 
       expect(container.querySelector("figure")?.className).toContain("h-full")
       expect(container.querySelector("svg")?.getAttribute("class")).toContain("absolute")
     })
 
     it("can be turned off for a map that cannot have it", async () => {
-      const { container } = render(PrecinctMap, { ...base, interactive: false })
+      const { container } = render(ShapeMap, { ...base, interactive: false })
 
       expect(container.querySelector("figure")?.className).not.toContain("h-full")
       expect(container.querySelector("svg")?.getAttribute("class")).not.toContain("absolute")
@@ -77,7 +77,7 @@ describe("PrecinctMap.svelte", () => {
     /** Either way the shapes are drawn before anything hydrates. */
     it("draws the shapes either way", async () => {
       for (const interactive of [true, false]) {
-        const { container } = render(PrecinctMap, { ...base, interactive })
+        const { container } = render(ShapeMap, { ...base, interactive })
         expect([...container.querySelectorAll("path.area")].length).toBe(2)
       }
     })
@@ -89,7 +89,7 @@ describe("PrecinctMap.svelte", () => {
    * either way.
    */
   it("names every area for the browser's own tooltip", async () => {
-    const { container } = render(PrecinctMap, base)
+    const { container } = render(ShapeMap, base)
 
     const titles = [...container.querySelectorAll("title")].map((t) => t.textContent)
     expect(titles).toContain("Kenoza Lake")
@@ -103,7 +103,7 @@ describe("PrecinctMap.svelte", () => {
      * not made to tab through twenty-one precincts to reach the page.
      */
     it("leaves a plain area out of the tab order", async () => {
-      const { container } = render(PrecinctMap, base)
+      const { container } = render(ShapeMap, base)
 
       for (const path of container.querySelectorAll("path.area")) {
         expect(path.getAttribute("tabindex")).toBeNull()
@@ -111,7 +111,7 @@ describe("PrecinctMap.svelte", () => {
     })
 
     it("draws no name on the map", async () => {
-      const { container } = render(PrecinctMap, base)
+      const { container } = render(ShapeMap, base)
 
       expect(container.querySelector(".hover-name")).toBeNull()
     })
@@ -122,7 +122,7 @@ describe("PrecinctMap.svelte", () => {
 
     /** The names have to be reachable without a pointer, so the shapes focus. */
     it("puts each area in the tab order", async () => {
-      const { container } = render(PrecinctMap, props)
+      const { container } = render(ShapeMap, props)
 
       for (const path of container.querySelectorAll("path.area")) {
         expect(path.getAttribute("tabindex")).toBe("0")
@@ -131,7 +131,7 @@ describe("PrecinctMap.svelte", () => {
     })
 
     it("names the area that takes keyboard focus too, not only the pointer", async () => {
-      const { container } = render(PrecinctMap, props)
+      const { container } = render(ShapeMap, props)
 
       const [first] = [...container.querySelectorAll<SVGPathElement>("path.area")]
       await fire(first, "focus")
@@ -142,13 +142,13 @@ describe("PrecinctMap.svelte", () => {
     })
 
     it("draws nothing until something is hovered or focused", async () => {
-      const { container } = render(PrecinctMap, props)
+      const { container } = render(ShapeMap, props)
 
       expect(container.querySelector(".hover-name")).toBeNull()
     })
 
     it("names the area that takes focus, and only that one", async () => {
-      const { container } = render(PrecinctMap, props)
+      const { container } = render(ShapeMap, props)
 
       const [first] = [...container.querySelectorAll<SVGPathElement>("path.area")]
       await fire(first, "pointerenter")
@@ -161,7 +161,7 @@ describe("PrecinctMap.svelte", () => {
     })
 
     it("stops naming it once focus leaves", async () => {
-      const { container } = render(PrecinctMap, props)
+      const { container } = render(ShapeMap, props)
 
       const [first] = [...container.querySelectorAll<SVGPathElement>("path.area")]
       await fire(first, "pointerenter")
@@ -176,7 +176,7 @@ describe("PrecinctMap.svelte", () => {
      * flicker as the pointer crossed its own text.
      */
     it("lets the pointer through the name to the shape under it", async () => {
-      const { container } = render(PrecinctMap, props)
+      const { container } = render(ShapeMap, props)
 
       const [first] = [...container.querySelectorAll<SVGPathElement>("path.area")]
       await fire(first, "pointerenter")
@@ -186,7 +186,7 @@ describe("PrecinctMap.svelte", () => {
 
     /** A shorter `label` is what a reader wants where one is given. */
     it("prefers a short label over the long accessible name", async () => {
-      const { container } = render(PrecinctMap, {
+      const { container } = render(ShapeMap, {
         ...base,
         hoverLabel: true,
         areas: [{ ...areas[0], name: "Kenoza Lake — 0.972 square kilometres", label: "Kenoza" }],

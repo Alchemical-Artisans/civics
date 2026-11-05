@@ -1,6 +1,6 @@
 <script lang="ts">
   import AddToCalendar from "$lib/AddToCalendar.svelte"
-  import PrecinctMap from "$lib/PrecinctMap.svelte"
+  import ShapeMap from "$lib/ShapeMap.svelte"
   import type { CalendarEvent } from "$lib/ics"
   import { boundsAround } from "$lib/map"
   import { Router } from "$lib/router"
@@ -48,7 +48,7 @@
 <!-- See the market's own page for why the map is drawn here rather than
      embedded. -->
 <div class="not-prose my-4 h-80 max-w-xl">
-  <PrecinctMap
+  <ShapeMap
     title="Where the Big Dog Show would be held: Bradford Common"
     bounds={boundsAround([[VENUE.lon, VENUE.lat]])}
     areas={[]}

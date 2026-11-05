@@ -1,5 +1,5 @@
 <script lang="ts">
-  import PrecinctMap from "$lib/PrecinctMap.svelte"
+  import ShapeMap from "$lib/ShapeMap.svelte"
   import ShareMeta from "$lib/ShareMeta.svelte"
   import { formatLongDate } from "$lib/calendar"
   import { boundsOf } from "$lib/map"
@@ -28,7 +28,7 @@
 
 <!-- The map takes whatever height the header and the tabs leave. -->
 <div class="h-[70dvh] lg:h-full">
-  <PrecinctMap
+  <ShapeMap
     title="Haverhill's seven wards and twenty-one precincts, "
     {bounds}
     areas={PRECINCTS.map((p) => ({

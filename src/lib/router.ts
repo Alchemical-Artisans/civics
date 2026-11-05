@@ -402,7 +402,7 @@ export class Router {
 
   /**
    * One raster tile of OpenStreetMap's standard map, for the street map under
-   * `PrecinctMap`'s shapes. Fetched by the reader's browser, never the build.
+   * `ShapeMap`'s shapes. Fetched by the reader's browser, never the build.
    */
   static osmTile(z: number, x: number, y: number): string {
     return `https://tile.openstreetmap.org/${z}/${x}/${y}.png`

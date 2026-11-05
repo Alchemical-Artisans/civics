@@ -12,7 +12,7 @@
 -->
 <script lang="ts">
   import { onMount } from "svelte"
-  import PrecinctMap from "$lib/PrecinctMap.svelte"
+  import ShapeMap from "$lib/ShapeMap.svelte"
   import AddToCalendar from "$lib/AddToCalendar.svelte"
   import ShareButton from "$lib/ShareButton.svelte"
   import ShareMeta from "$lib/ShareMeta.svelte"
@@ -158,7 +158,7 @@
   >
     <!-- The map takes whatever height the header leaves. -->
     <div class="h-[70dvh] lg:h-full lg:min-h-0">
-      <PrecinctMap
+      <ShapeMap
         title="{title}, outlined within Ward {precinct.ward}"
         {bounds}
         {areas}

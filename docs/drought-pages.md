@@ -91,7 +91,7 @@ average here is computed from the station record itself, not from that file.
 ## The supply map
 
 `/drought` opens with a map of Haverhill and the three bodies of water its
-public system draws from, drawn by **`src/lib/PrecinctMap.svelte`** -- the
+public system draws from, drawn by **`src/lib/ShapeMap.svelte`** -- the
 same component the election's precinct map uses. The water bodies are its
 `areas`, the city boundary its one `outline`. It floats right at two fifths
 of the column width beside the paragraph that explains it, inside a
@@ -99,7 +99,7 @@ of the column width beside the paragraph that explains it, inside a
 around it, and drops to full width above the text below `sm`.
 
 **It is interactive, which is now what a map is unless told otherwise** --
-pan, zoom, and finer tiles as a reader goes in. `PrecinctMap`'s own default
+pan, zoom, and finer tiles as a reader goes in. `ShapeMap`'s own default
 flipped to `true` for this: a reader who wants detail should be able to go and
 get it, so the prop appears at a call site only where a map departs from that.
 Exactly one does -- the landing page's `ElectionCard`, which is itself a

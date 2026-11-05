@@ -8,7 +8,7 @@
   import WaterUsageChart from "$lib/WaterUsageChart.svelte"
   import { CENSUS_COUNTS, POPULATION, POPULATION_SOURCE } from "$lib/population"
   import { WATER_USAGE } from "$lib/water-usage"
-  import PrecinctMap from "$lib/PrecinctMap.svelte"
+  import ShapeMap from "$lib/ShapeMap.svelte"
   import { COLOURS } from "$lib/chart-colours"
   import waterBodies from "$lib/data/water-bodies.json"
 
@@ -145,7 +145,7 @@
        is tall the map had to zoom out to fit the height, which spent about
        forty per cent of the width on Salem and Methuen. -->
   <div class="h-[26rem] md:col-start-2 md:row-start-1">
-    <PrecinctMap
+    <ShapeMap
       title="Haverhill, the {COUNT_WORD[
         waterBodies.bodies.length
       ]} bodies of water its public supply draws from, and the land draining to each"

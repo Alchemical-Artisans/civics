@@ -1,5 +1,5 @@
 <script lang="ts">
-  import PrecinctMap from "$lib/PrecinctMap.svelte"
+  import ShapeMap from "$lib/ShapeMap.svelte"
   import { boundsAround } from "$lib/map"
   import { Router } from "$lib/router"
   import { STRETCH } from "./stretch"
@@ -36,7 +36,7 @@
      quarter mile the ordinance covers, both sides of it, as the City
      Engineer's memo says. See `stretch.ts` for where the line comes from. -->
 <div class="not-prose my-4 h-96 max-w-xl">
-  <PrecinctMap
+  <ShapeMap
     title="Washington Street from Niagara Street to Pleasant View Avenue, where the ordinance would prohibit parking"
     bounds={boundsAround(STRETCH)}
     areas={[]}

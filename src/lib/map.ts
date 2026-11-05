@@ -1,5 +1,5 @@
 /**
- * The arithmetic behind `PrecinctMap`: where a longitude and latitude land on
+ * The arithmetic behind `ShapeMap`: where a longitude and latitude land on
  * OpenStreetMap's tiles, which zoom fits a given box, which tiles cover it, and
  * where inside a shape its label can go.
  *

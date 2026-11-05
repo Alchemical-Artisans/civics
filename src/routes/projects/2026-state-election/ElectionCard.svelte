@@ -17,7 +17,7 @@
   hovers or tabs to one; the project's own map has the room to print them.
 -->
 <script lang="ts">
-  import PrecinctMap from "$lib/PrecinctMap.svelte"
+  import ShapeMap from "$lib/ShapeMap.svelte"
   import { formatLongDate } from "$lib/calendar"
   import { boundsOf } from "$lib/map"
   import { Router } from "$lib/router"
@@ -75,7 +75,7 @@
          swallow the landing page's scroll. A reader who wants to move around
          the map follows the card to the project, where the same component is
          interactive. -->
-    <PrecinctMap
+    <ShapeMap
       interactive={false}
       title="Haverhill's twenty-one precincts, each a link to its ballot"
       {bounds}

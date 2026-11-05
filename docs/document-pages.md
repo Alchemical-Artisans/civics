@@ -278,9 +278,8 @@ sentence naming the street.
 
 **Where an item names a stretch of street rather than an address** -- a
 parking ordinance running from one cross street to the next -- the map is the
-stretch itself, drawn as a line. `$lib/PrecinctMap.svelte` (the election's
-map, which is ours rather than an embed) takes `lines` as well as shapes and
-pins, so the drawing is the road's own run between the two junctions: a point
+stretch itself, drawn as a line. `$lib/ShapeMap.svelte` (ours, rather than
+an embed) takes `lines` as well as shapes and pins, so the drawing is the road's own run between the two junctions: a point
 on it would claim a precision the ordinance does not have, and a straight
 line between the ends would cut the corners the street takes. Take the
 geometry once by hand, the way a point is taken, and say in the data file
