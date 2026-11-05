@@ -2,24 +2,15 @@
   // The rainfall chart's months are aggregated in `+page.server.ts`: the
   // three station files behind them run to megabytes, and a server load is
   // what keeps them out of this page's own bundle.
+  import KenozaLevelChart from "$lib/KenozaLevelChart.svelte"
   import PopulationChart from "$lib/PopulationChart.svelte"
   import RainfallChart from "$lib/RainfallChart.svelte"
   import WaterUsageChart from "$lib/WaterUsageChart.svelte"
   import { CENSUS_COUNTS, POPULATION, POPULATION_SOURCE } from "$lib/population"
   import { WATER_USAGE } from "$lib/water-usage"
   import PrecinctMap from "$lib/PrecinctMap.svelte"
-  import { Router } from "$lib/router"
-  import { KENOZA_SOURCE } from "$lib/kenoza-levels"
   import { COLOURS } from "$lib/chart-colours"
   import waterBodies from "$lib/data/water-bodies.json"
-
-  // The city's own Kenoza chart, committed rather than hotlinked -- see
-  // `Router.excerptFile`. It is shown as the city drew it rather than redrawn
-  // here: the level series exists only as this picture, so a chart of ours
-  // would be a reading of it rather than the measurement, and the band
-  // shading is the Water Department's own definition of each drought stage.
-  const KENOZA_MEETING = "city-council-2026-09-15"
-  const KENOZA_CHART = "drought-emergency-update/drought-chart.png"
 
   let { data } = $props()
 
@@ -185,52 +176,27 @@
 
 <div class="flow-root">
   <!-- Floated left, with the paragraph wrapping to its right. A float can do
-       this where it could not do it for the rainfall chart: it shortens the
-       *line boxes* of the text that follows, which is exactly what a
-       paragraph is, where a block-level <figure> would have laid its box out
-       underneath instead.
+     this where it could not do it for the rainfall chart: it shortens the
+     *line boxes* of the text that follows, which is exactly what a
+     paragraph is, where a block-level <figure> would have laid its box out
+     underneath instead.
 
-       After the grid rather than inside its left column, which is where this
-       first went: in there the paragraph had a floated figure on one side and
-       the map's column on the other, and about 400px of the window to set
-       itself in. Out here it has the page's full width, the figure takes half
-       of that rather than half a column, and nothing is squeezed between two
-       figures. `flow-root` contains the float now that the grid cell's own
-       formatting context is gone -- without it the float runs on into the
-       heading below.
+     After the grid rather than inside its left column, which is where this
+     first went: in there the paragraph had a floated figure on one side and
+     the map's column on the other, and about 400px of the window to set
+     itself in. Out here it has the page's full width, the figure takes half
+     of that rather than half a column, and nothing is squeezed between two
+     figures. `flow-root` contains the float now that the grid cell's own
+     formatting context is gone -- without it the float runs on into the
+     heading below.
 
-       `width` and `height` are the file's own pixels, so the box is reserved
-       before it loads and nothing jumps; `h-auto w-full` scales it from
-       there. It links to the committed full-size copy because the axis
-       labels stop being readable at this width, and a reader who wants to
-       read a figure off it needs the original.
+     Full width above the text below `sm`: half a narrow column is not a
+     chart, it is a thumbnail.
 
-       Full width above the text below `sm`: half a narrow column is not a
-       chart, it is a thumbnail. -->
-  <figure class="not-prose mb-3 w-full sm:float-left sm:mt-1 sm:mr-6 sm:mb-2 sm:w-1/2 sm:max-w-2xl">
-    <!-- Even at half the page the chart is well under its own 1650px, so the
-         fine axis labels still cannot be read here and the full-size copy is
-         not a nicety. `cursor-zoom-in` says the image opens; the caption says
-         so in words for a reader who never hovers anything. -->
-    <a class="block cursor-zoom-in" href={Router.excerptFile(KENOZA_MEETING, KENOZA_CHART)}>
-      <img
-        src={Router.excerptFile(KENOZA_MEETING, KENOZA_CHART)}
-        width="1650"
-        height="1275"
-        class="h-auto w-full rounded-lg ring-1 ring-slate-200"
-        alt="The Water Department's chart of Kenoza Lake's level through {KENOZA_SOURCE.asOf}. The vertical axis is feet above the gauge datum, 94 to 116, against the calendar year. Four coloured bands set the drought stage at each date, deepening downward from the 5 to 10 percent Watch zone through Warning and Emergency to the Critical zone beneath them. Three lines are drawn: the 36-year average, peaking near 113 feet in May; the 2025 trend, peaking near 112.6 feet at the start of July and falling to about 102 by the end of December; and the current level, which rises only to about 105.7 in June before falling to a labelled 99.8 feet in mid-September, below the foot of every band."
-      />
-    </a>
-    <figcaption class="mt-2 text-xs text-slate-500">
-      &ldquo;{KENOZA_SOURCE.title}&rdquo; &mdash; the City of Haverhill's own chart, as of
-      {KENOZA_SOURCE.asOf}, shown as the city drew it &mdash; open it for the full-size copy, which
-      is the only size its axis labels can be read at. Served from this site rather than the city's,
-      so the page does not depend on a file the city can move;
-      <a href={KENOZA_SOURCE.url} target="_blank" rel="external noopener noreferrer">
-        the original is here</a
-      >, read {KENOZA_SOURCE.accessed}.
-    </figcaption>
-  </figure>
+     Passed in rather than built into the component: the chart is the city's
+     picture of the lake, and whether it floats beside this paragraph is a
+     fact about this page. -->
+<KenozaLevelChart class="mb-3 w-full sm:float-left sm:mt-1 sm:mr-6 sm:mb-2 sm:w-1/2 sm:max-w-2xl" />
 
   <p>
     Over the last three years, our rainfall has been consistently below average, and unfortunately
