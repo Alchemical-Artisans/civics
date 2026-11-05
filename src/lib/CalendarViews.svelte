@@ -38,7 +38,7 @@
     <a
       href={v.href}
       aria-current={v.name === view ? "page" : undefined}
-      class="px-3 py-2 text-sm font-medium transition {v.name === view
+      class="px-3 py-2 text-sm font-medium no-underline transition {v.name === view
         ? 'bg-slate-800 text-white'
         : 'text-slate-700 hover:bg-slate-100'}"
     >

@@ -237,7 +237,7 @@
         {#if data.prevMonth}
           <a
             href={Router.calendarMonth(data.prevMonth)}
-            class="rounded-md px-3 py-2 text-sm font-medium ring-1 ring-slate-300 transition hover:bg-slate-100"
+            class="rounded-md px-3 py-2 text-sm font-medium no-underline ring-1 ring-slate-300 transition hover:bg-slate-100"
           >
             &larr; <span class="sr-only">Previous month</span>
             <span aria-hidden="true">Prev</span>
@@ -265,7 +265,7 @@
       {#if data.nextMonth}
         <a
           href={Router.calendarMonth(data.nextMonth)}
-          class="rounded-md px-3 py-2 text-sm font-medium ring-1 ring-slate-300 transition hover:bg-slate-100"
+          class="rounded-md px-3 py-2 text-sm font-medium no-underline ring-1 ring-slate-300 transition hover:bg-slate-100"
         >
           <span aria-hidden="true">Next</span>
           <span class="sr-only">Next month</span> &rarr;
@@ -382,7 +382,7 @@
                 {#if cell.inMonth}
                   <a
                     href={Router.calendarDay(cell.date)}
-                    class="rounded px-1 hover:bg-slate-100 hover:underline"
+                    class="rounded px-1 no-underline hover:bg-slate-100 hover:underline"
                     ><span class="sr-only">{formatLongDate(cell.date)}: </span>{cell.day}</a
                   >
                 {:else}
@@ -396,7 +396,7 @@
                       <a
                         href={linkFor(m)}
                         title={entryTitle(m)}
-                        class="flex items-center gap-1 rounded px-1 py-0.5 text-[11px] leading-tight transition {entryClass(
+                        class="flex items-center gap-1 rounded px-1 py-0.5 text-[11px] leading-tight no-underline transition {entryClass(
                           m,
                         )}"
                       >
@@ -467,14 +467,14 @@
             <h3
               class="border-b border-slate-200 bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-800"
             >
-              <a class="hover:underline" href={Router.calendarDay(day.date)}
+              <a class="no-underline hover:underline" href={Router.calendarDay(day.date)}
                 >{formatLongDate(day.date)}</a
               >
             </h3>
             <ul class="divide-y divide-slate-100">
               {#each day.items as m (m.id)}
                 <li class="px-3 py-2">
-                  <a href={linkFor(m)} class="block hover:underline">
+                  <a href={linkFor(m)} class="block no-underline hover:underline">
                     <span class="text-sm font-medium text-slate-900">{m.board}</span>
                     <!-- After the name rather than before it, the opposite of
                          the grid: the day is already this group's own heading,

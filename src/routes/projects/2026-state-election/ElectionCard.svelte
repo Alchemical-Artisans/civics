@@ -55,7 +55,7 @@
   <div class="flex items-baseline justify-between gap-3">
     <h2>
       <a
-        class="after:absolute after:inset-0 after:content-['']"
+        class="no-underline after:absolute after:inset-0 after:content-['']"
         href={Router.project(PROJECT.slug)}
       >
         {PROJECT.title}

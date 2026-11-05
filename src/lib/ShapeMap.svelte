@@ -554,6 +554,14 @@
   .live path {
     vector-effect: non-scaling-stroke;
   }
+  /* An SVG link is a shape or a pin, not a word. `main a` underlines every
+     link on the site so that none of them hides in prose, and SVG `<text>`
+     honours text-decoration like any other text -- which would rule a line
+     under a marker's label. */
+  a.area,
+  a.marker {
+    text-decoration-line: none;
+  }
   a.area:hover path,
   a.area:focus-visible path {
     fill-opacity: 0.85;

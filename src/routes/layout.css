@@ -205,13 +205,29 @@
  * are unlayered because they had to beat the plugin's own; this one has to
  * lose to the page's.
  *
- * Scoped to `.prose` rather than every `a` on the site: that is where the
- * transcribed content and all of these islands are, and widening it to the
- * bar, the footer and the calendar's chips would be a different change with
- * nothing asking for it.
+ * `main a` rather than `.prose a`, which is what this was: inside a `prose`
+ * container, which is to say in the city's transcribed words and in the
+ * islands sitting among them. An authored page is not one of those -- it
+ * writes its own headings and its own paragraphs and wraps nothing round
+ * them -- so every link on `/drought` was styled exactly like the sentence
+ * around it, which is the same bug this rule was written for one container
+ * in. Nothing about a link's visibility follows from which container it is
+ * in, so the container came out of the selector.
+ *
+ * `main` and not `body`, so the bar and the footer are outside it by
+ * construction: both are chrome, both already decide their own type, and
+ * `SiteHeader`'s own links carry `underline` where they want it.
+ *
+ * What is inside `main` and is still chrome opts out with `no-underline` --
+ * the calendar's chips and its month nav, the view switcher, the share menu,
+ * the two cards on the front page, and the map's own shapes, which are SVG.
+ * That is the asymmetry argued above, now that there are more of them: a
+ * stray underline on a chip is obvious to anyone who looks and harmless
+ * until fixed, where a link that looks like prose is navigation nobody can
+ * find.
  */
 @layer base {
-  .prose a {
+  main a {
     text-decoration-line: underline;
   }
 }

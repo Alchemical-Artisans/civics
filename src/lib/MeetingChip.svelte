@@ -30,7 +30,7 @@
 
 <a
   href={Router.meeting(meeting.id)}
-  class="flex items-center gap-1.5 rounded px-2 py-1 text-sm leading-tight transition {entryClass}"
+  class="flex items-center gap-1.5 rounded px-2 py-1 text-sm leading-tight no-underline transition {entryClass}"
 >
   {#if statedTime(meeting)}
     <span class="shrink-0 tabular-nums">{statedTime(meeting)}</span>
