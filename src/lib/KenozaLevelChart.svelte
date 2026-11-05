@@ -38,15 +38,18 @@
 </script>
 
 <figure class="not-prose {className}">
-  <!-- Even at half the page the chart is well under its own 1650px, so the
-       fine axis labels still cannot be read here and the full-size copy is
-       not a nicety. `cursor-zoom-in` says the image opens; the caption says
-       so in words for a reader who never hovers anything.
+  <!-- The picture links to the city's own page on the drought, where the city
+       publishes a chart of the lake's level: a reader who clicks a chart of
+       Haverhill's water is asking about Haverhill's water, and that page is
+       the city saying what it currently is, in its own words and over its own
+       name. It used to open our committed full-size copy, which answered a
+       narrower question -- what do the axis labels say -- and the caption
+       still links that copy for anyone asking it.
 
        `width` and `height` are the file's own pixels, so the box is reserved
        before it loads and nothing jumps; `h-auto w-full` scales it from
        there. -->
-  <a class="block cursor-zoom-in" href={file}>
+  <a href={KENOZA_SOURCE.page} target="_blank" rel="external noopener noreferrer">
     <img
       src={file}
       width="1650"
@@ -57,11 +60,13 @@
   </a>
   <figcaption class="mt-2 text-xs text-slate-500">
     &ldquo;{KENOZA_SOURCE.title}&rdquo; &mdash; the City of Haverhill's own chart, as of
-    {KENOZA_SOURCE.asOf}, shown as the city drew it &mdash; open it for the full-size copy, which is
-    the only size its axis labels can be read at. Served from this site rather than the city's, so
-    the page does not depend on a file the city can move;
+    {KENOZA_SOURCE.asOf}, shown as the city drew it. The picture opens the city's own drought page;
+    <a href={file}>the full-size copy</a> is the only size its axis labels can be read at, and is
+    served from this site rather than the city's, so the page does not depend on a file the city can
+    move. The image
     <a href={KENOZA_SOURCE.url} target="_blank" rel="external noopener noreferrer"
-      >the original is here</a
-    >, read {KENOZA_SOURCE.accessed}.
+      >as the city filed it</a
+    >
+    was read {KENOZA_SOURCE.accessed}.
   </figcaption>
 </figure>

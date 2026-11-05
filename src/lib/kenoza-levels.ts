@@ -114,6 +114,14 @@ export const KENOZA_LEVELS: LakeLevelYear[] = [
 /** Where these came from, for the page to say so under the chart. */
 export const KENOZA_SOURCE = {
   title: "Kenoza Lake Drought Stages with Current, 2025, and Average Levels",
+  /**
+   * The city's own page on the drought, which is where it publishes a chart
+   * of the lake's level -- and so what the picture on `/drought` links to.
+   * `url` below is the image file itself, which is a file rather than a page:
+   * it says nothing about when the city put it there or what it said at the
+   * time, and a reader sent to a `.png` has nowhere to go next.
+   */
+  page: "https://www.haverhillma.gov/living-here/waterwastewater-services/water-supplydrought-information/",
   url: "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/ceboffkx/drought-status-9-15-2026.png",
   asOf: "September 15, 2026",
   accessed: "October 26, 2026",
