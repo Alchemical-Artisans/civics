@@ -175,7 +175,11 @@
       making up another significant source.
     </p>
 
-    <RainfallChart years={data.rainfallYears} baseline={data.rainfallBaseline} />
+    <RainfallChart
+      years={data.rainfallYears}
+      baseline={data.rainfallBaseline}
+      source={data.rainfallSource.portal}
+    />
   </div>
 </div>
 

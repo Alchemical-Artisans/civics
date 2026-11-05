@@ -155,3 +155,36 @@ export function averageToDate(years: PrecipitationYear[]): number {
   const total = years.reduce((sum, year) => sum + year.toDateInches, 0)
   return Math.round((total / years.length) * 100) / 100
 }
+
+/**
+ * The mean of several years' whole-year totals.
+ *
+ * The companion to `averageToDate`, and the right baseline only when the
+ * bars beside it are whole years too. Mixing the two -- a to-date average
+ * under full-year bars, or the reverse -- understates or overstates every
+ * comparison on the chart by the same several inches.
+ */
+export function averageFullYear(years: PrecipitationYear[]): number {
+  if (!years.length) return 0
+  const total = years.reduce((sum, year) => sum + year.totalInches, 0)
+  return Math.round((total / years.length) * 100) / 100
+}
+
+/**
+ * How much rain those years got *after* the day the newest of them stops --
+ * the part of the calendar the current year has not reached yet.
+ *
+ * **This is the one estimated figure the rainfall chart carries.** A year
+ * still running is drawn as what has actually fallen plus a ghost of this on
+ * top, so a reader can see roughly where the year is heading without the
+ * short bar reading as a dry year. It is an average of ten measured
+ * remainders, not a forecast, and the spread behind it is wide -- for a
+ * late-October cutoff the ten years range from about 6.6 to 14.5 inches. The
+ * chart draws it in a register that says estimate and the caption says so in
+ * words; nothing else on the page may quote it as rainfall that fell.
+ */
+export function averageRemainder(years: PrecipitationYear[]): number {
+  if (!years.length) return 0
+  const total = years.reduce((sum, year) => sum + (year.totalInches - year.toDateInches), 0)
+  return Math.round((total / years.length) * 100) / 100
+}

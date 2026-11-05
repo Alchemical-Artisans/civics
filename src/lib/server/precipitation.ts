@@ -214,6 +214,16 @@ export const PRECIPITATION_SOURCE = {
     count: number
   }[],
   acisUrl: observedWeather.source as string,
+  /**
+   * Where a person goes to pull the same records by hand, as against
+   * `acisUrl`, which is the endpoint this site queries: that one answers a
+   * POST and nothing else, so it is no destination for a reader. xmACIS2 is
+   * the public interface to the same ACIS daily data, station by station --
+   * the same service, asked the same question, by hand. It is what the
+   * rainfall chart links to, which is why it carries a short `name` as well:
+   * the chart prints it in a legend row with no room for a sentence.
+   */
+  portal: { href: "https://xmacis.rcc-acis.org/", name: "xmACIS2" },
   updated: observedWeather.generatedAt as string,
 }
 

@@ -1,9 +1,9 @@
 import type { PageServerLoad } from "./$types"
-import { averageToDate } from "$lib/precipitation"
+import { averageFullYear, averageRemainder, averageToDate } from "$lib/precipitation"
 import { PRECIPITATION_SOURCE, precipitationByYear } from "$lib/server/precipitation"
 
-/** Bars on the chart: the current year and the five before it. */
-const SPAN = 6
+/** Bars on the chart: the current year and the nine before it. */
+const SPAN = 10
 /** Years behind the baseline bar, the current year excluded. */
 const BASELINE = 10
 
@@ -44,6 +44,13 @@ export const load: PageServerLoad = () => {
     rainfallYears: all.slice(-SPAN),
     rainfallBaseline: {
       inches: averageToDate(baselineYears),
+      /** The dashed rule, now that the bars are whole years. */
+      fullYearInches: averageFullYear(baselineYears),
+      /**
+       * What a typical year still adds after the day the current one stops --
+       * the ghost on the unfinished bar. Estimated; see `averageRemainder`.
+       */
+      remainderInches: averageRemainder(baselineYears),
       from: baselineYears[0].year,
       to: baselineYears.at(-1)!.year,
       years: baselineYears.length,
