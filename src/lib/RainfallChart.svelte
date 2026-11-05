@@ -370,17 +370,9 @@
               stroke-dasharray="3 2"
             />
           </svg>
-          <span>expected rest of {running.year} &mdash; not measured</span>
+          <span>predicted rest of year</span>
         </li>
       {/if}
-      <!-- The one row here that decodes no mark: it says where the figures
-           came from, which is also the only visible sign that the chart is a
-           link. Pushed to the far end with `ml-auto`, being about the chart
-           rather than about the marks on it. -->
-      <li class="m-0 ml-auto flex items-center gap-1">
-        <span class="group-hover:underline">Source: {source.name}</span>
-        <span>&#8599;</span>
-      </li>
     </ul>
   </a>
 

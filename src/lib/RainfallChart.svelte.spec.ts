@@ -180,12 +180,7 @@ describe("RainfallChart.svelte", () => {
       const legend = [...container.querySelectorAll("ul li")].map((l) =>
         l.textContent?.replace(/\s+/g, " ").trim(),
       )
-      // The source row is the third and is tested on its own below: it
-      // decodes no mark, so it has no counterpart in the caption.
-      expect(legend.slice(0, 2)).toEqual([
-        '10-yr average 47.49"',
-        "expected rest of 2026 — not measured",
-      ])
+      expect(legend).toEqual(['10-yr average 47.49"', "predicted rest of year"])
     })
 
     it("hides the legend from a screen reader, which gets the caption instead", async () => {
@@ -204,9 +199,7 @@ describe("RainfallChart.svelte", () => {
       })
 
       const legend = [...container.querySelectorAll("ul li")].map((l) => l.textContent?.trim())
-      // The average's rule and the source row; no ghost, so no ghost row.
-      expect(legend.length).toBe(2)
-      expect(legend[0]).toContain("10-yr average")
+      expect(legend.length).toBe(1)
       expect(container.querySelectorAll('svg[role="group"] rect[stroke-dasharray]').length).toBe(0)
       expect(container.querySelector("figcaption")!.textContent).not.toContain("not over")
     })
@@ -348,16 +341,6 @@ describe("RainfallChart.svelte", () => {
       await expect
         .element(page.getByRole("link", { name: /xmACIS2.*opens in a new tab/ }))
         .toBeInTheDocument()
-    })
-
-    /** A chart that navigates on click has to look like it will. */
-    it("says in the legend where clicking goes", async () => {
-      const { container } = render(RainfallChart, props)
-
-      const legend = [...container.querySelectorAll("ul li")].map((l) =>
-        l.textContent?.replace(/\s+/g, " ").trim(),
-      )
-      expect(legend.at(-1)).toContain("Source: xmACIS2")
     })
   })
 
