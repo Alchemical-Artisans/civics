@@ -12,8 +12,8 @@
 
   **Committed rather than hotlinked**, by way of `Router.excerptFile`: the
   file is served from this site, so the page does not depend on an image the
-  city can move, and the caption still links the city's own copy and says
-  when it was read.
+  city can move. `KENOZA_SOURCE` carries the city's own copy, the date it was
+  read and the chart's printed title, none of which this draws any more.
 
   **Where it sits is the caller's business**, so the figure takes a `class`
   and brings no layout of its own beyond `not-prose`. Floated beside a
@@ -43,8 +43,7 @@
        Haverhill's water is asking about Haverhill's water, and that page is
        the city saying what it currently is, in its own words and over its own
        name. It used to open our committed full-size copy, which answered a
-       narrower question -- what do the axis labels say -- and the caption
-       still links that copy for anyone asking it.
+       narrower question: what do the axis labels say.
 
        `width` and `height` are the file's own pixels, so the box is reserved
        before it loads and nothing jumps; `h-auto w-full` scales it from
@@ -54,19 +53,8 @@
       src={file}
       width="1650"
       height="1275"
-      class="h-auto w-full rounded-lg ring-1 ring-slate-200"
-      alt="The Water Department's chart of Kenoza Lake's level through {KENOZA_SOURCE.asOf}. The vertical axis is feet above the gauge datum, 94 to 116, against the calendar year. Four coloured bands set the drought stage at each date, deepening downward from the 5 to 10 percent Watch zone through Warning and Emergency to the Critical zone beneath them. Three lines are drawn: the 36-year average, peaking near 113 feet in May; the 2025 trend, peaking near 112.6 feet at the start of July and falling to about 102 by the end of December; and the current level, which rises only to about 105.7 in June before falling to a labelled 99.8 feet in mid-September, below the foot of every band."
+      class="h-auto w-full rounded-lg"
+      alt="The Water Department's chart of Kenoza Lake's level through {KENOZA_SOURCE.asOf}. The vertical axis is the lake level, against the calendar year. Four coloured bands set the drought stage at each date, deepening downward from the 5 to 10 percent Watch zone through Warning and Emergency to the Critical zone beneath them. Three lines are drawn: the 36-year average, peaking near 113 feet in May; the 2025 trend, peaking near 112.6 feet at the start of July and falling to about 102 by the end of December; and the current level, which rises only to about 105.7 in June before falling to a labelled 99.8 feet in mid-September, below the foot of every band."
     />
   </a>
-  <figcaption class="mt-2 text-xs text-slate-500">
-    &ldquo;{KENOZA_SOURCE.title}&rdquo; &mdash; the City of Haverhill's own chart, as of
-    {KENOZA_SOURCE.asOf}, shown as the city drew it. The picture opens the city's own drought page;
-    <a href={file}>the full-size copy</a> is the only size its axis labels can be read at, and is
-    served from this site rather than the city's, so the page does not depend on a file the city can
-    move. The image
-    <a href={KENOZA_SOURCE.url} target="_blank" rel="external noopener noreferrer"
-      >as the city filed it</a
-    >
-    was read {KENOZA_SOURCE.accessed}.
-  </figcaption>
 </figure>
