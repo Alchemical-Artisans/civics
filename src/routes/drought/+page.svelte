@@ -45,9 +45,6 @@
   // map -- the paragraph below said "four" while the map drew three.
   const COUNT_WORD = ["no", "one", "two", "three", "four", "five", "six"]
 
-  // A protection area runs to four figures, and "1541 acres" reads as a year
-  // rather than a quantity.
-  const acres = (value: number | undefined) => value?.toLocaleString("en-US") ?? ""
   // Watersheds first so the water sits on top of the ground that feeds it;
   // `areas` draws in order.
   const supplyAreas = [
@@ -56,7 +53,7 @@
       .map((body, i) => ({
         id: `${body.sourceId}-watershed`,
         shape: body.watershed!.shape,
-        name: `${titleCase(body.name)} watershed — ${body.watershed!.acres.toLocaleString("en-US")} acres`,
+        name: `${titleCase(body.name)} watershed`,
         fill: hueFor(i),
         // Against the greyed street map 0.18 washed out entirely -- Crystal's
         // watershed was invisible at the size this draws. The water itself
@@ -67,15 +64,20 @@
     ...waterBodies.bodies.map((body, i) => ({
       id: body.sourceId,
       shape: body.shape,
-      name: `${titleCase(body.name)} — ${body.areaSqKm} square kilometres`,
+      name: titleCase(body.name),
       fill: hueFor(i),
       opacity: 0.85,
       // No standing label: this map is a two-fifths float a few hundred pixels
       // wide, and three names drawn on it at once crowd each other and the
       // shapes they belong to. `hoverLabel` names one at a time instead, on
-      // hover or focus, which is legible at any size and cannot collide. The
-      // paragraph beside the map also names all three, largest first, for a
-      // reader who hovers nothing.
+      // hover or focus, which is legible at any size and cannot collide.
+      //
+      // The name and nothing else. Each label used to carry the shape's size
+      // too -- "Kenoza Lake — 1.9 square kilometres", "Kenoza Lake watershed
+      // — 3,210 acres" -- which made the one thing a reader hovers to learn
+      // the shorter half of what they got, in a box sized to the longer half.
+      // A hover is how this map answers "which lake is that": a figure is a
+      // different question and wants a sentence, not a tooltip.
     })),
   ]
 
