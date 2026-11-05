@@ -310,4 +310,18 @@ export const WATER_USAGE_SOURCE = {
   item: "drought-emergency-update",
   slides: ["Have the outdoor water use restrictions helped?", "Wet Summer vs. Dry Summer"],
   read: "October 29, 2026",
+  /**
+   * HC Media's video of the sitting, and the minute the slide behind these
+   * lines is on screen. The timestamp is in the text rather than the URL:
+   * HC Media's player takes no time fragment, so the only way to hand a
+   * reader a minute is to print it and let them seek.
+   *
+   * `/drought`'s own prose links the same recording at the same minute. Both
+   * are the citation for the same claim -- the chart draws the slide, the
+   * sentence quotes the figure off it -- so they point at one place.
+   */
+  recording: {
+    url: "http://haverhillcommunitytv.org/video/haverhill-city-council-meeting-september-15-2026",
+    timestamp: "44:19",
+  },
 }

@@ -4,7 +4,8 @@
 
   **A day at a time, where the rainfall chart is one bar a year.** The
   question is not how a year compares with another year -- the department
-  states that outright and the caption quotes it -- but whether the gap holds
+  states that outright, and `WATER_USAGE_STATED` holds both of its figures
+  for the tests to check this reading against -- but whether the gap holds
   day after day or rests on a few weeks. Six months of daily points show
   that; a pair of bars cannot.
 
@@ -21,7 +22,7 @@
 <script lang="ts">
   import { COLOURS } from "./chart-colours"
   import { MONTH_NAMES } from "./precipitation"
-  import { WATER_USAGE_SOURCE, WATER_USAGE_STATED, type WaterUsageDay } from "./water-usage"
+  import { WATER_USAGE_SOURCE, type WaterUsageDay } from "./water-usage"
 
   let { days }: { days: WaterUsageDay[] } = $props()
 
@@ -105,7 +106,14 @@
   })
 </script>
 
-<figure class="not-prose mx-auto my-0 max-w-xl">
+<!-- `max-w-2xl` rather than the `max-w-xl` this had: the legend carries the
+     citation on its own row now, and "Source: Water Department Slide
+     (timestamp 44:19)" is 271px of it -- 613px of row against 576px of
+     figure, so the citation wrapped under the three years every time. The
+     chart is drawn from a 460-wide viewBox and scales to its box, so the
+     extra 96px costs nothing but a slightly larger axis label, and the
+     column it sits in is wider than either cap. -->
+<figure class="not-prose mx-auto my-0 max-w-2xl">
   <svg
     viewBox="0 0 {WIDTH} {HEIGHT}"
     class="block h-auto w-full"
@@ -164,7 +172,7 @@
     {/each}
   </svg>
 
-  <ul class="mt-2 flex list-none flex-wrap gap-x-4 gap-y-1 p-0 text-xs">
+  <ul class="mt-2 flex list-none flex-wrap items-baseline gap-x-3 gap-y-1 p-0 text-xs">
     {#each series as line (line.year)}
       <li class="m-0 flex items-center gap-1.5">
         <span
@@ -177,12 +185,25 @@
         <span class="text-slate-500 tabular-nums">{mgd.format(line.average)} avg</span>
       </li>
     {/each}
+    <!-- The citation, on the legend's own line and at its far end. These
+         three lines are a reading of a slide rather than a published series,
+         so where the slide was shown is part of what the chart says; the
+         legend is where a reader already is, and a line of its own under the
+         chart would be a second thing to look at for one fact.
+
+         The minute is printed rather than linked: HC Media's player takes no
+         time fragment, so a reader seeks to it themselves. -->
+    <li class="m-0 ml-auto text-slate-500">
+      <a href={WATER_USAGE_SOURCE.recording.url} target="_blank" rel="external noopener noreferrer">
+        Source: Water Department Slide (timestamp {WATER_USAGE_SOURCE.recording.timestamp})
+      </a>
+    </li>
   </ul>
 
   <!-- A month's mean rather than all 184 days in each of three years: the
        point of the daily series is its shape, which 552 spoken figures do not
-       convey, and the totals that matter are the department's own, quoted in
-       the caption. -->
+       convey. The totals that matter are the department's own, and it states
+       those on the slide this is read from -- which the legend above links. -->
   <table class="sr-only">
     <caption class="sr-only">Average water produced each month, million gallons a day</caption>
     <thead>
@@ -202,11 +223,4 @@
       {/each}
     </tbody>
   </table>
-
-  <figcaption class="mt-2 text-xs text-slate-500">
-    Read off two charts the Water Department showed the {WATER_USAGE_SOURCE.meeting} &mdash; good to about
-    a twentieth of a million gallons on a typical day. The department states the totals: &ldquo;{WATER_USAGE_STATED
-      .restrictions.stated}&rdquo;, and &ldquo;{WATER_USAGE_STATED.wetAgainstDry.stated}&rdquo; over
-    April 15th to October 15th, whose percentage is a share of the year rather than of those months.
-  </figcaption>
 </figure>
