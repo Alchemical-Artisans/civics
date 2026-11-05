@@ -134,7 +134,7 @@
   </svg>
 
   <table class="sr-only">
-    <caption>Haverhill's population by year, US Census Bureau estimates</caption>
+    <caption class="sr-only">Haverhill's population by year, US Census Bureau estimates</caption>
     <thead>
       <tr><th scope="col">Year</th><th scope="col">People</th></tr>
     </thead>

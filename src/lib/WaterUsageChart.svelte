@@ -184,7 +184,7 @@
        convey, and the totals that matter are the department's own, quoted in
        the caption. -->
   <table class="sr-only">
-    <caption>Average water produced each month, million gallons a day</caption>
+    <caption class="sr-only">Average water produced each month, million gallons a day</caption>
     <thead>
       <tr>
         <th scope="col">Month</th>
