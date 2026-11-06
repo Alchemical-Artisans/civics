@@ -153,6 +153,25 @@ export class Router {
   }
 
   /**
+   * A figure lifted out of a published report that is nobody's in Haverhill:
+   * `static/references/`, the counterpart to `excerpts/` for a source that is
+   * not a city document and so has no meeting to file it under.
+   *
+   * It is here for the same reason `excerptFile` is -- the build is offline
+   * and the reader's browser never fetches from anyone else's server -- and
+   * it carries the base path the same way. The page that shows one links the
+   * report it came out of, so the reader can check the figure against the
+   * text around it.
+   *
+   * Only for work that may be republished: the one here is a U.S. Geological
+   * Survey circular, a work of the federal government and in the public
+   * domain. Anything under copyright gets a link, not a copy.
+   */
+  static reference(file: string): string {
+    return path(`/references/${file}`)
+  }
+
+  /**
    * One fiscal year's budget book, written up here. `id` is a `FiscalYear`'s
    * id from `$lib/budget` -- `fy2027`.
    *
