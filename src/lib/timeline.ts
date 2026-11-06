@@ -9,8 +9,19 @@
 export interface TimelineEntry {
   /** The fragment this entry answers to, where anything links to one. */
   id?: string
-  /** `YYYY-MM-DD`. */
-  date: string
+  /**
+   * `YYYY-MM-DD`, where the entry has a day. A step the record does not date
+   * -- something expected but not yet scheduled -- leaves it off, and is
+   * drawn with no date line and sorted after everything dated.
+   */
+  date?: string
+  /**
+   * What to print instead of the formatted date, where the date is known to
+   * less precision than a day. `/drought`'s first step is a 2012 loan order
+   * whose own record the city no longer publishes: the year is what is
+   * known, and "January 1, 2012" would be a precision nobody has.
+   */
+  dateLabel?: string
   /** The last day of a run of days, like early voting's. */
   through?: string
   /** A line above the title: the board and the agenda's number for an item. */
@@ -22,8 +33,14 @@ export interface TimelineEntry {
   note?: string
 }
 
-/** The last day an entry covers: a run of days ends on its `through`. */
-export const entryEnd = (entry: TimelineEntry) => entry.through ?? entry.date
+/**
+ * The last day an entry covers: a run of days ends on its `through`.
+ *
+ * An entry with no date at all is never behind the reader -- it is something
+ * expected whose day nobody has set -- so it sorts after every dated entry
+ * and stays out of the fold.
+ */
+export const entryEnd = (entry: TimelineEntry) => entry.through ?? entry.date ?? "9999-12-31"
 
 /**
  * A timeline split into what is behind the reader and what is still ahead.

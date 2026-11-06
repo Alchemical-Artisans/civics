@@ -29,7 +29,18 @@
     class: className = "mt-3 space-y-3 border-l-2 border-slate-200 pl-4 text-sm",
   }: { entries: TimelineEntry[]; class?: string } = $props()
 
-  const key = (entry: TimelineEntry) => entry.id ?? `${entry.date}-${entry.title}`
+  const key = (entry: TimelineEntry) => entry.id ?? `${entry.date ?? ""}-${entry.title}`
+
+  /**
+   * A timeline entry's link leaves the site or it does not, and the two want
+   * different treatment -- outbound gets a new tab on this site's usual
+   * terms. Read off the href rather than passed in: every internal URL here
+   * is built by `Router` and so is a path, which makes an absolute one
+   * external by construction and leaves nothing for a caller to forget.
+   * `/drought`'s steps are HC Media recordings; a project's are write-ups
+   * on this site.
+   */
+  const away = (href: string) => /^https?:/.test(href)
 </script>
 
 <ol class={className}>
@@ -42,16 +53,24 @@
         aria-hidden="true"
         class="absolute top-3 -left-[1.4rem] h-2.5 w-2.5 rounded-full border-2 border-white bg-slate-400"
       ></span>
-      <p class="text-xs text-slate-500">
-        {formatLongDate(entry.date)}{#if entry.through}
-          &ndash; {formatLongDate(entry.through)}{/if}
-      </p>
+      <!-- No date line at all for a step nobody has dated yet: an empty
+           slot above the title reads as a missing value, where leaving it
+           out reads as what it is. -->
+      {#if entry.dateLabel || entry.date}
+        <p class="text-xs text-slate-500">
+          {entry.dateLabel ?? formatLongDate(entry.date!)}{#if entry.through}
+            &ndash; {formatLongDate(entry.through)}{/if}
+        </p>
+      {/if}
       {#if entry.eyebrow}
         <p class="text-slate-500">{entry.eyebrow}</p>
       {/if}
       {#if entry.href}
-        <a class="font-medium text-slate-900 underline hover:text-sky-800" href={entry.href}
-          >{entry.title}</a
+        <a
+          class="font-medium text-slate-900 underline hover:text-sky-800"
+          href={entry.href}
+          target={away(entry.href) ? "_blank" : null}
+          rel={away(entry.href) ? "external noopener noreferrer" : null}>{entry.title}</a
         >
       {:else}
         <p class="text-slate-800">{entry.title}</p>

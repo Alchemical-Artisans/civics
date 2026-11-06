@@ -33,6 +33,13 @@
       {@render children()}
     </div>
 
-    <FoldedTimeline entries={DROUGHT_TIMELINE} today={data.today} />
+    <!-- Unfolded. The fold holds the record back so it is not in the way of
+         what a reader can still act on, which is the right trade on a
+         project with sittings still to come. Here what is ahead is two
+         steps nobody has dated -- the tiered-rates analysis and the Methuen
+         connection -- and folding leaves those two showing with the six
+         meetings that actually happened hidden behind an arrow. The record
+         is what this page is about. -->
+    <FoldedTimeline entries={DROUGHT_TIMELINE} today={data.today} fold={false} />
   </div>
 </div>
