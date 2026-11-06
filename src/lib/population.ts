@@ -56,6 +56,20 @@ export const POPULATION_SOURCE = {
   place: "Haverhill city, Massachusetts (place 2529405)",
   vintage: "Vintage 2024",
   builtFrom: 2020,
+  /**
+   * The Bureau's own page for this series, and where the file below was
+   * obtained -- what the chart links, because a reader following a citation
+   * wants the page that publishes the data and documents it, not a 7 MB CSV
+   * of every place in the country that their browser will simply download.
+   *
+   * **It will not always offer the vintage below.** The page carries the
+   * current one -- Vintage 2025 as of this writing, where these figures are
+   * Vintage 2024 -- because the Bureau rebuilds the series every year and
+   * the page follows it. The file itself stays where it is, which is why
+   * `url` is still recorded: that is the thing these five numbers came out
+   * of, and the way to check them against what is drawn.
+   */
+  page: "https://www.census.gov/data/tables/time-series/demo/popest/2020s-total-cities-and-towns.html",
   url: "https://www2.census.gov/programs-surveys/popest/datasets/2020-2024/cities/totals/sub-est2024.csv",
   read: "October 30, 2026",
 }

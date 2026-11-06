@@ -55,22 +55,22 @@
 </script>
 
 <figure class="not-prose mx-auto my-0 max-w-md">
-  <!-- The drawing is a link to the file the figures were read out of: the
-       Census Bureau's own sub-county totals, the exact dataset and vintage
-       `POPULATION_SOURCE` names rather than whatever the Bureau is
-       publishing today. It is a 7 MB CSV of every place in the country, not
-       a page -- the Bureau's own landing page has moved on to the next
-       vintage, and sending a reader there to check these bars would hand
-       them different numbers.
+  <!-- The drawing is a link to where these figures came from: the Census
+       Bureau's page for its city and town population totals. It linked the
+       CSV itself at first, which is the exact file the bars were read out of
+       -- but that is 7 MB of every place in the country and a browser
+       downloads it rather than showing it, which is no destination for a
+       reader checking a citation. `POPULATION_SOURCE` keeps both, the file
+       as the provenance and the page as the link.
 
        `no-underline` because `main a` underlines every link on the site, and
        here that would rule a line under the chart. -->
   <a
     class="block no-underline"
-    href={POPULATION_SOURCE.url}
     target="_blank"
     rel="external noopener noreferrer"
-    aria-label="The {POPULATION_SOURCE.agency} {POPULATION_SOURCE.program} file these figures were read from, {POPULATION_SOURCE.vintage} (a CSV, opens in a new tab)"
+    href={POPULATION_SOURCE.page}
+    aria-label="{POPULATION_SOURCE.agency} {POPULATION_SOURCE.program}, where these figures come from (opens in a new tab)"
   >
     <svg
       viewBox="0 0 {WIDTH} {HEIGHT}"
