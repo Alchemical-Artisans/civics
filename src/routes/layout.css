@@ -82,6 +82,22 @@
       font-weight: var(--font-weight-semibold);
       /* No orphaned last word in a two-line section heading. */
       text-wrap: balance;
+      /*
+       * A heading starts a section, so nothing floated in the one before it
+       * may run into it. `/drought` floats two figures beside their own
+       * paragraphs -- the city's Kenoza chart and the USGS cross-sections --
+       * and a float is only as tall as the text that happens to sit beside
+       * it: shorten those paragraphs by a line and the figure runs on past
+       * the heading below, which then sets itself in the gap to the right of
+       * a picture belonging to the section above.
+       *
+       * Here rather than on each figure's own container, which is how this
+       * was handled before -- `flow-root` on a wrapper, one float at a time.
+       * What a heading is for is the same on every page, and so is what goes
+       * wrong; a page that floats its third figure should not have to
+       * rediscover this.
+       */
+      clear: both;
     }
 
     &:is(h1) {
