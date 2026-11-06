@@ -19,7 +19,7 @@
 -->
 <script lang="ts">
   import { COLOURS } from "./chart-colours"
-  import type { PopulationYear } from "./population"
+  import { POPULATION_SOURCE, type PopulationYear } from "./population"
 
   let { years }: { years: PopulationYear[] } = $props()
 
@@ -55,83 +55,103 @@
 </script>
 
 <figure class="not-prose mx-auto my-0 max-w-md">
-  <svg
-    viewBox="0 0 {WIDTH} {HEIGHT}"
-    class="block h-auto w-full"
-    role="group"
-    aria-label="Haverhill's population, {years[0]?.year} to {years.at(-1)
-      ?.year}, from US Census Bureau estimates"
-  >
-    <text x={PAD.left} y={PAD.top - 10} class="fill-slate-600 text-[11px] font-medium">People</text>
+  <!-- The drawing is a link to the file the figures were read out of: the
+       Census Bureau's own sub-county totals, the exact dataset and vintage
+       `POPULATION_SOURCE` names rather than whatever the Bureau is
+       publishing today. It is a 7 MB CSV of every place in the country, not
+       a page -- the Bureau's own landing page has moved on to the next
+       vintage, and sending a reader there to check these bars would hand
+       them different numbers.
 
-    {#each scale.ticks as tick (tick)}
+       `no-underline` because `main a` underlines every link on the site, and
+       here that would rule a line under the chart. -->
+  <a
+    class="block no-underline"
+    href={POPULATION_SOURCE.url}
+    target="_blank"
+    rel="external noopener noreferrer"
+    aria-label="The {POPULATION_SOURCE.agency} {POPULATION_SOURCE.program} file these figures were read from, {POPULATION_SOURCE.vintage} (a CSV, opens in a new tab)"
+  >
+    <svg
+      viewBox="0 0 {WIDTH} {HEIGHT}"
+      class="block h-auto w-full"
+      role="group"
+      aria-label="Haverhill's population, {years[0]?.year} to {years.at(-1)
+        ?.year}, from US Census Bureau estimates"
+    >
+      <text x={PAD.left} y={PAD.top - 10} class="fill-slate-600 text-[11px] font-medium"
+        >People</text
+      >
+
+      {#each scale.ticks as tick (tick)}
+        <line
+          x1={PAD.left}
+          x2={WIDTH - PAD.right}
+          y1={scale.y(tick)}
+          y2={scale.y(tick)}
+          stroke="#e2e8f0"
+        />
+        <text
+          x={PAD.left - 7}
+          y={scale.y(tick) + 4}
+          text-anchor="end"
+          class="fill-slate-500 text-[10px]">{n.format(tick)}</text
+        >
+      {/each}
+
+      {#each years as y, i (y.year)}
+        <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+        <g
+          tabindex="0"
+          role="img"
+          aria-label="{y.year}: {n.format(y.people)} people"
+          onpointerenter={() => (hot = y.year)}
+          onpointerleave={() => (hot = null)}
+          onfocus={() => (hot = y.year)}
+          onblur={() => (hot = null)}
+        >
+          <rect
+            x={cx(i) - barW / 2}
+            y={scale.y(y.people)}
+            width={barW}
+            height={Math.max(0, scale.y(scale.low) - scale.y(y.people))}
+            fill={BAR}
+            opacity={hot === null || hot === y.year ? 1 : 0.55}
+          />
+          <!-- Always drawn, not only on hover: the axis is cropped, so the
+               figure is what the reader is actually comparing. -->
+          <text
+            x={cx(i)}
+            y={scale.y(y.people) - 6}
+            text-anchor="middle"
+            class="text-[10px] tabular-nums {hot === y.year
+              ? 'fill-slate-900 font-semibold'
+              : 'fill-slate-600'}"
+          >
+            {n.format(y.people)}
+          </text>
+        </g>
+        <text
+          x={cx(i)}
+          y={HEIGHT - 12}
+          text-anchor="middle"
+          class="text-[11px] {hot === y.year ? 'fill-slate-900' : 'fill-slate-500'}"
+        >
+          {y.year}
+        </text>
+      {/each}
+
+      <!-- A floor, not a zero: a gridline rather than an axis, so it does not
+           claim the bars are measured from nothing. -->
       <line
         x1={PAD.left}
         x2={WIDTH - PAD.right}
-        y1={scale.y(tick)}
-        y2={scale.y(tick)}
-        stroke="#e2e8f0"
+        y1={scale.y(scale.low)}
+        y2={scale.y(scale.low)}
+        stroke="#94a3b8"
       />
-      <text
-        x={PAD.left - 7}
-        y={scale.y(tick) + 4}
-        text-anchor="end"
-        class="fill-slate-500 text-[10px]">{n.format(tick)}</text
-      >
-    {/each}
-
-    {#each years as y, i (y.year)}
-      <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
-      <g
-        tabindex="0"
-        role="img"
-        aria-label="{y.year}: {n.format(y.people)} people"
-        onpointerenter={() => (hot = y.year)}
-        onpointerleave={() => (hot = null)}
-        onfocus={() => (hot = y.year)}
-        onblur={() => (hot = null)}
-      >
-        <rect
-          x={cx(i) - barW / 2}
-          y={scale.y(y.people)}
-          width={barW}
-          height={Math.max(0, scale.y(scale.low) - scale.y(y.people))}
-          fill={BAR}
-          opacity={hot === null || hot === y.year ? 1 : 0.55}
-        />
-        <!-- Always drawn, not only on hover: the axis is cropped, so the
-             figure is what the reader is actually comparing. -->
-        <text
-          x={cx(i)}
-          y={scale.y(y.people) - 6}
-          text-anchor="middle"
-          class="text-[10px] tabular-nums {hot === y.year
-            ? 'fill-slate-900 font-semibold'
-            : 'fill-slate-600'}"
-        >
-          {n.format(y.people)}
-        </text>
-      </g>
-      <text
-        x={cx(i)}
-        y={HEIGHT - 12}
-        text-anchor="middle"
-        class="text-[11px] {hot === y.year ? 'fill-slate-900' : 'fill-slate-500'}"
-      >
-        {y.year}
-      </text>
-    {/each}
-
-    <!-- A floor, not a zero: a gridline rather than an axis, so it does not
-         claim the bars are measured from nothing. -->
-    <line
-      x1={PAD.left}
-      x2={WIDTH - PAD.right}
-      y1={scale.y(scale.low)}
-      y2={scale.y(scale.low)}
-      stroke="#94a3b8"
-    />
-  </svg>
+    </svg>
+  </a>
 
   <table class="sr-only">
     <caption class="sr-only">Haverhill's population by year, US Census Bureau estimates</caption>
