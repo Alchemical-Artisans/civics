@@ -1,5 +1,5 @@
 import type { PageServerLoad } from "./$types"
-import { averageFullYear, averageRemainder, averageToDate } from "$lib/precipitation"
+import { averageFullYear, averageRemainder } from "$lib/precipitation"
 import { PRECIPITATION_SOURCE, precipitationByYear } from "$lib/server/precipitation"
 
 /** Bars on the chart: the current year and the nine before it. */
@@ -18,9 +18,9 @@ const BASELINE = 10
  * could be compared with. Asked together, every one of the eleven is summed
  * to the current year's own last read day.
  *
- * That is also why the baseline is an average of `toDateInches` and not of
- * whole-year totals -- see `averageToDate`. The current year is ten months
- * old; ten whole years behind it would make any October look like a drought.
+ * The baseline was an average of `toDateInches` while the bars were read to
+ * the same day; the bars are whole years now, so it is `averageFullYear` and
+ * the unfinished year carries a ghost instead -- see `RainfallChart`.
  *
  * The current year is worked out from the last day the station record covers
  * rather than from the build clock -- the scrape and the build are separate
@@ -43,7 +43,6 @@ export const load: PageServerLoad = () => {
   return {
     rainfallYears: all.slice(-SPAN),
     rainfallBaseline: {
-      inches: averageToDate(baselineYears),
       /** The dashed rule, now that the bars are whole years. */
       fullYearInches: averageFullYear(baselineYears),
       /**

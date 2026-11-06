@@ -59,7 +59,6 @@ const YEARS = [
 ]
 
 const BASELINE = {
-  inches: 37.49,
   fullYearInches: 47.49,
   remainderInches: 10.0,
   from: 2016,

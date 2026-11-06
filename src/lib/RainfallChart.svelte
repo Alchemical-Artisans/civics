@@ -49,8 +49,6 @@
   import { type PrecipitationYear, longDate } from "./precipitation"
 
   interface Baseline {
-    /** Mean of the baseline years read to the current year's own last day. */
-    inches: number
     /** Mean of their whole-year totals -- what the dashed rule draws. */
     fullYearInches: number
     /** Mean of what they added after that day -- the ghost. Estimated. */
