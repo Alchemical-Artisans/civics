@@ -27,13 +27,17 @@ const video = (slug: string) => `http://haverhillcommunitytv.org/video/${slug}`
  * the item the entry names begins rather than wherever the article happened
  * to quote it from.
  *
- * **Two entries carry no link and no date.** The tiered-rates analysis and
- * the Methuen connection are both expected rather than recorded: the Council
- * ordered one and the pipe for the other is nearly built, but no date has
- * been published for either, so they say "(unconfirmed)" and sort after
- * everything that has happened. The 2012 loan order is the opposite case --
- * it happened, and the city no longer publishes a record of it that far
- * back, so it carries the year it is known to and nothing more.
+ * **Two entries carry an estimate rather than a date, and no link.** Late
+ * October was the expectation for both the tiered-rates analysis and the
+ * Methuen connection, and neither has been confirmed since -- so each says
+ * "(unconfirmed)" and is dated the way it was stated, to the part of a month
+ * rather than to a day. `dateLabel` is what keeps that: the entry needs a
+ * real date to sort by, and printing "October 31, 2026" would turn an
+ * estimate somebody gave in September into a day somebody set.
+ *
+ * The 2012 loan order uses the same mechanism for the opposite reason -- it
+ * happened, and the city no longer publishes a record of it that far back,
+ * so it carries the year it is known to and nothing closer.
  *
  * It is not in `$lib/projects.ts`, where a project's timeline lives, because
  * `/drought` is not a project: `PROJECTS` is what the bar's Projects menu
@@ -91,11 +95,19 @@ export const DROUGHT_TIMELINE: TimelineEntry[] = [
   },
   {
     id: "tiered-rates-due",
+    // Sorted by the last day of the month it was expected in; printed as the
+    // estimate it is. Nothing has been published since to confirm it.
+    date: "2026-10-31",
+    dateLabel: "Late October 2026",
     eyebrow: "Water Department",
     title: "Tiered rates analysis due (unconfirmed)",
   },
   {
     id: "methuen-available",
+    // The article's own basis: Methuen's treatment change was "estimated to
+    // be approved by the end of October", and the connection waits on it.
+    date: "2026-10-31",
+    dateLabel: "Late October 2026",
     eyebrow: "Water Department",
     title: "Methuen water available (unconfirmed)",
   },
