@@ -6,23 +6,14 @@
   import PopulationChart from "$lib/PopulationChart.svelte"
   import RainfallChart from "$lib/RainfallChart.svelte"
   import WaterUsageChart from "$lib/WaterUsageChart.svelte"
-  import { CENSUS_COUNTS, POPULATION, POPULATION_SOURCE } from "$lib/population"
+  import { POPULATION } from "$lib/population"
   import { WATER_USAGE } from "$lib/water-usage"
+  import { Router } from "$lib/router"
   import ShapeMap from "$lib/ShapeMap.svelte"
   import { COLOURS } from "$lib/chart-colours"
   import waterBodies from "$lib/data/water-bodies.json"
 
   let { data } = $props()
-
-  const current = $derived(data.rainfallYears.at(-1)!)
-  const previous = $derived(data.rainfallYears.at(-2)!)
-  const city = $derived(data.rainfallSource.cityStation)
-  const gauges = $derived(data.rainfallSource.neighbourStations)
-
-  // `toDateInches` is each year summed only to the same month and day the
-  // current year reaches, which is the one figure of these comparable across
-  // both -- see $lib/precipitation.ts. The sentence below must not put a
-  // part-year beside a whole one.
 
   // The waters Haverhill's public system draws from, and the land that drains
   // to each. See scripts/lib/water-bodies.mjs for where the supply list, the
@@ -94,27 +85,19 @@
       .replace(/\bres\./, "reservoir")
       .replace(/\b[a-z]/g, (c) => c.toUpperCase())
   }
-
-  const bodyNamed = (prefix: string) => waterBodies.bodies.find((b) => b.name.startsWith(prefix))
-  const millvale = bodyNamed("MILLVALE")
-  const kenoza = bodyNamed("KENOZA")
-  const crystal = bodyNamed("CRYSTAL")
-
-  const throughLabel = $derived(
-    new Date(`${current.throughDate}T00:00:00Z`).toLocaleDateString("en-US", {
-      month: "long",
-      day: "numeric",
-      timeZone: "UTC",
-    }),
-  )
 </script>
 
 <h1>Drought</h1>
 
 <p>
-  Our water supply is a complicated system, and so it's difficult to fully understand everything
-  contributing to drought conditions. This page gathers information across several sources, to
-  provide as complete a picture as is possible.
+  Recently, Haverhill's water supply <a
+    href="http://haverhillcommunitytv.org/video/haverhill-city-council-meeting-september-15-2026"
+    target="_blank"
+    rel="external noopener noreferrer">entered the status Critical Drought (timestamp 29:17)</a
+  >. It's difficult to understand what this means and why it's happening, and much of the
+  information is only available through recorded meetings that are time consuming to review. This
+  page provides a summary of information that's been shared and an analysis of concerns that have
+  been raised to make it easier for people to understand what's going on.
 </p>
 
 <p>
@@ -123,61 +106,69 @@
   page, but all information used is publicly available.
 </p>
 
-<h2>Sources</h2>
+<p>
+  Haverhill defines a drought based on the <a
+    href="https://ecode360.com/31349794"
+    target="_blank"
+    rel="external noopener noreferrer">level of Kenoza Lake</a
+  >, but it's important to understand that this is a proxy which combines the demand of our city
+  with water sources available to us. Steps taken to artificially increase this level which do not
+  either reduce demand or increase supply therefore solve the symptom rather than the problem.
+</p>
 
-<!-- A grid rather than a float, because the chart has to sit *beside* the map
-     rather than below it. A float only shortens the line boxes of the text
-     that follows it: a block-level element -- which the chart's own <figure>
-     is -- lays its box out at full width underneath, and the browser then
-     pushes the whole thing clear of the float. Measured, before this was a
-     grid: at 1440 the map ended at y=581 and the chart began at y=589, full
-     window width. Two grid columns place both deterministically at every
-     size, and a single column below `md`, where the map goes back above the
-     text because a two-fifths map beside a two-fifths column is neither.
-     `md` and not `sm`: at a 640px window the two columns leave the chart 372px
-     to draw in, which rendered its labels at 8.9px -- stacked at that width it
-     gets the full column and they come out near 13.
+<h2>Water Sources</h2>
 
-     `h-80` on the map's own cell because an interactive map fills the height
-     its parent gives it and has a 20rem floor of its own; `items-start` so
-     that height is its own rather than the taller column's. -->
-<div class="grid items-start gap-x-5 gap-y-3 md:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
-  <!-- Taller than the h-80 it was: the watersheds pushed the frame north, and
-       the bounds are now nearly square. Fitted into a box twice as wide as it
-       is tall the map had to zoom out to fit the height, which spent about
-       forty per cent of the width on Salem and Methuen. -->
-  <div class="h-[26rem] md:col-start-2 md:row-start-1">
-    <ShapeMap
-      title="Haverhill, the {COUNT_WORD[
-        waterBodies.bodies.length
-      ]} bodies of water its public supply draws from, and the land draining to each"
-      bounds={waterBodies.bounds as [number, number, number, number]}
-      areas={supplyAreas}
-      outlines={[{ shape: waterBodies.town.shape, name: "Haverhill" }]}
-      width={400}
-      height={320}
-      hoverLabel
-      caption="MassDEP, USGS and MassGIS"
-    />
-  </div>
-
-  <div class="md:col-start-1 md:row-start-1">
-    <p>
-      Our water is primarily replenished through rainfall, which runs into Crystal Lake, Millvale
-      Reservoir and Kenoza Lake. In the spring, snow melt also runs into these water supplies,
-      making up another significant source.
-    </p>
-
-    <RainfallChart
-      years={data.rainfallYears}
-      baseline={data.rainfallBaseline}
-      source={data.rainfallSource.portal}
-    />
-  </div>
+<!-- Taller than the h-80 it was: the watersheds pushed the frame north, and
+     the bounds are now nearly square. Fitted into a box twice as wide as it
+     is tall the map had to zoom out to fit the height, which spent about
+     forty per cent of the width on Salem and Methuen. -->
+<div class="h-[26rem] md:col-start-2 md:row-start-1">
+  <ShapeMap
+    title="Haverhill, the {COUNT_WORD[
+      waterBodies.bodies.length
+    ]} bodies of water its public supply draws from, and the land draining to each"
+    bounds={waterBodies.bounds as [number, number, number, number]}
+    areas={supplyAreas}
+    outlines={[{ shape: waterBodies.town.shape, name: "Haverhill" }]}
+    width={400}
+    height={320}
+    hoverLabel
+    caption="MassDEP, USGS and MassGIS"
+  />
 </div>
 
-<div class="flow-root">
-  <!-- Floated left, with the paragraph wrapping to its right. A float can do
+<p>
+  Our water is <a
+    href="https://www.haverhillma.gov/living-here/waterwastewater-services/water-supplydrought-information/"
+    target="_blank"
+    rel="external noopener noreferrer">primarily replenished through rainfall</a
+  >, which runs into Crystal Lake, Millvale Reservoir and Kenoza Lake. In the spring, snow melt also
+  runs into these water supplies, making up another significant source.
+</p>
+
+<h3>Precipitation</h3>
+
+<p>
+  Over the last several years, our rainfall has mostly been <a
+    href="https://xmacis.rcc-acis.org/"
+    target="_blank"
+    rel="external noopener noreferrer">below average</a
+  >, and unfortunately this means the water supply has not kept pace with our consumption. As a
+  result, each year we've had to draw on our reserves and these are diminishing.
+  <a
+    href="https://www.c2es.org/content/extreme-precipitation-and-climate-change/"
+    target="_blank"
+    rel="external noopener noreferrer">Climate change strongly affects precipitation</a
+  >, which means this problem is unlikely to go away any time soon.
+</p>
+
+<RainfallChart
+  years={data.rainfallYears}
+  baseline={data.rainfallBaseline}
+  source={data.rainfallSource.portal}
+/>
+
+<!-- Floated left, with the paragraph wrapping to its right. A float can do
      this where it could not do it for the rainfall chart: it shortens the
      *line boxes* of the text that follows, which is exactly what a
      paragraph is, where a block-level <figure> would have laid its box out
@@ -200,238 +191,446 @@
      fact about this page. -->
 <KenozaLevelChart class="mb-3 w-full sm:float-left sm:mt-1 sm:mr-6 sm:mb-2 sm:w-1/2 sm:max-w-2xl" />
 
-  <p>
-    Over the last three years, our rainfall has been consistently below average, and unfortunately
-    this means the water supply has not kept pace with our consumption. As a result, each year we've
-    had to draw on our reserves and these are diminishing.
-  </p>
-
-  <p>
-    Not all rainfall is created equal, though, as the pumps connected to these bodies of water have
-    limited capacity. Kenoza Lake has the capacity to receive everything given how low it is, but
-    other bodies of water have the potential to overflow in heavy rainfall. This is particularly
-    true of Millvale Reservoir, which is relatively small and has a large watershed.
-  </p>
-</div>
-
-<div class="flow-root">
-  <h2>Consumption</h2>
-
-  <p>
-    Haverhill consumes approximately 6 million gallons of water a day. In dry years, this goes up
-    significantly during the summer, when we had all of that rainfall in 2023 we used 204 million
-    gallons less than 2022 which was considerably more dry.
-  </p>
-
-  <WaterUsageChart days={WATER_USAGE} />
-
-  TODO: Find commercial/residential split
-</div>
-
-<h3>Where the water comes from</h3>
-
 <p>
-  The Water Department names {COUNT_WORD[waterBodies.bodies.length]} surface sources for public water
-  system {waterBodies.pwsid}:
-  {waterBodies.bodies.map((body) => titleCase(body.name)).join(", ")} &mdash; largest first, which is
-  also how to read them off the map, since each is drawn at its own size. Around each, in the same colour
-  but paler, is its watershed: the land that drains into it.
+  The pumps connected to these bodies of water have limited capacity, and with too much rainfall
+  they have the potential to overflow. This is particularly true of Millvale Reservoir, which is <a
+    href="http://haverhillcommunitytv.org/video/haverhill-city-council-planning-development-meeting-march-30-2026"
+    target="_blank"
+    rel="external noopener noreferrer"
+    >relatively small and has a large watershed (timestamp 22:43)</a
+  >.
 </p>
 
 <p>
-  <strong>A reservoir is small and the ground feeding it is not.</strong> Millvale is the smallest
-  of the {COUNT_WORD[waterBodies.bodies.length]} waters and has by far the largest watershed &mdash;
-  {acres(millvale?.watershed?.acres)} acres draining into {acres(
-    Math.round((millvale?.areaSqKm ?? 0) * 247.105),
-  )} acres of reservoir, about a hundred to one. Kenoza's watershed is
-  {acres(kenoza?.watershed?.acres)} acres and Crystal's {acres(crystal?.watershed?.acres)}.
+  When snow melts in the Spring, this runs into our water supply as much as possible. This helps
+  replenish Kenoza in the Spring, but if it melts too quickly it's subject to the same limitations
+  as heavy rainfall. Snowfall melted quickly this year, which <a
+    href="http://haverhillcommunitytv.org/video/haverhill-city-council-meeting-september-15-2026"
+    target="_blank"
+    rel="external noopener noreferrer"
+    >limited our ability to capture it in our water supply (timestamp 35:22)</a
+  >.
+</p>
+
+<h3>Beaver Dams</h3>
+
+<p>
+  <a
+    href="http://haverhillcommunitytv.org/video/haverhill-city-council-meeting-october-6-2026"
+    target="_blank"
+    rel="external noopener noreferrer"
+    >Residents have noticed that more beaver dams have been constructed recently (timestamp 1:30:00)</a
+  >, expressing concerns that this is preventing water from getting into our water supply.
+  <a
+    href="https://www.mass.gov/info-details/addressing-property-damage-from-beaver-activity"
+    target="_blank"
+    rel="external noopener noreferrer">These are protected</a
+  >
+  because of their
+  <a
+    href="https://www.epa.gov/sciencematters/how-do-beaver-dams-affect-water-quality"
+    target="_blank"
+    rel="external noopener noreferrer">ecological benefits</a
+  >, though, so removing them could be complicated.
 </p>
 
 <p>
-  <strong>Some of that ground is not in Massachusetts.</strong> Of Millvale's watershed,
-  {acres((millvale?.watershed?.acres ?? 0) - (millvale?.watershed?.massachusettsAcres ?? 0))} acres lie
-  over the New Hampshire line, and {acres(
-    (crystal?.watershed?.acres ?? 0) - (crystal?.watershed?.massachusettsAcres ?? 0),
-  )} acres of Crystal's do &mdash; visible on the map where the violet and teal cross the city boundary
-  northward. The city's own Open Space &amp; Recreation Plan names the towns: Plaistow and Newton drain
-  to Millvale, Atkinson to Crystal. Kenoza's watershed is entirely in Haverhill.
+  It should also be noted that these dams create new pools, but they probably don't limit the supply
+  all that much. The drought is a result of decreased water coming into the system, removing these
+  dams would only have a one time increase to what's in the lake. One way to think about this is
+  that the water behind a beaver dam is like a full tub; if you pour a bottle of water into the tub
+  then a bottle's worth of water would overflow.
+</p>
+
+<h3>New Hampshire Drawdown</h3>
+
+<p>
+  <a
+    href="https://www.des.nh.gov/news-and-media/state-announces-its-2026-fall-drawdown-lakes"
+    target="_blank"
+    rel="external noopener noreferrer">New Hampshire reduces lake levels annually</a
+  >, and
+  <a
+    href="http://haverhillcommunitytv.org/video/haverhill-city-council-planning-development-committee-meeting-october-19-2026"
+    target="_blank"
+    rel="external noopener noreferrer"
+    >some have suggested some of Salem's drawdown could be diverted into our water supply (timestamp
+    1:23:10)</a
+  >. There are regulatory restrictions on moving water from other bodies of water into our water
+  supply, though, ones which would be complicated to circumvent (timestamp 1:28:10). Transporting
+  that water would also be extremely expensive (timestamp 1:27:30), significantly more than other
+  options available to the city to supplement our water supply.
+</p>
+
+<h2>Consumption</h2>
+
+<p>
+  Haverhill consumes approximately 6 million gallons of water a day. In dry years, this goes up
+  significantly during the summer, when we had all of that rainfall in 2023 <a
+    href="http://haverhillcommunitytv.org/video/haverhill-city-council-meeting-september-15-2026"
+    target="_blank"
+    rel="external noopener noreferrer"
+    >we used 204 million gallons less than 2022 (timestamp 44:19)</a
+  > which was considerably more dry.
+</p>
+
+<WaterUsageChart days={WATER_USAGE} />
+
+<h3>Industry/Commercial Use</h3>
+
+<p>
+  Haverhill sees <a
+    href="http://haverhillcommunitytv.org/video/haverhill-city-council-meeting-september-15-2026"
+    target="_blank"
+    rel="external noopener noreferrer">heavy industry use (timestamp 1:18:41)</a
+  >, but the city hasn't published what percentage this represents overall. That information should
+  be available in the
+  <a
+    href="https://www.mass.gov/how-to/public-water-supply-annual-statistical-reporting-via-edep"
+    target="_blank"
+    rel="external noopener noreferrer">Public Water System Annual Statistical Report (ASR)</a
+  > provided to the Massachusetts Department of Environmental Protection (MassDEP), once that information
+  is made available it will be added to this article. It was implied in the September drought update that
+  voluntary conservation has not had a significant impact (timstamp 1:19:14) and the city is currently
+  investigating tiered pricing to create a stronger incentive for these businesses (timestamp 1:32:20).
 </p>
 
 <p>
-  Which waters are the supply is the city's own list. The shorelines are the federal hydrography
-  dataset's, and the watersheds and their acreages are MassDEP's Surface Water Supply Watersheds.
+  Car washes are an extremely visible water consumer, many of which justify operation during
+  droughts because of how much water they're able to reclaim. Much of the information out there,
+  though, is published by car washes which obviously have a vested interest in remaining open. The
+  EPA published <a
+    href="https://www.epa.gov/system/files/documents/2023-11/ws-commercial-bmp-watersenseatwork_section5.4_vehiclewashes.pdf"
+    target="_blank"
+    rel="external noopener noreferrer">a guide in 2023</a
+  > which includes some numbers:
 </p>
 
-<h3>Slop: Rainfall and reservoir level, this year against last</h3>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Per Vehicle Use</th>
+      <th>Use After Reclamation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Conveyor Systems</td>
+      <td>65.8 gallons</td>
+      <td>30.0 gallons</td>
+    </tr>
+    <tr>
+      <td>In-Bay Automatic</td>
+      <td>85.3 gallons</td>
+      <td>43.3 gallons</td>
+    </tr>
+    <tr>
+      <td>Self-Service</td>
+      <td>15.0 gallons</td>
+      <td>15.0 gallons</td>
+    </tr>
+  </tbody>
+</table>
 
 <p>
-  Inches of precipitation, averaged across Haverhill's rain gauges.
-  {current.year} has had {current.toDateInches} inches through {throughLabel}, and {previous.year}
-  had {previous.toDateInches} inches by the same day.
+  As you can see, reclamation systems do save a lot of water, but even with those in place they
+  still use significantly more than self service washing. In that situation, reclamation isn't
+  possible because of activities like changing oil in the bays which would damage the filters. It's
+  possible that the equipment available for self service translates to significant conservation, but
+  it's difficult to compare to home washing because most sources estimating that usage are biased.
 </p>
 
 <p>
-  Each day is the average of every rain gauge in Haverhill that read it: the National Weather
-  Service Cooperative Observer station ({city.name}, <code>{city.sid}</code>) and two CoCoRaHS
-  gauges &mdash; {gauges.map((gauge) => `${gauge.name}, ${gauge.miles} miles`).join("; ")}. All
-  three count equally. That makes these figures the city-wide average rather than any one station's:
-  the Cooperative Observer station alone reads
-  {current.cityOnlyToDateInches} inches for {current.year} against the {current.toDateInches} above. It
-  is also read by hand, so {current.filledDays} of {current.year}'s days carry no reading from it
-  and stand on the volunteer gauges alone. Nothing is estimated or interpolated: every figure is
-  some gauge's own reading, and no day is filled from the long-term normal. Station records come
-  from
-  <a href="https://www.rcc-acis.org/" target="_blank" rel="external noopener noreferrer">
-    RCC-ACIS
-  </a>, run by NOAA's Regional Climate Centers.
+  Another visible commercial use is golf courses, which are explicitly exempted since it is
+  considered a core function of their business. According to the water department, though, <a
+    href="http://haverhillcommunitytv.org/video/haverhill-city-council-meeting-september-15-2026"
+    target="_blank"
+    rel="external noopener noreferrer"
+    >most golf courses get their water elsewhere (timestamp 1:17:40)</a
+  >. Golf courses aren't particularly forthcoming on their watering practices, though, and depending
+  on what they're doing it could still impact drought conditions.
 </p>
 
-<h2>Notes</h2>
+<h3>Well Usage</h3>
 
-<!-- TEMPORARY, and to be deleted with the notes themselves.
+<!-- Figure 7 of the circular the paragraph below links, floated so the text
+     explaining a cone of depression runs beside the drawing of one. A float
+     shortens the line boxes of the paragraphs that follow, which is what
+     sets them alongside it; a block-level figure would sit above them.
 
-     These are research notes in the author's own line breaks, not something
-     a reader is meant to find. Prettier reflows bare text to 100 columns and
-     silently rewrapped the whole block once, destroying its line structure,
-     so `prettier-ignore` below holds the formatting while the page is being
-     written. It has to sit immediately before the text it protects -- the
-     directive applies to the next node and nothing further.
+     The four panels are this section's whole argument in order: the aquifer
+     discharging to the stream, the well drawing on storage, the cone
+     reaching far enough to capture water that would have reached the stream,
+     and the stream itself feeding the aquifer. At this width the panel
+     labels cannot be read, so the figure opens the report it came out of.
 
-     When the page is finished, this comment, the directive and the notes all
-     come out together. Nothing else depends on any of them. -->
-<!-- prettier-ignore -->
-
-Well water: https://www.usgs.gov/water-science-school/science/aquifers-and-groundwater Planning
-committee 2026-03-30:
-http://haverhillcommunitytv.org/video/haverhill-city-council-planning-development-meeting-march-30-2026
-- Wells start around 18:30 - Millvale large watershed and small reservoir, overflows and diminishing
-return by upgrading equipment - Marsh across from lake probably doesn't have as much water as you
-think - Millvale drawn first and crystal held for later because of overflowing situation - Most
-towns around us have groundwater wells or draw from Merrimack - Georgetown been in water ban for 10
-years - Well graphic from https://www.mass.gov/conservemawater used - Mayor calls out golf courses
-losing multi-million dollar green - Rogers complained about 9-5 a lot and doesn't really want to
-fine, focus on education - Diodati doesn't like fine increases, wants to turn sprinkler on for
-daughter at noon - Lewandowski in discussion with Bob about changing from cubic feet to gallons -
-1:01 bill more often, $28k per billing cycle so more expensive, but bill after summer is over can be
-surprising - Outreach for people who don't interact with bill directly (HOA members and renters),
-bill stuffer, everbridge call (only about 50% of city), no social media - 1:12 water commission
-proposed, mayor wants it in natural resources subcomittee, feels like experts are meeting all the
-time anyway - 1:19 outside speaker about new development increasing water usage and wants
-clarification to public - 1:25 Al Pereira - 1:30 Business water usage, Ward: significant portion of
-bill and so they're already conserving as much as they can Michitson: any data we can look at? Ward:
-meter readings Mayor: recruited food industries because we have good, cheap water Ward: commercial
-usage fairly steady, biggest factor for increased usage is when it's not raining - May-Oct usage
-2022 vs 2023 was 200M gallons Al: Independent audit Flume water index:
-https://flumewater.com/water-index/ - Boston: 38.1 Gallons Per Capita Per Day Indoor Radio well
-presentation at 6:10:
-http://haverhillcommunitytv.org/video/haverhill-city-council-meeting-june-2-2026 - Not the first
-time it's been in front of the council, Feb 10th and Mar 10th presented and rejected taking 4.5-5
-acres from property - 309 E Broadway - $900,000 for property - Imminent domain taking for the
-purpose of water supply - Ranney (or maybe rain-e, not sure) collector well - Councilors expressed
-concerns with eminent domain, prefer negotiation with property and willing to purchase entire parcel
-- Entire property $1.8M - Now negotiated agreement with property owner for $1.8M - July 31st
-transfer of ownership - Started well presentation at 13:00 - Studies have shown for a long time that
-we need more water - Only large source left is the Merrimack, but not by a direct intake - A few
-ways to do this, we're going with a radial collector well, which drills down vertically and then
-extends screens well below the river to draw ground water from there - Picture at 15:02 of what it
-would look like - Soundings of river bottom to find troughs beneath the river in the bedrock with
-material we can draw water from - 16:42 picture of tracklines from sounding - Pump test each
-promising candidate to identify material - 18:07 test well image of across river - Preliminary
-testing shows 5-10M gallons a day Sullivan: When will we know more about how much we can draw? -
-Construction bid later this year (now?) and then 9-12 months to complete Diodati: Water quality? -
-Currently doing testing of quality, including PFAS. Will catch anything - Takes decades for river
-water to migrate from river to where collection is happening Michitson: Total project cost? - $26M
-around 25:00, loan order doesn't cover it Michitson: Permitting risks? - Always risks, but confident
-we can jump through hoops - Already gone through extensive permitting Basiliere: How long have we
-known? - Excess of 10 years McGonagle: I was against loan order for ~$19M back in 2012/2013 - Just
-started tapping this loan order recently Michael Leon (attourney): - City outside council - 8 years
-- Determined 5.5 acres was necessary, but council rejected eminent domain - Recording an order of
-taking at the end of July - Agreement to acquire the entire property for $1.8M + moving costs
-Sullivan: What are city's options for the house? - Preserve and protect, no other plans Basiliere:
-Friendly eminent domain taking, 5th amendment, right? - Yes, and some legal details Basiliere:
-Protects land owners? - Yes, it ensures compensation Diodati: Unfriendly taking slower? - Could take
-1-3 years Lewandowski: Is this binding on both sides? - Yes, and this ensures supply for decades -
-Radial well protects river itself fairly effectively McGonagle: If we had done it sooner it would
-have been cheaper? - City could surplus the rest of the property later, but probably not something
-to do yet - Appraisal process was for entire parcel, they did math to determine value of 5.5 acres
-LePage: Notice that there's 2 oil tanks underneath property - Yes, it's the city's responsibility
-because we're taking it as is - Tests don't show impact to property Basiliere: Does article 97
-apply? - Open question if it does, disposing of it will have to be if city determines there is no
-valid public purpose Toohey: We as the city did the right thing Jordan: This meeting is to obtain
-additional money for rest of property? - Yes
-http://haverhillcommunitytv.org/video/haverhill-city-council-meeting-march-10-2026 34:36 Executive
-session: Purchase of property originally discussed - This means it was not a discussion open to the
-public - After session proposed to table for a week Diodati: Y Lewandowski: Y LePage: Y Rogers: Y
-Not a 2/3rds so didn't pass - Voted to reconsider item Revoted to table
-http://haverhillcommunitytv.org/video/haverhill-city-council-meeting-march-17-2026 1:29:40 Loan
-order for water main improvements 2:06:50 Revisit item - attorneys still discussing, continued to
-give that more time Could not find minutes in 2013 discussing the project originally, looks like
-2012 minutes are unavailable
-http://haverhillcommunitytv.org/video/haverhill-city-council-meeting-october-6-2026 41:51 Discussion
-of new water ordinance
-
-http://haverhillcommunitytv.org/video/haverhill-city-council-meeting-september-15-2026 29:17 Drought
-update (includes slideshow) Methuen providing water to get us through Announcement of entering the
-critical zone Water restrictions saved 150M gallons of water Slide showing timeline - Nov 2024
-Drought Watch - March 18, 2025 Declared Emergency Drought - May 14, 2025 Drought ended - September
-16, 2025 Drought Watch - Feb 13 2026 Critical Drought - Mar-Aug 2026 Drought Emergency - Sep 15,
-2026 Critical Drought (I added this based on mayor's announcement) 33:15 Water restriction savings
-slide 34:21 Rainfall statistics slide 35:12 Water level chart - Kenoza: 99.8'/114.5' - Millvale:
-39.1'/44.7' (offline) - Crystal Lake: 147.3'/151.1' (pumping 1M gallons per day) - Snow melt came
-and left quickly (TODO: he said he talked about it in city council meeting, find that) - Lowest it's
-been in Bob Ward's career (since 1995) 39:11 Methuen has to resolve water quality issue before we
-can start pulling from them DEP will get back end of Oct 42:26 What are we doing slide 43:04 Radial
-collector well fully permitted and online is 2 years 43:50 6-7M gallons per day projections
-45:19 2022 vs 2023 water usage (dry vs wet year), 204M gallons more in dry years
-0:51:32 Michitson: North Andover declared a water emergency today 
-54:19 Basiliere: 
-We're using less water today than 10 years ago
-2022 permitted reworld to use an aquifer on the river that saved 250k GPD
-Took Covanter offline
-44:24 New multi-unit residential developments usage per unit per day:
-- 2 Merrimack St: 11 units, 131
-- 20-44 Merrimack St: 84 units, 134
-- 160 Merrimack St: 49 units, 84
-- 12-20 Granite Ave: 61 units, 141
-- 40 Locke St: 258 units, 64
-- 10 Duncan St: 60 units, 83
-- This does not include all development, but this accounts for 0.82% of total water usage
-58:59 Rough calculations for Methuen water, $1.5M for 3-5 months
-1:02 Account of water usage leaks
-Less than 10% very good, which we've been well below
-1:17:40 Golf courses generally don't buy water from us
-1:19:30 We have some heavy industry users, they've been asked to perform voluntary conservation but it hasn't had much of an effect
-- Tiered rates would help with that
-1:23:50 Lewandowski moves to investigate tiered rates
-somewhere in these slides had the percentage of new development usage
-1:32:53 Motion is to get them under contract in 4 weeks
-
-Water usage spreadsheet:
-/home/lackita/Downloads/rgpcd uaw 2025 web 9-1-26-a11y.xlsx
-Source: https://www.mass.gov/info-details/public-water-supply-tools-resources-performance-standards
-
-Ipswich well/stream connection study: https://pubs.usgs.gov/wri/wri004029/whole_report.pdf
-
-<h2>Population</h2>
+     Served from here rather than hotlinked, the promise the rest of the site
+     keeps; it is a USGS circular, a federal work and in the public domain. -->
+<figure class="not-prose mb-3 w-full sm:float-left sm:mt-1 sm:mr-6 sm:mb-2 sm:w-2/5 sm:max-w-xs">
+  <a
+    href="https://pubs.usgs.gov/circ/1376/pdf/circ1376_barlow_report_508.pdf"
+    target="_blank"
+    rel="external noopener noreferrer"
+  >
+    <img
+      src={Router.reference("streamflow-depletion-figure-7.png")}
+      width="1200"
+      height="1676"
+      class="h-auto w-full"
+      alt="Four cross-sections of a hypothetical aquifer, stacked. A: under natural conditions, arrows curve down from the land surface through an unconfined aquifer and out into a stream at the right. B: a well pumps near the stream and a cone of depression dips the water table around it, the arrows nearest the well turning towards it while the rest still reach the stream. C: the cone has widened until arrows that had run to the stream turn back towards the well instead. D: the water table has fallen below the stream and arrows run out of the stream into the aquifer. Figure 7 of USGS Circular 1376."
+    />
+  </a>
+</figure>
 
 <p>
-  Haverhill had {POPULATION.at(-1)!.people.toLocaleString("en-US")} residents in
-  {POPULATION.at(-1)!.year}, against {POPULATION[0].people.toLocaleString("en-US")} in {POPULATION[0]
-    .year}.
+  Well usage can potentially <a
+    href="https://pubs.usgs.gov/circ/1376/pdf/circ1376_barlow_report_508.pdf"
+    target="_blank"
+    rel="external noopener noreferrer">have an impact on the available water supply</a
+  >, depending on a combination of geological factors and the location of the well. As a rule of
+  thumb, if a well is within the watershed of one of the city's water supplies, pumping from it
+  probably reduces what will flow into that supply.
+</p>
+
+<p>
+  When wells pump, they create something called a cone of depression around them where water begins
+  flowing towards the well. If this cone becomes large enough to interact with a nearby stream, the
+  flow of that stream will be reduced to supply water to the well. The size of the cone depends
+  heavily on geologic factors and how much is being pumped from the well. There doesn't seem to be
+  publicly available data on this information for our areas, but the geologically similar Ipswich
+  River basin has been <a
+    href="https://pubs.usgs.gov/wri/wri004029/whole_report.pdf"
+    target="_blank"
+    rel="external noopener noreferrer">heavily studied</a
+  >. It was found that well pumping in that area had a significant effect on flow rates of streams
+  and rivers.
+</p>
+
+<p>
+  The location of the well matters greatly. Since all of our water supplies are north of the
+  Merrimack, it's incredibly unlikely that wells south of the river would impact them. On the other
+  hand, <a
+    href="http://haverhillcommunitytv.org/video/haverhill-city-council-planning-development-meeting-march-30-2026"
+    target="_blank"
+    rel="external noopener noreferrer">Crystal Lake is spring fed (timestamp 19:23)</a
+  > so if it's in that watershed it's extremely likely to be influencing drought conditions.
+</p>
+
+<h3>New Apartment Buildings</h3>
+
+<p>
+  There have been concerns expressed about new apartment buildings bringing more people into the
+  city than our water supply can handle. In the drought update, the city provided some data on <a
+    href="http://haverhillcommunitytv.org/video/haverhill-city-council-meeting-september-15-2026"
+    target="_blank"
+    rel="external noopener noreferrer"
+    >how much water some of these new buildings use (timestamp 44:26)</a
+  >. By only measuring the usage of some of those developments, though, it's difficult to see if
+  that information is comprehensive enough to fully represent the added strain this represents.
+</p>
+
+<p>
+  It's possible to get a closer approximation of this usage by combining population information from
+  the census with general usage statistics. In the <a
+    href="https://www.census.gov/data/tables/time-series/demo/popest/2020s-total-cities-and-towns.html"
+    target="_blank"
+    rel="external noopener noreferrer">past five years</a
+  >, Haverhill's lowest population was 67,376, which we'll treat as the population prior to recent
+  construction. The highest population in that same period was 68,416, so we'll assume that this new
+  construction resulted in 1040 new residents. According to MassDEP,
+  <a
+    href="https://www.mass.gov/info-details/public-water-supply-tools-resources-performance-standards"
+    target="_blank"
+    rel="external noopener noreferrer"
+    >Haverhill uses 51 Residential Gallons per Capita Day in 2025</a
+  >. This translates to 39,780 gallons of the 6 million used by the city each day, or 0.884% of our
+  overall usage.
 </p>
 
 <PopulationChart years={POPULATION} />
 
 <p>
-  The bars start at 2020 because the estimates before that cannot be set beside them. The Census
-  rebuilds its annual estimates on each decennial count: the 2010-based series had Haverhill near
-  64,000 by 2019, and the 2020 Census then counted 67,776. Drawn end to end the two look like 3,762
-  people arriving in one year, which is a change of anchor rather than of population, and the Bureau
-  publishes no reconciled series spanning them. For the longer view the two counts themselves are
-  comparable, being counts rather than projections: {CENSUS_COUNTS[2010].toLocaleString("en-US")} in 2010
-  against {CENSUS_COUNTS[2020].toLocaleString("en-US")} in 2020, {(
-    CENSUS_COUNTS[2020] - CENSUS_COUNTS[2010]
-  ).toLocaleString("en-US")} more people, about 11% over the decade. Estimates are the
-  {POPULATION_SOURCE.agency}'s {POPULATION_SOURCE.program},
-  {POPULATION_SOURCE.vintage}, for {POPULATION_SOURCE.place}, read {POPULATION_SOURCE.read}.
+  This calculation has some degree of error, but these factors go in both directions and hopefully
+  balance each other:
+</p>
+
+<ul>
+  <li>
+    The 2020 decennial census resulted in an upward adjustment of the population, making it
+    difficult to use earlier numbers to exclude apartments constructed prior to that year.
+  </li>
+  <li>
+    Residents in apartment buildings do not have lawns, so outdoor water use is extremely minimal.
+  </li>
+  <li>
+    Older homes use substantially more water than new construction; our average of 51 is
+    significantly higher than the <a
+      href="https://www.mass.gov/info-details/public-water-supply-tools-resources-performance-standards"
+      target="_blank"
+      rel="external noopener noreferrer">Boston average of 38.1</a
+    >.
+  </li>
+</ul>
+
+<h2>City Response</h2>
+
+<p>
+  The city has known for a while that our water supply is vulnerable, and earlier this year they
+  <a
+    href="http://haverhillcommunitytv.org/video/haverhill-city-council-meeting-june-2-2026"
+    target="_blank"
+    rel="external noopener noreferrer">acquired property (timestamp 13:06)</a
+  >
+  to allow us to pull water from the Merrimack River. This project will
+  <a
+    href="http://haverhillcommunitytv.org/video/haverhill-city-council-meeting-september-15-2026"
+    target="_blank"
+    rel="external noopener noreferrer">take about two years to complete (timestamp 42:48)</a
+  >, so they are working on building
+  <a
+    href="http://haverhillcommunitytv.org/video/haverhill-city-council-meeting-september-15-2026"
+    target="_blank"
+    rel="external noopener noreferrer">a connection to Methuen's water supply (timestamp 38:45)</a
+  > as a precaution if ours gets too low.
+</p>
+
+<h3>Merrimack River</h3>
+
+<p>
+  The city is building a <a
+    href="https://en.wikipedia.org/wiki/Ranney_collector"
+    target="_blank"
+    rel="external noopener noreferrer">Ranney Collector Well</a
+  >
+  to collect from the groundwater beneath the Merrimack. This is estimated to provide up to
+  <a
+    href="http://haverhillcommunitytv.org/video/haverhill-city-council-meeting-september-15-2026"
+    target="_blank"
+    rel="external noopener noreferrer">6-7 million gallons a day (timestamp 43:49)</a
+  >, effectively doubling our available water supply. This project
+  <a
+    href="http://haverhillcommunitytv.org/video/haverhill-city-council-meeting-june-2-2026"
+    target="_blank"
+    rel="external noopener noreferrer">will cost around $26 million (timestamp 24:00)</a
+  >.
+</p>
+
+<p>
+  <a
+    href="http://haverhillcommunitytv.org/video/haverhill-city-council-meeting-june-2-2026"
+    target="_blank"
+    rel="external noopener noreferrer"
+    >309 E Broadway was acquired for $1.8 million (timestamp 30:01)</a
+  >
+  and has been going full speed ahead since July. The geologic properties beneath the river make this
+  location
+  <a
+    href="http://haverhillcommunitytv.org/video/haverhill-city-council-meeting-june-2-2026"
+    target="_blank"
+    rel="external noopener noreferrer">uniquely suited for collection (timestamp 15:11)</a
+  >, but obtaining it was somewhat challenging. The owner was not willing to sell the portion of
+  land the city needed for this project, and on March 10th City Council
+  <a
+    href="http://haverhillcommunitytv.org/video/haverhill-city-council-meeting-march-10-2026"
+    target="_blank"
+    rel="external noopener noreferrer">pushed back on the use of eminent domain (timestamp 39:00)</a
+  >. The city was then able to negotiate a more friendly taking of the full property which was
+  <a
+    href="http://haverhillcommunitytv.org/video/haverhill-city-council-meeting-june-2-2026"
+    target="_blank"
+    rel="external noopener noreferrer">approved by City Council on June 2nd (timestamp 50:40)</a
+  >. It should also be noted that
+  <a
+    href="http://haverhillcommunitytv.org/video/haverhill-city-council-meeting-june-2-2026"
+    target="_blank"
+    rel="external noopener noreferrer">this project dates back to 2012 (timestamp 26:45)</a
+  >, when the property was originally identified and a loan order approved by the council.
+</p>
+
+<p>
+  There may be concerns about the <a
+    href="https://www.mass.gov/info-details/sewer-force-main-break-in-haverhill-frequently-asked-questions"
+    target="_blank"
+    rel="external noopener noreferrer">sewage recently discharged into the river</a
+  >
+  becoming our drinking water, as well as the landfill and paper mill being upriver of that site, but
+  the
+  <a
+    href="http://haverhillcommunitytv.org/video/haverhill-city-council-meeting-june-2-2026"
+    target="_blank"
+    rel="external noopener noreferrer"
+    >water is undergoing extensive testing to ensure that it is safe (timestamp 22:04)</a
+  >. Additionally, the layers of sediment it must pass through
+  <a
+    href="http://haverhillcommunitytv.org/video/haverhill-city-council-meeting-june-2-2026"
+    target="_blank"
+    rel="external noopener noreferrer">act as a natural filter (timestamp 27:54)</a
+  >, and water actually reaching collection will
+  <a
+    href="http://haverhillcommunitytv.org/video/haverhill-city-council-meeting-june-2-2026"
+    target="_blank"
+    rel="external noopener noreferrer">take decades (timestamp 23:15)</a
+  > to pass through these layers.
+</p>
+
+<h3>Methuen</h3>
+
+<p>
+  As mentioned earlier, we will soon have the ability to obtain water from Methuen. This will ensure
+  that if decreased rainfall occurs for the next couple years, demand of the city will continue to
+  be met. This will be <a
+    href="http://haverhillcommunitytv.org/video/haverhill-city-council-meeting-september-15-2026"
+    target="_blank"
+    rel="external noopener noreferrer">more expensive than using our own supply (timestamp 58:30)</a
+  >, though, although the exact impact on water rates has not been provided.
+</p>
+
+<p>
+  <a
+    href="http://haverhillcommunitytv.org/video/haverhill-city-council-meeting-september-15-2026"
+    target="_blank"
+    rel="external noopener noreferrer"
+    >The pipe for this connection is already mostly built (timestamp 57:50)</a
+  >. The bigger issue revealed in that meeting, though, is that there is a
+  <a
+    href="http://haverhillcommunitytv.org/video/haverhill-city-council-meeting-september-15-2026"
+    target="_blank"
+    rel="external noopener noreferrer"
+    >water chemistry problem between the two cities treatment methods (timestamp 38:55)</a
+  >. Methuen is going to change their treatment process to match Haverhill's, something they've been
+  planning to do for a while, which is estimated to be approved by the end of October.
+</p>
+
+<h3>Ordinance Changes</h3>
+
+<p>
+  On October 6th, Haverhill approved <a
+    href="http://haverhillcommunitytv.org/video/haverhill-city-council-meeting-october-6-2026"
+    target="_blank"
+    rel="external noopener noreferrer"
+    >many revisions to the water use ordinance (timestamp 41:29)</a
+  >
+  to reduce resident usage during drought conditions. These include increased fines for violations such
+  as lawn irrigation and new requirements for new and upgraded irrigation systems. These changes were
+  <a
+    href="http://haverhillcommunitytv.org/video/haverhill-city-council-planning-development-meeting-march-30-2026"
+    target="_blank"
+    rel="external noopener noreferrer">originally discussed on March 30th</a
+  >, and several provisions were removed from those discussed. Most significantly, this included any
+  restrictions for well users and irrigation restrictions during non-drought conditions.
+</p>
+
+<h3>Tiered Rates</h3>
+
+<p>
+  City Council ordered the water department to <a
+    href="http://haverhillcommunitytv.org/video/haverhill-city-council-meeting-september-15-2026"
+    target="_blank"
+    rel="external noopener noreferrer"
+    >investigate tiered rates in mid-September (timestamp 1:32:20)</a
+  > during the drought update. These will hopefully curtail industry/commercial usage, but if they don't
+  they will at least offset the costs associated with pulling water from Methuen or building the Ranney
+  Collector Well. These could be implemented immediately once that investigation is complete, although
+  no further update has been provided on this change.
 </p>
