@@ -52,6 +52,13 @@ const STEPS = [
   { name: "recordings", script: "update-recordings.mjs" },
   { name: "budget", script: "update-budget.mjs" },
   { name: "schedule", script: "update-schedule.mjs" },
+  // A different host entirely (RCC-ACIS, not haverhillma.gov) and nothing else
+  // in this list reads its output, so it has no real ordering requirement --
+  // it sits here because it is, like budget and schedule, a whole-file replace
+  // rather than a diff against the calendar. Research data for the
+  // water-balance model discussed for /water, not yet cited on the site; see
+  // data/weather/README.md.
+  { name: "weather", script: "update-weather.mjs" },
   // Last, and after everything that can add a document: it checks every link
   // the calendar carries, and ends with the run's "needs your attention" block.
   { name: "links", script: "check-links.mjs" },

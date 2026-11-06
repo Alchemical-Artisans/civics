@@ -61,7 +61,8 @@
     }
   }
 
-  const item = "rounded px-2 py-1 text-left text-slate-700 hover:bg-slate-50 hover:text-slate-900"
+  const item =
+    "rounded px-2 py-1 text-left text-slate-700 no-underline hover:bg-slate-50 hover:text-slate-900"
 </script>
 
 <svelte:window {onkeydown} {onpointerdown} />

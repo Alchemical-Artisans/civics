@@ -39,6 +39,144 @@
 }
 
 /*
+ * The other heading scale: an authored page's own.
+ *
+ * There are two kinds of page here and they want opposite things of a
+ * heading. A transcription is the rule above -- the city's document headings
+ * sit *under* a title the layout already drew, so they descend from 1rem and
+ * get quieter the deeper they go. An authored page -- `/drought`, each
+ * `/projects/*` write-up -- draws its own <h1> and its h2s are real section
+ * breaks in our own structure, so they have to get *louder*, not softer.
+ *
+ * This was four pages' problem before it was one rule. Every authored page
+ * hand-wrote the same utilities on every heading -- `text-2xl font-bold
+ * tracking-tight text-slate-900`, then `text-lg font-semibold text-slate-900`,
+ * then `text-base font-semibold text-slate-900` -- and the copies had already
+ * drifted: one page's h3 was `text-base font-semibold`, another's was a bare
+ * `font-semibold`, a third's `font-medium`. A new page that wrote plain <h2>
+ * and <h3> got neither scale and came out flat, every heading the size and
+ * weight of the sentence under it, which is what `/drought` looked like. The
+ * figures below are exactly those utilities, so the pages that had them lose
+ * nothing by dropping them.
+ *
+ * `@layer base`, so this is a default rather than a decree:
+ *
+ *   - A page or component that wants a particular heading still says so with
+ *     a utility class, which lands in `@layer utilities` and wins. That is
+ *     how `BackgroundNote`'s deliberately quiet `text-base` h2 and the
+ *     precinct ballot panels' `font-medium` h3 keep their own size.
+ *   - Every `prose` rule already beats this without being named: the
+ *     typography plugin writes into `@layer utilities`, and the transcription
+ *     scale above is unlayered to beat the plugin, so both outrank a base
+ *     rule. No `.prose` exclusion is needed here, and adding one would be
+ *     repeating in a selector what the cascade already settles.
+ *
+ * Scoped to `main` so the bar's own <h1> is untouched: `SiteHeader` draws the
+ * page name at `text-base font-medium` on the budget half, and it is a
+ * heading in a toolbar rather than over a column of reading.
+ */
+@layer base {
+  main :not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+    &:is(h1, h2, h3, h4) {
+      color: var(--color-slate-900);
+      font-weight: var(--font-weight-semibold);
+      /* No orphaned last word in a two-line section heading. */
+      text-wrap: balance;
+      /*
+       * A heading starts a section, so nothing floated in the one before it
+       * may run into it. `/drought` floats two figures beside their own
+       * paragraphs -- the city's Kenoza chart and the USGS cross-sections --
+       * and a float is only as tall as the text that happens to sit beside
+       * it: shorten those paragraphs by a line and the figure runs on past
+       * the heading below, which then sets itself in the gap to the right of
+       * a picture belonging to the section above.
+       *
+       * Here rather than on each figure's own container, which is how this
+       * was handled before -- `flow-root` on a wrapper, one float at a time.
+       * What a heading is for is the same on every page, and so is what goes
+       * wrong; a page that floats its third figure should not have to
+       * rediscover this.
+       */
+      clear: both;
+    }
+
+    &:is(h1) {
+      font-size: var(--text-2xl);
+      line-height: var(--text-2xl--line-height);
+      font-weight: var(--font-weight-bold);
+      letter-spacing: var(--tracking-tight);
+    }
+
+    &:is(h2) {
+      font-size: var(--text-lg);
+      line-height: var(--text-lg--line-height);
+    }
+
+    &:is(h3) {
+      font-size: var(--text-base);
+      line-height: var(--text-base--line-height);
+    }
+
+    &:is(h4) {
+      font-size: var(--text-sm);
+      line-height: var(--text-sm--line-height);
+    }
+  }
+}
+
+/*
+ * Spacing for the same pages, and only for markup carrying no class of its
+ * own.
+ *
+ * Preflight zeroes the margin on every p, heading and list, so a page written
+ * as plain markup outside a `prose` container renders as one unbroken slab --
+ * `/drought` had nine paragraphs touching each other, which is the other half
+ * of why its headings did not read as headings.
+ *
+ * Two restrictions, each there because the looser version broke something
+ * real:
+ *
+ * `* + ...`, so the margin falls on the *second* of two siblings. A block
+ * that opens its container gets nothing, which leaves every `mt-*` on a
+ * wrapper doing exactly what it does today -- the project write-ups open each
+ * section with `<section class="mt-8"><h2>`, and a heading with its own top
+ * margin inside that would add to it. `*` rather than a list of flow
+ * elements: on `/drought` the heading after the floated map follows that
+ * map's wrapping `<div>`, and a flow-only list left it flush against the map.
+ * Only the target is restricted; a `<div>` is never given a margin here, it
+ * only counts as something to be spaced away from.
+ *
+ * `:not([class])`, so an element that carries any class is left alone
+ * entirely. Spacing is layout, and every page here that lays itself out does
+ * it with utilities on the element -- scoping this by container was not
+ * enough. The calendar's month header is the case that proves it: a
+ * `<p class="text-sm text-slate-500">` naming the month's counts sits
+ * directly under `<h2>October 2026</h2>` and is meant to sit tight against
+ * it, and it never needed an `m-0` to say so because preflight already left
+ * it at zero. A rule that spaced every unmargined paragraph pushed it 12px
+ * down. So the bargain is the same one the rest of this file makes, one step
+ * earlier: say nothing and get the house default, say anything and you own
+ * the result.
+ *
+ * The one trap worth knowing. Svelte stamps a scoped class onto any element
+ * a component's own `<style>` block targets, and such an element stops
+ * matching `:not([class])`. A page that adds a `<style>` block and finds its
+ * paragraphs have closed up has found this; the fix is to space them in that
+ * block, which is where it would then belong anyway.
+ */
+@layer base {
+  main * + :is(p, ul, ol, dl, blockquote, figure, pre, table, hr):not([class]) {
+    margin-top: 0.75rem;
+  }
+
+  /* A heading belongs to what comes after it, so it is pushed further from
+     what it follows than a paragraph is. */
+  main * + :is(h2, h3, h4):not([class]) {
+    margin-top: 1.75rem;
+  }
+}
+
+/*
  * A transcribed table can be wider than the page it sits on. The Auditor's
  * monthly expense report is five columns of figures over a hundred rows and
  * the revenue report is six; a phone gives a reading column about a third of
@@ -83,13 +221,29 @@
  * are unlayered because they had to beat the plugin's own; this one has to
  * lose to the page's.
  *
- * Scoped to `.prose` rather than every `a` on the site: that is where the
- * transcribed content and all of these islands are, and widening it to the
- * bar, the footer and the calendar's chips would be a different change with
- * nothing asking for it.
+ * `main a` rather than `.prose a`, which is what this was: inside a `prose`
+ * container, which is to say in the city's transcribed words and in the
+ * islands sitting among them. An authored page is not one of those -- it
+ * writes its own headings and its own paragraphs and wraps nothing round
+ * them -- so every link on `/drought` was styled exactly like the sentence
+ * around it, which is the same bug this rule was written for one container
+ * in. Nothing about a link's visibility follows from which container it is
+ * in, so the container came out of the selector.
+ *
+ * `main` and not `body`, so the bar and the footer are outside it by
+ * construction: both are chrome, both already decide their own type, and
+ * `SiteHeader`'s own links carry `underline` where they want it.
+ *
+ * What is inside `main` and is still chrome opts out with `no-underline` --
+ * the calendar's chips and its month nav, the view switcher, the share menu,
+ * the two cards on the front page, and the map's own shapes, which are SVG.
+ * That is the asymmetry argued above, now that there are more of them: a
+ * stray underline on a chip is obvious to anyone who looks and harmless
+ * until fixed, where a link that looks like prose is navigation nobody can
+ * find.
  */
 @layer base {
-  .prose a {
+  main a {
     text-decoration-line: underline;
   }
 }

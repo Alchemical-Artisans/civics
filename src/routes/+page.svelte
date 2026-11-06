@@ -121,8 +121,11 @@
       class="relative flex min-h-[30rem] flex-col rounded-xl border border-slate-200 p-5 transition-colors focus-within:border-slate-400 hover:border-slate-300 hover:bg-slate-50 sm:p-6"
     >
       <div class="flex items-baseline justify-between gap-3">
-        <h2 class="text-lg font-semibold text-slate-900">
-          <a class="after:absolute after:inset-0 after:content-['']" href={Router.calendar()}>
+        <h2>
+          <a
+            class="no-underline after:absolute after:inset-0 after:content-['']"
+            href={Router.calendar()}
+          >
             Meeting calendar
           </a>
         </h2>
@@ -163,7 +166,7 @@
             <p class="m-0 shrink-0">
               <a
                 href={Router.calendarDay(day.date)}
-                class="relative flex w-14 items-baseline gap-1.5 hover:underline"
+                class="relative flex w-14 items-baseline gap-1.5 no-underline hover:underline"
               >
                 <span class="text-[10px] tracking-wide text-slate-500 uppercase">{day.weekday}</span
                 >
@@ -183,7 +186,7 @@
                        link. -->
                   <a
                     href={Router.meeting(meeting.id)}
-                    class="relative flex items-center gap-1 rounded px-1.5 py-0.5 text-xs leading-tight transition {entryClass(
+                    class="relative flex items-center gap-1 rounded px-1.5 py-0.5 text-xs leading-tight no-underline transition {entryClass(
                       meeting,
                     )}"
                   >

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import PrecinctMap from "$lib/PrecinctMap.svelte"
+  import ShapeMap from "$lib/ShapeMap.svelte"
   import { boundsAround } from "$lib/map"
   import { Router } from "$lib/router"
 
@@ -26,8 +26,7 @@
      precincts are drawn on, which puts the pin in our own document, so it
      carries the address as a label and opens the place on OpenStreetMap. -->
 <div class="not-prose my-4 h-80 max-w-xl">
-  <PrecinctMap
-    interactive
+  <ShapeMap
     title="Where the Winter Haverhill Farmers Market would be held: 143 Essex St"
     bounds={boundsAround([[VENUE.lon, VENUE.lat]])}
     areas={[]}

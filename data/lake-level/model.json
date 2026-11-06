@@ -1,0 +1,46 @@
+{
+  "synthetic": true,
+  "warning": "PLACEHOLDER MODEL. Trained on fabricated data -- see the 'trainedOn' field below for which inputs. These coefficients explain nothing about the real Kenoza Lake yet. Do not cite this or show it to a reader.",
+  "generatedAt": "2026-09-19T20:13:16.433Z",
+  "generatedBy": "scripts/train-lake-level-model.mjs",
+  "trainedOn": {
+    "weather": {
+      "synthetic": false,
+      "path": "data/weather/haverhill-daily-observed.json"
+    },
+    "production": {
+      "synthetic": true,
+      "path": "data/consumption/placeholder/haverhill-daily-production.json"
+    },
+    "lakeLevel": {
+      "synthetic": true,
+      "path": "data/lake-level/placeholder/haverhill-daily-lake-level.json"
+    }
+  },
+  "target": "change in lake level (feet) from the previous day to this one",
+  "featureNames": [
+    "pcpn",
+    "snowmeltProxy",
+    "avgt",
+    "production"
+  ],
+  "lambda": 1,
+  "coefficients": [
+    0.0016380543983939375,
+    0.0003133389377156612,
+    -0.0007547828298413208,
+    -0.010421873741196219
+  ],
+  "intercept": 0.0988518077422832,
+  "rSquared": 0.02620589026146447,
+  "sampleCount": 12661,
+  "dateRange": {
+    "start": "1986-01-02",
+    "end": "2026-09-18"
+  },
+  "skipped": {
+    "missingWeather": 2210,
+    "missingProduction": 0,
+    "gap": 1
+  }
+}

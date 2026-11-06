@@ -17,7 +17,7 @@
   hovers or tabs to one; the project's own map has the room to print them.
 -->
 <script lang="ts">
-  import PrecinctMap from "$lib/PrecinctMap.svelte"
+  import ShapeMap from "$lib/ShapeMap.svelte"
   import { formatLongDate } from "$lib/calendar"
   import { boundsOf } from "$lib/map"
   import { Router } from "$lib/router"
@@ -53,9 +53,9 @@
   class="relative flex min-h-[30rem] flex-col rounded-xl border border-slate-200 p-5 transition-colors focus-within:border-slate-400 hover:border-slate-300 hover:bg-slate-50 sm:p-6"
 >
   <div class="flex items-baseline justify-between gap-3">
-    <h2 class="text-lg font-semibold text-slate-900">
+    <h2>
       <a
-        class="after:absolute after:inset-0 after:content-['']"
+        class="no-underline after:absolute after:inset-0 after:content-['']"
         href={Router.project(PROJECT.slug)}
       >
         {PROJECT.title}
@@ -69,7 +69,14 @@
   </div>
 
   <div class="relative mt-2 flex flex-1 items-center">
-    <PrecinctMap
+    <!-- The one map on the site that is not interactive. This card is itself a
+         single link -- the heading's own `::after` covers it -- so drag-to-pan
+         would fight a link that wants to be clicked, and wheel-zoom would
+         swallow the landing page's scroll. A reader who wants to move around
+         the map follows the card to the project, where the same component is
+         interactive. -->
+    <ShapeMap
+      interactive={false}
       title="Haverhill's twenty-one precincts, each a link to its ballot"
       {bounds}
       areas={PRECINCTS.map((p) => ({

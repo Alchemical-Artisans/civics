@@ -35,3 +35,11 @@ project.inlang/cache/
 *storybook.log
 storybook-static
 docs/.obsidian
+
+# Scratch, collected during the water-balance-model rebase: the branch's own
+# side of the hunks main won, kept out of the way for a person to reconcile
+# by hand. Not part of the project -- see water-data/README.md.
+water-data
+
+# Emacs lock files -- symlinks to "user@host:pid", committed once by a stray `git add -A`
+.#*

@@ -72,6 +72,18 @@ describe("Router", () => {
     )
   })
 
+  /**
+   * The non-PDF door into the same store, for a figure the city drew that the
+   * page shows rather than redraws. It must take the filename whole: an
+   * extension appended for it would make the method useless for the one case
+   * it exists for.
+   */
+  it("builds an excerpt path for a file that is not a PDF", () => {
+    expect(
+      Router.excerptFile("city-council-2026-09-15", "drought-emergency-update/drought-chart.png"),
+    ).toBe("/excerpts/city-council-2026-09-15/drought-emergency-update/drought-chart.png")
+  })
+
   it("sends records with no document to the city's own page", () => {
     expect(Router.cityPage("/document-manager/media-pages/agenda-and-minutes-5/")).toBe(
       "https://www.haverhillma.gov/document-manager/media-pages/agenda-and-minutes-5/",

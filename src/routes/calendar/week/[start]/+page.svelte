@@ -94,7 +94,7 @@
       >
         <a
           href={Router.calendarDay(date)}
-          class="flex w-20 shrink-0 items-baseline gap-1.5 hover:underline"
+          class="flex w-20 shrink-0 items-baseline gap-1.5 no-underline hover:underline"
         >
           <span class="text-[11px] tracking-wide text-slate-500 uppercase">{WEEKDAYS[at]}</span>
           <span class="text-base font-medium text-slate-800">{Number(date.slice(8))}</span>

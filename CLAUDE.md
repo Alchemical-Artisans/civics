@@ -14,6 +14,13 @@ It also republishes the city's budget and audit reports, where the current
 budget book is readable a section at a time rather than as one PDF running to
 hundreds of pages.
 
+A third section, `/water`, covers Haverhill's drought emergency -- not scraped
+at all, since nothing here scrapes the city's general informational pages.
+`src/lib/water.ts` holds every figure by hand, each cited to the page it came
+off and the date it was read, in the same spirit as the scraped halves but
+without a scraper to keep it honest automatically. See
+[docs/water-pages.md](docs/water-pages.md).
+
 **The point is not a faithful copy of the book in web form.** It is to
 rearrange what the city publishes so a reader can see what the government is
 doing, so the structure here is deliberately not the book's: sections are
@@ -579,14 +586,18 @@ Committee's sitting of 19 October, whose notice's single item, Doc. 32-k, is a
 page of its own so the step has somewhere to land; the sitting's page is one
 line, "Determine scope and outcomes of infrastructure risk assessment", opening the project.
 
-**`PrecinctMap.svelte` is an SVG drawn at build time over OpenStreetMap's raster
-tiles**, not a map library: each precinct is an SVG `<a>`, a link before
+**`ShapeMap.svelte` is an SVG drawn at build time over OpenStreetMap's raster
+tiles**, not a map library: an area is an SVG `<a>`, a link before
 anything hydrates, and `$lib/map.ts` does the Web Mercator arithmetic that lays
 shapes onto the tile grid. It draws three things now, not one -- shapes, pins
 and runs of street -- which is what lets a meeting page use it where
 `AddressMap`'s embed cannot go: a pin that carries a label and a link of its
 own, or the stretch of road a parking ordinance names, drawn as the street
-runs between the two cross streets it is bounded by. The street map under it
+runs between the two cross streets it is bounded by. It was `PrecinctMap`
+until it drew any of that -- named for its first and then only caller, which
+stopped describing it once the water bodies, the address pins and the street
+runs arrived; `areas`, `lines` and `markers` are what a caller gives it, and
+none of them is a precinct. The street map under it
 is greyed only where something of ours covers it; a map of pins alone keeps
 its colour, being what the reader came to look at. The reader's browser fetches the tiles, as it already
 does for `AddressMap`'s embed. Do not name an SVG class after a Tailwind utility
@@ -1190,3 +1201,27 @@ Prettier config is non-default and enforced by `npm run lint`: no semicolons,
 double quotes, 2-space indent, trailing commas, 100-column width. Comments in
 this codebase explain _why_ a thing is the way it is, often at length; match
 that when touching them.
+
+**There are two heading scales and `src/routes/layout.css` holds both.** A
+page here is either a **transcription** or **authored**, and a heading means
+the opposite thing in each. A transcription's headings are the city's own,
+sitting under a title the layout already drew, so inside a `prose` container
+h2 descends from 1rem and h3/h4 get quieter still. An authored page — `/drought`,
+each `/projects/*` write-up — draws its own `<h1>` and its h2s are section
+breaks in our structure, so they get _louder_: h1 `text-2xl`/bold/tight, h2
+`text-lg`, h3 `text-base`, h4 `text-sm`, all `font-semibold text-slate-900`.
+**Write a plain `<h2>` and the right one applies.** Every authored page used
+to hand-write those utilities on every heading and the copies had drifted —
+one page's h3 was `text-base font-semibold`, another's a bare `font-semibold`,
+a third's `font-medium` — while a page that wrote plain tags got neither scale
+and came out flat. Both scales now live in one file and the twelve call sites
+that duplicated them are gone, so a heading class on an element means a
+deliberate departure: `BackgroundNote`'s quiet `text-base` h2,
+`polling-places`' `text-sm`, the accordion summaries in `reserves` and `debt`,
+and the one meeting write-up that wants `text-lg` against the transcription
+scale. The authored rules are `@layer base`, so a utility always wins and
+every `prose` rule outranks them without being named — the typography plugin
+writes into `@layer utilities` and the transcription scale is unlayered to beat
+it. Spacing between plain blocks is there too, on `:not([class])` only:
+anything carrying a class lays itself out, which is what keeps the calendar's
+month-count line tight under its heading.

@@ -12,7 +12,7 @@
 -->
 <script lang="ts">
   import { onMount } from "svelte"
-  import PrecinctMap from "$lib/PrecinctMap.svelte"
+  import ShapeMap from "$lib/ShapeMap.svelte"
   import AddToCalendar from "$lib/AddToCalendar.svelte"
   import ShareButton from "$lib/ShareButton.svelte"
   import ShareMeta from "$lib/ShareMeta.svelte"
@@ -129,7 +129,7 @@
   </nav>
 
   <header class="mb-6 border-b border-slate-200 pb-6 lg:mb-3 lg:pb-3">
-    <h1 class="text-2xl font-bold tracking-tight text-slate-900">{title}</h1>
+    <h1>{title}</h1>
     <div class="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
       <p class="text-sm text-slate-600">{formatLongDate(ELECTION.date)}, {ELECTION.hours}</p>
       <AddToCalendar event={electionEvent(precinct.id)} filename="{PROJECT.slug}-{precinct.id}" />
@@ -158,8 +158,7 @@
   >
     <!-- The map takes whatever height the header leaves. -->
     <div class="h-[70dvh] lg:h-full lg:min-h-0">
-      <PrecinctMap
-        interactive
+      <ShapeMap
         title="{title}, outlined within Ward {precinct.ward}"
         {bounds}
         {areas}
@@ -172,7 +171,7 @@
     </div>
 
     <section aria-labelledby="ballot" class="lg:relative lg:min-h-0 lg:overflow-y-auto lg:pr-2">
-      <h2 id="ballot" class="text-lg font-semibold text-slate-900">Ballot</h2>
+      <h2 id="ballot">Ballot</h2>
 
       <!-- An `A` half is a second ballot, so it is a tab of its own rather than
          a column squeezed in beside the first. Hidden markup, not absent: until
@@ -224,7 +223,7 @@
               <!-- The district is in the tooltip only: a voter has one, and it is
                    not what they came to read. -->
               <section title={cell.district} class="mt-4">
-                <h4 class="text-sm font-semibold text-slate-900">{cell.office}</h4>
+                <h4>{cell.office}</h4>
                 <ul class="mt-1 space-y-0.5 text-sm text-slate-700">
                   {#each cell.candidates as candidate (candidate.name)}
                     <li>
@@ -260,7 +259,7 @@
         >.
       </p>
 
-      <h3 class="mt-8 font-semibold text-slate-900">Questions</h3>
+      <h3 class="mt-8">Questions</h3>
       <!-- Each statewide question goes to its entry in the state's voter guide;
          the city's own is in no state publication, so it has a page here. -->
       <ul class="mt-1 text-sm text-slate-700">

@@ -33,7 +33,7 @@
 <div class="mx-auto max-w-6xl px-4 py-8">
   <header class="mb-6 border-b border-slate-200 pb-6">
     <p class="text-sm text-slate-500">Project</p>
-    <h1 class="text-2xl font-bold tracking-tight text-slate-900">{PROJECT.title}</h1>
+    <h1>{PROJECT.title}</h1>
     <div class="mt-2">
       <ShareButton url={sharedUrl} text={PROJECT.title} />
     </div>
@@ -44,7 +44,7 @@
          the study is to do; the minutes' longer account of what the Vice
          President asked for is on the item's page. -->
     <section aria-labelledby="motion">
-      <h2 id="motion" class="text-lg font-semibold text-slate-900">The motion</h2>
+      <h2 id="motion">The motion</h2>
       <blockquote class="mt-3 border-l-4 border-slate-200 pl-4 text-slate-800">
         <p>
           Motion by Vice President Michitson to send to Planning and Development to work with the

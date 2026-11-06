@@ -11,11 +11,18 @@
 
   `not-prose`: a picture, not a reading column, the same as `AddressMap`.
 
-  `interactive` is for a map that has a pane to itself: it fills the height its
+  **A map is interactive unless it is told not to be.** It fills the height its
   parent gives it and, once the page has hydrated, pans (drag), zooms (wheel,
   pinch, the buttons) and fetches finer tiles as it goes in. Until then it is
   the same static SVG as any other, framed in advance, so the links and the
   picture are there with no script.
+
+  `interactive={false}` is the exception, and the one place that takes it is
+  the landing page's own card, which is itself a single link: drag-to-pan
+  fights a link that wants to be clicked, and wheel-zoom would swallow the
+  page's scroll. Anywhere else, a reader who wants detail should be able to go
+  and get it, so the prop appears at a call site only where the map departs
+  from that.
 -->
 <script lang="ts">
   import { onMount, untrack } from "svelte"
@@ -89,7 +96,8 @@
     width = 800,
     height = 560,
     caption = "",
-    interactive = false,
+    interactive = true,
+    hoverLabel = false,
   }: {
     /** What the map shows, as one phrase: the figure's accessible name. */
     title: string
@@ -112,11 +120,39 @@
      * of pins alone has nothing of ours in it to credit, and leaves it out.
      */
     caption?: string
-    /** Fill the parent's height and, once hydrated, pan and zoom. */
+    /**
+     * Fill the parent's height and, once hydrated, pan and zoom. On by
+     * default; pass `false` only for a map that cannot have it -- see the
+     * comment at the top of this file for the one that cannot.
+     *
+     * An interactive map needs a height from its parent and has a 20rem floor
+     * of its own, so a container that sizes itself to its contents needs an
+     * explicit height.
+     */
     interactive?: boolean
+    /**
+     * Name each area as the pointer crosses it, drawn on the map rather than
+     * left to the browser's own `<title>` tooltip.
+     *
+     * For a map too small to carry standing labels: `label` text is sized as a
+     * fraction of the map's width, so on a map a quarter the usual size it
+     * comes out at around six pixels, and close neighbours collide. One label
+     * at a time, at a fixed readable size, says the same thing without either
+     * problem. Off by default, because a map with room for standing labels is
+     * better off with them -- a reader should not have to hunt.
+     *
+     * It also makes a plain area focusable, so the names are reachable by
+     * keyboard; an area that is already a link or a button is focusable
+     * anyway.
+     */
+    hoverLabel?: boolean
   } = $props()
 
   const f = $derived(frame(bounds, width, height))
+
+  /** The area under the pointer or holding focus, when `hoverLabel` is on. */
+  let named = $state<string | null>(null)
+  const naming = $derived(hoverLabel ? (areas.find((a) => a.id === named) ?? null) : null)
 
   // -- Pan and zoom. ---------------------------------------------------------
   // The view is a centre in the frame's pixels and `s`, screen pixels per
@@ -171,6 +207,18 @@
   // SVG scales: a fixed 12 would be unreadable on a phone and shouting on a
   // desktop. A live map is drawn at its own pixel size, so there it is pixels.
   const unit = $derived(live ? 14 / v.s : f.width / 64)
+
+  /**
+   * The hover name's size, the same bargain `unit` makes one line up: in
+   * frame coordinates, so a constant figure would shrink as a reader zooms
+   * out and swell as they zoom in. `live ? n / v.s` holds it at n screen
+   * pixels whatever the zoom; the static branch is a fraction of the map,
+   * which is the only thing a static map can be measured against.
+   *
+   * Larger than `unit` on purpose. This is one name shown on request, where
+   * `unit` sizes labels that all have to sit on the map at once.
+   */
+  const nameSize = $derived(live ? 15 / v.s : f.width / 22)
 
   const zoomAt = (px: number, py: number, factor: number) => {
     const s = Math.min(maxS, Math.max(minS, v.s * factor))
@@ -283,7 +331,15 @@
 
       {#each areas as area (area.id)}
         {#if area.href}
-          <a href={area.href} aria-label={area.name} class="area">
+          <a
+            href={area.href}
+            aria-label={area.name}
+            class="area"
+            onpointerenter={() => hoverLabel && (named = area.id)}
+            onpointerleave={() => hoverLabel && (named = null)}
+            onfocus={() => hoverLabel && (named = area.id)}
+            onblur={() => hoverLabel && (named = null)}
+          >
             <title>{area.name}</title>
             <path
               d={pathOf(area.shape, f.z)}
@@ -297,13 +353,18 @@
           <path
             class="area"
             class:selectable={area.onselect}
-            role={area.onselect ? "button" : undefined}
-            tabindex={area.onselect ? 0 : undefined}
-            aria-label={area.onselect ? area.name : undefined}
+            class:named={hoverLabel}
+            role={area.onselect ? "button" : hoverLabel ? "img" : undefined}
+            tabindex={area.onselect || hoverLabel ? 0 : undefined}
+            aria-label={area.onselect || hoverLabel ? area.name : undefined}
             d={pathOf(area.shape, f.z)}
             fill={area.fill}
             fill-opacity={area.opacity}
             fill-rule="evenodd"
+            onpointerenter={() => hoverLabel && (named = area.id)}
+            onpointerleave={() => hoverLabel && (named = null)}
+            onfocus={() => hoverLabel && (named = area.id)}
+            onblur={() => hoverLabel && (named = null)}
             onclick={area.onselect}
             onkeydown={(event) => {
               if (area.onselect && (event.key === "Enter" || event.key === " ")) {
@@ -355,6 +416,29 @@
           <text {x} {y} text-anchor="middle" dominant-baseline="central">{area.label}</text>
         {/each}
       </g>
+
+      <!-- The one name the pointer is asking for, drawn at a fixed size
+           rather than the map's own `unit`, which on a small map is too small
+           to read -- that being the whole reason this exists. Cased in white
+           so it carries over water, street and tile alike, and
+           `pointer-events: none` so it never steals the hover that produced
+           it. -->
+      {#if naming}
+        {@const [lx, ly] = project(labelPoint(naming.shape), f.z)}
+        <g class="hover-name" aria-hidden="true" font-size={nameSize}>
+          <text
+            x={lx}
+            y={ly}
+            text-anchor="middle"
+            dominant-baseline="central"
+            stroke-width={nameSize / 4}
+            class="casing">{naming.label ?? naming.name}</text
+          >
+          <text x={lx} y={ly} text-anchor="middle" dominant-baseline="central">
+            {naming.label ?? naming.name}
+          </text>
+        </g>
+      {/if}
 
       <!-- A pin is a link or a button where it is given one, so a place on the
            map is reachable the way a shape is: `<a>` inside an SVG is a link
@@ -470,6 +554,14 @@
   .live path {
     vector-effect: non-scaling-stroke;
   }
+  /* An SVG link is a shape or a pin, not a word. `main a` underlines every
+     link on the site so that none of them hides in prose, and SVG `<text>`
+     honours text-decoration like any other text -- which would rule a line
+     under a marker's label. */
+  a.area,
+  a.marker {
+    text-decoration-line: none;
+  }
   a.area:hover path,
   a.area:focus-visible path {
     fill-opacity: 0.85;
@@ -480,6 +572,29 @@
   a.area:focus-visible path {
     stroke: #0f172a;
     stroke-width: 3;
+  }
+  /* A plain area with `hoverLabel` is not a link and goes nowhere, so it gets
+     the fill change but not the pointer: there is nothing to click. */
+  .area.named:hover,
+  .area.named:focus-visible {
+    fill-opacity: 0.85;
+  }
+  .area.named:focus-visible {
+    outline: none;
+    stroke: #0f172a;
+    stroke-width: 3;
+  }
+  .hover-name {
+    pointer-events: none;
+  }
+  .hover-name text {
+    fill: #0f172a;
+    font-weight: 600;
+    paint-order: stroke;
+  }
+  .hover-name .casing {
+    stroke: white;
+    stroke-linejoin: round;
   }
   .ward-line {
     stroke: #0f172a;

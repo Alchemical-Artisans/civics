@@ -27,6 +27,7 @@
     "hps:update": "node scripts/update-hps-documents.mjs",
     "recordings:update": "node scripts/update-recordings.mjs",
     "precincts:update": "node scripts/update-precincts.mjs",
+    "water-bodies:update": "node scripts/update-water-bodies.mjs",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "glossary:check": "node scripts/check-glossary.mjs",

@@ -102,7 +102,7 @@
 <article class="mx-auto max-w-6xl px-4 py-8">
   <header class="mb-6 border-b border-slate-200 pb-6">
     <p class="text-sm text-slate-500">Project</p>
-    <h1 class="text-2xl font-bold tracking-tight text-slate-900">{PROJECT.title}</h1>
+    <h1>{PROJECT.title}</h1>
     <div class="mt-2">
       <ShareButton url={sharedUrl} text={PROJECT.title} />
     </div>
@@ -116,7 +116,7 @@
            citation goes to the file instead, which is what a reader checking
            a quotation is after. -->
       <section aria-labelledby="the-roof">
-        <h2 id="the-roof" class="text-lg font-semibold text-slate-900">The roof</h2>
+        <h2 id="the-roof">The roof</h2>
         {@render passage(theRoof)}
       </section>
 
@@ -136,7 +136,7 @@
         are conditions rather than facts.
       -->
       <section aria-labelledby="the-cost" class="mt-8">
-        <h2 id="the-cost" class="text-lg font-semibold text-slate-900">What it costs</h2>
+        <h2 id="the-cost">What it costs</h2>
         <p class="mt-2 text-4xl font-bold text-slate-900">{APPROPRIATION}</p>
 
         <!--
@@ -150,7 +150,7 @@
           over it keeps the condition where a reader cannot miss it.
         -->
         <section aria-labelledby="msba" class="mt-6">
-          <h3 id="msba" class="text-base font-semibold text-slate-900">
+          <h3 id="msba">
             MSBA financing <span class="font-normal text-slate-600">(if approved)</span>
           </h3>
           {@render passage(theFinancing)}

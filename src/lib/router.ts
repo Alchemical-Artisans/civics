@@ -137,6 +137,41 @@ export class Router {
   }
 
   /**
+   * The same store, for a file that is not a PDF: `excerpt` appends `.pdf`
+   * because almost everything the city publishes is one, and this takes the
+   * filename whole instead.
+   *
+   * What it is for is a figure the city drew. `/drought` shows the Water
+   * Department's own Kenoza Lake chart rather than redrawing it, and the
+   * image has to be served from here: the build is offline and the reader's
+   * browser never talks to the city's servers, so hotlinking the city's CDN
+   * would break the one promise the whole scrape is built on -- and leave the
+   * page dependent on a file the city can replace or move, which it does.
+   */
+  static excerptFile(id: string, file: string): string {
+    return path(`/excerpts/${id}/${file}`)
+  }
+
+  /**
+   * A figure lifted out of a published report that is nobody's in Haverhill:
+   * `static/references/`, the counterpart to `excerpts/` for a source that is
+   * not a city document and so has no meeting to file it under.
+   *
+   * It is here for the same reason `excerptFile` is -- the build is offline
+   * and the reader's browser never fetches from anyone else's server -- and
+   * it carries the base path the same way. The page that shows one links the
+   * report it came out of, so the reader can check the figure against the
+   * text around it.
+   *
+   * Only for work that may be republished: the one here is a U.S. Geological
+   * Survey circular, a work of the federal government and in the public
+   * domain. Anything under copyright gets a link, not a copy.
+   */
+  static reference(file: string): string {
+    return path(`/references/${file}`)
+  }
+
+  /**
    * One fiscal year's budget book, written up here. `id` is a `FiscalYear`'s
    * id from `$lib/budget` -- `fy2027`.
    *
@@ -199,6 +234,17 @@ export class Router {
    */
   static glossaryTerm(id: string, slug: string): string {
     return path(`/budget/${id}/glossary#${slug}`)
+  }
+
+  /**
+   * The drought and water-conservation page -- a third half, alongside the
+   * calendar and the budget, with nothing scraped behind it. A bare page
+   * rather than a landing method with a default sub-page: there is exactly
+   * one of it so far, the way `/calendar` and `/budget` had many pages to
+   * choose a default from and this does not yet.
+   */
+  static water(): string {
+    return path("/water")
   }
 
   /**
@@ -375,7 +421,7 @@ export class Router {
 
   /**
    * One raster tile of OpenStreetMap's standard map, for the street map under
-   * `PrecinctMap`'s shapes. Fetched by the reader's browser, never the build.
+   * `ShapeMap`'s shapes. Fetched by the reader's browser, never the build.
    */
   static osmTile(z: number, x: number, y: number): string {
     return `https://tile.openstreetmap.org/${z}/${x}/${y}.png`
