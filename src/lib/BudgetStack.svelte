@@ -53,10 +53,12 @@
     rows,
     /**
      * How a part's amount is printed, both on the bar's own total and on each
-     * segment's name. Defaults to dollars, since every bar on the site so far
-     * has been one -- `/water`'s usage split is the first that isn't, and
-     * passes its own formatter rather than this component gaining a second,
-     * money-shaped idea of what a number is.
+     * segment's name. Defaults to dollars, since every bar on the site is
+     * one. Nothing passes it any more: the one caller that charted something
+     * else -- `/water`'s usage split, in millions of gallons a day -- passed
+     * its own formatter rather than this component gaining a second,
+     * money-shaped idea of what a number is, and that page is gone. The prop
+     * stays for the next bar of something that is not money.
      */
     format = (n: number) => MONEY.format(n),
   }: { rows: Series[]; format?: (n: number) => string } = $props()

@@ -32,10 +32,10 @@
   bar it is meant to be compared with, and an eleventh bar standing for the
   average of the ten beside it reads as one more year.
 
-  Colour: the current year in the orange `drought-colours.ts` builds its
-  stage ramp on -- the drought year in the drought hue -- the years behind it
-  lighter, and the average in slate, since it is a reference rather than a
-  year. Picked by name rather than by position, so the current year stays
+  Colour: the current year in `chart-colours.ts`'s own orange (slot 2) --
+  the drought year in the hue the site's drought scale was built on -- the
+  years behind it lighter, and the average in slate, since it is a reference
+  rather than a year. Picked by name rather than by position, so the current year stays
   orange whatever the span's length.
 
   Every bar prints its own figure, so there is no tooltip here and nothing is

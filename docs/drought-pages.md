@@ -292,9 +292,8 @@ on the city's chart was read but deliberately not kept: the rainfall panel
 dropped its own thirty-year normal as a distraction, and a long-run average
 here would be the same distraction twice.
 
-This reverses a rule [water-pages.md](water-pages.md) used to state, and that
-document now records the reversal and the reasoning rather than contradicting
-this one.
+This reverses a rule the old `/water` page's own documentation used to
+state; that page and its document are gone, and this is the only rule now.
 
 ## Water the city uses
 
@@ -379,8 +378,8 @@ line.
 the browser, so the several megabytes of daily station readings behind four
 lines of twelve points would be bundled into the page just to be aggregated
 again on arrival. A server load runs at build time only and the page carries
-the weeks it returns -- the same reason the calendar's own route and `/water`'s
-load this way. `src/lib/server/precipitation.ts` lives under `$lib/server` so
+the weeks it returns -- the same reason the calendar's own route loads this
+way. `src/lib/server/precipitation.ts` lives under `$lib/server` so
 importing it from anything the client bundles is a build error rather than a
 quiet multi-megabyte page. Verified on a build: no client chunk carries the
 station id.

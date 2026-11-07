@@ -14,12 +14,21 @@ It also republishes the city's budget and audit reports, where the current
 budget book is readable a section at a time rather than as one PDF running to
 hundreds of pages.
 
-A third section, `/water`, covers Haverhill's drought emergency -- not scraped
-at all, since nothing here scrapes the city's general informational pages.
-`src/lib/water.ts` holds every figure by hand, each cited to the page it came
-off and the date it was read, in the same spirit as the scraped halves but
-without a scraper to keep it honest automatically. See
-[docs/water-pages.md](docs/water-pages.md).
+A third section, `/drought`, covers Haverhill's drought emergency -- an
+authored article rather than a transcription, and the one part of the site
+whose figures are not scraped off a document listing: the rainfall behind its
+chart is a weather station's own record (`scripts/update-weather.mjs`), the
+rest is read by hand off the city's pages and the Council's own video, each
+figure cited where it is used. See
+[docs/drought-pages.md](docs/drought-pages.md).
+
+**It is deliberately linked from nowhere** -- not the bar, not the front page
+-- while its owner gathers feedback on it and keeps it off the site's own
+paths. A reader reaches it only by being given the address. Do not add a link
+to it. `/water` was the placeholder this grew out of, a hand-kept
+`src/lib/water.ts` of city figures with a conservation calculator and a
+production chart over fabricated data; it was deleted on 2026-11-07, since
+leaving two pages about one drought meant publishing the superseded one.
 
 **The point is not a faithful copy of the book in web form.** It is to
 rearrange what the city publishes so a reader can see what the government is

@@ -61,10 +61,12 @@
     minHeight = 256,
     /**
      * How a part's amount is printed, on both a column's own total and each
-     * segment's name. Defaults to dollars, since every column drawn here so
-     * far has been one -- `/water`'s calculator is the first that isn't, and
-     * hands its own formatter rather than this component growing a second,
-     * money-shaped idea of what a number is.
+     * segment's name. Defaults to dollars, since every column drawn here is
+     * one. Nothing passes it any more: the one caller that charted something
+     * else -- `/water`'s calculator, in gallons a day -- handed its own
+     * formatter rather than this component growing a second, money-shaped
+     * idea of what a number is, and that page is gone. The prop stays for
+     * the next chart of something that is not money.
      */
     format = (n: number) => MONEY.format(n),
   }: {

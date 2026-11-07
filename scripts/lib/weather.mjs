@@ -1,7 +1,8 @@
 /**
  * Haverhill-specific daily weather, from RCC-ACIS rather than NOAA's
- * statewide Climate at a Glance API (already used by src/lib/rainfall.ts) --
- * that one has no finer grain than Massachusetts as a whole. ACIS
+ * statewide Climate at a Glance API, which `/water` read by hand and which
+ * nothing here reads now -- that one has no finer grain than Massachusetts
+ * as a whole. ACIS
  * (https://www.rcc-acis.org/), run by NOAA's Regional Climate Centers,
  * aggregates individual station records, and Haverhill has its own: a
  * National Weather Service Cooperative Observer station inside the city,

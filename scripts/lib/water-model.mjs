@@ -5,7 +5,7 @@
  *
  * The target is the day's own change in lake level, not the level itself:
  * ΔLevel(t) = Inflow(t) - Evaporation(t) - Production(t) is the actual
- * water-balance identity (see docs/water-pages.md), and fitting the change
+ * water-balance identity, and fitting the change
  * rather than the level lets the regression's coefficients stand in for the
  * physical constants that identity needs -- a runoff coefficient, an
  * evaporation rate, a production-to-drawdown factor -- without this site

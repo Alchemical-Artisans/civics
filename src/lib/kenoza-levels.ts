@@ -18,8 +18,9 @@
  * which is on the chart as a data label and which this reading reproduces
  * exactly.
  *
- * This reverses a rule `docs/water-pages.md` used to state -- that the curve
- * would never be re-plotted off the image, because doing so would be
+ * This reverses a rule the deleted `/water` page's own documentation used to
+ * state -- that the curve would never be re-plotted off the image, because
+ * doing so would be
  * inventing data points. The distinction that changed the answer: reading a
  * published measurement is transcription, where the fabricated series under
  * `data/lake-level/placeholder/` was invention. The placeholder is still

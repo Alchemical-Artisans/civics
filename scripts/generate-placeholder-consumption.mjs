@@ -1,19 +1,23 @@
 #!/usr/bin/env node
 /**
  * Fabricates daily water-production figures as a development placeholder for
- * the consumption pillar of the /water water-balance model. Rainfall and
- * temperature are real, station-sourced data (data/weather/); the city has
- * no granular consumption data public anywhere found so far, so this stands
- * in for it until a real source turns up -- the state's Water Management Act
- * Annual Statistical Report, which every permitted withdrawer files, is the
+ * the consumption pillar of a water-balance model. Rainfall and temperature
+ * are real, station-sourced data (data/weather/); the city has no granular
+ * consumption data public anywhere found so far, so this stands in for it
+ * until a real source turns up -- the state's Water Management Act Annual
+ * Statistical Report, which every permitted withdrawer files, is the
  * likeliest candidate, not yet requested or located.
+ *
+ * Nothing reads what this writes. The one thing that did was `/water`'s
+ * production chart, deleted along with that page; the file is kept for
+ * whatever the model turns into.
  *
  * NEVER cited on the site, and never run as part of `metadata:update` --
  * every value this writes is invented, which this codebase otherwise never
- * does (see CLAUDE.md, docs/water-pages.md, and every other file under
- * data/). This is the one deliberate exception, marked as loudly as the
- * output format allows, because a chart and a calculator can't be built or
- * reviewed against a number that doesn't exist yet.
+ * does (see CLAUDE.md and every other file under data/). This is one of two
+ * deliberate exceptions, marked as loudly as the output format allows,
+ * because a model can't be built or reviewed against a number that doesn't
+ * exist yet.
  *
  * Deterministic (seeded), so re-running it to extend the date range to a
  * later "today" does not also reshuffle every day already generated.
@@ -30,10 +34,11 @@ import path from "node:path"
 const DATA_DIR = path.join(import.meta.dirname, "..", "data", "consumption", "placeholder")
 const OUT_FILE = path.join(DATA_DIR, "haverhill-daily-production.json")
 
-// Matches AVERAGE_PRODUCTION_MGD in src/lib/water.ts as of 2026-09-18 -- the
-// one real, cited figure this placeholder is anchored to. If that figure is
-// ever corrected, update this by hand to match; nothing imports it directly,
-// since scripts/ is plain JS and src/lib is TypeScript.
+// The city's own average daily production as of 2026-09-18, the one real,
+// cited figure this placeholder is anchored to -- `/drought` states the same
+// 6 million gallons a day. If it is ever corrected, update this by hand to
+// match; nothing imports it directly, since scripts/ is plain JS and src/lib
+// is TypeScript.
 const AVERAGE_MGD = 6.0
 
 // A generic New England utility's seasonal shape (summer irrigation peak,
@@ -112,7 +117,7 @@ await writeFile(
       basis: {
         averageProductionMgd: AVERAGE_MGD,
         note:
-          "Matches AVERAGE_PRODUCTION_MGD in src/lib/water.ts as of 2026-09-18, the only " +
+          "The city's own average daily production as of 2026-09-18, the only " +
           "real figure this placeholder is anchored to. The seasonal shape and day-to-day " +
           "noise are invented, not drawn from any Haverhill source.",
       },

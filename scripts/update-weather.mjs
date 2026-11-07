@@ -2,9 +2,10 @@
 /**
  * Refresh Haverhill's station-level weather record from RCC-ACIS.
  *
- * Research data toward the water-balance model discussed for /water, not yet
- * cited on the site -- see data/weather/README.md for what these two files
- * are and why they exist. Like update-budget.mjs, there is no incremental
+ * This is the record behind `/drought`'s rainfall chart -- see
+ * data/weather/README.md for what these two files are and why they exist. It
+ * began as research toward a water-balance model, back when `/water` carried
+ * the city's own hand-read figures instead. Like update-budget.mjs, there is no incremental
  * mode: both files are cheap to refetch whole (one POST each), so every run
  * just replaces them. That also means a corrected or reissued NCEI normal is
  * picked up automatically rather than needing a rebuild flag nobody

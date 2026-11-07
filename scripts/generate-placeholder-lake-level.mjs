@@ -30,8 +30,7 @@
  *
  * NEVER cited on the site, and never run as part of `metadata:update` --
  * every value this writes is invented, which this codebase otherwise never
- * does (see CLAUDE.md, docs/water-pages.md, and every other file under
- * data/). This is the second deliberate exception, marked as loudly as the
+ * does (see CLAUDE.md and every other file under data/). This is the second deliberate exception, marked as loudly as the
  * output format allows.
  *
  * Deterministic (seeded), so re-running it to extend the date range to a

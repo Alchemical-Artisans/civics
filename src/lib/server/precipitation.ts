@@ -2,9 +2,8 @@
  * Haverhill's own rainfall record, by month, for the drought page's
  * year-against-year chart.
  *
- * Under `$lib/server` for the same reason `water-series.ts` is: the station
- * files behind this are some 46,000 days and several megabytes, to draw four
- * lines of fifty-odd points each. Importing it from anything the client
+ * Under `$lib/server` because the station files behind this are some 46,000
+ * days and several megabytes, to draw four lines of fifty-odd points each. Importing it from anything the client
  * bundles is a build error rather than a quiet multi-megabyte page.
  *
  * **Three gauges, and a day is the mean of whichever of them read it.** The
@@ -73,10 +72,10 @@ const NEIGHBOUR_ROWS = neighbourPrecipitation.data as unknown as Record<string, 
  * and `0.42A` is that accumulated total itself, a real figure covering
  * several days, which lands on whichever day carries it.
  *
- * Deliberately the same reading of the flags as `water-series.ts`'s own
- * `parsePrecipitation`, which predates this and belongs to the `/water`
- * production chart. Not shared between them while that page's future is
- * unsettled -- see docs/water-pages.md.
+ * This reading of the flags was written twice, here and in `/water`'s own
+ * production chart, which predates it and was deliberately not shared with
+ * while that page's future was unsettled. It was settled by deleting it, so
+ * this is the only copy now.
  */
 export function parsePrecipitation(value: string): number | null {
   if (value.startsWith("M")) return null
