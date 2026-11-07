@@ -153,19 +153,27 @@ export class Router {
   }
 
   /**
-   * A figure lifted out of a published report that is nobody's in Haverhill:
-   * `static/references/`, the counterpart to `excerpts/` for a source that is
-   * not a city document and so has no meeting to file it under.
+   * A source `excerpts/` has nowhere to put: `static/references/` is for a
+   * file with no meeting to file it under. Two kinds so far -- a figure
+   * lifted out of a published report that is nobody's in Haverhill, and a
+   * record the city holds but publishes nowhere, which is how
+   * `cy25-water-usage.xlsx` arrived: a councillor sent it, and the split
+   * between residential and commercial use that `/drought` quotes is in no
+   * document on haverhillma.gov.
    *
    * It is here for the same reason `excerptFile` is -- the build is offline
    * and the reader's browser never fetches from anyone else's server -- and
-   * it carries the base path the same way. The page that shows one links the
-   * report it came out of, so the reader can check the figure against the
-   * text around it.
+   * it carries the base path the same way. A copy also outlasts the asking:
+   * the sheet is what a reader has to check the percentages against, and
+   * there is no page anywhere to link instead. The page that shows one links
+   * the report it came out of where there is one, so the figure can be read
+   * against the text around it.
    *
-   * Only for work that may be republished: the one here is a U.S. Geological
-   * Survey circular, a work of the federal government and in the public
-   * domain. Anything under copyright gets a link, not a copy.
+   * Only for work that may be republished. The circular here is a U.S.
+   * Geological Survey one, a work of the federal government and in the public
+   * domain; the spreadsheet is the city's own water figures, a public record
+   * of the government this site republishes. Anything under copyright gets a
+   * link, not a copy.
    */
   static reference(file: string): string {
     return path(`/references/${file}`)

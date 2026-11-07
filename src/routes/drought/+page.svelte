@@ -282,15 +282,9 @@
   Haverhill sees <a
     href="http://haverhillcommunitytv.org/video/haverhill-city-council-meeting-september-15-2026"
     target="_blank"
-    rel="external noopener noreferrer">heavy industry use (timestamp 1:18:41)</a
-  >, but the city hasn't published what percentage this represents overall. That information should
-  be available in the
-  <a
-    href="https://www.mass.gov/how-to/public-water-supply-annual-statistical-reporting-via-edep"
-    target="_blank"
-    rel="external noopener noreferrer">Public Water System Annual Statistical Report (ASR)</a
-  > provided to the Massachusetts Department of Environmental Protection (MassDEP), once that information
-  is made available it will be added to this article. It was implied in the September drought update that
+                   rel="external noopener noreferrer">heavy industry use (timestamp 1:18:41)</a>, so much so that
+  in 2025 they represented
+  <a href={Router.reference("cy25-water-usage.xlsx")}>51.06% of our total water usage</a>. It was implied in the September drought update that
   voluntary conservation has not had a significant impact (timstamp 1:19:14) and the city is currently
   investigating tiered pricing to create a stronger incentive for these businesses (timestamp 1:32:20).
 </p>
@@ -422,30 +416,26 @@
 <p>
   There have been concerns expressed about new apartment buildings bringing more people into the
   city than our water supply can handle. In the drought update, the city provided some data on <a
-    href="http://haverhillcommunitytv.org/video/haverhill-city-council-meeting-september-15-2026"
-    target="_blank"
-    rel="external noopener noreferrer"
-    >how much water some of these new buildings use (timestamp 44:26)</a
-  >. By only measuring the usage of some of those developments, though, it's difficult to see if
+                                                                                                 href="http://haverhillcommunitytv.org/video/haverhill-city-council-meeting-september-15-2026"
+                                                                                                 target="_blank"
+                                                                                                 rel="external noopener noreferrer"
+                                                                                               >how much water some of these new buildings use (timestamp 44:26)</a
+                                                                                                                                                                >. By only measuring the usage of some of those developments, though, it's difficult to see if
   that information is comprehensive enough to fully represent the added strain this represents.
 </p>
 
 <p>
-  It's possible to get a closer approximation of this usage by combining population information from
-  the census with general usage statistics. In the <a
+  It's possible to get a closer approximation of new apartment usage by combining
+  <a
     href="https://www.census.gov/data/tables/time-series/demo/popest/2020s-total-cities-and-towns.html"
     target="_blank"
-    rel="external noopener noreferrer">past five years</a
-  >, Haverhill's lowest population was 67,376, which we'll treat as the population prior to recent
-  construction. The highest population in that same period was 68,416, so we'll assume that this new
-  construction resulted in 1040 new residents. According to MassDEP,
+    rel="external noopener noreferrer">population information from
+    the census</a> with general usage statistics. There were 1040 new residents added to the city in the last five years (difference between highest and lowest population years, 68,416 - 67,376), and each of these use approximately
   <a
     href="https://www.mass.gov/info-details/public-water-supply-tools-resources-performance-standards"
     target="_blank"
     rel="external noopener noreferrer"
-    >Haverhill uses 51 Residential Gallons per Capita Day in 2025</a
-  >. This translates to 39,780 gallons of the 6 million used by the city each day, or 0.884% of our
-  overall usage.
+  >51 gallons a day</a>. This translates to 39,780 gallons (1040 * 51 gallons), which is 0.884% of our overall usage (39,780 gallons / 6,000,000 gallons).
 </p>
 
 <PopulationChart years={POPULATION} />
@@ -460,11 +450,12 @@
     The 2020 decennial census resulted in an upward adjustment of the population, making it
     difficult to use earlier numbers to exclude apartments constructed prior to that year.
   </li>
+  <li>Some of the new residents included in this calculation may have moved into a more traditional home.</li>
   <li>
     Residents in apartment buildings do not have lawns, so outdoor water use is extremely minimal.
   </li>
   <li>
-    Older homes use substantially more water than new construction; our average of 51 is
+    Older homes use substantially more water than new construction; for example, our average of 51 is
     significantly higher than the <a
       href="https://www.mass.gov/info-details/public-water-supply-tools-resources-performance-standards"
       target="_blank"
