@@ -39,10 +39,11 @@
   orange whatever the span's length.
 
   Every bar prints its own figure, so there is no tooltip here and nothing is
-  visible only to a mouse; the bars are focusable for a keyboard reader and
-  the table underneath carries every figure the drawing does. The drawing
+  visible only to a mouse; each bar carries its figure as an accessible name
+  and the table underneath carries every one of them again. The drawing
   itself is a link to the daily records it is summed from -- see the comment
-  on the anchor below.
+  on the anchor below, and the one on the bars for why they are named but
+  not focusable.
 -->
 <script lang="ts">
   import { COLOURS } from "./chart-colours"
@@ -75,8 +76,18 @@
   const CURRENT_COLOUR = COLOURS[1]
   /** The years behind it, oldest first. */
   const EARLIER_COLOURS = [COLOURS[0], COLOURS[2], COLOURS[3], COLOURS[4], COLOURS[5]]
-  /** The average is a reference, not a year, so it is not on the year ramp. */
-  const BASELINE_COLOUR = "#94a3b8"
+  /**
+   * The average is a reference, not a year, so it is not on the year ramp.
+   *
+   * Slate-500 rather than the slate-400 this was. Which years fall under the
+   * rule is the whole point of drawing it, which makes it a graphical object
+   * a reader has to make out: 1.4.11 asks 3:1 of one, and slate-400 on white
+   * is 2.56:1. Slate-500 is 4.76:1 and reads as the same grey. The zero axis
+   * and the gridlines are still the lighter one -- they are the frame rather
+   * than a quantity, and darkening them would cost the rule the distinction
+   * this gives it.
+   */
+  const BASELINE_COLOUR = "#64748b"
 
   // The viewBox is what sets how large the 11px type renders: the SVG is
   // `w-full`, so the browser scales the whole drawing -- text included -- by
@@ -238,11 +249,17 @@
       />
 
       {#each bars as bar (bar.key)}
-        <!-- Focusable on purpose: a bar is how a keyboard reader reaches the
-             year's own figure and how it stands against the average. -->
-        <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+        <!-- Named but not focusable. Each bar was `tabindex="0"`, on the
+             reasoning that a bar is how a keyboard reader reaches the year's
+             figure -- but the whole drawing is a link now, and a focusable
+             child inside one means Tab lands on "2023: 64.87 inches" and
+             Enter leaves the site for xmACIS2. A bar has no action of its
+             own to justify that: it prints its figure unconditionally and
+             has never had a tooltip, so focusing one showed nothing a
+             reader was not already looking at. `role="img"` and the label
+             stay, so a screen reader still reads every bar where it stands;
+             what goes is ten tab stops and a link fired by mistake. -->
         <g
-          tabindex="0"
           role="img"
           aria-label={`${bar.label}: ${inches.format(bar.value)} inches${
             bar.running
@@ -255,8 +272,6 @@
           }`}
           onpointerenter={() => (active = bar.key)}
           onpointerleave={() => (active = null)}
-          onfocus={() => (active = bar.key)}
-          onblur={() => (active = null)}
         >
           <rect
             x={bar.x - barW / 2}
@@ -346,7 +361,7 @@
             y1="4"
             x2="22"
             y2="4"
-            stroke="#94a3b8"
+            stroke={BASELINE_COLOUR}
             stroke-width="1.5"
             stroke-dasharray="5 4"
           />
@@ -375,40 +390,51 @@
   </a>
 
   <!-- The same five figures, for a reader who hovers nothing. Here so
-       nothing is only visible to a mouse, not to summarise. -->
-  <table class="sr-only">
-    <caption class="sr-only"> Rainfall in inches by year </caption>
-    <thead>
-      <tr>
-        <th scope="col">Year</th>
-        <th scope="col">Rainfall</th>
-        <th scope="col">Against the {baseline.years}-year average</th>
-      </tr>
-    </thead>
-    <tbody>
-      {#each bars as bar (bar.key)}
+       nothing is only visible to a mouse, not to summarise.
+
+       **`sr-only` goes on a wrapper, never on the table itself.** The class
+       is `width: 1px` with `overflow: hidden` and `white-space: nowrap`, and
+       a table will not lay out narrower than its own widest cell: the table
+       kept its natural 591px and that box still counted towards the
+       document's scrollable overflow, so a phone could be swiped sideways
+       over 280px of nothing. A `div` honours the 1px and clips the table
+       inside it, which takes the overflow out while leaving every row where
+       a screen reader can read it. -->
+  <div class="sr-only">
+    <table>
+      <caption>Rainfall in inches by year</caption>
+      <thead>
         <tr>
-          <th scope="row">{bar.label}{bar.running ? " (so far)" : ""}</th>
-          <td>{inches.format(bar.value)} in</td>
-          <td>
-            {bar.running
-              ? `year not over; a typical one adds ${inches.format(bar.ghost)} in after this date`
-              : against(bar.value)}
-          </td>
+          <th scope="col">Year</th>
+          <th scope="col">Rainfall</th>
+          <th scope="col">Against the {baseline.years}-year average</th>
         </tr>
-      {/each}
-    </tbody>
-    <!-- The average lost its bar, not its figure. It is still the thing every
+      </thead>
+      <tbody>
+        {#each bars as bar (bar.key)}
+          <tr>
+            <th scope="row">{bar.label}{bar.running ? " (so far)" : ""}</th>
+            <td>{inches.format(bar.value)} in</td>
+            <td>
+              {bar.running
+                ? `year not over; a typical one adds ${inches.format(bar.ghost)} in after this date`
+                : against(bar.value)}
+            </td>
+          </tr>
+        {/each}
+      </tbody>
+      <!-- The average lost its bar, not its figure. It is still the thing every
          row above is measured against, and the dashed rule states it to anyone
          looking at the drawing; a reader who is not must get it here. -->
-    <tfoot>
-      <tr>
-        <th scope="row">{baseline.years}-yr avg ({baseline.from}&ndash;{baseline.to})</th>
-        <td>{inches.format(baseline.fullYearInches)} in</td>
-        <td>&mdash;</td>
-      </tr>
-    </tfoot>
-  </table>
+      <tfoot>
+        <tr>
+          <th scope="row">{baseline.years}-yr avg ({baseline.from}&ndash;{baseline.to})</th>
+          <td>{inches.format(baseline.fullYearInches)} in</td>
+          <td>&mdash;</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
 
   <!-- Said in full for a reader who cannot see the legend above. Everything
        the swatches stand for, plus the part no swatch can carry: that the

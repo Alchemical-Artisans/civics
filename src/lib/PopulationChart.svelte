@@ -100,15 +100,17 @@
       {/each}
 
       {#each years as y, i (y.year)}
-        <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+        <!-- Named but not focusable. The whole drawing is a link, so a
+             focusable bar inside it meant Tab landed on "2024: 68,416
+             people" and Enter left for the Census Bureau. The bar has no
+             action of its own -- it prints its figure unconditionally -- so
+             the name stays and the tab stop goes. Same as `RainfallChart`,
+             which explains it at the bars. -->
         <g
-          tabindex="0"
           role="img"
           aria-label="{y.year}: {n.format(y.people)} people"
           onpointerenter={() => (hot = y.year)}
           onpointerleave={() => (hot = null)}
-          onfocus={() => (hot = y.year)}
-          onblur={() => (hot = null)}
         >
           <rect
             x={cx(i) - barW / 2}
@@ -153,15 +155,22 @@
     </svg>
   </a>
 
-  <table class="sr-only">
-    <caption class="sr-only">Haverhill's population by year, US Census Bureau estimates</caption>
-    <thead>
-      <tr><th scope="col">Year</th><th scope="col">People</th></tr>
-    </thead>
-    <tbody>
-      {#each years as y (y.year)}
-        <tr><th scope="row">{y.year}</th><td>{n.format(y.people)}</td></tr>
-      {/each}
-    </tbody>
-  </table>
+  <!-- `sr-only` on the wrapper, not on the table: the class is `width: 1px`
+       and a table will not lay out narrower than its widest cell, so the
+       table kept its natural width and that box counted towards the page's
+       scrollable overflow. A `div` honours the 1px and clips the table
+       inside it. The same fix is in `RainfallChart`, which explains it. -->
+  <div class="sr-only">
+    <table>
+      <caption>Haverhill's population by year, US Census Bureau estimates</caption>
+      <thead>
+        <tr><th scope="col">Year</th><th scope="col">People</th></tr>
+      </thead>
+      <tbody>
+        {#each years as y (y.year)}
+          <tr><th scope="row">{y.year}</th><td>{n.format(y.people)}</td></tr>
+        {/each}
+      </tbody>
+    </table>
+  </div>
 </figure>

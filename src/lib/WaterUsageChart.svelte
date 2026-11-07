@@ -204,23 +204,30 @@
        point of the daily series is its shape, which 552 spoken figures do not
        convey. The totals that matter are the department's own, and it states
        those on the slide this is read from -- which the legend above links. -->
-  <table class="sr-only">
-    <caption class="sr-only">Average water produced each month, million gallons a day</caption>
-    <thead>
-      <tr>
-        <th scope="col">Month</th>
-        {#each series as line (line.year)}<th scope="col">{line.year}</th>{/each}
-      </tr>
-    </thead>
-    <tbody>
-      {#each monthly as row (row.label)}
+  <!-- `sr-only` on the wrapper, not on the table: the class is `width: 1px`
+       and a table will not lay out narrower than its widest cell, so the
+       table kept its natural width and that box counted towards the page's
+       scrollable overflow. A `div` honours the 1px and clips the table
+       inside it. The same fix is in `RainfallChart`, which explains it. -->
+  <div class="sr-only">
+    <table>
+      <caption>Average water produced each month, million gallons a day</caption>
+      <thead>
         <tr>
-          <th scope="row">{row.label}</th>
-          {#each row.cells as cell, i (i)}
-            <td>{cell === null ? "—" : mgd.format(cell)}</td>
-          {/each}
+          <th scope="col">Month</th>
+          {#each series as line (line.year)}<th scope="col">{line.year}</th>{/each}
         </tr>
-      {/each}
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        {#each monthly as row (row.label)}
+          <tr>
+            <th scope="row">{row.label}</th>
+            {#each row.cells as cell, i (i)}
+              <td>{cell === null ? "—" : mgd.format(cell)}</td>
+            {/each}
+          </tr>
+        {/each}
+      </tbody>
+    </table>
+  </div>
 </figure>
