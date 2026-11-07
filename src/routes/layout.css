@@ -177,6 +177,52 @@
 }
 
 /*
+ * A list on an authored page has bullets, for the same reason and on the same
+ * terms as the two rules above.
+ *
+ * Preflight strips `list-style` and the indent off every `ul` and `ol`, which
+ * a `prose` container puts back and an authored page has nothing to put it
+ * back with: `/drought`'s three reasons its per-apartment figure might be off
+ * came out as three paragraphs of the same type as the sentence introducing
+ * them, with no mark to say where one ended and the next began. Marking a run
+ * of items as a run is the whole of what the markup is for, so writing a
+ * plain `<ul>` is enough to get it -- this is the heading scale's bargain one
+ * element over, and the reason it is here rather than a `list-disc
+ * list-inside` pair hand-written on the one page that noticed: the next
+ * authored page should not have to rediscover it either.
+ *
+ * `:not([class])` throughout, as above, so every list that lays itself out
+ * with utilities -- the calendar's chip rows, the header's menus, the
+ * precinct ballot panels -- is untouched and keeps deciding for itself. The
+ * budget's own transcribed lists are inside `prose` and already had the
+ * plugin's bullets; nothing there changes.
+ *
+ * Markers sit outside the text, so a wrapped item's second line lines up with
+ * its first rather than under the bullet, and the padding is what holds them
+ * in the reading column instead of out in the margin. Items are spaced less
+ * than paragraphs are: enough to separate two that each run to a line or
+ * more, not enough to read as a list of one-item lists.
+ */
+@layer base {
+  main :is(ul, ol):not([class]) {
+    padding-left: 1.5rem;
+    list-style-position: outside;
+  }
+
+  main ul:not([class]) {
+    list-style-type: disc;
+  }
+
+  main ol:not([class]) {
+    list-style-type: decimal;
+  }
+
+  main :is(ul, ol):not([class]) > li + li {
+    margin-top: 0.375rem;
+  }
+}
+
+/*
  * A transcribed table can be wider than the page it sits on. The Auditor's
  * monthly expense report is five columns of figures over a hundred rows and
  * the revenue report is six; a phone gives a reading column about a third of
