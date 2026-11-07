@@ -87,6 +87,14 @@
   }
 </script>
 
+<!-- The page had none, so the tab, the bookmark and the first thing a screen
+     reader says on load were all the bare URL. "Drought" alone is the
+     heading's word and says nothing about whose drought; the title is the
+     one piece of this page that is read with no page around it. -->
+<svelte:head>
+  <title>Haverhill Drought Guide</title>
+</svelte:head>
+
 <h1>Drought</h1>
 
 <p>
@@ -364,10 +372,15 @@
      Served from here rather than hotlinked, the promise the rest of the site
      keeps; it is a USGS circular, a federal work and in the public domain. -->
 <figure class="not-prose mb-3 w-full sm:float-left sm:mt-1 sm:mr-6 sm:mb-2 sm:w-2/5 sm:max-w-xs">
+  <!-- Named for the destination: an `<a>` holding nothing but an `<img>`
+       takes the alt as its accessible name, and the alt here is four panels
+       of aquifer described in full. The description stays on the image; the
+       link says where it goes. -->
   <a
     href="https://pubs.usgs.gov/circ/1376/pdf/circ1376_barlow_report_508.pdf"
     target="_blank"
     rel="external noopener noreferrer"
+    aria-label="USGS Circular 1376, the report this figure comes from, PDF (opens in a new tab)"
   >
     <img
       src={Router.reference("streamflow-depletion-figure-7.png")}

@@ -48,7 +48,18 @@
        `width` and `height` are the file's own pixels, so the box is reserved
        before it loads and nothing jumps; `h-auto w-full` scales it from
        there. -->
-  <a href={KENOZA_SOURCE.page} target="_blank" rel="external noopener noreferrer">
+  <!-- The link is named for where it goes, because the picture's own alt is
+       what names it otherwise: an `<a>` holding nothing but an `<img>` takes
+       the alt as its accessible name, so a screen reader announced a hundred
+       words describing bands and trend lines and never said the link opens
+       the city's page. The description stays on the image, where it belongs;
+       `aria-label` here is the destination. -->
+  <a
+    href={KENOZA_SOURCE.page}
+    target="_blank"
+    rel="external noopener noreferrer"
+    aria-label="Haverhill's water supply and drought information, where the city publishes this chart (opens in a new tab)"
+  >
     <img
       src={file}
       width="1650"
