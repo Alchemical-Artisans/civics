@@ -265,10 +265,20 @@
     rel="external noopener noreferrer"
     >some have suggested some of Salem's drawdown could be diverted into our water supply (timestamp
     1:23:10)</a
-  >. There are regulatory restrictions on moving water from other bodies of water into our water
-  supply, though, ones which would be complicated to circumvent (timestamp 1:28:10). Transporting
-  that water would also be extremely expensive (timestamp 1:27:30), significantly more than other
-  options available to the city to supplement our water supply.
+  >. There are
+  <a
+    href="http://haverhillcommunitytv.org/video/haverhill-city-council-planning-development-committee-meeting-october-19-2026"
+    target="_blank"
+    rel="external noopener noreferrer"
+    >regulatory restrictions on moving water from other bodies of water into our water supply,
+    though, ones which would be complicated to circumvent (timestamp 1:28:10)</a
+  >.
+  <a
+    href="http://haverhillcommunitytv.org/video/haverhill-city-council-planning-development-committee-meeting-october-19-2026"
+    target="_blank"
+    rel="external noopener noreferrer"
+    >Transporting that water would also be extremely expensive (timestamp 1:27:30)</a
+  >, significantly more than other options available to the city to supplement our water supply.
 </p>
 
 <h2>Consumption</h2>
@@ -294,9 +304,21 @@
     rel="external noopener noreferrer">heavy industry use (timestamp 1:18:41)</a
   >, so much so that in 2025 they represented
   <a href={Router.reference("cy25-water-usage.xlsx")}>51.06% of our total water usage</a>. It was
-  implied in the September drought update that voluntary conservation has not had a significant
-  impact (timstamp 1:19:14) and the city is currently investigating tiered pricing to create a
-  stronger incentive for these businesses (timestamp 1:32:20).
+  <a
+    href="http://haverhillcommunitytv.org/video/haverhill-city-council-meeting-september-15-2026"
+    target="_blank"
+    rel="external noopener noreferrer"
+    >implied in the September drought update that voluntary conservation has not had a significant
+    impact (timestamp 1:19:14)</a
+  >
+  and
+  <a
+    href="http://haverhillcommunitytv.org/video/haverhill-city-council-meeting-september-15-2026"
+    target="_blank"
+    rel="external noopener noreferrer"
+    >the city is currently investigating tiered pricing to create a stronger incentive for these
+    businesses (timestamp 1:32:20)</a
+  >.
 </p>
 
 <p>
