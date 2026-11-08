@@ -302,8 +302,9 @@
     href="http://haverhillcommunitytv.org/video/haverhill-city-council-meeting-september-15-2026"
     target="_blank"
     rel="external noopener noreferrer">heavy industry use (timestamp 1:18:41)</a
-  >, so much so that in 2025 they represented
-  <a href={Router.reference("cy25-water-usage.xlsx")}>51.06% of our total water usage</a>. It was
+  >, in 2025
+  <a href={Router.reference("cy25-water-usage.xlsx")}>51.06% of our total water usage</a> was from
+  that sector. It was
   <a
     href="http://haverhillcommunitytv.org/video/haverhill-city-council-meeting-september-15-2026"
     target="_blank"
