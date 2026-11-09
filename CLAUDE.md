@@ -22,10 +22,7 @@ rest is read by hand off the city's pages and the Council's own video, each
 figure cited where it is used. See
 [docs/drought-pages.md](docs/drought-pages.md).
 
-**It is deliberately linked from nowhere** -- not the bar, not the front page
--- while its owner gathers feedback on it and keeps it off the site's own
-paths. A reader reaches it only by being given the address. Do not add a link
-to it. `/water` was the placeholder this grew out of, a hand-kept
+`/water` was the placeholder this grew out of, a hand-kept
 `src/lib/water.ts` of city figures with a conservation calculator and a
 production chart over fabricated data; it was deleted on 2026-11-07, since
 leaving two pages about one drought meant publishing the superseded one.
