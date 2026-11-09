@@ -25,6 +25,11 @@ export class Router {
     return path("/")
   }
 
+  /** The drought guide, linked from the bar's Issues menu. */
+  static drought(): string {
+    return path("/drought")
+  }
+
   /**
    * The month calendar of agendas and minutes, on whichever month is current.
    *
