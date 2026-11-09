@@ -405,6 +405,18 @@ bargain [`BudgetTimeline`](../src/lib/BudgetTimeline.svelte) makes for its own
 today mark. A build older than the month it ran in serves a stale ring for one
 frame and corrects itself.
 
+**Today is tinted, named and scrolled to.** The grid's cell is ringed, tinted
+amber, its number a filled badge with "Today" beside it, and it carries
+`aria-current="date"`; the phone list gives today an entry of its own even on a
+day with no sittings ("No meetings today."), so there is always something to
+land on. Opening the current month scrolls to it -- the list's day to the top
+of the window, the grid's cell only as far as `nearest`, which on a wide screen
+usually means not at all. It is `afterNavigate` rather than `onMount` because
+Prev and Next reuse the component, and it stands down going Back or when the
+address names a fragment. Both carry `data-today`, which is what the scroll
+finds; the grid and the list are both in the document, so it takes the one
+with a box.
+
 ## Prerendering
 
 The whole site is prerendered. `src/routes/+layout.ts` contains:
