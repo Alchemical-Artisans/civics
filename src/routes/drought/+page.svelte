@@ -5,7 +5,10 @@
   import KenozaLevelChart from "$lib/KenozaLevelChart.svelte"
   import PopulationChart from "$lib/PopulationChart.svelte"
   import RainfallChart from "$lib/RainfallChart.svelte"
+  import ShareButton from "$lib/ShareButton.svelte"
+  import ShareMeta from "$lib/ShareMeta.svelte"
   import WaterUsageChart from "$lib/WaterUsageChart.svelte"
+  import { formatLongDate } from "$lib/calendar"
   import { POPULATION } from "$lib/population"
   import { WATER_USAGE } from "$lib/water-usage"
   import { Router } from "$lib/router"
@@ -14,6 +17,14 @@
   import waterBodies from "$lib/data/water-bodies.json"
 
   let { data } = $props()
+
+  // The page's public address and the words a share goes with. Shared the
+  // way a project page is: the card a link unfurls as is `ShareMeta`'s, and
+  // the posted link is the same address. The title is the one `<svelte:head>`
+  // sets below, so a card and a tab cannot name the page differently.
+  const TITLE = "Haverhill Drought Guide"
+  const sharedUrl = Router.absolute("/drought")
+  const description = "An in depth guide to Haverhill's drought."
 
   // The waters Haverhill's public system draws from, and the land that drains
   // to each. See scripts/lib/water-bodies.mjs for where the supply list, the
@@ -91,11 +102,24 @@
      reader says on load were all the bare URL. "Drought" alone is the
      heading's word and says nothing about whose drought; the title is the
      one piece of this page that is read with no page around it. -->
+<ShareMeta url={sharedUrl} title={TITLE} {description} />
+
 <svelte:head>
-  <title>Haverhill Drought Guide</title>
+  <title>{TITLE}</title>
 </svelte:head>
 
 <h1>Drought</h1>
+
+<!-- The day this build ran, in the city. The layout's server load gives it,
+     so the served page and a reader's own clock cannot disagree about it. -->
+<p class="m-0 mt-1 flex flex-wrap items-baseline gap-x-2 text-sm text-slate-600">
+  <span class="font-semibold text-slate-700">Published</span>
+  <span>{formatLongDate(data.today)}</span>
+</p>
+
+<div class="mt-2">
+  <ShareButton url={sharedUrl} text={TITLE} />
+</div>
 
 <p>
   Recently, Haverhill's water supply <a
