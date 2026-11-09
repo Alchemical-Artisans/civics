@@ -12,7 +12,8 @@
   } from "$lib/calendar"
   import CalendarViews from "$lib/CalendarViews.svelte"
   import { Router } from "$lib/router"
-  import { onMount } from "svelte"
+  import { afterNavigate } from "$app/navigation"
+  import { onMount, tick } from "svelte"
 
   let { data } = $props()
 
@@ -56,6 +57,35 @@
     inTheBrowser = easternDate()
   })
   const today = $derived(inTheBrowser ?? data.today)
+
+  /**
+   * Opening the month we are in puts today on screen.
+   *
+   * On a phone the month is a list of days running well past the fold, and by
+   * the second half of a month the day a reader came for is several screens
+   * down. On a wide screen the grid mostly fits, so the grid's cell asks only
+   * for `nearest` -- no scroll at all where it is already in view -- while the
+   * list's day goes to the top of the window, being the start of what is ahead.
+   *
+   * `afterNavigate` rather than `onMount`, because Prev and Next reuse this
+   * component: arriving at the current month from the one before is a
+   * navigation, not a mount, and should land in the same place. It runs after
+   * SvelteKit's own scroll handling, so this has the last word -- except going
+   * Back, where the reader's own saved position wins, and an address naming a
+   * fragment, which has said where it wants to be. Both the grid and the list
+   * are in the document with one of them `display: none`; the one with a box
+   * is the one being read.
+   */
+  afterNavigate(async ({ type, to }) => {
+    if (type === "popstate" || to?.url.hash) return
+    await tick()
+    const day = easternDate()
+    if (!day.startsWith(month)) return
+    const target = [...document.querySelectorAll<HTMLElement>(`[data-today="${day}"]`)].find(
+      (el) => el.getClientRects().length > 0,
+    )
+    target?.scrollIntoView({ block: target.tagName === "TD" ? "nearest" : "start" })
+  })
 
   // A plain array rather than a `SvelteSet`, so it can bind directly to the
   // multi-select below -- Svelte's two-way binding for `<select multiple>`
@@ -105,6 +135,20 @@
       .flat()
       .filter((c) => c.inMonth && byDate.has(c.date))
       .map((c) => ({ ...c, items: byDate.get(c.date)! })),
+  )
+  /**
+   * The phone list's days: those with meetings, and today whether or not it
+   * has any. Today is where the list scrolls to and the reader's bearing in it,
+   * so a quiet day still gets its own entry -- otherwise "today" on a list of
+   * meeting days would be an absence between two dates the reader has to
+   * notice for themselves.
+   */
+  const listDays = $derived(
+    today.startsWith(month) && !monthDays.some((d) => d.date === today)
+      ? [...monthDays, { date: today, items: [] as Meeting[] }].sort((a, b) =>
+          a.date.localeCompare(b.date),
+        )
+      : monthDays,
   )
   const monthCount = $derived(monthDays.reduce((n, d) => n + d.items.length, 0))
   const monthDocuments = $derived(
@@ -369,21 +413,39 @@
       {#each weeks as week, w (w)}
         <tr>
           {#each week as cell (cell.date)}
+            <!-- Today is tinted as well as ringed, and its number drawn as a
+                 filled badge with the word beside it: a ring alone is a thin
+                 line among forty-two bordered cells, easy to miss on the very
+                 day the reader opened the month to look at. -->
             <td
-              class="h-28 border border-slate-200 p-1 align-top {cell.inMonth
-                ? 'bg-white'
-                : 'bg-slate-50'} {cell.isToday ? 'ring-2 ring-amber-400 ring-inset' : ''}"
+              data-today={cell.isToday ? cell.date : undefined}
+              aria-current={cell.isToday ? "date" : undefined}
+              class="h-28 border border-slate-200 p-1 align-top {cell.isToday
+                ? 'bg-amber-50 ring-2 ring-amber-400 ring-inset'
+                : cell.inMonth
+                  ? 'bg-white'
+                  : 'bg-slate-50'}"
             >
               <div
-                class="mb-1 text-right text-xs font-medium {cell.inMonth
+                class="mb-1 flex items-center justify-end gap-1 text-xs font-medium {cell.inMonth
                   ? 'text-slate-700'
                   : 'text-slate-400'}"
               >
+                {#if cell.isToday}
+                  <span
+                    class="text-[10px] font-semibold tracking-wide text-amber-800 uppercase"
+                    aria-hidden="true">Today</span
+                  >
+                {/if}
                 {#if cell.inMonth}
                   <a
                     href={Router.calendarDay(cell.date)}
-                    class="rounded px-1 no-underline hover:bg-slate-100 hover:underline"
-                    ><span class="sr-only">{formatLongDate(cell.date)}: </span>{cell.day}</a
+                    class="rounded px-1 no-underline {cell.isToday
+                      ? 'bg-amber-400 font-semibold text-amber-950 hover:bg-amber-500'
+                      : 'hover:bg-slate-100'} hover:underline"
+                    ><span class="sr-only"
+                      >{cell.isToday ? "Today, " : ""}{formatLongDate(cell.date)}:
+                    </span>{cell.day}</a
                   >
                 {:else}
                   {cell.day}
@@ -456,49 +518,69 @@
 
   <!-- Agenda list (narrow screens, and a text alternative to the grid) -->
   <div class="md:hidden">
-    {#if monthDays.length === 0}
+    {#if listDays.length === 0}
       <p class="rounded-lg border border-slate-200 p-6 text-center text-slate-500">
         No meetings in {formatMonth(month)} for the selected filters.
       </p>
     {:else}
       <ul class="space-y-4">
-        {#each monthDays as day (day.date)}
-          <li class="rounded-lg border border-slate-200">
+        {#each listDays as day (day.date)}
+          {@const isToday = day.date === today}
+          <li
+            data-today={isToday ? day.date : undefined}
+            aria-current={isToday ? "date" : undefined}
+            class="scroll-mt-4 rounded-lg border {isToday
+              ? 'border-amber-400 ring-1 ring-amber-400'
+              : 'border-slate-200'}"
+          >
             <h3
-              class="border-b border-slate-200 bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-800"
+              class="flex items-center justify-between gap-2 border-b px-3 py-2 text-sm font-semibold text-slate-800 {isToday
+                ? 'border-amber-300 bg-amber-100'
+                : 'border-slate-200 bg-slate-50'}"
             >
               <a class="no-underline hover:underline" href={Router.calendarDay(day.date)}
                 >{formatLongDate(day.date)}</a
               >
+              {#if isToday}
+                <span
+                  class="rounded bg-amber-400 px-1.5 py-0.5 text-[11px] font-semibold tracking-wide text-amber-950 uppercase"
+                  >Today</span
+                >
+              {/if}
             </h3>
-            <ul class="divide-y divide-slate-100">
-              {#each day.items as m (m.id)}
-                <li class="px-3 py-2">
-                  <a href={linkFor(m)} class="block no-underline hover:underline">
-                    <span class="text-sm font-medium text-slate-900">{m.board}</span>
-                    <!-- After the name rather than before it, the opposite of
+            {#if day.items.length === 0}
+              <p class="m-0 px-3 py-2 text-sm text-slate-500">No meetings today.</p>
+            {:else}
+              <ul class="divide-y divide-slate-100">
+                {#each day.items as m (m.id)}
+                  <li class="px-3 py-2">
+                    <a href={linkFor(m)} class="block no-underline hover:underline">
+                      <span class="text-sm font-medium text-slate-900">{m.board}</span>
+                      <!-- After the name rather than before it, the opposite of
                          the grid: the day is already this group's own heading,
                          so the hour is a detail of the sitting here rather than
                          the thing that orders a cell's worth of them. -->
-                    {#if statedTime(m)}
-                      <span class="ml-2 text-sm text-slate-500 tabular-nums">{statedTime(m)}</span>
-                    {/if}
-                    {#each m.documents as doc, i (i)}
-                      <span class="ml-2 rounded px-1.5 py-0.5 text-[11px] {kindClass(doc.kind)}">
-                        {doc.kind}
-                      </span>
-                    {/each}
-                    {#if m.scheduled}
-                      <span
-                        class="ml-2 rounded border border-dashed border-slate-500 px-1.5 py-0.5 text-[11px] text-slate-600"
-                      >
-                        expected
-                      </span>
-                    {/if}
-                  </a>
-                </li>
-              {/each}
-            </ul>
+                      {#if statedTime(m)}
+                        <span class="ml-2 text-sm text-slate-500 tabular-nums">{statedTime(m)}</span
+                        >
+                      {/if}
+                      {#each m.documents as doc, i (i)}
+                        <span class="ml-2 rounded px-1.5 py-0.5 text-[11px] {kindClass(doc.kind)}">
+                          {doc.kind}
+                        </span>
+                      {/each}
+                      {#if m.scheduled}
+                        <span
+                          class="ml-2 rounded border border-dashed border-slate-500 px-1.5 py-0.5 text-[11px] text-slate-600"
+                        >
+                          expected
+                        </span>
+                      {/if}
+                    </a>
+                  </li>
+                {/each}
+              </ul>
+            {/if}
           </li>
         {/each}
       </ul>

@@ -187,6 +187,30 @@ test.describe("meeting calendar", () => {
     await expect(cell).toContainText(String(Number(TODAY.slice(8))))
   })
 
+  test("tints today and names it, in the grid and the phone list", async ({ page }) => {
+    const cell = page.locator(`td[data-today="${TODAY}"]`)
+    await expect(cell).toHaveAttribute("aria-current", "date")
+    await expect(cell).toHaveClass(/bg-amber-50/)
+    await expect(cell).toContainText("Today")
+
+    // The list carries today even on a day with no sittings, so there is
+    // always an entry to land on.
+    await page.setViewportSize({ width: 390, height: 700 })
+    const day = page.locator(`li[data-today="${TODAY}"]`)
+    await expect(day).toBeVisible()
+    await expect(day).toHaveAttribute("aria-current", "date")
+    await expect(day.getByText("Today", { exact: true })).toBeVisible()
+  })
+
+  test("opening the month on a phone scrolls to today", async ({ browser }) => {
+    const context = await browser.newContext({ viewport: { width: 390, height: 700 } })
+    const phone = await context.newPage()
+    await phone.goto(CALENDAR)
+    const day = phone.locator(`li[data-today="${TODAY}"]`)
+    await expect(day).toBeInViewport()
+    await context.close()
+  })
+
   test("a month outside the calendar's range has no page", async ({ page }) => {
     // `entries()` names every month from the earliest document to the end of
     // the year the Council's rule projects to; nothing here is dynamic, so a
