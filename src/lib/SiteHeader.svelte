@@ -46,6 +46,7 @@
   // routes rather than moving under `/projects`.
   const current = $derived({
     projects: within("/projects") || within("/budget"),
+    issues: within("/drought"),
     calendar: within("/calendar"),
   })
 
@@ -242,6 +243,23 @@
             </button>
           </li>
         {/if}
+      </HeaderMenu>
+
+      <!--
+        Issues: the city's problems the site has written up at length, each a
+        page of its own. Like Projects there is no index behind the word, so it
+        opens the menu rather than going anywhere; the menu holds the links.
+      -->
+      <HeaderMenu label="Issues" current={current.issues} id="issue-list" toggle="every issue">
+        <li class="px-2 py-1 hover:bg-slate-50">
+          <a
+            class="font-medium text-slate-900 underline decoration-slate-300 hover:decoration-slate-900"
+            href={Router.drought()}
+            aria-current={current.issues ? "true" : undefined}
+          >
+            Drought
+          </a>
+        </li>
       </HeaderMenu>
 
       <a
