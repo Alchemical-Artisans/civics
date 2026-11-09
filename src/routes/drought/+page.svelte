@@ -24,8 +24,7 @@
   // sets below, so a card and a tab cannot name the page differently.
   const TITLE = "Haverhill Drought Guide"
   const sharedUrl = Router.absolute("/drought")
-  const description =
-    "Haverhill's drought: the water supply the city draws from, the rainfall behind it, and what has been said about it at public meetings."
+  const description = "An in depth guide to Haverhill's drought."
 
   // The waters Haverhill's public system draws from, and the land that drains
   // to each. See scripts/lib/water-bodies.mjs for where the supply list, the
