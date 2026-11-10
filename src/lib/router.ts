@@ -425,6 +425,20 @@ export class Router {
   }
 
   /**
+   * One record on the city's permit portal, which is OpenGov rather than
+   * haverhillma.gov -- the application behind an agenda item, with the files
+   * the packet does not reproduce. Not a route here, and in this class for the
+   * same reason `cityPage` is.
+   *
+   * The id is OpenGov's own and is not derivable from the record number the
+   * agenda prints; `$lib/permits.ts` holds the hand-copied map between them and
+   * says why it has to be one.
+   */
+  static permitRecord(id: number): string {
+    return `https://haverhillma.portal.opengov.com/records/${id}`
+  }
+
+  /**
    * A place on a map. Also not a route here, and for the same reason as
    * `cityPage`: a document page links out to where its meeting is held, and
    * the spelling of that URL belongs with the rest of them.

@@ -1,5 +1,6 @@
 <script lang="ts">
   import AddressMap from "$lib/AddressMap.svelte"
+  import PermitRecord from "$lib/PermitRecord.svelte"
   import { Router } from "$lib/router"
 
   const MEETING = "city-council-2026-10-06"
@@ -7,10 +8,11 @@
 </script>
 
 <p>
-  <strong>Doc 21-J</strong>- <strong>CCSP-26-7</strong> &ndash;Matt Silva for Sterling Commonwealth Builders
-  requests approval to demolish existing single-family residence and construct three (3) attached townhouse
-  condominium units on a single parcel at 27 Marshland St in the RH (Residential High) Zone. Each unit
-  is proposed to contain three (3) bedrooms, 2 and one-half bathrooms, and an attached two-car garage
+  <strong>Doc 21-J</strong>- <strong><PermitRecord number="CCSP-26-7" /></strong> &ndash;Matt Silva for
+  Sterling Commonwealth Builders requests approval to demolish existing single-family residence and construct
+  three (3) attached townhouse condominium units on a single parcel at 27 Marshland St in the RH (Residential
+  High) Zone. Each unit is proposed to contain three (3) bedrooms, 2 and one-half bathrooms, and an attached
+  two-car garage
 </p>
 
 <p class="text-right"><strong>Continued from September 15, 2026</strong></p>
