@@ -19,6 +19,49 @@ import { TIMEZONE, easternDate, weekOf } from "./calendar"
 /** Join the base path to a root-relative path, e.g. `/calendar`. */
 const path = (route: `/${string}`): string => `${base}${route}`
 
+/**
+ * Where the excerpt store is served from, with no trailing slash.
+ *
+ * The excerpts are the one part of this site that is not in the repository.
+ * There are 622 of them and they weigh 483 MB, which was 63% of a deploy
+ * artifact that had reached 767 MB against GitHub Pages' 1 GB ceiling. That
+ * is where it stopped publishing: two deploys in a row sat in `syncing_files`
+ * for ten minutes and then aborted. So they live in a Google Cloud Storage
+ * bucket, which is the only copy -- see `infra/` for the bucket and
+ * `npm run excerpts:upload` for how a file gets into it.
+ *
+ * **A bucket of ours, which is not the same as the city's CDN.** The promise
+ * the whole scrape rests on is that the reader's browser never talks to
+ * haverhillma.gov, so that a page cannot be changed or taken down under us.
+ * A store we own and upload to keeps that promise; hotlinking the city would
+ * break it. What moved is where our copy is served from, not whose copy it
+ * is.
+ *
+ * **It is an absolute URL, so `base` is not applied.** Every other route here
+ * is a path on this site and goes through `path()`; these are not, and
+ * prefixing a relative base to an absolute URL would corrupt it.
+ *
+ * This is the whole of what has to change to move the store. The site is
+ * fully prerendered and rebuilt on every push, so editing this line and
+ * pushing re-points every excerpt link on the site -- there is nothing to
+ * migrate. Two follow-ons are already in view:
+ *
+ *   - `https://files.alchemicalartisans.com`, once a subdomain is pointed
+ *     here. A plain CNAME to a bucket serves HTTP only, so that needs either
+ *     Gandi's web forwarding (which does not document whether it keeps the
+ *     path, and so has to be tested against a real excerpt URL before this
+ *     line is changed), a proxy in front of the bucket, or an HTTPS load
+ *     balancer.
+ *   - the `excerpts/` prefix below, which is why the bucket is named for
+ *     files rather than for excerpts: `static/references/` is a second small
+ *     store of the same kind, and it can join this one under its own prefix
+ *     without the URLs reading oddly.
+ *
+ * The bucket named here is the one `infra/main.tf` creates, and
+ * `router.spec.ts` fails if the two ever disagree.
+ */
+const EXCERPT_ORIGIN = "https://storage.googleapis.com/haverhill-civics-files"
+
 export class Router {
   /** The landing page. */
   static home(): string {
@@ -130,15 +173,15 @@ export class Router {
    * item that rests on a letter or a plan can link to just that letter rather
    * than to a 200-page packet the reader then has to search.
    *
-   * Committed under `static/excerpts/<meeting id>/`, so this is a path on this
-   * site rather than one of the city's -- and it takes the base path, which is
-   * why it belongs here rather than being written out in a template.
+   * Stored under `excerpts/<meeting id>/` in the bucket `EXCERPT_ORIGIN`
+   * names, which is where the comment on it explains why this is somebody
+   * else's host and still our own copy.
    *
    * `name` may carry a directory of its own, `<item>/<document>`, for an item
    * whose packet is several separate documents rather than one.
    */
   static excerpt(id: string, name: string): string {
-    return path(`/excerpts/${id}/${name}.pdf`)
+    return `${EXCERPT_ORIGIN}/excerpts/${id}/${name}.pdf`
   }
 
   /**
@@ -146,15 +189,15 @@ export class Router {
    * because almost everything the city publishes is one, and this takes the
    * filename whole instead.
    *
-   * What it is for is a figure the city drew. `/issues/drought` shows the Water
-   * Department's own Kenoza Lake chart rather than redrawing it, and the
-   * image has to be served from here: the build is offline and the reader's
-   * browser never talks to the city's servers, so hotlinking the city's CDN
-   * would break the one promise the whole scrape is built on -- and leave the
-   * page dependent on a file the city can replace or move, which it does.
+   * What it is for is a figure the city drew. `/issues/drought` shows the
+   * Water Department's own Kenoza Lake chart rather than redrawing it, and
+   * the image is served from our own store rather than the city's CDN, so the
+   * page does not depend on a file the city can replace or move, which it
+   * does. That it is now a bucket of ours rather than a directory of ours
+   * changes nothing about that -- see `EXCERPT_ORIGIN`.
    */
   static excerptFile(id: string, file: string): string {
-    return path(`/excerpts/${id}/${file}`)
+    return `${EXCERPT_ORIGIN}/excerpts/${id}/${file}`
   }
 
   /**
@@ -166,9 +209,13 @@ export class Router {
    * between residential and commercial use that `/issues/drought` quotes is in no
    * document on haverhillma.gov.
    *
-   * It is here for the same reason `excerptFile` is -- the build is offline
-   * and the reader's browser never fetches from anyone else's server -- and
-   * it carries the base path the same way. A copy also outlasts the asking:
+   * It is here for the same reason `excerptFile` is -- a copy of ours, so the
+   * page does not depend on a file its publisher can move. Unlike
+   * `excerptFile` it is still served from the build and still carries the base
+   * path: two files weighing 176 KB were no part of what made the excerpts
+   * worth moving out, and `EXCERPT_ORIGIN` explains why the bucket is
+   * nonetheless named for files rather than excerpts, so these could follow
+   * under a prefix of their own if they ever grow. A copy also outlasts the asking:
    * the sheet is what a reader has to check the percentages against, and
    * there is no page anywhere to link instead. The page that shows one links
    * the report it came out of where there is one, so the figure can be read

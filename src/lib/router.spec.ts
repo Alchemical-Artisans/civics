@@ -66,9 +66,17 @@ describe("Router", () => {
     )
   })
 
-  it("builds an excerpt path beneath its meeting", () => {
+  /**
+   * The excerpt store is a bucket of ours rather than a directory of the
+   * build, so these two are the only routes here that come out as whole URLs
+   * -- and the only ones that must *not* carry the base path. A relative base
+   * prefixed to an absolute URL would corrupt every one of them, which is the
+   * failure this pins.
+   */
+  it("builds an excerpt URL in the store, beneath its meeting", () => {
     expect(Router.excerpt("city-council-2026-08-25", "surplus-city-vehicles/order")).toBe(
-      "/excerpts/city-council-2026-08-25/surplus-city-vehicles/order.pdf",
+      "https://storage.googleapis.com/haverhill-civics-files/excerpts/" +
+        "city-council-2026-08-25/surplus-city-vehicles/order.pdf",
     )
   })
 
@@ -78,10 +86,13 @@ describe("Router", () => {
    * extension appended for it would make the method useless for the one case
    * it exists for.
    */
-  it("builds an excerpt path for a file that is not a PDF", () => {
+  it("builds an excerpt URL for a file that is not a PDF", () => {
     expect(
       Router.excerptFile("city-council-2026-09-15", "drought-emergency-update/drought-chart.png"),
-    ).toBe("/excerpts/city-council-2026-09-15/drought-emergency-update/drought-chart.png")
+    ).toBe(
+      "https://storage.googleapis.com/haverhill-civics-files/excerpts/" +
+        "city-council-2026-09-15/drought-emergency-update/drought-chart.png",
+    )
   })
 
   it("sends records with no document to the city's own page", () => {

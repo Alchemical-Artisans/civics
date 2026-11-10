@@ -22,7 +22,7 @@ import type { Redline } from "$lib/redline"
  * column rule, not a word of ours. Both rows are unchanged either way.
  *
  * Source: `marked-ordinance.pdf` in
- * `static/excerpts/city-council-2026-10-20/all-night-parking-ordinance/`, and
+ * `excerpts/city-council-2026-10-20/all-night-parking-ordinance/`, and
  * the same document in the 29 September packet, where the Council gave the
  * order its first reading. The enacting clause above the section ("BE IT
  * ORDERED ...") is the order's, not the section's, and stays on the item page.

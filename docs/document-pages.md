@@ -200,24 +200,39 @@ in the page's `+page.ts` comment which agenda items it stands for.
 
 An item that rests on a letter or a plan can link to just those pages instead of
 a packet running to hundreds. Cut them out of the cached original with poppler
-and commit the result under `static/excerpts/<id>/`:
+into `excerpts/<id>/`:
 
 ```sh
 pdfseparate -f 7 -l 7 .cache/documents/<id>.pdf \
-  static/excerpts/<id>/<item-slug>.pdf
+  excerpts/<id>/<item-slug>.pdf
 ```
 
-Link it with `Router.excerpt(id, slug)`, which applies the base path. Keep the
-link to the full document as well — the excerpt is a convenience, and the city's
-complete file stays the record. Note the page numbers are the PDF's, not the
-agenda's own numbering, and that `.cache/` is gitignored, so re-cutting an
-excerpt means fetching the original again.
+Link it with `Router.excerpt(id, slug)`. Keep the link to the full document as
+well — the excerpt is a convenience, and the city's complete file stays the
+record. Note the page numbers are the PDF's, not the agenda's own numbering,
+and that `.cache/` is gitignored, so re-cutting an excerpt means fetching the
+original again.
+
+**`excerpts/` is not committed, and a new excerpt is not published until it is
+uploaded:**
+
+```sh
+npm run excerpts:upload
+```
+
+The store is a Google Cloud Storage bucket, and the bucket is the only copy —
+622 files weighing 483 MB, which is what GitHub Pages could no longer publish
+with the site. `Router.excerpt` returns an absolute URL into it rather than a
+path on this site, so it is the one route that does not take the base path.
+A page linking an excerpt that was never uploaded builds and deploys perfectly
+and 404s for the reader, which is why the upload belongs in the same sitting as
+the write-up. See [infra/README.md](../infra/README.md).
 
 Often the pages behind one item are not one document but several — a
 transmittal letter, the department's letter under it, the order, a cost sheet.
 Cut them apart along those seams rather than into a single run of pages, and
 give them a directory named after the item:
-`static/excerpts/<id>/<item-slug>/<document-slug>.pdf`, reached with
+`excerpts/<id>/<item-slug>/<document-slug>.pdf`, reached with
 `Router.excerpt(id, "<item-slug>/<document-slug>")`. `pdfseparate` writes one
 file per page, so a document spanning two of them is cut singly and stitched
 back with `pdfunite`.
@@ -345,8 +360,8 @@ src/routes/calendar/meetings/<id>/<item>/        a page for one agenda item
 src/routes/calendar/meetings/[meeting]/          every meeting nobody wrote up
 src/routes/calendar/meetings/+layout.svelte      the header around all of them
 src/routes/calendar/meetings/+layout.ts          looks a sitting up by its id
-static/excerpts/<id>/<item>.pdf                  pages cut out of the original
-static/excerpts/<id>/<item>/<document>.pdf       when an item rests on several
+excerpts/<id>/<item>.pdf                         pages cut out of the original
+excerpts/<id>/<item>/<document>.pdf              when an item rests on several
 scripts/lib/documents.mjs                        ids, and which ids have a page
 ```
 

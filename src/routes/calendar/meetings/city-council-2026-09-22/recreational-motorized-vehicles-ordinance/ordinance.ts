@@ -20,7 +20,7 @@ import type { Redline } from "$lib/redline"
  * It is entered here as added, and `ordinance.spec.ts` pins that, so the
  * reading is stated rather than buried in the data.
  *
- * Sources, both in `static/excerpts/city-council-2026-09-22/` and again in
+ * Sources, both in `excerpts/city-council-2026-09-22/` and again in
  * the 6 October packet: `ordinance-amendments-marked.pdf`, the marked copy.
  * The enacting clause above the article ("BE IT ORDAINED ...") is the order's,
  * not the article's, and stays on the item page.

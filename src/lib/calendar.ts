@@ -510,8 +510,8 @@ export type HighlightReason =
   | {
       kind: "opposition-on-record"
       /**
-       * The communications, each one an excerpt committed under
-       * `static/excerpts/`: `meeting` and `excerpt` are `Router.excerpt`'s two
+       * The communications, each one an excerpt published in the store
+       * under `excerpts/`: `meeting` and `excerpt` are `Router.excerpt`'s two
        * arguments, so the letter cited here is the one file a reader of this
        * source can open and check. The packet a letter is in is often an
        * earlier sitting's, which is why the meeting is named rather than

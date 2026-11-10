@@ -1,0 +1,3 @@
+# Copy to terraform.tfvars and fill in. The project is the only value that has
+# no sensible default; everything else is in variables.tf.
+project_id = "your-project-id"

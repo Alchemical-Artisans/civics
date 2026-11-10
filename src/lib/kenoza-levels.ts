@@ -33,7 +33,7 @@
  * https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/ceboffkx/drought-status-9-15-2026.png
  * The same chart was shown to the City Council on September 15, 2026 and is
  * committed as a PDF excerpt at
- * `static/excerpts/city-council-2026-09-15/drought-emergency-update/`.
+ * `excerpts/city-council-2026-09-15/drought-emergency-update/`.
  * Accessed October 26, 2026.
  *
  * ## How it was read

@@ -43,3 +43,32 @@ water-data
 
 # Emacs lock files -- symlinks to "user@host:pid", committed once by a stray `git add -A`
 .#*
+
+# The excerpt store. A few pages cut out of a document's PDF and published
+# beside it, so an item resting on one letter can link to that letter rather
+# than to a 200-page packet. There are 622 of them and they weigh 483 MB --
+# 63% of a deploy artifact that had reached 767 MB against GitHub Pages' 1 GB
+# ceiling, which is where it started timing out: the deploy job spent ten
+# minutes in `syncing_files` and then aborted, twice. So the files live in
+# Google Cloud Storage now and the bucket is the only copy --
+# `Router.excerpt` points straight at it. See infra/ for the bucket and
+# `npm run excerpts:upload` for how one gets there.
+#
+# Gitignored rather than merely moved out of `static/`, so the repository
+# stops growing by ~50 MB a Council packet. The bucket keeps every version of
+# every object, which is what stands in for the history git is no longer
+# keeping. `npm run excerpts:download` fetches the corpus into a fresh
+# checkout.
+/excerpts/
+
+# OpenTofu's working directory and state. State names the bucket and its
+# generation numbers rather than any secret, but it is machine-written and
+# belongs to whoever applied it, not to the repository.
+#
+# `.terraform.lock.hcl` is deliberately NOT here: it pins the provider
+# versions an apply resolved, the same job package-lock.json does, so it is
+# committed and everyone applies against the same provider.
+.terraform/
+*.tfstate
+*.tfstate.*
+/infra/terraform.tfvars
