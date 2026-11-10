@@ -26,6 +26,35 @@ that split is what lets the deployment URL show up on the run.
 Concurrency is `group: pages` with `cancel-in-progress: false`. One deploy at a
 time, and a queued run waits rather than cancelling one mid-publish.
 
+## What is not in the artifact
+
+**The document excerpts.** 622 files weighing 483 MB, for files a reader
+reaches only by following a link off a meeting page. They were 63% of an
+artifact that had reached 767 MB against Pages' 1 GB ceiling, and that is where
+it stopped publishing: the deploy job sat in `syncing_files` for ten minutes
+and then printed `Timeout reached, aborting!`, on
+[run 42838157185](https://github.com/Alchemical-Artisans/civics/actions/runs/42838157185)
+and the one before it, with the build itself green both times. Each transcribed
+Council packet was taking another ~50 MB of what headroom was left.
+
+What remains is 283 MB over 17,464 files, and the excerpts are no longer the
+biggest thing in it: `/calendar/day` is 10,906 files and 165 MB, `/calendar/week`
+another 1,558 and 29 MB — a page per day and per week since 2012, added in
+October 2026. Together they are over half the artifact, and they are the next
+thing to look at if it becomes a problem again.
+
+So they are gitignored, they live in a Google Cloud Storage bucket, and
+`Router.excerpt` returns an absolute URL into it. Nothing in this workflow
+touches them: a deploy neither uploads nor checks them, the same way it does
+not scrape. `npm run excerpts:upload` publishes an excerpt, by hand, and
+[infra/README.md](../infra/README.md) is the bucket.
+
+The trade is that a broken excerpt link cannot fail the build. A page linking a
+file nobody uploaded prerenders, deploys green and 404s for the reader, because
+as far as the build is concerned the link is an absolute URL to another host —
+which is why the upload is written into the transcription procedure rather than
+left to be remembered.
+
 ## One-time setup on GitHub
 
 - **Settings → Pages → Build and deployment → Source: GitHub Actions.** Without

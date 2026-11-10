@@ -29,7 +29,7 @@
   /**
    * The excerpt it is cut from: the Water Department's drought update to the
    * City Council of September 15, 2026, whose pages are committed under
-   * `static/excerpts/`.
+   * `excerpts/`.
    */
   const MEETING = "city-council-2026-09-15"
   const CHART = "drought-emergency-update/drought-chart.png"

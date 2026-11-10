@@ -162,9 +162,15 @@ src/routes/calendar/
   documents/page.svelte.e2e.ts end-to-end tests for them
 
 static/
-  excerpts/<id>/*.pdf      pages cut out of a document's PDF for one item
   CNAME                    the custom domain, published with the build
   .nojekyll                stops GitHub Pages discarding _app/
+  references/              a source with no meeting to file it under
+
+excerpts/<id>/*.pdf        pages cut out of a document's PDF for one item --
+                           gitignored and served from a bucket, not the build
+
+infra/
+  main.tf                  the excerpt bucket; see infra/README.md
 
 .github/workflows/
   deploy.yml               build and publish to GitHub Pages on push to main

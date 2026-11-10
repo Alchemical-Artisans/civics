@@ -210,10 +210,13 @@ which bodies to consider, and the shapes drawn are always the NHD's own.
 ## Kenoza Lake's level
 
 **The page shows the city's own chart, and does not redraw it.**
-`static/excerpts/city-council-2026-09-15/drought-emergency-update/drought-chart.png`
-is the Water Department's figure as published, committed beside the PDF of the
-same chart that was already there, and rendered with `Router.excerptFile` --
-`excerpt()` appends `.pdf`, so a non-PDF needed a door of its own.
+`excerpts/city-council-2026-09-15/drought-emergency-update/drought-chart.png`
+is the Water Department's figure as published, published in the excerpt store
+beside the PDF of the same chart that was already there, and rendered with
+`Router.excerptFile` -- `excerpt()` appends `.pdf`, so a non-PDF needed a door
+of its own. It is the one `<img>` on the site served from the store rather than
+from the build; what that changed and did not change is `EXCERPT_ORIGIN`'s own
+comment in `src/lib/router.ts`.
 
 **Floated left of the paragraph beside it**, which a float can do here where
 it could not for the rainfall chart: a float shortens the _line boxes_ of the

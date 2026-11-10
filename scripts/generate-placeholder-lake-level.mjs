@@ -11,7 +11,7 @@
  *
  * Unlike the consumption placeholder, this one isn't shaped from nothing:
  * the city's own September 15, 2026 Council packet includes a chart --
- * static/excerpts/city-council-2026-09-15/drought-emergency-update/drought-chart.pdf
+ * excerpts/city-council-2026-09-15/drought-emergency-update/drought-chart.pdf
  * -- plotting Kenoza Lake's "36-Year Average Level" across the calendar
  * year. That curve is real and published, but only as an image; the city
  * has never printed its coordinates as numbers, so AVERAGE_LEVEL_BY_MONTH_START
@@ -43,7 +43,7 @@ const DATA_DIR = path.join(import.meta.dirname, "..", "data", "lake-level", "pla
 const OUT_FILE = path.join(DATA_DIR, "haverhill-daily-lake-level.json")
 
 // By eye, to the nearest half foot, off the "36-Year Average Level" line in
-// static/excerpts/city-council-2026-09-15/drought-emergency-update/drought-chart.pdf
+// excerpts/city-council-2026-09-15/drought-emergency-update/drought-chart.pdf
 // -- the city's own real chart, never published as numbers. Index 0 is
 // January 1st, index 11 is December 1st; the curve wraps from index 11 back
 // to index 0 for the following January 1st.
@@ -142,7 +142,7 @@ await writeFile(
       generatedBy: "scripts/generate-placeholder-lake-level.mjs",
       basis: {
         seasonalShape:
-          "static/excerpts/city-council-2026-09-15/drought-emergency-update/drought-chart.pdf, " +
+          "excerpts/city-council-2026-09-15/drought-emergency-update/drought-chart.pdf, " +
           "the city's own real 36-Year Average Level curve -- read by eye to the nearest half " +
           "foot at each month start (AVERAGE_LEVEL_BY_MONTH_START in the generating script), " +
           "since the chart never printed its coordinates as numbers.",

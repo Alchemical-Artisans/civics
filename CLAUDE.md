@@ -1140,9 +1140,11 @@ rules that bite:
   link, and never where the lookup only resolves to a street rather than the
   address itself.
 - An item page's `+page.ts` returns `{ item: { title } }`.
-- PDF pages cut out for one item are committed under `static/excerpts/<id>/`
-  and linked with `Router.excerpt(...)`; `.cache/` is gitignored, so re-cutting
-  means re-fetching the original.
+- PDF pages cut out for one item are cut into `excerpts/<id>/` and linked with
+  `Router.excerpt(...)`; `.cache/` is gitignored, so re-cutting means
+  re-fetching the original. **`excerpts/` is gitignored too and a new excerpt
+  is not published until `npm run excerpts:upload` has run** -- see the store
+  below.
 
 **An Instagram story is drawn here and posted by hand.** `npm run story`
 (`scripts/make-story.mjs`, pure parts in `scripts/lib/story.mjs`) reads the next
@@ -1200,6 +1202,27 @@ Push to `main` triggers `.github/workflows/deploy.yml`, which runs `npm ci` and
 `npm run build` and publishes `build/` to GitHub Pages. No tests run there and
 nothing is scraped. `static/CNAME` and `static/.nojekyll` are part of the build
 on purpose — see [docs/deployment.md](docs/deployment.md).
+
+**The excerpts are not in the build, and the bucket holding them is their only
+copy.** 622 files weighing 483 MB, pages cut out of a document's PDF so an item
+resting on one letter can link to that letter rather than to a 200-page packet.
+They were 63% of an artifact that had reached 767 MB against Pages' 1 GB
+ceiling, and that is where the deploy stopped finishing: the job sat in
+`syncing_files` for ten minutes and aborted, twice, with the build green both
+times. So they live in Google Cloud Storage — `infra/` is the bucket (OpenTofu,
+applied by hand), `Router.excerpt` returns an absolute URL into it rather than a
+path on this site, and `npm run excerpts:upload` publishes one. **The store's
+name is spelled in three files** — `infra/variables.tf`, `EXCERPT_ORIGIN` in
+`src/lib/router.ts` and `scripts/lib/excerpt-store.mjs` — because three systems
+need it in their own language at moments none of them can read the others, and
+`scripts/lib/excerpt-store.spec.mjs` fails when they drift. Moving the store is
+one line of `router.ts` and a rebuild, the site being fully prerendered; a
+subdomain is the intended next step and needs more than a CNAME, since a CNAME
+to a bucket serves HTTP only. See [infra/README.md](infra/README.md).
+
+What this does _not_ address is the 283 MB still in the artifact, over half of
+which is `/calendar/day` and `/calendar/week` — 12,464 files between them, a
+page per day and per week of the record. They are the next thing to look at.
 
 ## Style
 

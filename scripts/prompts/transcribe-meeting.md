@@ -730,22 +730,22 @@ department without a Council vote.
 ## 8. Excerpts, where there is a packet
 
 An item resting on a letter or a plan can link to just those pages rather than a
-packet running to hundreds. Cut them out of the cached PDF and commit them:
+packet running to hundreds. Cut them out of the cached PDF:
 
 ```sh
-pdfseparate -f 7 -l 7 <cached.pdf> static/excerpts/<meeting id>/<item slug>.pdf
+pdfseparate -f 7 -l 7 <cached.pdf> excerpts/<meeting id>/<item slug>.pdf
 ```
 
 Link with `Router.excerpt(id, slug)`. Where the pages behind one item are
 several documents — a transmittal letter, the department's letter, the order —
 cut along those seams into
-`static/excerpts/<meeting id>/<item slug>/<document slug>.pdf` and reach them
+`excerpts/<meeting id>/<item slug>/<document slug>.pdf` and reach them
 with `Router.excerpt(id, "<item slug>/<document slug>")`; `pdfseparate` writes
 one file per page, so stitch a multi-page document back with `pdfunite`. Keep
 the link to the full document as well — the city's complete file stays the
 record.
 
-**Every excerpt is rendered and looked at before it is committed. Not the ones
+**Every excerpt is rendered and looked at before it is uploaded. Not the ones
 that look like they might be sideways — every one.** This is a step of cutting
 an excerpt, the same as `pdfseparate` is, and it is the step that gets skipped,
 because a wide sheet scanned sideways is invisible in `pdfinfo` (the page is
@@ -754,13 +754,13 @@ and invisible in `pdftotext` (a scan has no text layer to come out crooked).
 The only thing that shows it is the image:
 
 ```sh
-pdftoppm -r 100 -png static/excerpts/<meeting id>/<item slug>/<doc>.pdf /tmp/check
+pdftoppm -r 100 -png excerpts/<meeting id>/<item slug>/<doc>.pdf /tmp/check
 ```
 
 Read every `/tmp/check-*.png` with the Read tool. A chart, a plan, a budget
 table — anything the city printed landscape — is likely to be lying on its
 side, and cutting it out of the packet does not fix that; it just makes a
-smaller sideways PDF. Do not commit one un-rotated on the assumption a reader
+smaller sideways PDF. Do not publish one un-rotated on the assumption a reader
 will tilt their head.
 
 Poppler cannot turn a page and `qpdf` is not installed here;
@@ -783,6 +783,20 @@ read off the render: find the table's own first column or the letter's
 signature, and ask where it would be if the sheet were upright. A heading
 running up the left edge, with the letters' tops pointing left, has been turned
 anticlockwise and wants `rotate(90)`; running down the right edge, `rotate(270)`.
+
+**Then upload them. An excerpt is not published by committing it**, because
+`excerpts/` is gitignored: the store is a Google Cloud Storage bucket, the
+bucket is the only copy, and the site links straight into it.
+
+```sh
+npm run excerpts:upload
+```
+
+This is the one part of a write-up that the usual checks cannot catch. A page
+linking an excerpt nobody uploaded passes `npm run check`, `npm run lint` and
+`npm run build`, deploys green, and 404s for the reader — the link is an
+absolute URL into somebody else's host as far as the build is concerned, so
+there is nothing for it to resolve or miss. `infra/README.md` has the rest.
 
 ## 9. A document that is a table
 
@@ -1004,9 +1018,12 @@ an objection.
   with no link is a reference the reader cannot follow and the one thing they
   came to the page for; §6. The answer is on the site more often than not, and
   where it is not, say so in your reply rather than leaving it silently open.
-- **Render every excerpt and look at it before committing it.** A sideways scan
+- **Render every excerpt and look at it before uploading it.** A sideways scan
   cut out of a packet is still sideways, and nothing but the image will tell
   you; §8 has the render and the rotation snippet.
+- **Upload the excerpts.** `excerpts/` is gitignored and served from a bucket,
+  so committing a page that links one publishes a 404: `npm run excerpts:upload`
+  is as much a part of finishing as the commit is; §8.
 
 ## 13. Check it
 
@@ -1016,6 +1033,12 @@ npm run check
 npm run lint
 npm run build
 npm run test:unit -- --run --project=server
+```
+
+If you cut any excerpt, publish it too — it is not in the commit:
+
+```sh
+npm run excerpts:upload
 ```
 
 Prettier's config here is non-default and `npm run lint` enforces it: no

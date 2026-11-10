@@ -25,7 +25,7 @@ import { fromComparison, type Redline } from "$lib/redline"
  * similarity, so a transcription corrected later cannot leave a rewritten
  * provision drawn as an amended one.
  *
- * Sources, both in `static/excerpts/`: `order.pdf`, the order as filed, and
+ * Sources, both in `excerpts/`: `order.pdf`, the order as filed, and
  * `current-ordinance.pdf`, the article as eCode360 prints it.
  */
 
