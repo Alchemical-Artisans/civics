@@ -27,7 +27,7 @@ export class Router {
 
   /** The drought guide, linked from the bar's Issues menu. */
   static drought(): string {
-    return path("/drought")
+    return path("/issues/drought")
   }
 
   /**
@@ -146,7 +146,7 @@ export class Router {
    * because almost everything the city publishes is one, and this takes the
    * filename whole instead.
    *
-   * What it is for is a figure the city drew. `/drought` shows the Water
+   * What it is for is a figure the city drew. `/issues/drought` shows the Water
    * Department's own Kenoza Lake chart rather than redrawing it, and the
    * image has to be served from here: the build is offline and the reader's
    * browser never talks to the city's servers, so hotlinking the city's CDN
@@ -163,7 +163,7 @@ export class Router {
    * lifted out of a published report that is nobody's in Haverhill, and a
    * record the city holds but publishes nowhere, which is how
    * `cy25-water-usage.xlsx` arrived: a councillor sent it, and the split
-   * between residential and commercial use that `/drought` quotes is in no
+   * between residential and commercial use that `/issues/drought` quotes is in no
    * document on haverhillma.gov.
    *
    * It is here for the same reason `excerptFile` is -- the build is offline

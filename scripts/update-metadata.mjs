@@ -56,7 +56,7 @@ const STEPS = [
   // in this list reads its output, so it has no real ordering requirement --
   // it sits here because it is, like budget and schedule, a whole-file replace
   // rather than a diff against the calendar. It is the record behind
-  // `/drought`'s rainfall chart; see data/weather/README.md.
+  // `/issues/drought`'s rainfall chart; see data/weather/README.md.
   { name: "weather", script: "update-weather.mjs" },
   // Last, and after everything that can add a document: it checks every link
   // the calendar carries, and ends with the run's "needs your attention" block.

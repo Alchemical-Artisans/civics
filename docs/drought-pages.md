@@ -1,6 +1,6 @@
 # The drought page
 
-`/drought` (`src/routes/drought/+page.svelte`) gathers what the city's own
+`/issues/drought` (`src/routes/issues/drought/+page.svelte`) gathers what the city's own
 record says about the drought across the several places it is published. It is
 being written by hand and is still taking shape -- the page currently carries
 research notes in plain text alongside the finished parts, which is
@@ -90,7 +90,7 @@ average here is computed from the station record itself, not from that file.
 
 ## The supply map
 
-`/drought` opens with a map of Haverhill and the three bodies of water its
+`/issues/drought` opens with a map of Haverhill and the three bodies of water its
 public system draws from, drawn by **`src/lib/ShapeMap.svelte`** -- the
 same component the election's precinct map uses. The water bodies are its
 `areas`, the city boundary its one `outline`. It floats right at two fifths
@@ -374,7 +374,7 @@ line.
 
 ## Why a server load
 
-`src/routes/drought/+page.server.ts`, not `+page.ts`. A universal load ships to
+`src/routes/issues/drought/+page.server.ts`, not `+page.ts`. A universal load ships to
 the browser, so the several megabytes of daily station readings behind four
 lines of twelve points would be bundled into the page just to be aggregated
 again on arrival. A server load runs at build time only and the page carries

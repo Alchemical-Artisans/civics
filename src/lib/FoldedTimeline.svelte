@@ -3,7 +3,7 @@
   view, headed and ready to stand in a column of its own.
 
   **This was `ProjectTimeline`'s whole body**, and came out of it when a page
-  that is not a project wanted the same thing: `/drought` is an authored
+  that is not a project wanted the same thing: `/issues/drought` is an authored
   topic page, not an undertaking in `PROJECTS`, and putting it there to get a
   timeline would have put "Drought" in the bar's Projects menu alongside the
   elections and the budgets. So the fold, the heading, today's date and the

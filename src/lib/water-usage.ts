@@ -316,7 +316,7 @@ export const WATER_USAGE_SOURCE = {
    * HC Media's player takes no time fragment, so the only way to hand a
    * reader a minute is to print it and let them seek.
    *
-   * `/drought`'s own prose links the same recording at the same minute. Both
+   * `/issues/drought`'s own prose links the same recording at the same minute. Both
    * are the citation for the same claim -- the chart draws the slide, the
    * sentence quotes the figure off it -- so they point at one place.
    */

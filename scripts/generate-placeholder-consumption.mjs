@@ -35,7 +35,7 @@ const DATA_DIR = path.join(import.meta.dirname, "..", "data", "consumption", "pl
 const OUT_FILE = path.join(DATA_DIR, "haverhill-daily-production.json")
 
 // The city's own average daily production as of 2026-09-18, the one real,
-// cited figure this placeholder is anchored to -- `/drought` states the same
+// cited figure this placeholder is anchored to -- `/issues/drought` states the same
 // 6 million gallons a day. If it is ever corrected, update this by hand to
 // match; nothing imports it directly, since scripts/ is plain JS and src/lib
 // is TypeScript.

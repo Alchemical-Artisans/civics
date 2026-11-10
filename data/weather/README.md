@@ -6,7 +6,7 @@ Committed, and kept current by `node scripts/update-weather.mjs`
 lost when this work was rebased onto main, and nothing has needed it since the
 `metadata:update` step calls the script by filename.
 
-**The precipitation column is cited on the site**, by `/drought`'s
+**The precipitation column is cited on the site**, by `/issues/drought`'s
 year-against-year rainfall chart -- see `docs/drought-pages.md` and
 `src/lib/server/precipitation.ts`, which reads all three files below. The rest
 of what is here is still research data toward a water-balance model for
@@ -101,7 +101,7 @@ changed against the previous commit.
   like -- and snow is precisely what these winter gaps are. LAWRENCE
   (`USC00194105`) covers only 25 of the 35 days and has 71 gaps of its own.
 
-  **These are no longer only gap-fill.** `/drought` averages all three gauges
+  **These are no longer only gap-fill.** `/issues/drought` averages all three gauges
   on every day, equally weighted, rather than reading the COOP station and
   patching its gaps -- so the series is a city-wide average and not any one
   station's record. `src/lib/server/precipitation.ts` carries the merge, keeps

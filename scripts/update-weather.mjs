@@ -2,7 +2,7 @@
 /**
  * Refresh Haverhill's station-level weather record from RCC-ACIS.
  *
- * This is the record behind `/drought`'s rainfall chart -- see
+ * This is the record behind `/issues/drought`'s rainfall chart -- see
  * data/weather/README.md for what these two files are and why they exist. It
  * began as research toward a water-balance model, back when `/water` carried
  * the city's own hand-read figures instead. Like update-budget.mjs, there is no incremental

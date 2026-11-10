@@ -40,7 +40,7 @@ const video = (slug: string) => `http://haverhillcommunitytv.org/video/${slug}`
  * so it carries the year it is known to and nothing closer.
  *
  * It is not in `$lib/projects.ts`, where a project's timeline lives, because
- * `/drought` is not a project: `PROJECTS` is what the bar's Projects menu
+ * `/issues/drought` is not a project: `PROJECTS` is what the bar's Projects menu
  * lists, and putting the drought there would file it beside the elections
  * and the budget books as an undertaking the city is working through. It is
  * a subject this site reports on. So the entries sit beside the page that

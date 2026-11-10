@@ -23,7 +23,7 @@
   // the posted link is the same address. The title is the one `<svelte:head>`
   // sets below, so a card and a tab cannot name the page differently.
   const TITLE = "Haverhill Drought Guide"
-  const sharedUrl = Router.absolute("/drought")
+  const sharedUrl = Router.absolute("/issues/drought")
   const description = "An in depth guide to Haverhill's drought."
 
   // The waters Haverhill's public system draws from, and the land that drains

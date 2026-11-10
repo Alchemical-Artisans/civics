@@ -117,7 +117,7 @@ export const KENOZA_SOURCE = {
   title: "Kenoza Lake Drought Stages with Current, 2025, and Average Levels",
   /**
    * The city's own page on the drought, which is where it publishes a chart
-   * of the lake's level -- and so what the picture on `/drought` links to.
+   * of the lake's level -- and so what the picture on `/issues/drought` links to.
    * `url` below is the image file itself, which is a file rather than a page:
    * it says nothing about when the city put it there or what it said at the
    * time, and a reader sent to a `.png` has nowhere to go next.
