@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-05T21:41:01.444Z",
+  "generatedAt": "2026-11-09T21:38:50.355Z",
   "rules": [
     {
       "board": "City Council",
@@ -513,9 +513,16 @@
     {
       "board": "Public Health, Safety & Works Committee",
       "date": "2026-11-12",
-      "title": "Public Safety Committee Meeting-REVISED",
-      "url": "https://events.haverhillma.gov/default/Detail/2026-11-12-1800-Public-Safety-Committee-Meeting-REVISED2",
+      "title": "Public Safety Committee Meeting - 2nd revision",
+      "url": "https://events.haverhillma.gov/default/Detail/2026-11-12-1800-Public-Safety-Committee-Meeting-2nd-revision",
       "time": "6:00 PM"
+    },
+    {
+      "board": "School Committee",
+      "date": "2026-11-12",
+      "title": "Haverhill School Committee Special Subcommittee on Superintendent Goals & Contract Meeting",
+      "url": "https://events.haverhillma.gov/default/Detail/2026-11-12-1900-Haverhill-School-Committee-Special-Subcommittee-on",
+      "time": "7:00 PM"
     },
     {
       "board": "School Committee Budget & Finance Subcommittee",
@@ -525,11 +532,25 @@
       "time": "6:30 PM"
     },
     {
+      "board": "School Committee Diversity, Health & Safety Subcommittee",
+      "date": "2026-11-12",
+      "title": "HAVERHILL SCHOOL COMMITTEE DIVERSITY, HEALTH & SAFETY SUBCOMMITTEE",
+      "url": "https://events.haverhillma.gov/default/Detail/2026-11-12-1700-HAVERHILL-SCHOOL-COMMITTEE-DIVERSITY-HEALTH-amp-SA",
+      "time": "5:00 PM"
+    },
+    {
       "board": "City Council",
       "date": "2026-11-17",
       "title": "City Council Meeting",
       "url": "https://events.haverhillma.gov/default/Detail/2026-11-17-1900-City-Council-Meeting2",
       "time": "7:00 PM"
+    },
+    {
+      "board": "Conservation Commission",
+      "date": "2026-11-19",
+      "title": "Haverhill Conservation Commission Meeting",
+      "url": "https://events.haverhillma.gov/default/Detail/2026-11-19-1915-Haverhill-Conservation-Commission-Meeting",
+      "time": "7:15 PM"
     },
     {
       "board": "Special Education Parent Advisory Council",
