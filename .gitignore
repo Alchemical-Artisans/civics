@@ -71,3 +71,4 @@ water-data
 .terraform/
 *.tfstate
 *.tfstate.*
+/infra/terraform.tfvars
