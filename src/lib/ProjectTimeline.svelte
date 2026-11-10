@@ -7,7 +7,7 @@
 
   **What is left here is the registry and nothing else.** The fold, the
   heading, today's date and the fragment handling were all in this file until
-  `/drought` wanted a timeline without being a project -- an authored topic
+  `/issues/drought` wanted a timeline without being a project -- an authored topic
   page, not an undertaking in `PROJECTS` -- and they are `FoldedTimeline`
   now. So the rail is `Timeline`, the fold is `FoldedTimeline`, and this maps
   a `Project` onto the list both of them read.

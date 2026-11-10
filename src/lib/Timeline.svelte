@@ -37,7 +37,7 @@
    * terms. Read off the href rather than passed in: every internal URL here
    * is built by `Router` and so is a path, which makes an absolute one
    * external by construction and leaves nothing for a caller to forget.
-   * `/drought`'s steps are HC Media recordings; a project's are write-ups
+   * `/issues/drought`'s steps are HC Media recordings; a project's are write-ups
    * on this site.
    */
   const away = (href: string) => /^https?:/.test(href)

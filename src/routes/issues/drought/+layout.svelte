@@ -2,7 +2,7 @@
   The drought page, with the city's own acts on it beside the reading.
 
   **The layout owns the two columns rather than the page.** Everything on
-  `/drought` is the page's -- its heading, its charts, its paragraphs -- and
+  `/issues/drought` is the page's -- its heading, its charts, its paragraphs -- and
   wrapping all of that in a grid would have meant indenting the whole page to
   put one column beside it. A layout renders `{@render children()}` into the
   first column and the timeline into the second, which is the same shape the

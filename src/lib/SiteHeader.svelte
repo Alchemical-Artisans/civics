@@ -46,7 +46,7 @@
   // routes rather than moving under `/projects`.
   const current = $derived({
     projects: within("/projects") || within("/budget"),
-    issues: within("/drought"),
+    issues: within("/issues"),
     calendar: within("/calendar"),
   })
 

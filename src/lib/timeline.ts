@@ -17,7 +17,7 @@ export interface TimelineEntry {
   date?: string
   /**
    * What to print instead of the formatted date, where the date is known to
-   * less precision than a day. `/drought`'s first step is a 2012 loan order
+   * less precision than a day. `/issues/drought`'s first step is a 2012 loan order
    * whose own record the city no longer publishes: the year is what is
    * known, and "January 1, 2012" would be a precision nobody has.
    */

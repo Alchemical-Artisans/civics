@@ -17,7 +17,7 @@ link to the original at the top, or as the city's own PDF.
 | [document-pages.md](./document-pages.md) | Writing a page for a meeting document, and why they are hand-made     |
 | [budget-pages.md](./budget-pages.md)     | The budget half, and writing up a section of a budget book            |
 | [calendar-page.md](./calendar-page.md)   | How the page renders, filters, and prerenders                         |
-| [drought-pages.md](./drought-pages.md)   | The `/drought` page, and the rainfall record behind its chart         |
+| [drought-pages.md](./drought-pages.md)   | The `/issues/drought` page, and the rainfall record behind its chart  |
 | [operations.md](./operations.md)         | Running the scripts, refreshing data, and what to do when it breaks   |
 | [deployment.md](./deployment.md)         | How the site is published to GitHub Pages                             |
 | [analytics.md](./analytics.md)           | Umami, a cookieless page-view counter, and how to change or remove it |
@@ -130,7 +130,7 @@ src/lib/
   router.spec.ts           unit tests for it
   budget.ts                the budget listing, section slugs and book contents
   budget.spec.ts           unit tests for it
-  RainfallChart.svelte     /drought's bars: four years of Haverhill rainfall and a 10-year average
+  RainfallChart.svelte     /issues/drought's bars: four years of Haverhill rainfall and a 10-year average
   RainfallChart.svelte.spec.ts    browser tests for it
   precipitation.ts         its shapes, date arithmetic and averageToDate
   server/precipitation.ts  the three station files aggregated into years

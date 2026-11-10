@@ -17,7 +17,7 @@
 
   **Where it sits is the caller's business**, so the figure takes a `class`
   and brings no layout of its own beyond `not-prose`. Floated beside a
-  paragraph on `/drought`, it could as easily be a column on another page,
+  paragraph on `/issues/drought`, it could as easily be a column on another page,
   and that is a fact about the page rather than about the chart.
 -->
 <script lang="ts">

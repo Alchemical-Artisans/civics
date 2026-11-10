@@ -14,7 +14,7 @@ It also republishes the city's budget and audit reports, where the current
 budget book is readable a section at a time rather than as one PDF running to
 hundreds of pages.
 
-A third section, `/drought`, covers Haverhill's drought emergency -- an
+A third section, `/issues/drought`, covers Haverhill's drought emergency -- an
 authored article rather than a transcription, and the one part of the site
 whose figures are not scraped off a document listing: the rainfall behind its
 chart is a weather station's own record (`scripts/update-weather.mjs`), the
@@ -1212,7 +1212,7 @@ that when touching them.
 page here is either a **transcription** or **authored**, and a heading means
 the opposite thing in each. A transcription's headings are the city's own,
 sitting under a title the layout already drew, so inside a `prose` container
-h2 descends from 1rem and h3/h4 get quieter still. An authored page — `/drought`,
+h2 descends from 1rem and h3/h4 get quieter still. An authored page — `/issues/drought`,
 each `/projects/*` write-up — draws its own `<h1>` and its h2s are section
 breaks in our structure, so they get _louder_: h1 `text-2xl`/bold/tight, h2
 `text-lg`, h3 `text-base`, h4 `text-sm`, all `font-semibold text-slate-900`.

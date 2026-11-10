@@ -304,7 +304,7 @@ describe("RainfallChart.svelte", () => {
   })
 
   /**
-   * The chart is the citation: it is the one figure on `/drought` built out
+   * The chart is the citation: it is the one figure on `/issues/drought` built out
    * of a dataset rather than quoted off a city document, and it named no
    * source at all before the whole drawing became a link to one.
    */
