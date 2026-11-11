@@ -1024,6 +1024,10 @@ an objection.
 - **Upload the excerpts.** `excerpts/` is gitignored and served from a bucket,
   so committing a page that links one publishes a 404: `npm run excerpts:upload`
   is as much a part of finishing as the commit is; §8.
+- **Commit before you report.** The write-up is not finished until it is
+  committed to `main` (§14), with only the meeting's own files staged -- a
+  refresh leaves unrelated data changes in the tree that are not yours to
+  commit. Say in your report that you committed, and the hash.
 
 ## 13. Check it
 
