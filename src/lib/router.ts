@@ -73,7 +73,7 @@ export class Router {
     return path("/issues/drought")
   }
 
-  /** The ALPR guide. Not yet in the bar's Issues menu. */
+  /** The ALPR guide, listed in the bar's Issues menu. */
   static alpr(): string {
     return path("/issues/ALPR")
   }

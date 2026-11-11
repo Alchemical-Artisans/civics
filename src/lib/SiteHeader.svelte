@@ -260,6 +260,15 @@
             Drought
           </a>
         </li>
+        <li class="px-2 py-1 hover:bg-slate-50">
+          <a
+            class="font-medium text-slate-900 underline decoration-slate-300 hover:decoration-slate-900"
+            href={Router.alpr()}
+            aria-current={current.issues ? "true" : undefined}
+          >
+            ALPR
+          </a>
+        </li>
       </HeaderMenu>
 
       <a
