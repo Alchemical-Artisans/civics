@@ -73,6 +73,11 @@ export class Router {
     return path("/issues/drought")
   }
 
+  /** The ALPR guide. Not yet in the bar's Issues menu. */
+  static alpr(): string {
+    return path("/issues/ALPR")
+  }
+
   /**
    * The month calendar of agendas and minutes, on whichever month is current.
    *
