@@ -10,7 +10,7 @@
   constant to subtract.
 -->
 <footer
-  class="flex h-10 items-center justify-center border-t border-slate-200 px-4 text-xs text-slate-500"
+  class="flex h-10 items-center justify-center gap-4 border-t border-slate-200 px-4 text-xs text-slate-500"
 >
   <a
     class="hover:text-slate-700"
@@ -20,4 +20,5 @@
   >
     Created by Alchemical Artisans
   </a>
+  <a class="hover:text-slate-700" href="mailto:meetinghouse@alchemicalartisans.com">Contact</a>
 </footer>
