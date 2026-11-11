@@ -1224,6 +1224,30 @@ What this does _not_ address is the 283 MB still in the artifact, over half of
 which is `/calendar/day` and `/calendar/week` — 12,464 files between them, a
 page per day and per week of the record. They are the next thing to look at.
 
+## Quoting sources
+
+**A quote from a source is copied exactly, never edited, rephrased or guessed.**
+This applies on every page, authored or transcribed, whenever the user asks for
+information from a specific document, record, article or video:
+
+- Open the source itself and copy the words exactly as printed, including
+  spelling, capitalization and punctuation. Cite where they came from (the PDF
+  page, section, or timestamp) so a reader can check them.
+- Never fill a quote from memory, a search summary, or another site's account
+  of the source. If the source cannot be opened or the words cannot be found in
+  it, say so instead of supplying something close.
+- Any change to a quote, whether shortening it, adding `[…]` or `...`,
+  fixing a typo, or changing tense, is proposed to the user first, showing the
+  exact original beside the edited version, and is used only once the user
+  approves it.
+- A paraphrase is not a quote. When the page summarizes a source in its own
+  words, it carries no quotation marks, and the summary must not add facts,
+  numbers or certainty the source does not give. A number comes from the
+  source's own table or text, never estimated.
+
+The issue pages are meant to convince readers who check the sources, so one
+misquoted line undercuts everything else on the page.
+
 ## Style
 
 Prettier config is non-default and enforced by `npm run lint`: no semicolons,
