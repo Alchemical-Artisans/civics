@@ -88,29 +88,46 @@ is exactly the state the bucket is in before its first upload.
 
 ## Serving it from a subdomain
 
-The links point at `https://storage.googleapis.com/haverhill-civics-files/…`
-today. Pointing them at `https://files.alchemicalartisans.com/…` instead is a
-one-line change to `EXCERPT_ORIGIN` and a rebuild: the site is fully
-prerendered and rebuilt on every push, so there is nothing to migrate and no
-stale internal link to chase.
+Tried on 2026-11-10 and set aside — the links stay on
+`https://storage.googleapis.com/haverhill-civics-files/…`, which is what
+`EXCERPT_ORIGIN` names.
 
-What is not settled is how that subdomain reaches the bucket. A plain CNAME to
-a bucket serves **HTTP only** —
+A plain CNAME to a bucket serves **HTTP only** —
 [Google's own documentation](https://cloud.google.com/storage/docs/hosting-static-website-http)
-is explicit that CNAME records do not support HTTPS — so one of:
+is explicit that CNAME records do not support HTTPS — so the attempt went
+through Gandi web forwarding, where the domain already is, rather than a
+load balancer or a second DNS provider. It worked once, briefly: an
+HTTP-only forward preserved the full path
+(`files.alchemicalartisans.com/excerpts/<id>/<name>.pdf` 302'd to the matching
+object), which answered the question this section used to leave open. But
+Gandi's HTTPS forward took several hours to provision, and recreating the
+rule to get there replaced the working one with a flat redirect that drops
+the path on every request, HTTP and HTTPS alike, landing on the bucket root
+instead of the object -- which is public too, and serves back the bucket's
+own XML file listing rather than a 404, so the failure mode is quiet. Gandi's
+UI gives no visible way to ask for both HTTPS and a preserved path in one
+rule, and chasing that further stopped being worth it against a store that
+already works at its direct URL.
 
-- **Gandi web forwarding**, where the domain already is. Free, but Gandi does
-  not document whether a forward preserves the path, and a forward that drops
-  it would land every excerpt on the bucket root. Test it against a real
-  excerpt URL before changing `EXCERPT_ORIGIN`:
+If this is revisited, the options are the same three, and the path-dropping
+failure is the one to design around rather than discover again:
+
+- **Gandi web forwarding** — free, already the domain's registrar, but as of
+  this attempt the HTTPS variant does not preserve the path. Test with a real
+  excerpt URL before changing `EXCERPT_ORIGIN`, not a bare domain:
   `curl -sI https://files.alchemicalartisans.com/excerpts/city-council-2026-08-25/surplus-city-vehicles/order.pdf`
-  and check the `location` header carries the whole path.
-- **A proxy in front of the bucket** — Cloudflare's free plan terminates HTTPS
-  and caches, which also cuts egress. It wants the whole zone's nameservers,
-  which today are Gandi's.
+  and check the `location` header carries the whole path, not just the bucket.
+- **A proxy in front of the bucket** — Cloudflare's free plan terminates HTTPS,
+  caches, and is built to pass the path through unmodified. It wants the whole
+  zone's nameservers, which today are Gandi's.
 - **An external HTTPS load balancer**, entirely within Google Cloud, with a
   managed certificate and optionally Cloud CDN. About $18–20 a month for the
-  forwarding rule before any traffic.
+  forwarding rule before any traffic, and no dependency on a registrar's own
+  forwarding product doing the right thing with a path.
+
+Moving later is still a one-line change to `EXCERPT_ORIGIN` and a rebuild
+either way -- the site is fully prerendered, so there is nothing to migrate
+and no stale internal link to chase.
 
 ## Cost
 
