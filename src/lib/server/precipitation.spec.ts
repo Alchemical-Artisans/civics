@@ -99,6 +99,16 @@ describe("precipitationByYear", () => {
   const years = precipitationByYear([2023, 2024, 2025, 2026])
   const [y2023, y2024, y2025, y2026] = years
 
+  /**
+   * An inch figure as a whole number of hundredths, which is what these are:
+   * rainfall is published to two decimal places and every total here is
+   * rounded to them. Integers so that a comparison within a stated tolerance
+   * means what it says -- a tenth or a hundredth of an inch added to one of
+   * these in binary floating point lands just under the figure it was meant
+   * to reach, and the assertion fails on the arithmetic rather than the rain.
+   */
+  const hundredths = (inches: number) => Math.round(inches * 100)
+
   it("returns the years asked for, in order", () => {
     expect(years.map((year) => year.year)).toEqual([2023, 2024, 2025, 2026])
   })
@@ -163,7 +173,15 @@ describe("precipitationByYear", () => {
   /** A part-year against three whole ones is the comparison to avoid. */
   it("reads every year to the same day for its comparable total", () => {
     for (const year of years) {
-      expect(year.toDateInches).toBeLessThanOrEqual(year.totalInches + 0.01)
+      // Compared in hundredths of an inch, the precision the gauge publishes
+      // and these figures are rounded to. The two are each rounded off their
+      // own sum, so for the year still running -- where reading to date and
+      // reading the whole of it are the same span -- they can land a hundredth
+      // apart, which is what the tolerance is for. In inches that tolerance
+      // cannot be written: 2026 reads 32.13 to date against a total of 32.12,
+      // and `32.12 + 0.01` is 32.129999999999995 in binary floating point, so
+      // the sum meant to admit 32.13 excluded it.
+      expect(hundredths(year.toDateInches)).toBeLessThanOrEqual(hundredths(year.totalInches) + 1)
     }
     expect(y2026.toDateInches).toBeCloseTo(y2026.totalInches, 1)
     expect(y2025.toDateInches).toBeLessThan(y2025.totalInches)
