@@ -114,7 +114,7 @@
      so the served page and a reader's own clock cannot disagree about it. -->
 <p class="m-0 mt-1 flex flex-wrap items-baseline gap-x-2 text-sm text-slate-600">
   <span class="font-semibold text-slate-700">Published</span>
-  <span>{formatLongDate(data.today)}</span>
+  <span>{formatLongDate("2026-11-09")}</span>
 </p>
 
 <div class="mt-2">
