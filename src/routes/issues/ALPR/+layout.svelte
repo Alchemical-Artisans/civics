@@ -13,10 +13,15 @@
 
 <div class="mx-auto max-w-6xl px-4 py-8">
   <div class="grid gap-8 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
-    <div class="min-w-0">
+    <div class="min-w-0 [overflow-wrap:anywhere]">
       {@render children()}
     </div>
 
-    <FoldedTimeline entries={ALPR_TIMELINE} today={data.today} fold={false} />
+    <FoldedTimeline
+      entries={ALPR_TIMELINE}
+      today={data.today}
+      fold={false}
+      class="[overflow-wrap:anywhere]"
+    />
   </div>
 </div>
