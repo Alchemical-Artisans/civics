@@ -221,15 +221,29 @@ describe("expectedSittings", () => {
   it("takes a printed calendar's dates exactly as printed", () => {
     // Nothing is interpreted for a board that prints its dates, so the only
     // thing to check is that every date it prints and nothing else comes back.
+    //
+    // Gathered by board rather than checked sheet by sheet. A board publishes
+    // one sheet a year and the city posts the next before the current one has
+    // run out, so the Planning Board carries both its 2026 and its 2027
+    // schedule in `schedule.json` -- which is the point of a printed calendar
+    // standing however far ahead it is. `expectedSittings` reads a board's
+    // dates off every sheet it has, as it should; comparing that against one
+    // sheet's dates alone read the other sheet's twelve as sittings the site
+    // had invented.
+    const printed = new Map<string, string[]>()
     for (const calendar of meetingCalendars()) {
+      const dates = calendar.sittings.map((s) => s.date)
+      printed.set(calendar.board, [...(printed.get(calendar.board) ?? []), ...dates])
+    }
+    for (const [board, dates] of printed) {
       const mine = expectedSittings("2026-09-08")
-        // This board's entries from *its own printed list*. Four of these
+        // This board's entries from *its own printed sheets*. Four of these
         // boards also have notices posted for the coming weeks, which name
         // some of the same days; `withScheduled` keeps the notice, being the
         // better statement, and either way it is not this list's doing.
-        .filter((s) => s.board === calendar.board && s.source.kind === "calendar")
+        .filter((s) => s.board === board && s.source.kind === "calendar")
         .map((s) => s.date)
-      expect(mine).toEqual(calendar.sittings.map((s) => s.date).filter((d) => d >= "2026-09-08"))
+      expect(mine).toEqual(dates.filter((d) => d >= "2026-09-08").sort())
     }
   })
 
