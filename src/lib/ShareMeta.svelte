@@ -8,7 +8,14 @@
   cannot disagree.
 -->
 <script lang="ts">
-  let { url, title, description }: { url: string; title: string; description: string } = $props()
+  import { Router } from "$lib/router"
+
+  let {
+    url: given,
+    title,
+    description,
+  }: { url: string; title: string; description: string } = $props()
+  const url = $derived(Router.qualified(given))
 </script>
 
 <svelte:head>

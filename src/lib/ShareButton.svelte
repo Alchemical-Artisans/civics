@@ -22,8 +22,10 @@
   import { Router } from "$lib/router"
   import { qrPath } from "$lib/qr"
 
-  /** `url` is the page's public address; `text` is the words that go with it. */
-  let { url, text }: { url: string; text: string } = $props()
+  /** `url` is the page's address, qualified here if a page gave a path; `text` is the words that go with it. */
+  let { url: given, text }: { url: string; text: string } = $props()
+  // Qualified here, so no page can share a bare path by forgetting to.
+  const url = $derived(Router.qualified(given))
 
   let open = $state(false)
   let showCode = $state(false)

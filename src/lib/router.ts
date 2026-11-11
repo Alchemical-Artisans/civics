@@ -313,6 +313,17 @@ export class Router {
   }
 
   /**
+   * Any address a page hands to sharing, made fully qualified. A bare path
+   * (`/issues/ALPR`) is meaningless once it leaves the site -- in a QR code it
+   * is something a phone cannot open -- so `ShareButton` and `ShareMeta` pass
+   * every address through here rather than trusting each page to have built an
+   * absolute one. An address that already has a scheme is returned untouched.
+   */
+  static qualified(url: string): string {
+    return /^[a-z][a-z0-9+.-]*:/i.test(url) ? url : Router.absolute(`/${url.replace(/^\/+/, "")}`)
+  }
+
+  /**
    * The public address of a meeting, or of one item on its agenda, for sharing:
    * what the posted link and the QR code carry out of the site. Absolute and
    * without `base`, for the reason `absolute` gives.

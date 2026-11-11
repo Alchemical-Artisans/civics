@@ -48,6 +48,10 @@ describe("Router", () => {
     expect(Router.sharedProject("infrastructure-risk-assessment")).toBe(
       "https://haverhill.alchemicalartisans.com/projects/infrastructure-risk-assessment",
     )
+    expect(Router.qualified("/issues/ALPR")).toBe(
+      "https://haverhill.alchemicalartisans.com/issues/ALPR",
+    )
+    expect(Router.qualified(url)).toBe(url)
     expect(Router.shareFacebook(url)).toContain("sharer.php?u=https%3A%2F%2Fhaverhill")
     expect(Router.shareX(url, "A & B")).toContain("text=A+%26+B&url=https%3A%2F%2F")
     expect(Router.shareBluesky(url, "Hi")).toContain("compose?text=Hi+https%3A%2F%2F")
