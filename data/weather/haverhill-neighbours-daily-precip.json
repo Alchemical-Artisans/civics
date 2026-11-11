@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-11T16:22:20.725Z",
+  "generatedAt": "2026-11-11T16:35:35.028Z",
   "source": "https://data.rcc-acis.org/StnData",
   "note": "Daily precipitation from the two CoCoRaHS gauges inside Haverhill that fill the COOP station's unread days. See the comment on NEIGHBOUR_STATIONS in scripts/lib/weather.mjs for why these two and not the five other candidates.",
   "element": "pcpn: Total precipitation, liquid-water-equivalent (inches)",
