@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-09T21:38:50.355Z",
+  "generatedAt": "2026-11-11T16:22:17.385Z",
   "rules": [
     {
       "board": "City Council",
@@ -527,16 +527,23 @@
     {
       "board": "School Committee Budget & Finance Subcommittee",
       "date": "2026-11-12",
-      "title": "Haverhill School Committee Budget & Finance Subcommittee Meeting",
-      "url": "https://events.haverhillma.gov/default/Detail/2026-11-12-1830-Haverhill-School-Committee-Budget-amp-Finance-Subc",
-      "time": "6:30 PM"
+      "title": "Haverhill School Committee Budget & Finance Subcommittee Meeting - Revised",
+      "url": "https://events.haverhillma.gov/default/Detail/2026-11-12-1800-Haverhill-School-Committee-Budget-amp-Finance-Subc",
+      "time": "6:00 PM"
     },
     {
       "board": "School Committee Diversity, Health & Safety Subcommittee",
       "date": "2026-11-12",
-      "title": "HAVERHILL SCHOOL COMMITTEE DIVERSITY, HEALTH & SAFETY SUBCOMMITTEE",
-      "url": "https://events.haverhillma.gov/default/Detail/2026-11-12-1700-HAVERHILL-SCHOOL-COMMITTEE-DIVERSITY-HEALTH-amp-SA",
+      "title": "Haverhill School Committee Diversity, Health & Safety Subcommittee Meeting",
+      "url": "https://events.haverhillma.gov/default/Detail/2026-11-12-1700-Haverhill-School-Committee-Diversity-Health-amp-Sa2",
       "time": "5:00 PM"
+    },
+    {
+      "board": "Board of Registrars",
+      "date": "2026-11-16",
+      "title": "Board of Registrars Meeting",
+      "url": "https://events.haverhillma.gov/default/Detail/2026-11-16-1500-Board-of-Registrars-Meeting",
+      "time": "3:00 PM"
     },
     {
       "board": "City Council",

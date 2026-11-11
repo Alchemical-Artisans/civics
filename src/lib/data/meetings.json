@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-11-09T21:38:43.559Z",
+  "generatedAt": "2026-11-11T16:22:06.819Z",
   "source": "https://www.haverhillma.gov/government/agendas-and-minutes/",
-  "count": 3200,
+  "count": 3201,
   "meetings": [
     {
       "title": "Haverhill Housing Authority Mtg.",
@@ -94,10 +94,46 @@
       "docId": "2026-11-19-1915-haverhill-conservation-commission-meeting-9eee5a2d"
     },
     {
-      "title": "Haverhill School Committee Budget & Finance Subcommittee Meeting",
-      "description": "school budget and finance 26-001.pdf",
-      "pageUrl": "https://events.haverhillma.gov/default/Detail/2026-11-12-1830-Haverhill-School-Committee-Budget-amp-Finance-Subc",
-      "fileUrl": "https://events.haverhillma.gov/default/Detail/2026-11-12-1830-Haverhill-School-Committee-Budget-amp-Finance-Subc/cdc1a759-6036-44f1-be78-b4e800ea775e",
+      "title": "Board of Registrars - November 16, 2026",
+      "pageUrl": "/document-manager/media-pages/agenda-and-minutes/board-of-registrars-november-16-2026/",
+      "fileUrl": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/in4jcvqk/board-of-registrars-11162026.pdf",
+      "category": "Board of Registrars Agendas",
+      "description": "November 16, 2026",
+      "board": "Board of Registrars",
+      "kind": "agenda",
+      "date": "2026-11-16",
+      "dateSource": "meeting-date",
+      "rawMeetingDate": "11/16/2026 08:00 PM",
+      "dateAdjusted": false,
+      "dateConflict": false,
+      "filenameDate": "2026-11-16",
+      "needsReview": false,
+      "source": "https://www.haverhillma.gov/government/agendas-and-minutes/",
+      "docId": "board-of-registrars-november-16-2026-7ccba6dd"
+    },
+    {
+      "title": "Board of Registrars Meeting",
+      "description": "Board of Registrars 11.16.2026.pdf",
+      "pageUrl": "https://events.haverhillma.gov/default/Detail/2026-11-16-1500-Board-of-Registrars-Meeting",
+      "fileUrl": "https://events.haverhillma.gov/default/Detail/2026-11-16-1500-Board-of-Registrars-Meeting/7aa4de54-9182-4b58-b1b5-b4fe00fdb891",
+      "date": "2026-11-16",
+      "board": "Board of Registrars",
+      "kind": "agenda",
+      "category": "Board of Registrars Agendas",
+      "dateSource": "notice",
+      "rawMeetingDate": null,
+      "dateAdjusted": false,
+      "dateConflict": false,
+      "filenameDate": null,
+      "needsReview": false,
+      "source": "https://events.haverhillma.gov/",
+      "docId": "2026-11-16-1500-board-of-registrars-meeting-9488d8f6"
+    },
+    {
+      "title": "Haverhill School Committee Budget & Finance Subcommittee Meeting - Revised",
+      "description": "school com budget finance rev 26.pdf",
+      "pageUrl": "https://events.haverhillma.gov/default/Detail/2026-11-12-1800-Haverhill-School-Committee-Budget-amp-Finance-Subc",
+      "fileUrl": "https://events.haverhillma.gov/default/Detail/2026-11-12-1800-Haverhill-School-Committee-Budget-amp-Finance-Subc/30544cd5-7309-45ea-a136-b4fe012849d2",
       "date": "2026-11-12",
       "board": "School Committee Budget & Finance Subcommittee",
       "kind": "agenda",
@@ -109,25 +145,7 @@
       "filenameDate": null,
       "needsReview": false,
       "source": "https://events.haverhillma.gov/",
-      "docId": "2026-11-12-1830-haverhill-school-committee-budget-amp-finance-subc-f3798366"
-    },
-    {
-      "title": "HAVERHILL SCHOOL COMMITTEE DIVERSITY, HEALTH & SAFETY SUBCOMMITTEE",
-      "description": "Haverhill School Committee 11.12.26.pdf",
-      "pageUrl": "https://events.haverhillma.gov/default/Detail/2026-11-12-1700-HAVERHILL-SCHOOL-COMMITTEE-DIVERSITY-HEALTH-amp-SA",
-      "fileUrl": "https://events.haverhillma.gov/default/Detail/2026-11-12-1700-HAVERHILL-SCHOOL-COMMITTEE-DIVERSITY-HEALTH-amp-SA/3b0c2223-3fe9-4bec-bdbe-b4fd00e79723",
-      "date": "2026-11-12",
-      "board": "School Committee Diversity, Health & Safety Subcommittee",
-      "kind": "agenda",
-      "category": "School Committee Diversity, Health & Safety Subcommittee Agendas",
-      "dateSource": "notice",
-      "rawMeetingDate": null,
-      "dateAdjusted": false,
-      "dateConflict": false,
-      "filenameDate": null,
-      "needsReview": false,
-      "source": "https://events.haverhillma.gov/",
-      "docId": "2026-11-12-1700-haverhill-school-committee-diversity-health-amp-sa-79501756"
+      "docId": "2026-11-12-1800-haverhill-school-committee-budget-amp-finance-subc-41e656a2"
     },
     {
       "title": "Haverhill School Committee Diversity, Health & Safety Subcommittee Meeting",
@@ -14677,7 +14695,7 @@
     {
       "title": "February 11, 2025",
       "pageUrl": "/government/agendas-and-minutes/agenda-archive/",
-      "fileUrl": "https://www.cityofhaverhill.com/comp%20agenda%20feb%2011%202025.pdf",
+      "fileUrl": "/media/5fvf3ieh/comp-agenda-feb-4-2025.pdf",
       "category": "City Council Agendas",
       "description": "",
       "source": "https://www.haverhillma.gov/government/agendas-and-minutes/agenda-archive/",
@@ -14687,12 +14705,10 @@
       "dateSource": "title",
       "rawMeetingDate": null,
       "dateAdjusted": false,
-      "dateConflict": false,
-      "filenameDate": "2025-02-11",
-      "needsReview": false,
-      "settled": true,
-      "gone": true,
-      "docId": "agenda-archive-ea490630"
+      "dateConflict": true,
+      "filenameDate": "2025-02-04",
+      "needsReview": true,
+      "docId": "agenda-archive-2793b189"
     },
     {
       "title": "February 11, 2025",
@@ -14821,7 +14837,7 @@
       "dateAdjusted": false,
       "dateConflict": false,
       "filenameDate": "2025-02-04",
-      "needsReview": false,
+      "needsReview": true,
       "docId": "agenda-archive-333ab775"
     },
     {
