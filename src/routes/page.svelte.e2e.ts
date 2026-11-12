@@ -37,23 +37,23 @@ test.describe("the site root", () => {
     await expect(page.getByRole("heading", { level: 1, name: "Meetinghouse" })).toBeVisible()
   })
 
-  test("points at the calendar and the current project", async ({ page }) => {
+  test("points at the calendar and the issues", async ({ page }) => {
     await page.goto("/")
-    const main = page.getByRole("navigation", { name: "The calendar and the current project" })
+    const main = page.getByRole("navigation", { name: "The calendar and the issues" })
     await expect(main.getByRole("link", { name: /Meeting calendar/ })).toHaveAttribute(
       "href",
       new RegExp(`${CALENDAR}$`),
     )
-    await expect(main.getByRole("link", { name: "2026 State Election" })).toHaveAttribute(
+    await expect(main.getByRole("link", { name: "Haverhill Drought Guide" })).toHaveAttribute(
       "href",
-      /\/projects\/2026-state-election$/,
+      /\/issues\/drought$/,
     )
   })
 
   test("its calendar card opens the calendar", async ({ page }) => {
     await page.goto("/")
     await page
-      .getByRole("navigation", { name: "The calendar and the current project" })
+      .getByRole("navigation", { name: "The calendar and the issues" })
       .getByRole("link", { name: /Meeting calendar/ })
       .click()
     await expect(page).toHaveURL(CALENDAR)
@@ -62,7 +62,7 @@ test.describe("the site root", () => {
   test("draws the week the build ran in, a day to a row", async ({ page }) => {
     await page.goto("/")
     const card = page
-      .getByRole("navigation", { name: "The calendar and the current project" })
+      .getByRole("navigation", { name: "The calendar and the issues" })
       .locator("> div")
       .first()
 
@@ -73,24 +73,20 @@ test.describe("the site root", () => {
     await expect(days.last()).toContainText("Sat")
   })
 
-  test("its election card is the map, each precinct a way in", async ({ page }) => {
+  test("its issue cards open the drought and licence plate reader guides", async ({ page }) => {
     await page.goto("/")
-    const card = page
-      .getByRole("navigation", { name: "The calendar and the current project" })
-      .locator("> div")
-      .last()
-    const map = card.getByRole("group", { name: /twenty-one precincts/ })
-    await expect(map.getByRole("link")).toHaveCount(21)
-    // Nothing but the map: the timeline is the project's own page's to show.
-    await expect(card.getByRole("listitem")).toHaveCount(0)
-    await map.getByRole("link", { name: "Ward 3, Precinct 2" }).click()
-    await expect(page).toHaveURL("/projects/2026-state-election/precincts/3-2")
+    const main = page.getByRole("navigation", { name: "The calendar and the issues" })
+    await main.getByRole("link", { name: "Haverhill Drought Guide" }).click()
+    await expect(page).toHaveURL(/\/issues\/drought$/)
+    await page.goto("/")
+    await main.getByRole("link", { name: "License Plate Readers in Haverhill" }).click()
+    await expect(page).toHaveURL(/\/issues\/ALPR$/)
   })
 
   test("a sitting in the week opens its own meeting page", async ({ page }) => {
     await page.goto("/")
     const card = page
-      .getByRole("navigation", { name: "The calendar and the current project" })
+      .getByRole("navigation", { name: "The calendar and the issues" })
       .locator("> div")
       .first()
     const sitting = card.locator('a[href*="/calendar/meetings/"]').first()

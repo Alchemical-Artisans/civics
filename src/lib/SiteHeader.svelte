@@ -67,9 +67,10 @@
    * election being held, the budget being spent. For a budget that is the
    * newest book written up here, which is also where the old Budget link went.
    */
+  const listed = PROJECTS.filter((project) => !project.archived)
   const groups = [
-    { name: "Elections", projects: PROJECTS.filter((project) => project.kind === "election") },
-    { name: "Initiatives", projects: PROJECTS.filter((project) => project.kind === "initiative") },
+    { name: "Elections", projects: listed.filter((project) => project.kind === "election") },
+    { name: "Initiatives", projects: listed.filter((project) => project.kind === "initiative") },
   ].filter((group) => group.projects.length)
   const currentYear = $derived(years.find((year) => year.written) ?? years[0])
 

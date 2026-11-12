@@ -87,20 +87,14 @@ test("the map and the polling places are two pages, the map first", async ({ pag
   await expect(page).toHaveURL(`${PROJECT}/precincts/7-2`)
 })
 
-test("the bar's Projects menu lists the election under Elections", async ({ page }) => {
+test("the bar's Projects menu no longer lists the archived election", async ({ page }) => {
   await page.goto("/")
   const header = page.locator("header")
   const menu = header.locator("#project-list")
-  await expect(menu).toBeHidden()
   await header.getByRole("button", { name: /Projects/ }).click()
   await expect(menu).toBeVisible()
-  await expect(menu.getByText("Elections")).toBeVisible()
-  await menu.getByRole("link", { name: "2026 State Election" }).click()
-  await expect(page).toHaveURL(PROJECT)
-  // Inside the section, the word is marked as where the reader is.
-  await expect(
-    header.getByRole("button", { name: /Projects/ }).getByText("Projects", { exact: true }),
-  ).toHaveClass(/font-medium/)
+  await expect(menu.getByText("Elections")).toHaveCount(0)
+  await expect(menu.getByRole("link", { name: "2026 State Election" })).toHaveCount(0)
 })
 
 test("the Projects menu opens on hover with no script", async ({ browser }) => {

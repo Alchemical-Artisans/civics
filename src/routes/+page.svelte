@@ -17,12 +17,25 @@
   // what was behind them, under a paragraph saying what the site was for, and
   // all three were the site talking about itself to a reader who had not been
   // shown anything yet. What is left is a slogan and two pictures.
+  import ShapeMap from "$lib/ShapeMap.svelte"
+  import waterBodies from "$lib/data/water-bodies.json"
   import { Router } from "$lib/router"
+  import { COUNT_WORD, supplyAreas } from "$lib/water-supply-map"
   import type { MeetingKind } from "$lib/calendar"
   import type { WeekDay, WeekEntry } from "./+page"
-  import ElectionCard from "./projects/2026-state-election/ElectionCard.svelte"
 
   let { data } = $props()
+
+  const DROUGHT = {
+    title: "Haverhill Drought Guide",
+    description: "An in depth guide to Haverhill's drought.",
+  }
+  const ALPR = {
+    title: "License Plate Readers in Haverhill",
+    description:
+      "Facts, sources, and concerns about license plate readers and other surveillance in Haverhill, and a comparison of the proposed rules.",
+    href: Router.alpr(),
+  }
 
   const week = $derived(data.week as WeekDay[])
 
@@ -113,12 +126,9 @@
     whose sittings cannot be opened is a picture of a calendar rather than a
     way into one.
   -->
-  <nav
-    class="mt-10 grid grid-cols-1 gap-5 lg:grid-cols-2"
-    aria-label="The calendar and the current project"
-  >
+  <nav class="mt-10 grid grid-cols-1 gap-5 lg:grid-cols-2" aria-label="The calendar and the issues">
     <div
-      class="relative flex min-h-[30rem] flex-col rounded-xl border border-slate-200 p-5 transition-colors focus-within:border-slate-400 hover:border-slate-300 hover:bg-slate-50 sm:p-6"
+      class="relative flex min-h-[30rem] flex-col rounded-xl border border-slate-200 p-5 transition-colors focus-within:border-slate-400 hover:border-slate-300 hover:bg-slate-50 sm:p-6 lg:row-span-2"
     >
       <div class="flex items-baseline justify-between gap-3">
         <h2>
@@ -224,11 +234,51 @@
     </div>
 
     <!--
-      The project the city is in the middle of, beside the calendar: today that
-      is the election, drawn as its map. It took the budget's place -- a budget
-      book is a project too, and reached now from the bar's Projects menu along
-      with the rest of them.
+      The issues the site has written up at length, beside the calendar: one
+      card each, the page's own title and its own one-line description. The
+      election's map stood here until the election was over.
     -->
-    <ElectionCard />
+    <!-- The drought's card is its map of where the water comes from, drawn the
+         way the guide draws it. The map's box is `relative`, which lifts it
+         above the heading's covering link so it can be dragged and zoomed;
+         the heading is the card's way in. ALPR's is plain text until its page
+         is settled. -->
+    <div
+      class="relative flex flex-col rounded-xl border border-slate-200 p-5 transition-colors focus-within:border-slate-400 hover:border-slate-300 hover:bg-slate-50 sm:p-6"
+    >
+      <h2>
+        <a
+          class="no-underline after:absolute after:inset-0 after:content-['']"
+          href={Router.drought()}
+        >
+          {DROUGHT.title}
+        </a>
+      </h2>
+      <p class="mt-2 text-slate-600">{DROUGHT.description}</p>
+      <div class="relative mt-3 h-80">
+        <ShapeMap
+          title="Haverhill, the {COUNT_WORD[
+            waterBodies.bodies.length
+          ]} bodies of water its public supply draws from, and the land draining to each"
+          bounds={waterBodies.bounds as [number, number, number, number]}
+          areas={supplyAreas}
+          outlines={[{ shape: waterBodies.town.shape, name: "Haverhill" }]}
+          width={800}
+          height={560}
+          caption="MassDEP, USGS and MassGIS"
+        />
+      </div>
+    </div>
+
+    <div
+      class="relative flex flex-col justify-center rounded-xl border border-slate-200 p-5 transition-colors focus-within:border-slate-400 hover:border-slate-300 hover:bg-slate-50 sm:p-6"
+    >
+      <h2>
+        <a class="no-underline after:absolute after:inset-0 after:content-['']" href={ALPR.href}>
+          {ALPR.title}
+        </a>
+      </h2>
+      <p class="mt-2 text-slate-600">{ALPR.description}</p>
+    </div>
   </nav>
 </div>
