@@ -69,6 +69,11 @@ export interface Project {
    * budgets are fiscal years from `budget.json` rather than entries here.
    */
   kind: "election" | "initiative"
+  /**
+   * Over, and no longer listed in the bar's Projects menu. The page and its
+   * links stay where they are; only the menu forgets it.
+   */
+  archived?: boolean
   entries: Entry[]
 }
 
@@ -77,6 +82,7 @@ export const PROJECTS: Project[] = [
     slug: "2026-state-election",
     title: "2026 State Election",
     kind: "election",
+    archived: true,
     entries: [
       {
         kind: "item",
