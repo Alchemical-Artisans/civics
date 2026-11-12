@@ -87,14 +87,18 @@ test("the map and the polling places are two pages, the map first", async ({ pag
   await expect(page).toHaveURL(`${PROJECT}/precincts/7-2`)
 })
 
-test("the bar's Projects menu no longer lists the archived election", async ({ page }) => {
+test("the archived election is behind the Projects menu's Show archived button", async ({
+  page,
+}) => {
   await page.goto("/")
   const header = page.locator("header")
   const menu = header.locator("#project-list")
   await header.getByRole("button", { name: /Projects/ }).click()
   await expect(menu).toBeVisible()
-  await expect(menu.getByText("Elections")).toHaveCount(0)
-  await expect(menu.getByRole("link", { name: "2026 State Election" })).toHaveCount(0)
+  const election = menu.getByRole("link", { name: "2026 State Election" })
+  await expect(election).toBeHidden()
+  await menu.getByRole("button", { name: /Show archived/ }).click()
+  await expect(election).toBeVisible()
 })
 
 test("the Projects menu opens on hover with no script", async ({ browser }) => {

@@ -13,7 +13,7 @@
   import { onMount } from "svelte"
   import { page } from "$app/state"
   import HeaderMenu from "$lib/HeaderMenu.svelte"
-  import { PROJECTS } from "$lib/projects"
+  import { PROJECTS, type Project } from "$lib/projects"
   import { Router } from "$lib/router"
   import { barOf, bookName } from "$lib/heading"
   import type { FiscalYear } from "$lib/budget"
@@ -67,10 +67,16 @@
    * election being held, the budget being spent. For a budget that is the
    * newest book written up here, which is also where the old Budget link went.
    */
-  const listed = PROJECTS.filter((project) => !project.archived)
+  // An archived project is still in the menu, behind "Show archived" with the
+  // older entries; only the newest project that is not archived shows by default.
+  const grouped = (kind: Project["kind"]) => {
+    const projects = PROJECTS.filter((project) => project.kind === kind)
+    const newest = projects.find((project) => !project.archived)
+    return projects.map((project) => ({ project, old: project !== newest }))
+  }
   const groups = [
-    { name: "Elections", projects: listed.filter((project) => project.kind === "election") },
-    { name: "Initiatives", projects: listed.filter((project) => project.kind === "initiative") },
+    { name: "Elections", projects: grouped("election") },
+    { name: "Initiatives", projects: grouped("initiative") },
   ].filter((group) => group.projects.length)
   const currentYear = $derived(years.find((year) => year.written) ?? years[0])
 
@@ -82,7 +88,9 @@
   onMount(() => (live = true))
   const hidden = (archived: boolean) => (archived && live && !showArchived ? "hidden" : "")
   const archivedCount = $derived(
-    groups.reduce((n, group) => n + group.projects.length - 1, 0) + years.length - 1,
+    groups.reduce((n, group) => n + group.projects.filter((entry) => entry.old).length, 0) +
+      years.length -
+      1,
   )
 </script>
 
@@ -163,12 +171,14 @@
           <li
             class="px-2 {g
               ? 'pt-2.5'
-              : 'pt-1.5'} pb-0.5 text-[11px] tracking-wide text-slate-500 uppercase"
+              : 'pt-1.5'} pb-0.5 text-[11px] tracking-wide text-slate-500 uppercase {hidden(
+              group.projects.every((entry) => entry.old),
+            )}"
           >
             {group.name}
           </li>
-          {#each group.projects as project, at (project.slug)}
-            <li class="px-2 py-1 hover:bg-slate-50 {hidden(at > 0)}">
+          {#each group.projects as { project, old } (project.slug)}
+            <li class="px-2 py-1 hover:bg-slate-50 {hidden(old)}">
               <a
                 class="font-medium text-slate-900 underline decoration-slate-300 hover:decoration-slate-900"
                 href={Router.project(project.slug)}
