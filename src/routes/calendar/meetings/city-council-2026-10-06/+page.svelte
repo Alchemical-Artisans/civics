@@ -51,7 +51,7 @@
 <ul>
   <li>
     <strong>10.1</strong>
-    <a href={Router.meetingItem(MEETING, "marshland-st-special-permit")}>
+    <a href={agendaHref(MEETING, "marshland-st-special-permit")}>
       Special Permit, 27 Marshland St
     </a>
   </li>

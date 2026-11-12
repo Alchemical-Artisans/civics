@@ -1,5 +1,6 @@
 <script lang="ts">
   import { Router } from "$lib/router"
+  import { agendaHref } from "$lib/projects"
 
   const MEETING = "city-council-2026-09-15"
 </script>
@@ -91,7 +92,7 @@
 <ul>
   <li>
     <strong>10.1</strong>
-    <a href={Router.meetingItem(MEETING, "marshland-st-special-permit")}>
+    <a href={agendaHref(MEETING, "marshland-st-special-permit")}>
       Continue Hearing for 27 Marshland St to October 6, 2026
     </a>
   </li>

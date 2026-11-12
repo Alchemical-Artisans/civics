@@ -429,6 +429,65 @@ export const PROJECTS: Project[] = [
       },
     ],
   },
+  /**
+   * The 27 Marshland Street special permit, registered after the fact.
+   *
+   * It is the case that showed where the transcriber's project test cannot be
+   * applied. §6 of `transcribe-meeting.md` asks, of every item, whether it
+   * advances something running across more than one sitting -- but a special
+   * permit at its first hearing may equally be heard and decided that
+   * evening, so at the moment the question is put there is nothing to answer
+   * it with. All three of these pages were written before the rule existed
+   * (it landed 2026-10-25), and the rule would not have caught the first of
+   * them even afterwards.
+   *
+   * **A continuance is the first evidence the matter spans sittings**, which
+   * is why that is where the promotion belongs now, and why
+   * `update-continuances.mjs` does it rather than the transcriber.
+   */
+  {
+    slug: "marshland-st-special-permit",
+    title: "27 Marshland Street Special Permit",
+    kind: "initiative",
+    entries: [
+      // The Council set the hearing on 28 July, a sitting with no page here;
+      // the vote is recorded on the back of Document # 21-J, which the
+      // 15 September packet carries, so that is the item it is read off.
+      {
+        kind: "date",
+        date: "2026-07-28",
+        title: "Hearing set for September 15",
+        from: { meeting: "city-council-2026-09-15", item: "marshland-st-special-permit" },
+      },
+      // The titles are the step each sitting is in the permit's progress, not
+      // the agenda's name for the item -- which is the same sentence at all
+      // three, the application's own description.
+      {
+        kind: "item",
+        meeting: "city-council-2026-09-15",
+        item: "marshland-st-special-permit",
+        board: "City Council",
+        number: "Doc 21-J",
+        title: "Continued at the applicant's request",
+      },
+      {
+        kind: "item",
+        meeting: "city-council-2026-10-06",
+        item: "marshland-st-special-permit",
+        board: "City Council",
+        number: "Doc 21-J",
+        title: "Continued for the applicant to answer the departments",
+      },
+      {
+        kind: "item",
+        meeting: "city-council-2026-10-20",
+        item: "marshland-st-special-permit",
+        board: "City Council",
+        number: "Doc 21-J",
+        title: "Revised plans, and the answers to the departments",
+      },
+    ],
+  },
 ]
 
 /** The date an entry falls on: a sitting's is the tail of its meeting id. */
