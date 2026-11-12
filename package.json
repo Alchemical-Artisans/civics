@@ -26,6 +26,7 @@
     "notices:update": "node scripts/update-notice-documents.mjs",
     "hps:update": "node scripts/update-hps-documents.mjs",
     "recordings:update": "node scripts/update-recordings.mjs",
+    "continuances:update": "node scripts/update-continuances.mjs",
     "precincts:update": "node scripts/update-precincts.mjs",
     "excerpts:upload": "node scripts/sync-excerpts.mjs",
     "excerpts:download": "node scripts/sync-excerpts.mjs --download",

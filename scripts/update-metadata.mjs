@@ -22,12 +22,24 @@
  * Arguments are forwarded to every step, so `npm run metadata:update -- --prune`
  * reaches the calendar. The others take no flags and ignore them.
  *
- * The run ends by handing each newly-discovered sitting to `transcribe-meeting.mjs`,
- * which is the one part of this that wants a person: a scrape says the Planning
- * Board sat on the 9th, and writing that meeting up is what turns the row into a
- * page. Doing it here is only what a person did by hand anyway -- every scrape
- * already printed the ids and the command to paste them into. `--no-transcribe`
- * skips it, for a run that is only meant to refresh the data.
+ * The run ends with the two parts that want a person, in the order they
+ * depend on each other.
+ *
+ * First each newly-discovered sitting goes to `transcribe-meeting.mjs`: a
+ * scrape says the Planning Board sat on the 9th, and writing that meeting up
+ * is what turns the row into a page. Doing it here is only what a person did
+ * by hand anyway -- every scrape already printed the ids and the command to
+ * paste them into. `--no-transcribe` skips it, for a run that is only meant
+ * to refresh the data.
+ *
+ * Then `update-continuances.mjs` asks whether a permit on a sitting still to
+ * come has had its hearing continued. It is after transcribing because a
+ * permit reaches that check by a transcriber writing `PermitRecord` into the
+ * sitting's item page, so a sitting written up a moment ago is only checkable
+ * once it has been. It is in this command rather than standing alone because
+ * the answer is wanted repeatedly -- the sooner a reader learns a hearing has
+ * moved the better -- and this is the command that already gets run whenever
+ * anyone wants the site current. `--no-continuances` skips it.
  */
 import { spawnSync } from "node:child_process"
 import path from "node:path"
@@ -106,6 +118,10 @@ if (!args.includes("--no-transcribe")) {
     for (const id of fresh) step(`transcribe ${id}`, "transcribe-meeting.mjs", [id])
   }
 }
+
+// Last, because it reads the pages the block above has just written: a permit
+// is on a sitting only in so far as an item page says so.
+if (!args.includes("--no-continuances")) step("continuances", "update-continuances.mjs")
 
 console.log(`\n${"=".repeat(60)}`)
 if (failed.length) {

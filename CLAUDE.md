@@ -61,6 +61,7 @@ npm run calendar:rebuild    # re-scrape everything (only when scrape/date logic 
 npm run budget:update       # re-scrape the budget and audit listing (always full)
 npm run notices:update      # the agendas the city hangs off its meeting notices
 npm run recordings:update   # HC Media's video of a sitting, matched to it
+npm run continuances:update # ask whether a permit hearing still to come has been continued
 npm run precincts:update    # ward and precinct shapes and districts, from MassGIS
 npm run transcribe -- <id>  # hand a sitting to Claude Code to write its page
 npm run story               # 1080x1920 Instagram story card for the next Council sitting, in .cache/stories/
@@ -309,6 +310,61 @@ counted. Where the committee also has a notice agenda for the day,
 page sits after the city's `haverhillma.gov` pages and before Video Recordings:
 the city's record of a body haverhillma.gov omits, so part of it, but a step
 removed.
+
+**A permit's record is in the city's other system, and a hearing is called off
+there.** Haverhill runs permitting on OpenGov's ViewPoint Cloud portal
+(`haverhillma.portal.opengov.com`), which holds far more of a special permit
+than the Council's packet does -- `CCSP-26-7` carries 25 files against the
+packet's 7, among them an opposition letter, an abutters list and every
+revision filed. None of it can be scraped and almost none of it can be linked.
+Every read of the data service behind that portal needs an `x-turnstile-proof`
+header minted by passing a Cloudflare challenge, and an unproven request gets
+`403 {"errors":["forbidden"]}`; the files themselves are Azure blob URLs whose
+read signature is re-minted per page load and lasts an hour, so no file link
+could be committed even with the proof. The one stable public address is
+`/records/<id>`, and `src/lib/permits.ts` is a hand-kept map from the number a
+document prints (`CCSP-26-7`) to that id, `PermitRecord.svelte` the component
+that links one where the map has it and leaves the printed number alone where
+it does not -- which is what stops an un-looked-up number being linked
+somewhere wrong.
+
+**What the portal is really needed for is a continuance.** The city publishes
+an agenda, the hearing on it is continued, and the Council does not reissue
+the agenda -- 23 of its 1,362 records back to 2020 are amended agendas, three
+or four a year, against hearings continued far more often than that. So the
+published agenda goes on saying a hearing will be heard, the continuance is
+filed on the permit's record and nowhere else, and a reader who came for it
+finds nothing happening. `scripts/update-continuances.mjs`
+(`npm run continuances:update`, the last step of `metadata:update`) is
+everything about that except the looking: it finds the permits on sittings
+still to come, prints each record's link, stops to be told, and hands what
+comes back to Claude Code. **The pages are its index** -- a permit is on a
+sitting in so far as a transcriber wrote `<PermitRecord>` into that sitting's
+item page -- and it asks once per permit about the soonest sitting only, a
+permit continued twice otherwise being three identical questions. It runs
+after transcribing because it reads the pages transcribing has just written,
+and inside `metadata:update` rather than alone because the answer is wanted
+repeatedly: the sooner a reader learns a hearing has moved the better. The
+date a person types is passed to Claude Code as what they typed and never as
+fact, because the asymmetry is one-sided -- a reader wrongly told a hearing
+stands has made a wasted trip, where one wrongly told it is continued stays
+home and misses it -- so the document is read and must agree before anything
+is written. `--no-continuances` skips it, `--list` prints the links and stops,
+and `--as-of=YYYY-MM-DD` is what makes the run checkable at all, most of the
+year having no permit on a sitting still to come.
+
+**A continuance is also when a permit becomes a project.** §6 of
+`transcribe-meeting.md` asks of every item whether it advances something
+running across more than one sitting, but a special permit at its first
+hearing may equally be heard and decided that evening, so the question is put
+at the one moment there is nothing to answer it with. The continuance is the
+first evidence, which is why `prompts/record-continuance.md` is what registers
+the project -- `kind: "initiative"`, the same as any other matter that spans
+sittings and is not an election. The 27 Marshland Street permit is the worked
+example and was registered by hand after the fact: all three of its pages were
+written before that rule existed, which is why `transcribe-meeting.md` cited
+it as its own example of a continued hearing while the permit itself broke
+that section's last bullet.
 
 **No board's meeting schedule is a document.** Both are ordinary HTML on a page,
 which is why the calendar could not see either while it read only the listing --
