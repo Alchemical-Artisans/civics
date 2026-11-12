@@ -428,6 +428,47 @@ hour only as the document prints them -- no hour printed means all-day, never
 an invented time. `src/routes/calendar/meetings/city-council-2026-10-06/wreaths-across-america/`
 is the worked example.
 
+### A permit number the document prints
+
+An item about a permit prints the city's own number for it -- `CCSP-26-7`,
+`PBFW-26-2`. The city runs permitting on a separate system, and that number is
+the way into a record holding far more than the Council's packet does: for
+`CCSP-26-7`, 25 files against the packet's 7, among them an opposition letter,
+an abutters list and every revision filed.
+
+Wrap the number where the document prints it:
+
+```svelte
+<script lang="ts">
+  import PermitRecord from "$lib/PermitRecord.svelte"
+</script>
+
+<strong>Doc 21-J</strong>- <strong><PermitRecord number="CCSP-26-7" /></strong> &ndash;Matt Silva
+```
+
+The number becomes its own link text, so nothing of ours is added to the
+page's words. **Where the number has no entry in `src/lib/data/permits.json`,
+`PermitRecord` leaves it as plain text** -- and the entry can only be made by a
+person, so ask for it:
+
+> The agenda prints permit number `CCSP-26-7`, which has no entry in
+> `permits.json`. Open the permit on the city's portal and paste me the URL
+> and I will record it, or say skip.
+
+The URL is `https://haverhillma.portal.opengov.com/records/231770`; the id is
+the last segment, and the entry is `"CCSP-26-7": 231770`. Do not try to find
+it yourself -- the portal's data service refuses any request without a
+Cloudflare `x-turnstile-proof` header, which is not ours to mint. Do not guess
+an id, and do not leave the number wrapped when you have not got one: an id
+that is wrong links a reader to somebody else's permit. Wrapping it anyway is
+safe where the entry is missing, and is worth doing so the link appears the
+day somebody adds it.
+
+**Do not quote the portal's record on the page, and do not link its files.**
+Each file's address is signed for about an hour and re-minted per page load,
+so such a link is dead by the time anyone reads it. Only `/records/<id>` is
+stable, and `PermitRecord` is the only thing that should build it.
+
 ## 6. Cross-references to other meetings
 
 A document sometimes names another sitting's business without printing it — a
@@ -608,6 +649,17 @@ and a timeline of `ItemEntry`s naming the item pages that are its steps.
   is not a project. Where you are unsure, say so in your report rather than
   registering one.
 
+**One case cannot be decided here at all.** A permit at its first hearing may
+equally be heard and decided that evening, so asking whether it runs across
+more than one sitting puts the question at the one moment there is nothing to
+answer it with. A continuance is the first evidence, and
+`npm run continuances:update` is where the promotion happens --
+[record-continuance.md](record-continuance.md) carries it. So for a permit's
+first sitting, write the item page and leave the project alone; do not guess
+that a hearing will be continued because permits often are. Where earlier
+sittings already have pages for the same permit, the matter has already proved
+it spans, and the ordinary rule above applies.
+
 A step needs an item page, so a notice with a single item still gets one: the
 meeting page carries the line and the item page the item's text. See
 `planning-and-development-committee-2026-10-19/`, whose one item, Doc. 32-k, is
@@ -649,7 +701,9 @@ special permit `city-council-2026-10-20/marshland-st-special-permit/`).
 - **Where the matter spans sittings**, it is also a project (§6): register it
   with an `ItemEntry` for each sitting's item, the dates its documents set as
   `DateEntry`s, and `kind: "initiative"` unless the matter is an election. The
-  page's agenda line is written with `agendaHref`.
+  page's agenda line is written with `agendaHref`. For a permit whose first
+  hearing this is, leave that to `continuances:update` -- see §6, and
+  `src/routes/projects/marshland-st-special-permit/` for the shape it takes.
 
 ## 7. Background the document does not carry
 
