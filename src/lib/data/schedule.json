@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-11T16:35:30.907Z",
+  "generatedAt": "2026-11-13T13:08:51.961Z",
   "rules": [
     {
       "board": "City Council",
@@ -546,11 +546,32 @@
       "time": "3:00 PM"
     },
     {
+      "board": "Bradford Elementary School Site Council",
+      "date": "2026-11-17",
+      "title": "Bradford Elementary School Site Council Mtg",
+      "url": "https://events.haverhillma.gov/default/Detail/2026-11-17-1630-Bradford-Elementary-School-Site-Council-Mtg",
+      "time": "4:30 PM"
+    },
+    {
       "board": "City Council",
       "date": "2026-11-17",
       "title": "City Council Meeting",
       "url": "https://events.haverhillma.gov/default/Detail/2026-11-17-1900-City-Council-Meeting2",
       "time": "7:00 PM"
+    },
+    {
+      "board": "John Greenleaf Whittier School Building Committee",
+      "date": "2026-11-17",
+      "title": "John Greenleaf Whittier School Building Committee Meeting",
+      "url": "https://events.haverhillma.gov/default/Detail/2026-11-17-1400-John-Greenleaf-Whittier-School-Building-Committee-",
+      "time": "2:00 PM"
+    },
+    {
+      "board": "Cultural Council",
+      "date": "2026-11-18",
+      "title": "Haverhill Cultural Council Meeting",
+      "url": "https://events.haverhillma.gov/default/Detail/2026-11-18-1830-Haverhill-Cultural-Council-Meeting",
+      "time": "6:30 PM"
     },
     {
       "board": "Conservation Commission",
