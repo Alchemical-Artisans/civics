@@ -299,6 +299,16 @@ export const PROJECTS: Project[] = [
           item: "golden-hill-roof-replacement-bonds",
         },
       },
+      // The ten days having run, the order is back under Unfinished Business,
+      // its filing of 21 October printed beside it, for the Council to vote.
+      {
+        kind: "item",
+        meeting: "city-council-2026-11-17",
+        item: "golden-hill-roof-replacement-bonds",
+        board: "City Council",
+        number: "17.1",
+        title: "Order returns for the Council's vote",
+      },
     ],
   },
   {
