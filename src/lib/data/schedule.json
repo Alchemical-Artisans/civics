@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-13T13:08:51.961Z",
+  "generatedAt": "2026-11-13T18:05:53.978Z",
   "rules": [
     {
       "board": "City Council",
@@ -574,11 +574,32 @@
       "time": "6:30 PM"
     },
     {
+      "board": "Zoning Board of Appeals",
+      "date": "2026-11-18",
+      "title": "Zoning Board of Appeals Meeting",
+      "url": "https://events.haverhillma.gov/default/Detail/2026-11-18-1900-Zoning-Board-of-Appeals-Meeting",
+      "time": "7:00 PM"
+    },
+    {
       "board": "Conservation Commission",
       "date": "2026-11-19",
       "title": "Haverhill Conservation Commission Meeting",
       "url": "https://events.haverhillma.gov/default/Detail/2026-11-19-1915-Haverhill-Conservation-Commission-Meeting",
       "time": "7:15 PM"
+    },
+    {
+      "board": "Housing Authority",
+      "date": "2026-11-19",
+      "title": "Haverhill Housing Authority Meeting",
+      "url": "https://events.haverhillma.gov/default/Detail/2026-11-19-1000-Haverhill-Housing-Authority-Meeting",
+      "time": "10:00 AM"
+    },
+    {
+      "board": "Library Board of Trustees",
+      "date": "2026-11-19",
+      "title": "Haverhill Public Library Board of Trustees Meeting",
+      "url": "https://events.haverhillma.gov/default/Detail/2026-11-19-0930-Haverhill-Public-Library-Board-of-Trustees-Meeting",
+      "time": "9:30 AM"
     },
     {
       "board": "Special Education Parent Advisory Council",
