@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-11-13T18:05:20.946Z",
+  "generatedAt": "2026-11-14T00:44:01.146Z",
   "source": "https://www.haverhillma.gov/government/agendas-and-minutes/",
-  "count": 3041,
+  "count": 3042,
   "meetings": [
     {
       "title": "Haverhill Housing Authority Mtg.",
@@ -290,6 +290,25 @@
       "needsReview": false,
       "source": "https://events.haverhillma.gov/",
       "docId": "2026-11-16-1500-board-of-registrars-meeting-9488d8f6"
+    },
+    {
+      "title": "Haverhill City Council Public Safety Meeting - November 12, 2026",
+      "description": "",
+      "pageUrl": "http://haverhillcommunitytv.org/video/city-council-public-safety-meeting-november-12-2026",
+      "fileUrl": null,
+      "date": "2026-11-12",
+      "board": "Public Health, Safety & Works Committee",
+      "kind": "recording",
+      "category": "Public Health, Safety & Works Committee Recordings",
+      "dateSource": "recording",
+      "rawMeetingDate": null,
+      "dateAdjusted": false,
+      "dateConflict": false,
+      "filenameDate": null,
+      "needsReview": false,
+      "orphan": false,
+      "source": "http://haverhillcommunitytv.org/",
+      "docId": null
     },
     {
       "title": "Haverhill School Committee Budget & Finance Subcommittee Meeting - Revised",
