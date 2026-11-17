@@ -25,7 +25,22 @@
   // sets below, so a card and a tab cannot name the page differently.
   const TITLE = "Haverhill Drought Guide"
   const sharedUrl = Router.absolute("/issues/drought")
-  const description = "An in depth guide to Haverhill's drought."
+  const description = "An in-depth evidence based guide to the drought in Haverhill."
+  // Structured data for search engines, the same facts the tab and the card
+  // carry. `datePublished` is the "Published" line printed on the page.
+  const structuredData = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: TITLE,
+    description,
+    url: sharedUrl,
+    mainEntityOfPage: sharedUrl,
+    datePublished: "2026-11-09",
+    about: "Drought in Haverhill, Massachusetts",
+    publisher: { "@type": "Organization", name: "Haverhill Meeting Calendar" },
+  }).replace(/</g, "\\u003c")
+  // The closing tag is split so the parser does not end this script block on it.
+  const structuredScript = `<script type="application/ld+json">${structuredData}</` + `script>`
   // For the printed page only: paper cannot be clicked, so the address goes
   // on it as text and as a code, built from the same URL as the share panel's.
   const code = qrPath(sharedUrl)
@@ -45,9 +60,12 @@
 
 <svelte:head>
   <title>{TITLE}</title>
+  <!-- Fixed values of ours with `<` escaped, never reader input. -->
+  <!-- eslint-disable-next-line svelte/no-at-html-tags -->
+  {@html structuredScript}
 </svelte:head>
 
-<h1>Drought</h1>
+<h1>Haverhill Drought</h1>
 
 <!-- The day this build ran, in the city. The layout's server load gives it,
      so the served page and a reader's own clock cannot disagree about it. -->

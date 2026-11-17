@@ -19,6 +19,7 @@
 </script>
 
 <svelte:head>
+  <meta name="description" content={description} />
   <meta property="og:type" content="article" />
   <meta property="og:site_name" content="Haverhill Meeting Calendar" />
   <meta property="og:title" content={title} />
