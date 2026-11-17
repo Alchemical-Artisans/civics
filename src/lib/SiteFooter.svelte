@@ -10,7 +10,7 @@
   constant to subtract.
 -->
 <footer
-  class="flex h-10 items-center justify-center gap-4 border-t border-slate-200 px-4 text-xs text-slate-500"
+  class="flex h-10 items-center justify-center gap-4 border-t border-slate-200 px-4 text-xs text-slate-500 print:hidden"
 >
   <a
     class="hover:text-slate-700"

@@ -25,7 +25,7 @@
 </script>
 
 <div class="mx-auto max-w-6xl px-4 py-8">
-  <div class="grid gap-8 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
+  <div class="grid gap-8 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] print:block">
     <!-- `min-w-0` so the page's own wide things -- a table of the city's,
          a chart's own box -- scroll inside this column instead of widening
          it and squeezing the timeline out. -->
@@ -40,6 +40,8 @@
          connection -- and folding leaves those two showing with the six
          meetings that actually happened hidden behind an arrow. The record
          is what this page is about. -->
-    <FoldedTimeline entries={DROUGHT_TIMELINE} today={data.today} fold={false} />
+    <div class="print:break-before-page">
+      <FoldedTimeline entries={DROUGHT_TIMELINE} today={data.today} fold={false} />
+    </div>
   </div>
 </div>

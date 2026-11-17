@@ -94,7 +94,7 @@
   )
 </script>
 
-<header class="border-b border-slate-200 bg-white">
+<header class="border-b border-slate-200 bg-white print:hidden">
   <!-- `relative`: on a phone the menus in the bar hang off its right edge
        rather than off their own words -- see `HeaderMenu`. -->
   <div class="relative flex flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3">

@@ -12,6 +12,7 @@
   import { POPULATION } from "$lib/population"
   import { WATER_USAGE } from "$lib/water-usage"
   import { Router } from "$lib/router"
+  import { qrPath } from "$lib/qr"
   import ShapeMap from "$lib/ShapeMap.svelte"
   import { COUNT_WORD, supplyAreas } from "$lib/water-supply-map"
   import waterBodies from "$lib/data/water-bodies.json"
@@ -25,6 +26,9 @@
   const TITLE = "Haverhill Drought Guide"
   const sharedUrl = Router.absolute("/issues/drought")
   const description = "An in depth guide to Haverhill's drought."
+  // For the printed page only: paper cannot be clicked, so the address goes
+  // on it as text and as a code, built from the same URL as the share panel's.
+  const code = qrPath(sharedUrl)
 
   // The waters Haverhill's public system draws from, and the land that drains
   // to each. See scripts/lib/water-bodies.mjs for where the supply list, the
@@ -52,8 +56,23 @@
   <span>{formatLongDate("2026-11-09")}</span>
 </p>
 
-<div class="mt-2">
+<div class="mt-2 print:hidden">
   <ShareButton url={sharedUrl} text={TITLE} />
+</div>
+
+<!-- Printed pages only: the QR code and address, on the first page where a
+     reader holding the paper can use them. -->
+<div class="hidden items-center gap-3 print:mt-2 print:flex">
+  <svg
+    viewBox="0 0 {code.size} {code.size}"
+    class="h-24 w-24 shrink-0"
+    role="img"
+    aria-label="QR code for {sharedUrl}"
+    shape-rendering="crispEdges"
+  >
+    <path d={code.d} fill="#000" />
+  </svg>
+  <p class="m-0 text-sm break-all">{sharedUrl}</p>
 </div>
 
 <p>
