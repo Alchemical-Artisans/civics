@@ -15,4 +15,15 @@
       City Council, January 13, 2026, Housing Production Plan
     </a>
   </li>
+  <li>
+    <a
+      href="https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/q1wndcaz/housing-production-plan-2026-2031.pdf"
+      target="_blank"
+      rel="external noopener noreferrer"
+    >
+      Haverhill, MA Housing Production Plan 2026&ndash;2031<span class="sr-only"
+        >, PDF, opens in a new tab</span
+      >
+    </a>
+  </li>
 </ul>
