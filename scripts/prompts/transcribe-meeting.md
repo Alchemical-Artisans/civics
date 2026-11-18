@@ -838,6 +838,26 @@ signature, and ask where it would be if the sheet were upright. A heading
 running up the left edge, with the letters' tops pointing left, has been turned
 anticlockwise and wants `rotate(90)`; running down the right edge, `rotate(270)`.
 
+**Check the page numbers too, for pages the city never scanned.** Reading each
+render, look at the number a document prints on its own pages (a footer, a
+header) and confirm the run is unbroken. A packet is sometimes scanned from a
+double-sided original with only one side of each sheet captured, so a plan's
+excerpt reads 1, 3, 5, 7 … and every even page is absent. Nothing in the
+file says so: `pdfinfo` reports a clean 20-page PDF, and cutting the excerpt
+faithfully reproduces the gap, which is how the Housing Production Plan draft
+of September 11, 2025 (`city-council-2026-01-13/housing-production-plan/
+draft-plan.pdf`) went out with eighteen of its thirty-seven pages missing and
+nobody the wiser until a reader asked for page 8. The same applies to a letter
+whose "page 2 of 3" is not in the packet, a table that breaks off mid-row, and
+a numbered attachment list skipping a number. Before cutting, compare the
+printed numbers against the cut's page count; where the packet is the gap,
+cut what is there, do not pad it, and do not try to repair it from another
+source on your own. **Say so in your report (§14)**: name the document, the
+item, the numbers that are present and the ones that are not, and note that
+the city's file is the one lacking them rather than the cut. Do not add a
+sentence to the page about it -- whether and how a page says so is the site
+owner's call.
+
 **Then upload them. An excerpt is not published by committing it**, because
 `excerpts/` is gitignored: the store is a Google Cloud Storage bucket, the
 bucket is the only copy, and the site links straight into it.
@@ -1058,6 +1078,9 @@ an objection.
   city's spelling, punctuation and slips stay as printed — "dover use" for Dover
   Amendment, a stray hyphen, a missing full stop. The words on the page are the
   city's; the arrangement is ours.
+- **Look for pages the packet is missing.** An excerpt whose printed page
+  numbers skip (1, 3, 5 …), or whose document breaks off, was scanned
+  incomplete by the city; §8. Report it, and leave the page alone.
 - **Write no prose of your own.** A heading the city prints with nothing under
   it stays empty. Do not write "None scheduled" unless the document says it.
   The one exception is a background panel (§7), and even there the sentences
@@ -1116,4 +1139,5 @@ list of files. Do not push, and do not open a pull request.
 Then tell the user, briefly: which pages you created, which items you highlighted
 and on what evidence (§11), any judgement call you
 made about slugs or about what did not get its own page, anything the document
-states that you could not read, and the result of the checks.
+states that you could not read, any document whose pages are missing from
+the city's own file (§8), and the result of the checks.
