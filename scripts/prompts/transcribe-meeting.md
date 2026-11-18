@@ -851,12 +851,25 @@ nobody the wiser until a reader asked for page 8. The same applies to a letter
 whose "page 2 of 3" is not in the packet, a table that breaks off mid-row, and
 a numbered attachment list skipping a number. Before cutting, compare the
 printed numbers against the cut's page count; where the packet is the gap,
-cut what is there, do not pad it, and do not try to repair it from another
-source on your own. **Say so in your report (§14)**: name the document, the
-item, the numbers that are present and the ones that are not, and note that
-the city's file is the one lacking them rather than the cut. Do not add a
-sentence to the page about it -- whether and how a page says so is the site
-owner's call.
+cut what is there and do not pad it. Then **search for the complete document**:
+the body that wrote it (the Merrimack Valley Planning Commission for a housing
+plan), the city's own media library and the page the item came from usually
+carry the whole file. Confirm which document it is -- same title, date and
+edition, and the missing numbers present -- and not a later or earlier version
+of it; a final plan is not the complete draft. **Keep the incomplete excerpt
+linked, for transparency**, and put this on the same list line, after the link,
+with "here" linking to the other file as an outbound link:
+
+> Note: Agenda packet provided incomplete document, full version can be found
+> here.
+
+Where what you found is a different edition of the same document -- the adopted
+plan where the packet carries a draft -- say what it is instead of calling it
+the full version: "the adopted plan can be found here". Where nothing can be
+found, leave the note off. **Say so in your report (§14)** either way: name the
+document, the item, the numbers that are present and the ones that are not,
+that the city's file is the one lacking them rather than the cut, and where the
+other file is or that none was found.
 
 **Then upload them. An excerpt is not published by committing it**, because
 `excerpts/` is gitignored: the store is a Google Cloud Storage bucket, the
@@ -1080,7 +1093,8 @@ an objection.
   city's; the arrangement is ours.
 - **Look for pages the packet is missing.** An excerpt whose printed page
   numbers skip (1, 3, 5 …), or whose document breaks off, was scanned
-  incomplete by the city; §8. Report it, and leave the page alone.
+  incomplete by the city; §8. Search for the full version, link it beside the
+  incomplete one with the note §8 gives, and report it.
 - **Write no prose of your own.** A heading the city prints with nothing under
   it stays empty. Do not write "None scheduled" unless the document says it.
   The one exception is a background panel (§7), and even there the sentences

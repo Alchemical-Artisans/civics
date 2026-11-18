@@ -62,6 +62,13 @@
         class="sr-only">, PDF, 20 pages, opens in a new tab</span
       >
     </a>
+    Note: Agenda packet provided incomplete document, the adopted plan can be found
+    <a
+      href="https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/q1wndcaz/housing-production-plan-2026-2031.pdf"
+      target="_blank"
+      rel="external noopener noreferrer"
+      >here<span class="sr-only">, PDF, opens in a new tab</span></a
+    >.
   </li>
   <li>
     <a href={Router.meeting("city-council-2025-05-06")}>
