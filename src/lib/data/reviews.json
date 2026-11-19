@@ -312,7 +312,8 @@
   },
   "2026-6-27-board-of-assessors-minutes::boa-mtg-min-05272025.pdf": {
     "needsReview": false,
-    "date": "2025-05-27"
+    "date": "2025-05-27",
+    "board": "Board of Assessors"
   },
   "agenda-and-minutes-27::boa-mtg-min-8082026.pdf": {
     "needsReview": false,
@@ -325,7 +326,8 @@
   },
   "agenda-and-minutes-4::mtg-boa-11182025.pdf": {
     "needsReview": false,
-    "date": "2025-08-18"
+    "date": "2025-08-18",
+    "board": "Board of Assessors"
   },
   "agenda-and-minutes-5::boa-mtg-min-09092025.pdf": {
     "needsReview": false,
@@ -1610,5 +1612,113 @@
   "zoning-board-of-appeals::minutes-spetember-192020-pdf.pdf": {
     "needsReview": false,
     "date": "2020-09-16"
+  },
+  "agenda-and-minutes-26::boa-mtg-min-82526.pdf": {
+    "board": "Board of Assessors"
+  },
+  "planninganddevelopment_82626_minutes::planninganddevelopment_82426_minutes.pdf": {
+    "board": "Planning and Development Committee"
+  },
+  "citycouncil_publicsafety_72926_minutes::citycouncil_publicsafetymtg_72926.pdf": {
+    "board": "Public Health, Safety & Works Committee"
+  },
+  "agenda-and-minutes-25::boa-mtg-min-7142026.pdf": {
+    "board": "Board of Assessors"
+  },
+  "planninganddevelopment_7726_minutes::planninganddevelopment_7726_1_minutes.pdf": {
+    "board": "Planning and Development Committee"
+  },
+  "agenda-and-minutes-24::boa-mtg-min-6302026.pdf": {
+    "board": "Board of Assessors"
+  },
+  "20260626-board-of-assessor-minutes::boa-mtg-min-6162026.pdf": {
+    "board": "Board of Assessors"
+  },
+  "20260602-board-of-assessor-minutes::boa-mtg-min-622026.pdf": {
+    "board": "Board of Assessors"
+  },
+  "agenda-and-minutes-23::boa-mtg-min-5202026.pdf": {
+    "board": "Board of Assessors"
+  },
+  "agenda-and-minutes-22::boa-mtg-min-552026.pdf": {
+    "board": "Board of Assessors"
+  },
+  "citycouncil_planninganddevelopment_33026_minutes::planninganddevelopment_33026_minutes.pdf": {
+    "board": "Planning and Development Committee"
+  },
+  "planninganddevelopment_33026_minutes::planninganddevelopment_33026_minutes.pdf": {
+    "board": "Planning and Development Committee"
+  },
+  "agenda-and-minutes-13::boa-mtg-min-3102026.pdf": {
+    "board": "Board of Assessors"
+  },
+  "planninganddevelopmentcommittee_3226_minutes::planninganddevelopmentcommittee_3226_minutes.pdf": {
+    "board": "Planning and Development Committee"
+  },
+  "agenda-and-minutes-14::boa-mtg-min-2102026.pdf": {
+    "board": "Board of Assessors"
+  },
+  "planninganddevelopmentcommittee_2926_minutes::planninganddevelopmentcommitee_2926_minutes.pdf": {
+    "board": "Planning and Development Committee"
+  },
+  "agenda-and-minutes-12::board-of-assessors-meeting-232026.pdf": {
+    "board": "Board of Assessors"
+  },
+  "agenda-and-minutes-11::board-of-assessors-meeting-1272026.pdf": {
+    "board": "Board of Assessors"
+  },
+  "agenda-and-minutes-10::mtg-boa-1062026.pdf": {
+    "board": "Board of Assessors"
+  },
+  "agenda-and-minutes-8::mtg-boa-12092025.pdf": {
+    "board": "Board of Assessors"
+  },
+  "boa-mtg-min-10282025::boa-mtg-min-10282025.doc": {
+    "board": "Board of Assessors"
+  },
+  "city-council_publicsafety_102225_minutes::citycouncil_publicsafetymtg_102225_minutes.pdf": {
+    "board": "Public Health, Safety & Works Committee"
+  },
+  "agenda-and-minutes-7::boa-mtg-min-10142025.pdf": {
+    "board": "Board of Assessors"
+  },
+  "agenda-and-minutes-6::boa-mtg-min-09302025.pdf": {
+    "board": "Board of Assessors"
+  },
+  "agenda-and-minutes-2::boa-mtg-min-09092025.pdf": {
+    "board": "Board of Assessors"
+  },
+  "agenda-and-minutes::boa-mtg-min-08262025.pdf": {
+    "board": "Board of Assessors"
+  },
+  "2025-8-12-board-of-assessors-minutes::boa-mtg-min-08122025.pdf": {
+    "board": "Board of Assessors"
+  },
+  "2025-7-29-board-of-assessors-executive-minutes::boa-exec-mtg-min-07292025.pdf": {
+    "board": "Board of Assessors"
+  },
+  "2025-7-29-board-of-assessors-minutes::boa-mtg-min-07292025.pdf": {
+    "board": "Board of Assessors"
+  },
+  "2025-7-15-board-of-assessors-executive-minutes::boa-exec-mtg-min-07152025.pdf": {
+    "board": "Board of Assessors"
+  },
+  "2025-7-25-board-of-assessors-minutes::boa-mtg-min-07152025.pdf": {
+    "board": "Board of Assessors"
+  },
+  "2025-7-1-board-of-assessors-minutes::boa-mtg-min-07012025.pdf": {
+    "board": "Board of Assessors"
+  },
+  "2025-6-17-board-of-assessors-meeting::boa-mtg-min-06172025.pdf": {
+    "board": "Board of Assessors"
+  },
+  "planning-and-development-committee-meeting-june-16-2025::planninganddevelopment_61625_minutes.pdf": {
+    "board": "Planning and Development Committee"
+  },
+  "2025-5-20-board-of-assessor-minutes::boa-mtg-min-05202025.pdf": {
+    "board": "Board of Assessors"
+  },
+  "may-6-2025-boa-mtg-minutes::boa-mtg-min-05062025.pdf": {
+    "board": "Board of Assessors"
   }
 }
