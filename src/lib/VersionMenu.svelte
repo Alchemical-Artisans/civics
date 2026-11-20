@@ -47,7 +47,7 @@
 <details bind:this={menu} class="relative inline-block">
   <summary
     bind:this={summary}
-    class="cursor-pointer list-none text-blue-700 hover:underline [&::-webkit-details-marker]:hidden"
+    class="cursor-pointer list-none text-slate-900 underline [&::-webkit-details-marker]:hidden"
   >
     {label} <span aria-hidden="true">&#9662;</span>
   </summary>
@@ -61,7 +61,8 @@
           aria-current={v.id === current ? "page" : undefined}
           class="block rounded px-3 py-1.5 whitespace-nowrap text-slate-800 no-underline hover:bg-slate-100 aria-[current=page]:font-semibold"
         >
-          {formatLongDate(v.date)}{#if i === 0}<span class="text-slate-500"> (latest)</span>{/if}
+          {formatLongDate(v.date)}{#if i === 0}<span class="ml-1 text-slate-500">(latest)</span
+            >{/if}
         </a>
       </li>
     {/each}
