@@ -307,11 +307,12 @@ export class Router {
   }
 
   /**
-   * The drought guide's page history, or one recorded version of it by its
-   * date (`2026-11-19`).
+   * One recorded version of the drought guide, by its date (`2026-11-19`):
+   * what it changed, and its whole text. There is no page listing them --
+   * `VersionMenu` is the list.
    */
-  static droughtHistory(version?: string): string {
-    return path(`/issues/drought/history${version ? `/${version}` : ""}`)
+  static droughtHistory(version: string): string {
+    return path(`/issues/drought/history/${version}`)
   }
 
   /**

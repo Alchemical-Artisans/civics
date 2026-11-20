@@ -1,5 +1,5 @@
 import history from "$lib/data/drought-history.json"
-import { diffBlocks, summarize, type Block, type Change } from "$lib/text-diff"
+import { diffBlocks, type Block, type Change } from "$lib/text-diff"
 
 /**
  * The drought guide's recorded versions, and what changed between them.
@@ -58,23 +58,9 @@ function textOf(change: Change): string {
   return tokens.map((t, i) => (i && t.gap ? " " : "") + t.word).join("")
 }
 
-/** Every version, newest first, with how much each moved from the one before. */
+/** Every version, newest first, for the dropdown. */
 export function versionList() {
-  return versions
-    .map((v, i) => {
-      const before = versions[i - 1]
-      const article = before ? located(before.blocks, v.blocks) : []
-      const timeline = before ? located(before.timeline, v.timeline) : []
-      return {
-        id: v.id,
-        date: v.date,
-        note: v.note ?? null,
-        first: !before,
-        article: summarize(article.map((l) => l.change)),
-        timeline: summarize(timeline.map((l) => l.change)),
-      }
-    })
-    .reverse()
+  return versions.map((v) => ({ id: v.id, date: v.date })).reverse()
 }
 
 /** One version: its whole text, and what it changed from the version before. */
@@ -88,8 +74,7 @@ export function versionPage(id: string) {
     date: v.date,
     note: v.note ?? null,
     previous: before ? { id: before.id, date: before.date } : null,
-    next: versions[i + 1] ? { id: versions[i + 1].id, date: versions[i + 1].date } : null,
-    latest: i === versions.length - 1,
+    versions: versionList(),
     article: before ? located(before.blocks, v.blocks) : null,
     timeline: before ? located(before.timeline, v.timeline) : null,
     blocks: v.blocks,
@@ -99,5 +84,5 @@ export function versionPage(id: string) {
 
 /** When the guide first went up and when it last changed, for the page's own byline. */
 export function publication() {
-  return { published: versions[0].date, updated: versions.at(-1)!.date, count: versions.length }
+  return { published: versions[0].date, updated: versions.at(-1)!.date, versions: versionList() }
 }

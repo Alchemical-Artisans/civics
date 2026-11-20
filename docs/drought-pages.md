@@ -402,11 +402,16 @@ reading is picked up without a rebuild flag. See
 
 ## Page history
 
-`/issues/drought/history` lists every published version of the guide, newest
-first, and `/issues/drought/history/<date>` shows one: what changed since the
-version before it, one paragraph at a time, then the whole text of that version
-in a closed `<details>`. The page's own "Published" and "Updated" lines and
-its structured data's `datePublished`/`dateModified` are read off the same
+`/issues/drought/history/<date>` shows one published version of the guide: what
+changed since the version before it, one paragraph at a time, then the whole
+text of that version in a `<details>` (open on the first version, which has no
+changes to show). **There is no page listing the versions:**
+`src/lib/VersionMenu.svelte` is the list, a dropdown on the guide's
+"Published · Updated" line labelled History and on each version page beside
+the link back. It is a `<details>`, so it opens and links before anything
+hydrates, and once live it closes on a click elsewhere or Escape. Neither page
+explains what a history is. The page's own "Published" and "Updated" lines
+and its structured data's `datePublished`/`dateModified` are read off the same
 record, so the page cannot say it was updated on a day the history does not
 show.
 

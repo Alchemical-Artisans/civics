@@ -7,6 +7,7 @@
   import RainfallChart from "$lib/RainfallChart.svelte"
   import ShareButton from "$lib/ShareButton.svelte"
   import ShareMeta from "$lib/ShareMeta.svelte"
+  import VersionMenu from "$lib/VersionMenu.svelte"
   import WaterUsageChart from "$lib/WaterUsageChart.svelte"
   import { formatLongDate } from "$lib/calendar"
   import { POPULATION } from "$lib/population"
@@ -84,7 +85,7 @@
     <span>{formatLongDate(data.updated)}</span>
   {/if}
   <span aria-hidden="true">·</span>
-  <a href={Router.droughtHistory()}>Page history</a>
+  <VersionMenu versions={data.versions} label="History" />
 </p>
 
 <div class="mt-2 print:hidden">

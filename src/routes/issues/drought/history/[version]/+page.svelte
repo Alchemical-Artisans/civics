@@ -1,6 +1,7 @@
 <script lang="ts">
   import BlockText from "$lib/BlockText.svelte"
   import DiffBlock from "$lib/DiffBlock.svelte"
+  import VersionMenu from "$lib/VersionMenu.svelte"
   import { formatLongDate } from "$lib/calendar"
   import { Router } from "$lib/router"
   import { tokenize } from "$lib/text-diff"
@@ -27,33 +28,15 @@
   <meta name="robots" content="noindex" />
 </svelte:head>
 
-<p class="m-0 text-sm">
-  <a href={Router.droughtHistory()}>&larr; Page history</a>
+<p class="m-0 flex flex-wrap items-baseline gap-x-2 text-sm">
+  <a href={Router.droughtPage()}>&larr; The current guide</a>
   <span aria-hidden="true">·</span>
-  <a href={Router.droughtPage()}>The current guide</a>
+  <VersionMenu versions={data.versions} current={data.id} label="Other versions" />
 </p>
 
 <h1>Version of {formatLongDate(data.date)}</h1>
 
-{#if !data.latest}
-  <p class="rounded bg-amber-50 p-3 text-sm">
-    This is an earlier version of the guide and is kept as a record. Figures and plans in it may
-    since have changed; <a href={Router.droughtPage()}>the current guide</a> is the one to read.
-  </p>
-{/if}
-
 {#if data.note}<p>{data.note}</p>{/if}
-
-<p class="flex flex-wrap gap-x-4 text-sm">
-  {#if data.previous}
-    <a href={Router.droughtHistory(data.previous.id)}
-      >&larr; Previous: {formatLongDate(data.previous.date)}</a
-    >
-  {/if}
-  {#if data.next}
-    <a href={Router.droughtHistory(data.next.id)}>Next: {formatLongDate(data.next.date)} &rarr;</a>
-  {/if}
-</p>
 
 {#if data.previous && data.article && data.timeline}
   <h2>
@@ -74,18 +57,13 @@
   {:else}
     <p>The timeline did not change.</p>
   {/each}
-{:else}
-  <p>This is the first published version.</p>
 {/if}
 
 <h2>The whole of this version</h2>
 
-<details class="my-3">
+<!-- Open on the first version, which has no changes above it to read instead. -->
+<details class="my-3" open={!data.previous}>
   <summary class="cursor-pointer font-semibold">Show the full text</summary>
-
-  <p class="text-sm text-slate-600">
-    The words only: the charts, maps and figures are on the guide itself.
-  </p>
 
   {#each data.blocks as block, i (i)}
     {#if block.tag === "li"}
