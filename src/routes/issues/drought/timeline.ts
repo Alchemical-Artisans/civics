@@ -86,6 +86,14 @@ export const DROUGHT_TIMELINE: TimelineEntry[] = [
     eyebrow: "City Council",
     title: "Drought update (timestamp 29:17)",
     href: video("haverhill-city-council-meeting-september-15-2026"),
+    // The Water Department's deck, which the city published only as
+    // PowerPoint, months after the sitting.
+    links: [
+      {
+        label: "Slideshow",
+        href: "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/evpcyauo/26-sept-15-drought-emergency-powerpoint.pptx",
+      },
+    ],
   },
   {
     id: "ordinance-changes",

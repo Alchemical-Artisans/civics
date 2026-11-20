@@ -75,6 +75,16 @@
       {:else}
         <p class="text-slate-800">{entry.title}</p>
       {/if}
+      {#each entry.links ?? [] as link (link.href)}
+        <span class="text-xs text-slate-600">
+          (<a
+            class="underline hover:text-sky-800"
+            href={link.href}
+            target={away(link.href) ? "_blank" : null}
+            rel={away(link.href) ? "external noopener noreferrer" : null}>{link.label}</a
+          >)
+        </span>
+      {/each}
       {#if entry.note}
         <p class="text-xs text-slate-500">{entry.note}</p>
       {/if}

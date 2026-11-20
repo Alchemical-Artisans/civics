@@ -177,15 +177,28 @@ export function timelineBlocks(source) {
 
   const out = []
   for (const [entry] of code.matchAll(/\{\s*(?:id|date|title)\s*:[\s\S]*?\n {2}\}/g)) {
-    const title = field(entry, "title")
+    // An entry's `links` carry hrefs of their own; read the title's from
+    // what is left once they are taken out.
+    const linksBlock = entry.match(/\blinks:\s*\[([\s\S]*?)\]/)
+    const own = linksBlock ? entry.replace(linksBlock[0], "") : entry
+    const title = field(own, "title")
     if (!title) continue
-    const slug = entry.match(/\bhref:\s*video\(\s*"([^"]+)"\s*\)/)
-    const href = slug ? `${videoBase}${slug[1]}` : field(entry, "href")
+    const slug = own.match(/\bhref:\s*video\(\s*"([^"]+)"\s*\)/)
+    const href = slug ? `${videoBase}${slug[1]}` : field(own, "href")
+    const extras = linksBlock
+      ? [...linksBlock[1].matchAll(/\{[^}]*\}/g)]
+          .map(([link]) => [field(link, "label"), field(link, "href")])
+          .filter(([label, to]) => label && to)
+          .map(([label, to]) => ` ([${label}](${to}))`)
+          .join("")
+      : ""
     const when = field(entry, "dateLabel") ?? field(entry, "date") ?? "undated"
     const eyebrow = field(entry, "eyebrow")
     out.push({
       tag: "li",
-      text: [when, eyebrow, href ? link(title, href).trim() : title].filter(Boolean).join(" · "),
+      text:
+        [when, eyebrow, href ? link(title, href).trim() : title].filter(Boolean).join(" · ") +
+        extras,
     })
   }
   return out

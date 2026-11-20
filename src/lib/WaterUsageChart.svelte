@@ -197,6 +197,9 @@
       <a href={WATER_USAGE_SOURCE.recording.url} target="_blank" rel="external noopener noreferrer">
         Source: Water Department Slide (timestamp {WATER_USAGE_SOURCE.recording.timestamp})
       </a>
+      (<a href={WATER_USAGE_SOURCE.slideshow.url} target="_blank" rel="external noopener noreferrer"
+        >{WATER_USAGE_SOURCE.slideshow.slides}</a
+      >)
     </li>
   </ul>
 

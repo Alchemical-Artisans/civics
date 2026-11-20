@@ -112,7 +112,12 @@
     href="http://haverhillcommunitytv.org/video/haverhill-city-council-meeting-september-15-2026"
     target="_blank"
     rel="external noopener noreferrer">entered the status Critical Drought (timestamp 29:17)</a
-  >. It's difficult to understand what this means and why it's happening, and much of the
+  >
+  (<a
+    href="https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/evpcyauo/26-sept-15-drought-emergency-powerpoint.pptx"
+    target="_blank"
+    rel="external noopener noreferrer">slide 13</a
+  >). It's difficult to understand what this means and why it's happening, and much of the
   information is only available through recorded meetings that are time consuming to review. This
   page provides a summary of information that's been shared and an analysis of concerns that have
   been raised to make it easier for people to understand what's going on.
@@ -300,7 +305,12 @@
     target="_blank"
     rel="external noopener noreferrer"
     >we used 204 million gallons less than 2022 (timestamp 44:19)</a
-  > which was considerably more dry.
+  >
+  (<a
+    href="https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/evpcyauo/26-sept-15-drought-emergency-powerpoint.pptx"
+    target="_blank"
+    rel="external noopener noreferrer">slide 12</a
+  >) which was considerably more dry.
 </p>
 
 <WaterUsageChart days={WATER_USAGE} />
@@ -380,7 +390,12 @@
 
 <p>
   Another visible commercial use is golf courses, which are explicitly exempted since it is
-  considered a core function of their business. According to the water department, though, <a
+  considered a core function of their business (<a
+    href="https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/evpcyauo/26-sept-15-drought-emergency-powerpoint.pptx"
+    target="_blank"
+    rel="external noopener noreferrer">slide 14</a
+  >). According to the water department, though,
+  <a
     href="http://haverhillcommunitytv.org/video/haverhill-city-council-meeting-september-15-2026"
     target="_blank"
     rel="external noopener noreferrer"
@@ -468,7 +483,12 @@
     target="_blank"
     rel="external noopener noreferrer"
     >how much water some of these new buildings use (timestamp 44:26)</a
-  >. By only measuring the usage of some of those developments, though, it's difficult to see if
+  >
+  (<a
+    href="https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/evpcyauo/26-sept-15-drought-emergency-powerpoint.pptx"
+    target="_blank"
+    rel="external noopener noreferrer">slides 10 and 11</a
+  >). By only measuring the usage of some of those developments, though, it's difficult to see if
   that information is comprehensive enough to fully represent the added strain this represents.
 </p>
 

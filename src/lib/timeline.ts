@@ -31,6 +31,14 @@ export interface TimelineEntry {
   href?: string
   /** A line under the title: the vote the Council recorded, say. */
   note?: string
+  /**
+   * Documents behind the step other than the one its title opens, each drawn
+   * as a small parenthesised link after the title -- the slides a department
+   * presented at a sitting whose title opens the recording, say. Labelled for
+   * what a reader gets ("Slideshow"), since the file type is what tells them
+   * whether it opens in the browser.
+   */
+  links?: { label: string; href: string }[]
 }
 
 /**

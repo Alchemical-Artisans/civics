@@ -59,4 +59,23 @@ describe("timelineBlocks", () => {
       true,
     )
   })
+
+  it("keeps an entry's own link apart from the documents beside it", () => {
+    const [entry] = timelineBlocks(`[
+  {
+    date: "2026-09-15",
+    title: "Drought update",
+    href: video("a-sitting"),
+    links: [
+      {
+        label: "Slideshow",
+        href: "https://x.example/deck.pptx",
+      },
+    ],
+  },
+]`)
+    expect(entry.text).toBe(
+      "2026-09-15 · [Drought update](http://haverhillcommunitytv.org/video/a-sitting) ([Slideshow](https://x.example/deck.pptx))",
+    )
+  })
 })

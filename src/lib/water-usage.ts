@@ -324,4 +324,13 @@ export const WATER_USAGE_SOURCE = {
     url: "http://haverhillcommunitytv.org/video/haverhill-city-council-meeting-september-15-2026",
     timestamp: "44:19",
   },
+  /**
+   * The deck itself, which the city published only as PowerPoint and long
+   * after the sitting. A `.pptx` cannot be opened at a slide, so the slides
+   * are named rather than linked to.
+   */
+  slideshow: {
+    url: "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/evpcyauo/26-sept-15-drought-emergency-powerpoint.pptx",
+    slides: "slides 3 and 12",
+  },
 }
