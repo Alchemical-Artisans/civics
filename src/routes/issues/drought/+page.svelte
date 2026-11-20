@@ -27,20 +27,26 @@
   const sharedUrl = Router.absolute("/issues/drought")
   const description = "An in-depth evidence based guide to the drought in Haverhill."
   // Structured data for search engines, the same facts the tab and the card
-  // carry. `datePublished` is the "Published" line printed on the page.
-  const structuredData = JSON.stringify({
-    "@context": "https://schema.org",
-    "@type": "Article",
-    headline: TITLE,
-    description,
-    url: sharedUrl,
-    mainEntityOfPage: sharedUrl,
-    datePublished: "2026-11-09",
-    about: "Drought in Haverhill, Massachusetts",
-    publisher: { "@type": "Organization", name: "Haverhill Meeting Calendar" },
-  }).replace(/</g, "\\u003c")
+  // carry. The two dates are the page's own "Published" and "Updated" lines,
+  // both from the page history (`npm run drought:snapshot`).
+  const structuredData = $derived(
+    JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Article",
+      headline: TITLE,
+      description,
+      url: sharedUrl,
+      mainEntityOfPage: sharedUrl,
+      datePublished: data.published,
+      dateModified: data.updated,
+      about: "Drought in Haverhill, Massachusetts",
+      publisher: { "@type": "Organization", name: "Haverhill Meeting Calendar" },
+    }).replace(/</g, "\\u003c"),
+  )
   // The closing tag is split so the parser does not end this script block on it.
-  const structuredScript = `<script type="application/ld+json">${structuredData}</` + `script>`
+  const structuredScript = $derived(
+    `<script type="application/ld+json">${structuredData}</` + `script>`,
+  )
   // For the printed page only: paper cannot be clicked, so the address goes
   // on it as text and as a code, built from the same URL as the share panel's.
   const code = qrPath(sharedUrl)
@@ -71,7 +77,14 @@
      so the served page and a reader's own clock cannot disagree about it. -->
 <p class="m-0 mt-1 flex flex-wrap items-baseline gap-x-2 text-sm text-slate-600">
   <span class="font-semibold text-slate-700">Published</span>
-  <span>{formatLongDate("2026-11-09")}</span>
+  <span>{formatLongDate(data.published)}</span>
+  {#if data.updated !== data.published}
+    <span aria-hidden="true">·</span>
+    <span class="font-semibold text-slate-700">Updated</span>
+    <span>{formatLongDate(data.updated)}</span>
+  {/if}
+  <span aria-hidden="true">·</span>
+  <a href={Router.droughtHistory()}>Page history</a>
 </p>
 
 <div class="mt-2 print:hidden">
@@ -532,7 +545,7 @@
   The city is building a <a
     href="https://en.wikipedia.org/wiki/Ranney_collector"
     target="_blank"
-    rel="external noopener noreferrer">Ranney Collector Well</a
+    rel="external noopener noreferrer">Radial Collector Well</a
   >
   to collect from the groundwater beneath the Merrimack. This is estimated to provide up to
   <a
@@ -580,29 +593,14 @@
 </p>
 
 <p>
-  There may be concerns about the <a
-    href="https://www.mass.gov/info-details/sewer-force-main-break-in-haverhill-frequently-asked-questions"
+  On November 17 the <a
+    href="https://www.haverhillma.gov/news/posts/haverhill-mayor-takes-proactive-steps-to-address-water-supply-emergency/"
     target="_blank"
-    rel="external noopener noreferrer">sewage recently discharged into the river</a
-  >
-  becoming our drinking water, as well as the landfill and paper mill being upriver of that site, but
-  the
-  <a
-    href="http://haverhillcommunitytv.org/video/haverhill-city-council-meeting-june-2-2026"
-    target="_blank"
-    rel="external noopener noreferrer"
-    >water is undergoing extensive testing to ensure that it is safe (timestamp 22:04)</a
-  >. Additionally, the layers of sediment it must pass through
-  <a
-    href="http://haverhillcommunitytv.org/video/haverhill-city-council-meeting-june-2-2026"
-    target="_blank"
-    rel="external noopener noreferrer">act as a natural filter (timestamp 27:54)</a
-  >, and water actually reaching collection will
-  <a
-    href="http://haverhillcommunitytv.org/video/haverhill-city-council-meeting-june-2-2026"
-    target="_blank"
-    rel="external noopener noreferrer">take decades (timestamp 23:15)</a
-  > to pass through these layers.
+    rel="external noopener noreferrer">city announced</a
+  > that, in addition to drawing from a test well they had set up as part of the radial collector well
+  permitting process, they were seeking emergency approval to draw water directly from the Merrimack.
+  This will involve extensive testing and approvals, but if they are able to clear those hurdles this
+  will be pumped into Millvale Reservoir.
 </p>
 
 <h3>Methuen</h3>
@@ -661,7 +659,7 @@
     rel="external noopener noreferrer"
     >investigate tiered rates in mid-September (timestamp 1:32:20)</a
   > during the drought update. These will hopefully curtail industry/commercial usage, but if they don't
-  they will at least offset the costs associated with pulling water from Methuen or building the Ranney
+  they will at least offset the costs associated with pulling water from Methuen or building the Radial
   Collector Well. These could be implemented immediately once that investigation is complete, although
   no further update has been provided on this change.
 </p>

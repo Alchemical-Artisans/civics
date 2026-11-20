@@ -399,3 +399,45 @@ POST per file: the station's whole record, the normal curve, and one per
 neighbour gauge. Every file is a whole-file replace, so a corrected or reissued
 reading is picked up without a rebuild flag. See
 [`data/weather/README.md`](../data/weather/README.md).
+
+## Page history
+
+`/issues/drought/history` lists every published version of the guide, newest
+first, and `/issues/drought/history/<date>` shows one: what changed since the
+version before it, one paragraph at a time, then the whole text of that version
+in a closed `<details>`. The page's own "Published" and "Updated" lines and
+its structured data's `datePublished`/`dateModified` are read off the same
+record, so the page cannot say it was updated on a day the history does not
+show.
+
+**Publishing an update is `npm run drought:snapshot`** (`--note "..."` adds a
+line of the author's own; nothing writes one for them). It reads the page and
+`timeline.ts` as they stand and writes a version for today, in Haverhill, to
+`src/lib/data/drought-history.json`. If today already has a version it is
+replaced and keeps its note, so a typo fixed an hour later does not make a
+second entry. `--check` exits 1 if the page has changed since its last version.
+`--backfill` rebuilt the first versions from git (the end of each day from the
+first publication, commit `5316c75`, keeping only the days the words changed)
+and refuses to run again without `--force`.
+
+**A version is a deliberate act, not a commit.** Most commits to the page are
+not new information -- a tidied link, a reworded heading -- and the history
+is for a reader checking what the guide said before, not for the git log.
+Committed rather than read from git at build time because the deploy's
+checkout is shallow and the build is offline.
+
+**Only words are compared.** `scripts/lib/article-text.mjs` lifts the article
+out of the Svelte source: an `h1`-`h4`, `p`, `li` or `tr` **with no `class`**
+is a block, which is the site's own rule for authored prose and is what leaves
+out the byline, the print-only address and the share button. Components,
+figures and comments are skipped, so the charts and maps are not in the
+history, and the history page says so. Links are kept inline as
+`[label](address)`, and `src/lib/text-diff.ts` treats the address as part of
+each word: a source swapped for another under the same label shows as a
+change. Timeline entries are compared the same way, as a line each.
+
+Paragraphs are matched first by identical text and then, in what is left,
+by shared words (at least 40%) without crossing, so an edited paragraph shows
+as one edit with its words struck and inserted, and a rewritten one as a
+removal and an addition. `<del>` and `<ins>` carry it, not colour alone.
+Old versions carry `noindex`, so a search does not land a reader on one.

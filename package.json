@@ -30,6 +30,7 @@
     "precincts:update": "node scripts/update-precincts.mjs",
     "excerpts:upload": "node scripts/sync-excerpts.mjs",
     "excerpts:download": "node scripts/sync-excerpts.mjs --download",
+    "drought:snapshot": "node scripts/snapshot-drought.mjs",
     "water-bodies:update": "node scripts/update-water-bodies.mjs",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",

@@ -18,30 +18,42 @@
   record of sittings is what they turn to afterwards.
 -->
 <script lang="ts">
+  import { page } from "$app/state"
   import FoldedTimeline from "$lib/FoldedTimeline.svelte"
   import { DROUGHT_TIMELINE } from "./timeline"
 
   let { data, children } = $props()
+
+  // The page history is not the article, and the article's timeline beside it
+  // would be the latest one's next to a version that may be weeks older.
+  // Matched on the route id, never the URL: see `SiteHeader`'s own note.
+  const inHistory = $derived(page.route.id?.startsWith("/issues/drought/history") ?? false)
 </script>
 
-<div class="mx-auto max-w-6xl px-4 py-8">
-  <div class="grid gap-8 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] print:block">
-    <!-- `min-w-0` so the page's own wide things -- a table of the city's,
+{#if inHistory}
+  <div class="mx-auto max-w-3xl px-4 py-8">
+    {@render children()}
+  </div>
+{:else}
+  <div class="mx-auto max-w-6xl px-4 py-8">
+    <div class="grid gap-8 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] print:block">
+      <!-- `min-w-0` so the page's own wide things -- a table of the city's,
          a chart's own box -- scroll inside this column instead of widening
          it and squeezing the timeline out. -->
-    <div class="min-w-0">
-      {@render children()}
-    </div>
+      <div class="min-w-0">
+        {@render children()}
+      </div>
 
-    <!-- Unfolded. The fold holds the record back so it is not in the way of
+      <!-- Unfolded. The fold holds the record back so it is not in the way of
          what a reader can still act on, which is the right trade on a
          project with sittings still to come. Here what is ahead is two
          steps nobody has dated -- the tiered-rates analysis and the Methuen
          connection -- and folding leaves those two showing with the six
          meetings that actually happened hidden behind an arrow. The record
          is what this page is about. -->
-    <div class="print:break-before-page">
-      <FoldedTimeline entries={DROUGHT_TIMELINE} today={data.today} fold={false} />
+      <div class="print:break-before-page">
+        <FoldedTimeline entries={DROUGHT_TIMELINE} today={data.today} fold={false} />
+      </div>
     </div>
   </div>
-</div>
+{/if}

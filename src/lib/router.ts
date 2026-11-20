@@ -301,6 +301,19 @@ export class Router {
     return path(`/budget/${id}/glossary#${slug}`)
   }
 
+  /** The drought guide itself. */
+  static droughtPage(): string {
+    return path("/issues/drought")
+  }
+
+  /**
+   * The drought guide's page history, or one recorded version of it by its
+   * date (`2026-11-19`).
+   */
+  static droughtHistory(version?: string): string {
+    return path(`/issues/drought/history${version ? `/${version}` : ""}`)
+  }
+
   /**
    * A route on this site as a full URL on the canonical domain, for the few
    * places that need one a reader can carry elsewhere -- the `URL` and body of

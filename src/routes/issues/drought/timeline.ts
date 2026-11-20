@@ -27,11 +27,12 @@ const video = (slug: string) => `http://haverhillcommunitytv.org/video/${slug}`
  * the item the entry names begins rather than wherever the article happened
  * to quote it from.
  *
- * **Two entries carry an estimate rather than a date, and no link.** Late
- * October was the expectation for both the tiered-rates analysis and the
- * Methuen connection, and neither has been confirmed since -- so each says
- * "(unconfirmed)" and is dated the way it was stated, to the part of a month
- * rather than to a day. `dateLabel` is what keeps that: the entry needs a
+ * **Entries that carry an estimate rather than a date have no link of their
+ * own.** Late October was the expectation for the tiered-rates analysis and
+ * nothing has confirmed it since, so it says "(unconfirmed)" and is dated the
+ * way it was stated, to the part of a month rather than to a day. The Methuen
+ * connection was the same until the city's release of November 17 moved it to
+ * "by December", and it is dated to that month on the same terms. `dateLabel` is what keeps that: the entry needs a
  * real date to sort by, and printing "October 31, 2026" would turn an
  * estimate somebody gave in September into a day somebody set.
  *
@@ -73,10 +74,10 @@ export const DROUGHT_TIMELINE: TimelineEntry[] = [
     href: video("haverhill-city-council-planning-development-meeting-march-30-2026"),
   },
   {
-    id: "ranney-well-and-acquisition",
+    id: "radial-well-and-acquisition",
     date: "2026-06-02",
     eyebrow: "City Council",
-    title: "Ranney Collector Well presented and the acquisition approved (timestamp 13:06)",
+    title: "Radial Collector Well presented and the acquisition approved (timestamp 13:06)",
     href: video("haverhill-city-council-meeting-june-2-2026"),
   },
   {
@@ -103,12 +104,19 @@ export const DROUGHT_TIMELINE: TimelineEntry[] = [
     title: "Tiered rates analysis due (unconfirmed)",
   },
   {
+    id: "broadway-pipe-installed",
+    date: "2026-11-16",
+    eyebrow: "Water Department",
+    title: "Temporary above ground pipe installed",
+    href: "https://www.haverhillma.gov/news/posts/haverhill-mayor-takes-proactive-steps-to-address-water-supply-emergency/",
+  },
+  {
     id: "methuen-available",
     // The article's own basis: Methuen's treatment change was "estimated to
     // be approved by the end of October", and the connection waits on it.
-    date: "2026-10-31",
-    dateLabel: "Late October 2026",
+    date: "2026-12-01",
+    dateLabel: "December 2026",
     eyebrow: "Water Department",
-    title: "Methuen water available (unconfirmed)",
+    title: "Methuen water available",
   },
 ]

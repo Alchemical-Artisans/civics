@@ -64,6 +64,7 @@ npm run recordings:update   # HC Media's video of a sitting, matched to it
 npm run continuances:update # ask whether a permit hearing still to come has been continued
 npm run precincts:update    # ward and precinct shapes and districts, from MassGIS
 npm run transcribe -- <id>  # hand a sitting to Claude Code to write its page
+npm run drought:snapshot    # record a version of /issues/drought for its page history
 npm run story               # 1080x1920 Instagram story card for the next Council sitting, in .cache/stories/
 npm run storybook           # storybook on :6006
 ```
