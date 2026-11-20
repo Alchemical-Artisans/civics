@@ -38,15 +38,29 @@ function titleCase(name: string): string {
     .replace(/\b[a-z]/g, (c) => c.toUpperCase())
 }
 
+/** Acres in a square kilometre, for the NHD's lake areas. */
+const ACRES_PER_SQ_KM = 247.105
+
+/** "4,843 acres": whole acres, which is as fine as either source states them. */
+const acres = (n: number) => `${Math.round(n).toLocaleString("en-US")} acres`
+
 // Watersheds first so the water sits on top of the ground that feeds it;
 // `areas` draws in order.
+//
+// Each name carries its area, which is what the hover label shows: a reader
+// looking at Millvale's pale sprawl next to the lake it feeds wants to know
+// how much ground that is. In the name rather than a second field so the
+// tooltip and a screen reader's name say the same thing. A watershed's figure
+// is USGS's own `WSHEDACRES`, the whole of it, New Hampshire included, since
+// that is what the shape draws; a lake's is the NHD's area in square
+// kilometres, converted.
 export const supplyAreas = [
   ...waterBodies.bodies
     .filter((body) => body.watershed)
     .map((body, i) => ({
       id: `${body.sourceId}-watershed`,
       shape: body.watershed!.shape,
-      name: `${titleCase(body.name)} watershed`,
+      name: `${titleCase(body.name)} watershed (${acres(body.watershed!.acres)})`,
       fill: hueFor(i),
       // Against the greyed street map 0.18 washed out entirely -- Crystal's
       // watershed was invisible at the size this draws. The water itself
@@ -57,11 +71,10 @@ export const supplyAreas = [
   ...waterBodies.bodies.map((body, i) => ({
     id: body.sourceId,
     shape: body.shape,
-    name: titleCase(body.name),
+    name: `${titleCase(body.name)} (${acres(body.areaSqKm * ACRES_PER_SQ_KM)})`,
     fill: hueFor(i),
     opacity: 0.85,
     // No standing label: `hoverLabel` names one at a time instead, on hover
-    // or focus, which is legible at any size and cannot collide. The name and
-    // nothing else -- a figure is a different question and wants a sentence.
+    // or focus, which is legible at any size and cannot collide.
   })),
 ]
