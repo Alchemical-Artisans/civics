@@ -77,7 +77,7 @@
     </a>
   </li>
   <li>
-    <a href={Router.meeting("city-council-2025-06-16")}>
+    <a href={Router.meeting("planning-and-development-committee-2025-06-16")}>
       Minutes of the Planning and Development Committee Meeting, June 16, 2025
     </a>
   </li>
