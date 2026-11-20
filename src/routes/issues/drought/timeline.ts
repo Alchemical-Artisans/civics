@@ -111,6 +111,13 @@ export const DROUGHT_TIMELINE: TimelineEntry[] = [
     href: "https://www.haverhillma.gov/news/posts/haverhill-mayor-takes-proactive-steps-to-address-water-supply-emergency/",
   },
   {
+    id: "emergency-declaration",
+    date: "2026-11-18",
+    eyebrow: "MassDEP",
+    title: "Water Supply Emergency Declaration and Order issued",
+    href: "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/4gmdh4pw/haverhill-3128000-uao-edec-wma-2026-11-18.pdf",
+  },
+  {
     id: "methuen-available",
     // The article's own basis: Methuen's treatment change was "estimated to
     // be approved by the end of October", and the connection waits on it.

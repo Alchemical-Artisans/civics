@@ -604,6 +604,17 @@
   will be pumped into Millvale Reservoir.
 </p>
 
+<h3>Emergency Petition</h3>
+
+<p>
+  On November 18th, MassDEP <a
+    href="https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/4gmdh4pw/haverhill-3128000-uao-edec-wma-2026-11-18.pdf"
+    target="_blank"
+    rel="external noopener noreferrer">approved a petition</a
+  > to declare in emergency in Haverhill. This petition explicitly excludes drawing water from the Merrimack,
+  although it does allow the city to continue pursuing plans to do so in the future.
+</p>
+
 <h3>Methuen</h3>
 
 <p>
