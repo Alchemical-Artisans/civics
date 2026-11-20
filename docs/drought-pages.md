@@ -436,7 +436,7 @@ out of the Svelte source: an `h1`-`h4`, `p`, `li` or `tr` **with no `class`**
 is a block, which is the site's own rule for authored prose and is what leaves
 out the byline, the print-only address and the share button. Components,
 figures and comments are skipped, so the charts and maps are not in the
-history, and the history page says so. Links are kept inline as
+history. Links are kept inline as
 `[label](address)`, and `src/lib/text-diff.ts` treats the address as part of
 each word: a source swapped for another under the same label shows as a
 change. Timeline entries are compared the same way, as a line each.

@@ -7,7 +7,7 @@
  * addresses are half of what a revision changes, and a diff that could not see
  * a link move would miss exactly the edits this page is most often given. The
  * charts, maps and figures are components and images, not words, and are left
- * out; the history says so rather than pretending to cover them.
+ * out.
  *
  * **A block is an element with no `class`.** That is the site's own rule for
  * authored prose (`layout.css` styles `:not([class])`), and here it is what
