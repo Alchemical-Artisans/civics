@@ -245,6 +245,25 @@ export const PROJECTS: Project[] = [
           item: "jgw-tilton-school-building-updates",
         },
       },
+      {
+        kind: "item",
+        meeting: "john-greenleaf-whittier-middle-school-site-council-2026-11-18",
+        item: "building-project-updates",
+        board: "John Greenleaf Whittier Middle School Site Council",
+        number: "",
+        title: "Update to the school's Site Council",
+      },
+      // The Site Council's agenda prints only the date and "Informational
+      // Meeting/ Tour": no hour, no place.
+      {
+        kind: "date",
+        date: "2026-11-30",
+        title: "Informational meeting and tour",
+        from: {
+          meeting: "john-greenleaf-whittier-middle-school-site-council-2026-11-18",
+          item: "building-project-updates",
+        },
+      },
       // The designer's schedule names this as the next thing the city owes the
       // MSBA. March 2028's funding votes are on the same schedule but as a
       // week rather than a day, and the deck's own two charts disagree about
