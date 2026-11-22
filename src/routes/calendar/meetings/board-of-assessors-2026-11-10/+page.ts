@@ -1,9 +1,10 @@
 import type { PageLoad } from "./$types"
 
 /**
- * When and where the sitting is, read off the head of the city's notice. There
- * is no roll call here: the sitting has not been held, so the only membership
- * the page can state is the roster. See $lib/calendar's MeetingDetails.
+ * When and where the meeting was, read off the head of the city's notice, and
+ * who sat at it, off the minutes the clerk published afterwards. The layout
+ * renders these into the page header; see $lib/calendar's MeetingDetails for
+ * why none of it can come from the scrape.
  */
 export const load: PageLoad = () => ({
   details: {
@@ -25,14 +26,23 @@ export const load: PageLoad = () => ({
     // Assessors page, which prints the three names and no seats beside them --
     // the Assessor and Assistant Assessor rows above it are the office's staff,
     // not the board, though the city's own Assessor sits on it as well. Three
-    // is the whole of it, so no `partial`: the same three the October 27
-    // minutes take a roll call of.
+    // is the whole of it, so no `partial`: the same three these minutes take a
+    // roll call of.
     members: {
       source: {
         title: "the city's Assessors page",
         url: "https://www.haverhillma.gov/government/assessors/",
       },
       roster: [{ name: "Stephen Gullo" }, { name: "Roy Wright" }, { name: "Chris M. Loughnane" }],
+      // The minutes' own item 2, names and seats as it prints them, typo
+      // included: "Present were Chris Loughnane-Chariman, Stephen Gullo-Board
+      // Member, Roy Wright-Board Member, joined telephonically." The trailing
+      // clause is read as Roy Wright's alone because item 8's roll of the
+      // executive session says so in as many words -- "Roy Wright joined
+      // telephonically, Stephen Gullo and Chris Loughnane were present" --
+      // which is the same morning and the same three people.
+      present: ["Chris Loughnane-Chariman", "Stephen Gullo-Board Member"],
+      remote: ["Roy Wright-Board Member"],
     },
   },
 })
