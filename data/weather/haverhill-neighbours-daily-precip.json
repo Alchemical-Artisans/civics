@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-14T00:44:40.817Z",
+  "generatedAt": "2026-11-22T13:35:10.970Z",
   "source": "https://data.rcc-acis.org/StnData",
   "note": "Daily precipitation from the two CoCoRaHS gauges inside Haverhill that fill the COOP station's unread days. See the comment on NEIGHBOUR_STATIONS in scripts/lib/weather.mjs for why these two and not the five other candidates.",
   "element": "pcpn: Total precipitation, liquid-water-equivalent (inches)",
@@ -9,14 +9,14 @@
       "name": "HAVERHILL 0.7 N",
       "network": "CoCoRaHS",
       "miles": 2.8,
-      "count": 4043
+      "count": 4051
     },
     {
       "sid": "US1MAES0090",
       "name": "HAVERHILL 0.8 SW",
       "network": "CoCoRaHS",
       "miles": 2.2,
-      "count": 1687
+      "count": 1695
     }
   ],
   "data": {
@@ -16191,6 +16191,38 @@
       ],
       [
         "2026-11-14",
+        "0.00"
+      ],
+      [
+        "2026-11-15",
+        "0.00"
+      ],
+      [
+        "2026-11-16",
+        "0.00"
+      ],
+      [
+        "2026-11-17",
+        "0.00"
+      ],
+      [
+        "2026-11-18",
+        "0.00"
+      ],
+      [
+        "2026-11-19",
+        "0.00"
+      ],
+      [
+        "2026-11-20",
+        "0.00"
+      ],
+      [
+        "2026-11-21",
+        "0.00"
+      ],
+      [
+        "2026-11-22",
         "M"
       ]
     ],
@@ -22941,6 +22973,38 @@
       ],
       [
         "2026-11-14",
+        "0.02"
+      ],
+      [
+        "2026-11-15",
+        "T"
+      ],
+      [
+        "2026-11-16",
+        "0.00"
+      ],
+      [
+        "2026-11-17",
+        "0.00"
+      ],
+      [
+        "2026-11-18",
+        "0.00"
+      ],
+      [
+        "2026-11-19",
+        "0.00"
+      ],
+      [
+        "2026-11-20",
+        "0.00"
+      ],
+      [
+        "2026-11-21",
+        "0.00"
+      ],
+      [
+        "2026-11-22",
         "M"
       ]
     ]

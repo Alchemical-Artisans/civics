@@ -18,7 +18,9 @@
     "status": "ok",
     "md5": "d73c5d04827d8408a57cc615d8b8e7f0",
     "checked": "2026-11-22",
-    "since": "2026-11-22"
+    "since": "2026-11-22",
+    "pending": "444c8aeabcecdcd3a23e6e5786a114fd",
+    "pendingSince": "2026-11-22"
   },
   "63e61dc": {
     "url": "http://haverhillcommunitytv.org/video/haverhill-city-council-meeting-august-11-2026",
@@ -43,12 +45,12 @@
   },
   "a4293ff": {
     "url": "https://abcnews.com/US/officer-allegedly-flock-license-plate-cameras-track-boyfriends/story?id=135418955",
-    "status": "ok",
+    "status": "changed",
     "md5": "d12ff111e186893fec3d26c5008fc8cc",
     "checked": "2026-11-22",
     "since": "2026-11-22",
-    "pending": "bdc09cd0c13823e1f254f6d8ecbf6165",
-    "pendingSince": "2026-11-22"
+    "current": "bdc09cd0c13823e1f254f6d8ecbf6165",
+    "changed": "2026-11-22"
   },
   "b6d02a5": {
     "url": "https://assets.aclu.org/live/uploads/2023/07/embargo-drones-as-first-responder-programs-final-electronic.pdf",
@@ -110,7 +112,9 @@
     "status": "ok",
     "md5": "6808640a4f15d44f66b5449dd654cb3b",
     "checked": "2026-11-22",
-    "since": "2026-11-22"
+    "since": "2026-11-22",
+    "pending": "4484812069f17c1aa8915ecc488306d0",
+    "pendingSince": "2026-11-22"
   },
   "369b280": {
     "url": "https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/oqypskkh/full-agenda-8112026.pdf",
