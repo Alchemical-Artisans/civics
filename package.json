@@ -18,6 +18,8 @@
     "metadata:update": "node scripts/update-metadata.mjs",
     "calendar:rebuild": "node scripts/rebuild-calendar.mjs",
     "calendar:update": "node scripts/update-calendar.mjs",
+    "issues:update": "node scripts/update-issues.mjs",
+    "issues:mark": "node scripts/update-issues.mjs --mark",
     "boards:update": "node scripts/update-board-pages.mjs",
     "cache": "node scripts/cache-documents.mjs",
     "links:check": "node scripts/check-links.mjs",

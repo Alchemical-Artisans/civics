@@ -22,6 +22,37 @@ rest is read by hand off the city's pages and the Council's own video, each
 figure cited where it is used. See
 [docs/drought-pages.md](docs/drought-pages.md).
 
+**An issue page cannot be refreshed by a scrape, so it is told when it falls
+behind.** Each issue directory carries a `watch.json` -- the search, written
+with the page: a `brief` of the subject, `terms` to match, Google News `news`
+queries, `web` queries and `facebook` pages for Claude Code, and `since`, the
+day the page was last brought current -- and a `leads.json` of what that search
+has found, each with a `status` of `new`, `incorporated`, `irrelevant` or
+`cited` (the page's own source already links it, set by the run). The
+`issues` step of `metadata:update` (`scripts/update-issues.mjs`, logic in
+`scripts/lib/issue-watch.mjs`) searches the written meeting pages, the
+document titles in `meetings.json`, the city's news releases, Google News and,
+through `claude -p` with web search only, the open web and Facebook; it runs
+before the links check so every lead still `new` is in the attention report.
+Nothing is removed from `leads.json`, so a decision outlives the run.
+`npm run issues:mark -- <id>` answers one. A new issue page should get a
+`watch.json` when it is written.
+
+**The same step watches what a guide already cites.** Every outside address
+in the issue directory's source is fetched and hashed into `sources.json`
+(`scripts/lib/source-hashes.mjs`): an MD5 of a PDF or other file whole, of a
+web page's readable text only -- its largest `<article>`, else `<main>`, else
+`<body>`, with menus, footers, share bars and "Trending" rails stripped by
+class name, since a fifth of the cited pages have no semantic element and
+hashing their bytes would report every news site changed every run. A new
+hash must hold for two runs before it is `changed`, because several sites
+serve slightly different copies from one fetch to the next; each version's
+text is kept in `.cache/issue-sources/` so the report prints the sentences
+that changed. A 404 is `gone`; a 403 or timeout is `unreachable`, listed in
+the report file but not counted on the console. `issues:mark -- <id>`
+accepts the new version as the baseline, `--ignore` stops watching one, and
+`--no-sources` skips the step.
+
 `/water` was the placeholder this grew out of, a hand-kept
 `src/lib/water.ts` of city figures with a conservation calculator and a
 production chart over fabricated data; it was deleted on 2026-11-07, since
@@ -62,6 +93,8 @@ npm run budget:update       # re-scrape the budget and audit listing (always ful
 npm run notices:update      # the agendas the city hangs off its meeting notices
 npm run recordings:update   # HC Media's video of a sitting, matched to it
 npm run continuances:update # ask whether a permit hearing still to come has been continued
+npm run issues:update      # run each issue page's saved search; --no-web skips Claude Code
+npm run issues:mark -- <id> # a lead is in the page now (--irrelevant), or a changed source is accepted (--ignore)
 npm run precincts:update    # ward and precinct shapes and districts, from MassGIS
 npm run transcribe -- <id>  # hand a sitting to Claude Code to write its page
 npm run drought:snapshot    # record a version of /issues/drought for its page history

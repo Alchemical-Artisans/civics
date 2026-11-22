@@ -70,6 +70,11 @@ const STEPS = [
   // rather than a diff against the calendar. It is the record behind
   // `/issues/drought`'s rainfall chart; see data/weather/README.md.
   { name: "weather", script: "update-weather.mjs" },
+  // Each issue page's saved search (see scripts/lib/issue-watch.mjs). After
+  // every scrape, because it searches what they wrote, and before the links
+  // check, because the leads it leaves open belong in the attention block
+  // that step prints. `--no-web` skips its Claude Code search.
+  { name: "issues", script: "update-issues.mjs" },
   // Last, and after everything that can add a document: it checks every link
   // the calendar carries, and ends with the run's "needs your attention" block.
   { name: "links", script: "check-links.mjs" },

@@ -14,6 +14,8 @@
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs"
 import path from "node:path"
 import { reviewKey } from "./reviews.mjs"
+import { openLeads, watchedIssues } from "./issue-watch.mjs"
+import { sourcesNeedingAttention, textDiff } from "./source-hashes.mjs"
 
 const CACHE = path.join(import.meta.dirname, "..", "..", ".cache")
 export const REPORT_FILE = path.join(CACHE, "needs-attention.txt")
@@ -134,8 +136,83 @@ const line = (m) =>
   // friction that stops anyone answering these.
   `${" ".repeat(16)}key:  ${reviewKey(m)}\n`
 
+/**
+ * Something an issue page's saved search turned up that nobody has yet folded
+ * in or ruled out. Not a record of the calendar's at all, but the same kind of
+ * thing this report exists for: a run can find it and only a person can
+ * answer it, and an issue page that has quietly fallen behind is the failure
+ * it guards against. See `issue-watch.mjs`.
+ */
+const leadLine = (l) =>
+  `  [${l.id}]  ${(l.date ?? "????-??-??").padEnd(12)}${l.source}${l.publisher ? ` -- ${l.publisher}` : ""}\n` +
+  `${" ".repeat(11)}${l.title}\n` +
+  (l.excerpt ? `${" ".repeat(11)}"${l.excerpt}"\n` : "") +
+  (l.note ? `${" ".repeat(11)}${l.note}\n` : "") +
+  `${" ".repeat(11)}${l.url}\n`
+
+function leadsSection(leads) {
+  if (!leads.length) return ""
+  const bySlug = Object.groupBy(leads, (l) => l.slug)
+  return Object.entries(bySlug)
+    .map(
+      ([slug, ls]) =>
+        `${"=".repeat(74)}\n/issues/${slug} has not caught up with -- ${ls.length}\n` +
+        `Found by its saved search (src/routes/issues/${slug}/watch.json). Read each, bring the page\n` +
+        `up to date, then: npm run issues:mark -- <id>...   (or --irrelevant)\n${"=".repeat(74)}\n\n` +
+        ls.map(leadLine).join("\n"),
+    )
+    .join("\n\n")
+}
+
+/**
+ * A page an issue guide cites that is no longer the page it cited. With the
+ * sentences that went and came, where both versions' text was kept, so a
+ * change in a "most read" box the heuristic let through costs a glance
+ * rather than a reread of the source.
+ */
+function sourceLine(s) {
+  const pad = " ".repeat(11)
+  let out = `  [${s.id}]  ${s.status}${s.changed ? ` ${s.changed}` : ""}${s.error ? ` (${s.error})` : ""}\n${pad}${s.url}\n`
+  if (s.status !== "changed") return out
+  const diff = textDiff(s.md5, s.current)
+  if (!diff) return out + `${pad}(no earlier text kept to compare -- a file, or a fresh .cache/)\n`
+  for (const r of diff.removed) out += `${pad}- ${r.slice(0, 220)}\n`
+  for (const a of diff.added) out += `${pad}+ ${a.slice(0, 220)}\n`
+  if (diff.more) out += `${pad}  …and ${diff.more} more sentence(s)\n`
+  if (!diff.removed.length && !diff.added.length)
+    out += `${pad}(same sentences, reordered or re-spaced)\n`
+  return out
+}
+
+function sourcesSection(sources) {
+  if (!sources.length) return ""
+  const acted = sources.filter((s) => s.status !== "unreachable")
+  const blocked = sources.filter((s) => s.status === "unreachable")
+  return (
+    (acted.length
+      ? `${"=".repeat(74)}\nA page an issue guide cites has changed or gone -- ${acted.length}\n` +
+        `Read it, bring the guide into line if it needs it, then accept the new version:\n` +
+        `npm run issues:mark -- <id>...   (--ignore to stop watching it)\n${"=".repeat(74)}\n\n` +
+        acted.map((s) => `  /issues/${s.slug}\n${sourceLine(s)}`).join("\n")
+      : "") +
+    (blocked.length
+      ? `\n\n${"=".repeat(74)}\nA cited page refused or timed out, so it was not checked -- ${blocked.length}\n` +
+        `Usually a site that turns scripts away, and the same every run. Not counted on the\n` +
+        `console; --ignore the ones that will never answer.\n${"=".repeat(74)}\n\n` +
+        blocked.map((s) => `  /issues/${s.slug}\n${sourceLine(s)}`).join("\n")
+      : "")
+  )
+}
+
 /** Write the full report and return the short block for the console. */
-export function report(meetings, { linkStatus = loadLinkStatus() } = {}) {
+export function report(
+  meetings,
+  {
+    linkStatus = loadLinkStatus(),
+    leads = openLeads(),
+    sources = sourcesNeedingAttention(watchedIssues()),
+  } = {},
+) {
   const groups = collect(meetings, linkStatus)
 
   const body = groups
@@ -154,19 +231,36 @@ export function report(meetings, { linkStatus = loadLinkStatus() } = {}) {
   writeFileSync(
     REPORT_FILE,
     `Needs attention, as of ${new Date().toISOString()}\n\n${HOW_TO}\n` +
-      (body || "Nothing. Every record has a date its own file agrees with.\n"),
+      (body || "Nothing. Every record has a date its own file agrees with.\n") +
+      (leads.length ? `\n\n${leadsSection(leads)}` : "") +
+      (sources.length ? `\n\n${sourcesSection(sources)}` : ""),
   )
-  return { groups, file: REPORT_FILE, linkStatus }
+  return { groups, leads, sources, file: REPORT_FILE, linkStatus }
 }
 
 /** Print the block. Deliberately the last thing a run says. */
 export function printAttention(meetings) {
-  const { groups, file, linkStatus } = report(meetings)
+  const { groups, leads, sources, file, linkStatus } = report(meetings)
+  const moved = sources.filter((s) => s.status !== "unreachable")
   const total = new Set(groups.flatMap((g) => g.records)).size
 
   console.log(`\n${"─".repeat(74)}`)
+  if (leads.length) {
+    console.log(`  ISSUE PAGES BEHIND -- ${leads.length} lead(s) not yet incorporated\n`)
+    for (const [slug, ls] of Object.entries(Object.groupBy(leads, (l) => l.slug)))
+      console.log(`    ${String(ls.length).padStart(5)}  /issues/${slug}`)
+    console.log(`\n  Listed in full, with ids, in ${file}`)
+    console.log(`  Once one is in the page:  npm run issues:mark -- <id>...  (or --irrelevant)\n`)
+  }
+  if (moved.length) {
+    console.log(`  CITED PAGES CHANGED -- ${moved.length} source(s) an issue guide links\n`)
+    for (const [slug, ss] of Object.entries(Object.groupBy(moved, (s) => s.slug)))
+      console.log(`    ${String(ss.length).padStart(5)}  /issues/${slug}`)
+    console.log(`\n  What changed in each, in ${file}`)
+    console.log(`  Once the guide agrees:  npm run issues:mark -- <id>...  (or --ignore)\n`)
+  }
   if (!total) {
-    console.log("  Nothing needs your attention.")
+    if (!leads.length && !moved.length) console.log("  Nothing needs your attention.")
   } else {
     console.log(`  NEEDS YOUR ATTENTION -- ${total} record(s)\n`)
     for (const g of groups) console.log(`    ${String(g.records.length).padStart(5)}  ${g.title}`)
