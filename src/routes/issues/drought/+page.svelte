@@ -132,7 +132,7 @@
 
 <p>
   Haverhill defines a drought based on the <a
-    href="https://ecode360.com/31349794"
+    href="https://ecode360.com/52046353"
     target="_blank"
     rel="external noopener noreferrer">level of Kenoza Lake</a
   >, but it's important to understand that this is a proxy which combines the demand of our city
