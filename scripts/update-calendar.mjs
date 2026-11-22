@@ -109,4 +109,4 @@ function reportReviews(reviews, added) {
   )
 }
 
-printAttention(meetings)
+await printAttention(meetings)

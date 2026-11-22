@@ -44,7 +44,7 @@ page, the routine detail nobody reads unless something looks wrong — goes to
 its own file under `.cache/logs/`, named for the step (`.cache/logs/calendar.log`,
 `.cache/logs/schedule.log`, and so on) and rewritten fresh each time that step
 runs, whether run through `metadata:update` or on its own. A step's own last
-console line names its file. This is the same bargain `needs-attention.txt` and
+console line names its file. This is the same bargain the link-status cache and
 the unrecognised-title files already make — see below — carried to every step
 rather than just the ones that already wrote one.
 
@@ -437,18 +437,34 @@ Every run ends with the same block, and it is the last thing printed:
        75  The document's own filename contradicts its date
        84  The city's own link is broken
 
-  Every one of them, with the file to open:
-    .cache/needs-attention.txt
+  Read and settle every one of them, with the document one click away:
+    npm run dev   then   http://localhost:5173/attention
 ```
 
-The counts are complete and the full list is written to a file rather than
-truncated into the console — the summary used to print fifteen records and "and
-62 more", which named the problem without giving anyone a way to work through
-it. The file groups records by what is wrong with them, says what to do about
-each kind, and gives the city's own filename and URL for every one.
+The counts are complete, and the list itself is a page rather than a printout:
+`/attention`, served by `npm run dev` and by nothing else. The console block
+used to point at `.cache/needs-attention.txt`, a flat file that had grown past
+what anyone could scroll, whose every answer meant hand-editing a JSON key.
+The page groups records by what is wrong with them, says what to do about each
+kind, links the city's document beside each one, filters across all of it, and
+carries the button that settles each -- _Date is right_, _Set date_, _Settle_,
+_Drop from site_, _Promote_, and for an issue page's leads and cited sources
+_Incorporated_, _Irrelevant_, _Accept_ and _Ignore_. A button writes exactly
+what the old instructions said to write: the entry in
+[`reviews.json`](./data-format.md#corrections-reviewsjson) (which survives a
+rebuild) and the same fields onto the stored record in `meetings.json` (which
+is what the next build publishes), or, for issues, what `npm run issues:mark`
+writes. The two share `scripts/lib/attention.mjs` and
+`scripts/lib/issue-marks.mjs`, so they cannot disagree.
 
-Then `npm run cache -- --review` fetches those documents, and the answer goes in
-[`reviews.json`](./data-format.md#corrections-reviewsjson).
+**The page cannot be built.** Because it only exists in development, its
+buttons can edit the repository without any published page ever carrying one:
+`src/routes/attention/+layout.server.ts` sets `prerender = false` and answers
+404 unless `dev`. The scripts print the address and stop; they no longer write
+a report.
+
+`npm run cache -- --review` still fetches the flagged documents to `.cache/` for
+reading off a scan by eye.
 
 **Broken links are only counted once `links:check` has run.** Whether a URL
 resolves is a fact about the city's site today rather than about the record, so

@@ -139,4 +139,4 @@ if (unrecognised.length) {
   console.log(`    ${file}`)
 }
 
-printAttention(meetings)
+await printAttention(meetings)

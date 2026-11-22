@@ -101,4 +101,4 @@ printSummary(meetings, await pagesWritten(), log.write)
 summarizeReviews(reviews)
 console.log(`  full run detail: ${log.file}`)
 
-printAttention(meetings)
+await printAttention(meetings)
