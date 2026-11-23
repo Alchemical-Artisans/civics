@@ -5,7 +5,7 @@
  * -- lands in its own file under `.cache/logs/`, one per script so a run of
  * `metadata:update` doesn't have one step's log overwrite another's.
  *
- * Gitignored and disposable, the same bargain `needs-attention.txt` and the
+ * Gitignored and disposable, the same bargain the link-status cache and the
  * unrecognised-title files already make: it describes this run, not the data.
  */
 import { mkdirSync, writeFileSync, appendFileSync } from "node:fs"

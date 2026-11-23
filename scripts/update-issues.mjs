@@ -38,19 +38,12 @@ import {
   parseNewsListing,
   searchRecords,
   searchWrittenPages,
-  sortLeads,
   termPattern,
   watchedIssues,
   excerpt,
 } from "./lib/issue-watch.mjs"
-import {
-  acceptSource,
-  hashBody,
-  linkedUrls,
-  loadSources,
-  mergeSources,
-  saveText,
-} from "./lib/source-hashes.mjs"
+import { hashBody, linkedUrls, loadSources, mergeSources, saveText } from "./lib/source-hashes.mjs"
+import { markIssueItems } from "./lib/issue-marks.mjs"
 
 const args = process.argv.slice(2)
 const flag = (name) => args.includes(`--${name}`)
@@ -79,33 +72,10 @@ if (flag("mark")) {
     console.log("Usage: npm run issues:mark -- <id>... [--irrelevant | --new | --ignore]")
     process.exit(1)
   }
-  const missing = new Set(ids)
-  for (const { slug, dir } of watchedIssues()) {
-    const leads = loadLeads(dir)
-    const sources = loadSources(dir)
-    let leadsChanged = false
-    let sourcesChanged = false
-    for (const id of ids) {
-      if (leads[id]) {
-        leads[id].status = status
-        missing.delete(id)
-        leadsChanged = true
-        console.log(`  ${id}  ${slug}  lead -> ${status}   ${leads[id].title}`)
-      }
-      // A source id: the page has been checked against what the address says
-      // now, so what it says now is the version the page rests on.
-      if (sources[id]) {
-        sources[id] = acceptSource(sources[id], { ignore: flag("ignore") })
-        missing.delete(id)
-        sourcesChanged = true
-        console.log(`  ${id}  ${slug}  source -> ${sources[id].status}   ${sources[id].url}`)
-      }
-    }
-    if (leadsChanged) await writeDataFile(path.join(dir, "leads.json"), sortLeads(leads))
-    if (sourcesChanged) await writeDataFile(path.join(dir, "sources.json"), sources)
-  }
+  const { done, missing } = await markIssueItems(ids, { status, ignore: flag("ignore") })
+  for (const d of done) console.log(`  ${d.id}  ${d.slug}  ${d.kind} -> ${d.now}   ${d.label}`)
   for (const id of missing) console.log(`  ${id}  no such lead or source`)
-  process.exit(missing.size ? 1 : 0)
+  process.exit(missing.length ? 1 : 0)
 }
 
 /* ---------------------------- searching -------------------------- */

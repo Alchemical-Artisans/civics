@@ -161,4 +161,4 @@ if (unrecognised.length) {
   console.log(`    ${unrecognisedFile}`)
 }
 
-printAttention(meetings)
+await printAttention(meetings)

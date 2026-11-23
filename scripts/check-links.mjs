@@ -80,4 +80,4 @@ if (dead.length) {
   }
 }
 
-printAttention(store.meetings)
+await printAttention(store.meetings)

@@ -1251,9 +1251,18 @@ Playwright's own is not the installed build.
 ## What needs attention
 
 Every run ends with a "NEEDS YOUR ATTENTION" block: complete counts by reason --
-no date at all, a filename contradicting the date, a broken link -- and a path
-to `.cache/needs-attention.txt`, which lists every one with the city's filename
-and URL. The summary used to print fifteen and "and 62 more", which named the
+no date at all, a filename contradicting the date, a broken link -- and the
+address of `/attention`, where every one is listed and settled. **That page
+exists only under `npm run dev`**: `src/routes/attention/+layout.server.ts`
+sets `prerender = false` and 404s unless `dev`, which is what lets it carry
+buttons that write to `reviews.json`, `meetings.json` and the issue pages'
+`leads.json` / `sources.json` (`resolveRecord` in `scripts/lib/attention.mjs`,
+`markIssueItems` in `scripts/lib/issue-marks.mjs`, the latter also behind
+`issues:mark`). It replaced `.cache/needs-attention.txt`, a flat file nobody
+could scroll; an answer is written to both `reviews.json`, which survives a
+rebuild, and the stored record, which is what the next build reads. Keep the
+route out of the sitemap and never link it from a page that is built. The
+summary used to print fifteen and "and 62 more", which named the
 problem without giving anyone a way to work through it, so `printAttention` in
 `scripts/lib/attention.mjs` replaced it and is deliberately the last thing a run
 says. Broken links come from `npm run links:check` (a HEAD each, cached in
