@@ -517,6 +517,67 @@ export const PROJECTS: Project[] = [
       },
     ],
   },
+  /**
+   * The fiscal impact analysis Barrett Planning Group prepared for the Council,
+   * followed from the progress report of 9 December 2025 to the Planning and
+   * Development Committee it was sent to that evening as Doc. 85-E. Where the
+   * study itself was commissioned is not on the site: the Mayor's letter calls
+   * it "prepared for Council" and says no more.
+   */
+  {
+    slug: "fiscal-impact-analysis",
+    title: "Fiscal Impact Analysis",
+    kind: "initiative",
+    entries: [
+      {
+        kind: "item",
+        meeting: "city-council-2025-12-09",
+        item: "fiscal-impact-analysis-progress-report",
+        board: "City Council",
+        number: "5.4",
+        title: "Progress report, sent to committee",
+      },
+      {
+        kind: "item",
+        meeting: "planning-and-development-committee-2026-11-09",
+        item: "fiscal-impact-analysis-progress-report",
+        board: "Planning and Development Committee",
+        number: "Doc.85-e",
+        title: "Committee review",
+      },
+    ],
+  },
+  /**
+   * The 233 Winter Street special permit: heard on 7 October 2025, continued,
+   * and granted on conditions on 9 December. The 7 October sitting has no page
+   * here, so its continuance is a date read off the cover sheet the 9 December
+   * packet carries ("CONTINUE TO DECEMBER 9, 2025 / IN CITY COUNCIL: October
+   * 7, 2025"), the way the Marshland Street permit's hearing date is read off
+   * its Document # 21-J. Decided, so archived: the menu shows what is still
+   * before somebody.
+   */
+  {
+    slug: "233-winter-st-special-permit",
+    title: "233 Winter Street Special Permit",
+    kind: "initiative",
+    archived: true,
+    entries: [
+      {
+        kind: "date",
+        date: "2025-10-07",
+        title: "Hearing opened, continued to December 9",
+        from: { meeting: "city-council-2025-12-09", item: "233-winter-st-special-permit" },
+      },
+      {
+        kind: "item",
+        meeting: "city-council-2025-12-09",
+        item: "233-winter-st-special-permit",
+        board: "City Council",
+        number: "10.1",
+        title: "Granted, with conditions",
+      },
+    ],
+  },
 ]
 
 /** The date an entry falls on: a sitting's is the tail of its meeting id. */

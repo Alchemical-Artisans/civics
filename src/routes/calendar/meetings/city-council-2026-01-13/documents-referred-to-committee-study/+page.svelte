@@ -127,8 +127,10 @@
     <tr>
       <th scope="row">33-Z</th>
       <td>
-        Motion by Councilor Michitson to look at pedestrian safety in Haverhill for further
-        discussion
+        Motion by Councilor Michitson to look at <a
+          href={Router.meetingItem("city-council-2025-12-09", "pedestrian-safety")}
+          >pedestrian safety in Haverhill</a
+        > for further discussion
       </td>
       <td>Planning &amp; Development</td>
       <td>12/9/25</td>
@@ -136,8 +138,12 @@
     <tr>
       <th scope="row">85-E</th>
       <td>
-        Motion by Councilor Michitson to send Judi Barrett&rsquo;s progress report on the fiscal
-        impact analysis prepared for Council for further discussion
+        Motion by Councilor Michitson to send Judi Barrett&rsquo;s <a
+          href={Router.meetingItem(
+            "city-council-2025-12-09",
+            "fiscal-impact-analysis-progress-report",
+          )}>progress report on the fiscal impact analysis prepared for Council</a
+        > for further discussion
       </td>
       <td>Planning &amp; Development</td>
       <td>12/9/25</td>
