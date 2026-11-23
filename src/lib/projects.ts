@@ -340,13 +340,12 @@ export const PROJECTS: Project[] = [
     kind: "initiative",
     entries: [
       {
-        kind: "date",
-        date: "2026-06-30",
+        kind: "item",
+        meeting: "city-council-2026-06-30",
+        item: "pentucket-north-planned-development-district",
+        board: "City Council",
+        number: "12.3",
         title: "Referred to the Planning Board, with a hearing set for August 25",
-        from: {
-          meeting: "city-council-2026-08-25",
-          item: "pentucket-north-planned-development-district",
-        },
       },
       {
         kind: "item",
@@ -407,6 +406,16 @@ export const PROJECTS: Project[] = [
           meeting: "city-council-2026-10-27",
           item: "battery-energy-storage-systems-ordinance",
         },
+      },
+      // The Chairperson's letter behind this announcement names Doc. 21-B as
+      // the committee's one matter, and the packet carries the ordinance's file.
+      {
+        kind: "item",
+        meeting: "city-council-2026-06-30",
+        item: "planning-development-committee-meeting",
+        board: "City Council",
+        number: "15.2",
+        title: "Planning and Development Committee meeting announced for July 7",
       },
       {
         kind: "item",
@@ -514,6 +523,94 @@ export const PROJECTS: Project[] = [
         board: "City Council",
         number: "Doc 21-J",
         title: "Revised plans, and the answers to the departments",
+      },
+    ],
+  },
+  /**
+   * Mariam's Cottage, a bed and breakfast at 421 East Broadway: heard on 30
+   * June 2026 and continued for a modified proposal, then continued again at
+   * the applicant's request. The 2 June and 28 July continuances fall on
+   * sittings with no page here, so each is a date read off a later item: the
+   * applicant's request of May 27 and the 30 June agenda's "Continued from
+   * June 2, 2026"; the 25 August agenda's "Continued from July 28, 2026".
+   */
+  {
+    slug: "mariams-cottage-special-permit",
+    title: "Mariam's Cottage Special Permit",
+    kind: "initiative",
+    entries: [
+      {
+        kind: "date",
+        date: "2026-06-02",
+        title: "Continued to June 30 at the applicant's request",
+        from: { meeting: "city-council-2026-06-30", item: "mariams-cottage-special-permit" },
+      },
+      {
+        kind: "item",
+        meeting: "city-council-2026-06-30",
+        item: "mariams-cottage-special-permit",
+        board: "City Council",
+        number: "10.2",
+        title: "Heard, and continued to July 28 for a modified proposal",
+      },
+      {
+        kind: "date",
+        date: "2026-07-28",
+        title: "Continued to August 25",
+        from: { meeting: "city-council-2026-08-25", item: "mariams-cottage-special-permit" },
+      },
+      {
+        kind: "item",
+        meeting: "city-council-2026-08-25",
+        item: "mariams-cottage-special-permit",
+        board: "City Council",
+        number: "10.4",
+        title: "Continued to September 22 at the applicant's request",
+      },
+      {
+        kind: "item",
+        meeting: "city-council-2026-09-22",
+        item: "mariams-cottage-special-permit",
+        board: "City Council",
+        number: "10.1",
+        title: "Continued hearing",
+      },
+    ],
+  },
+  /**
+   * The ordinance restricting e-bikes and scooters, from the evening the
+   * Council discussed them and sent the matter to committee (Doc. 33-F) to
+   * the ordinance the Mayor filed in September. The Public Safety Committee
+   * sitting of 29 July between them has no item page to be a step.
+   */
+  {
+    slug: "recreational-motorized-vehicles-ordinance",
+    title: "Recreational Motorized Vehicles Ordinance",
+    kind: "initiative",
+    entries: [
+      {
+        kind: "item",
+        meeting: "city-council-2026-06-30",
+        item: "micromobility-safety",
+        board: "City Council",
+        number: "5.4",
+        title: "Discussed, and sent to committee",
+      },
+      {
+        kind: "item",
+        meeting: "city-council-2026-09-22",
+        item: "recreational-motorized-vehicles-ordinance",
+        board: "City Council",
+        number: "5.1",
+        title: "Ordinance filed",
+      },
+      {
+        kind: "item",
+        meeting: "city-council-2026-10-06",
+        item: "recreational-motorized-vehicles-ordinance",
+        board: "City Council",
+        number: "16.1",
+        title: "Unfinished business",
       },
     ],
   },

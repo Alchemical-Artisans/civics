@@ -91,7 +91,7 @@
 <ul>
   <li>
     <strong>16.1</strong>
-    <a href={Router.meetingItem(MEETING, "recreational-motorized-vehicles-ordinance")}>
+    <a href={agendaHref(MEETING, "recreational-motorized-vehicles-ordinance")}>
       Recreational Motorized Vehicles Ordinance
     </a>
   </li>

@@ -1,6 +1,7 @@
 <script lang="ts">
   import FileTenDays from "$lib/FileTenDays.svelte"
   import { Router } from "$lib/router"
+  import { agendaHref } from "$lib/projects"
 
   /** This page's own directory name, which is the document's id. */
   const MEETING = "city-council-2026-09-22"
@@ -19,7 +20,7 @@
 <ul>
   <li>
     <strong>5.1</strong>
-    <a href={Router.meetingItem(MEETING, "recreational-motorized-vehicles-ordinance")}>
+    <a href={agendaHref(MEETING, "recreational-motorized-vehicles-ordinance")}>
       Recreational Motorized Vehicles Ordinance
     </a>
     <FileTenDays />
@@ -55,7 +56,7 @@
 <ul>
   <li>
     <strong>10.1</strong>
-    <a href={Router.meetingItem(MEETING, "mariams-cottage-special-permit")}>
+    <a href={agendaHref(MEETING, "mariams-cottage-special-permit")}>
       Mariam&rsquo;s Cottage Special Permit
     </a>
   </li>

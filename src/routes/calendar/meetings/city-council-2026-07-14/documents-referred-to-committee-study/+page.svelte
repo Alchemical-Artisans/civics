@@ -147,8 +147,10 @@
     <tr>
       <th scope="row">33-F</th>
       <td
-        >Motion by Councilor Lewandowski to refer matter of e-bike safety for further review and
-        discussion</td
+        >Motion by Councilor Lewandowski to refer <a
+          href={Router.meetingItem("city-council-2026-06-30", "micromobility-safety")}
+          >matter of e-bike safety</a
+        > for further review and discussion</td
       >
       <td>Public Safety</td>
       <td>6/30/26</td>
