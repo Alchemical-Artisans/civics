@@ -100,7 +100,7 @@
     </div>
 
     {#each groups as g (g.key)}
-      <details id={g.key} open={g.records.length <= 25 || !!needle} class="my-4 scroll-mt-16">
+      <details id={g.key} open class="my-4 scroll-mt-16">
         <summary class="cursor-pointer text-lg font-semibold text-slate-900">
           {g.title}
           <span class="font-normal text-slate-500">

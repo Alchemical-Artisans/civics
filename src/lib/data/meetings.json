@@ -107,7 +107,7 @@
       "dateAdjusted": false,
       "dateConflict": true,
       "filenameDate": "2026-11-13",
-      "needsReview": true,
+      "needsReview": false,
       "source": "https://www.haverhillma.gov/government/boards-committees-and-commissions/planning-board/",
       "docId": "planning-board-583526a5"
     },
@@ -1305,7 +1305,8 @@
       "filenameDate": null,
       "needsReview": false,
       "source": "https://events.haverhillma.gov/",
-      "docId": "2026-10-19-1800-haverhill-school-committee-special-subcommittee-on-c4447474"
+      "docId": "2026-10-19-1800-haverhill-school-committee-special-subcommittee-on-c4447474",
+      "settled": true
     },
     {
       "title": "Planning and Development Committee Meeting",

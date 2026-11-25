@@ -325,6 +325,9 @@
   "2026-10-15-1000-Haverhill-Housing-Authority-Meeting::572d3ef4-8bf6-44e5-a6f2-b4de00da4422": {
     "settled": true
   },
+  "2026-10-19-1800-Haverhill-School-Committee-Special-Subcommittee-on::0f83a3ad-0a8a-4ef6-9eaf-b4e30147c93e": {
+    "settled": true
+  },
   "2026-10-19-1800-Planning-and-Development-Committee-Meeting::7173ef51-01a1-4e95-99f0-b4d700d667c4": {
     "settled": true
   },
@@ -1635,7 +1638,7 @@
     "date": "2026-05-27"
   },
   "planning-board::doc111326.pdf": {
-    "needsReview": true
+    "needsReview": false
   },
   "planning-board::pbmnt81124.pdf": {
     "needsReview": false,

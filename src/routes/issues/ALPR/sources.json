@@ -45,12 +45,10 @@
   },
   "a4293ff": {
     "url": "https://abcnews.com/US/officer-allegedly-flock-license-plate-cameras-track-boyfriends/story?id=135418955",
-    "status": "changed",
-    "md5": "d12ff111e186893fec3d26c5008fc8cc",
+    "status": "ok",
+    "md5": "bdc09cd0c13823e1f254f6d8ecbf6165",
     "checked": "2026-11-22",
-    "since": "2026-11-22",
-    "current": "bdc09cd0c13823e1f254f6d8ecbf6165",
-    "changed": "2026-11-22"
+    "since": "2026-11-22"
   },
   "b6d02a5": {
     "url": "https://assets.aclu.org/live/uploads/2023/07/embargo-drones-as-first-responder-programs-final-electronic.pdf",
@@ -61,7 +59,7 @@
   },
   "c9afde6": {
     "url": "https://caselaw.findlaw.com/court/spr-jud-crt-mas-bar/2060202.html",
-    "status": "unreachable",
+    "status": "ignored",
     "md5": null,
     "error": "HTTP 403"
   },
@@ -230,7 +228,7 @@
   },
   "91b03a9": {
     "url": "https://www.congress.gov/crs-product/LSB11429",
-    "status": "unreachable",
+    "status": "ignored",
     "md5": null,
     "error": "HTTP 403"
   },
@@ -271,7 +269,7 @@
   },
   "61ff203": {
     "url": "https://www.muckrock.com/foi/haverhill-265/public-records-request-convergint-technologies-163191/",
-    "status": "unreachable",
+    "status": "ignored",
     "md5": null,
     "error": "HTTP 403"
   },

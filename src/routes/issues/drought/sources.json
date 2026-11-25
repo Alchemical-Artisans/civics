@@ -99,7 +99,7 @@
   },
   "d968978": {
     "url": "https://www.des.nh.gov/news-and-media/state-announces-its-2026-fall-drawdown-lakes",
-    "status": "unreachable",
+    "status": "ignored",
     "md5": null,
     "error": "HTTP 403"
   },
@@ -133,13 +133,13 @@
   },
   "403d920": {
     "url": "https://www.mass.gov/info-details/addressing-property-damage-from-beaver-activity",
-    "status": "unreachable",
+    "status": "ignored",
     "md5": null,
     "error": "HTTP 403"
   },
   "1c798cb": {
     "url": "https://www.mass.gov/info-details/public-water-supply-tools-resources-performance-standards",
-    "status": "unreachable",
+    "status": "ignored",
     "md5": null,
     "error": "HTTP 403"
   },
