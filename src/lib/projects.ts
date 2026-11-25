@@ -211,6 +211,47 @@ export const PROJECTS: Project[] = [
       },
     ],
   },
+  /**
+   * The radial collector well at 309 East Broadway: a second drinking water
+   * source off the Merrimack River, borrowed for in 2016 and back before the
+   * Council ten years later to raise the borrowing to the project's revised
+   * cost. Registered at that second sitting, the first since the site has had
+   * pages that the matter came back to.
+   */
+  {
+    slug: "new-drinking-water-source",
+    title: "New Drinking Water Source",
+    kind: "initiative",
+    entries: [
+      {
+        kind: "item",
+        meeting: "city-council-2016-09-27",
+        item: "new-drinking-water-source-loan-order",
+        board: "City Council",
+        number: "3.1",
+        title: "$17,168,750 loan order filed",
+      },
+      // Read off the clerk's record on Document 15-J, which the 2026 packet
+      // carries.
+      {
+        kind: "date",
+        date: "2016-10-11",
+        title: "Loan order passed, 8 yeas, 1 nay",
+        from: {
+          meeting: "city-council-2026-12-01",
+          item: "new-drinking-water-source-loan-order",
+        },
+      },
+      {
+        kind: "item",
+        meeting: "city-council-2026-12-01",
+        item: "new-drinking-water-source-loan-order",
+        board: "City Council",
+        number: "5.4",
+        title: "Order to increase the borrowing to $26,075,850",
+      },
+    ],
+  },
   {
     slug: "whittier-middle-school-project",
     title: "Whittier Middle School Project",
@@ -379,6 +420,14 @@ export const PROJECTS: Project[] = [
         number: "10.2",
         title: "Public hearing",
       },
+      {
+        kind: "item",
+        meeting: "city-council-2026-12-01",
+        item: "pentucket-north-planned-development-district",
+        board: "City Council",
+        number: "10.1",
+        title: "Continued public hearing",
+      },
     ],
   },
   {
@@ -464,6 +513,14 @@ export const PROJECTS: Project[] = [
         board: "City Council",
         number: "10.4",
         title: "Hilldale Avenue location",
+      },
+      {
+        kind: "item",
+        meeting: "city-council-2026-12-01",
+        item: "battery-energy-storage-systems-ordinance-hilldale-ave",
+        board: "City Council",
+        number: "10.3",
+        title: "Continued public hearing, Hilldale Avenue location",
       },
     ],
   },
