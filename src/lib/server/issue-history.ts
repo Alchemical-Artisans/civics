@@ -1,12 +1,14 @@
-import history from "$lib/data/drought-history.json"
+import alpr from "$lib/data/alpr-history.json"
+import drought from "$lib/data/drought-history.json"
+import type { Issue } from "$lib/router"
 import { diffBlocks, type Block, type Change } from "$lib/text-diff"
 
 /**
- * The drought guide's recorded versions, and what changed between them.
+ * An issue guide's recorded versions, and what changed between them.
  *
- * `src/lib/data/drought-history.json` is written by
- * `scripts/snapshot-drought.mjs` (`npm run drought:snapshot`) and nothing else,
- * oldest first. Diffs are not stored: they are cheap, and a stored one could
+ * `src/lib/data/<issue>-history.json` is written by
+ * `scripts/snapshot-issue.mjs` (`npm run drought:snapshot`, `npm run
+ * alpr:snapshot`) and nothing else, oldest first. Diffs are not stored: they are cheap, and a stored one could
  * only ever disagree with the two versions it is between.
  *
  * Under `$lib/server` because the file holds every version's whole text -- the
@@ -22,9 +24,13 @@ interface Version {
   timeline: Block[]
 }
 
-const versions = history.versions as Version[]
+const HISTORIES: Record<Issue, Version[]> = {
+  drought: drought.versions as Version[],
+  alpr: alpr.versions as Version[],
+}
 
-export const VERSION_IDS = versions.map((v) => v.id)
+/** Every version's id, for a history route's `entries()`. */
+export const versionIds = (issue: Issue) => HISTORIES[issue].map((v) => v.id)
 
 /** A change with where it fell: the heading above it in the newer version. */
 export interface Located {
@@ -59,14 +65,15 @@ function textOf(change: Change): string {
 }
 
 /** Every version, newest first, for the dropdown. */
-export function versionList() {
-  return versions.map((v) => ({ id: v.id, date: v.date })).reverse()
+export function versionList(issue: Issue) {
+  return HISTORIES[issue].map((v) => ({ id: v.id, date: v.date })).reverse()
 }
 
 /** One version: its whole text, and what it changed from the version before. */
-export function versionPage(id: string) {
+export function versionPage(issue: Issue, id: string) {
+  const versions = HISTORIES[issue]
   const i = versions.findIndex((v) => v.id === id)
-  if (i === -1) throw new Error(`No drought version ${id}`)
+  if (i === -1) throw new Error(`No ${issue} version ${id}`)
   const v = versions[i]
   const before = versions[i - 1]
   return {
@@ -74,7 +81,8 @@ export function versionPage(id: string) {
     date: v.date,
     note: v.note ?? null,
     previous: before ? { id: before.id, date: before.date } : null,
-    versions: versionList(),
+    issue,
+    versions: versionList(issue),
     article: before ? located(before.blocks, v.blocks) : null,
     timeline: before ? located(before.timeline, v.timeline) : null,
     blocks: v.blocks,
@@ -83,6 +91,12 @@ export function versionPage(id: string) {
 }
 
 /** When the guide first went up and when it last changed, for the page's own byline. */
-export function publication() {
-  return { published: versions[0].date, updated: versions.at(-1)!.date, versions: versionList() }
+export function publication(issue: Issue) {
+  const versions = HISTORIES[issue]
+  return {
+    issue,
+    published: versions[0].date,
+    updated: versions.at(-1)!.date,
+    versions: versionList(issue),
+  }
 }

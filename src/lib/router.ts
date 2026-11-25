@@ -62,6 +62,10 @@ const path = (route: `/${string}`): string => `${base}${route}`
  */
 const EXCERPT_ORIGIN = "https://storage.googleapis.com/haverhill-civics-files"
 
+/** The issue guides that keep a page history, and where each lives. */
+const ISSUE_PATHS = { drought: "/issues/drought", alpr: "/issues/ALPR" } as const
+export type Issue = keyof typeof ISSUE_PATHS
+
 export class Router {
   /** The landing page. */
   static home(): string {
@@ -307,12 +311,12 @@ export class Router {
   }
 
   /**
-   * One recorded version of the drought guide, by its date (`2026-11-19`):
+   * One recorded version of an issue guide, by its date (`2026-11-19`):
    * what it changed, and its whole text. There is no page listing them --
    * `VersionMenu` is the list.
    */
-  static droughtHistory(version: string): string {
-    return path(`/issues/drought/history/${version}`)
+  static issueHistory(issue: Issue, version: string): string {
+    return path(`${ISSUE_PATHS[issue]}/history/${version}`)
   }
 
   /**

@@ -1,6 +1,7 @@
 <script lang="ts">
   import ShareButton from "$lib/ShareButton.svelte"
   import ShareMeta from "$lib/ShareMeta.svelte"
+  import VersionMenu from "$lib/VersionMenu.svelte"
   import { formatLongDate } from "$lib/calendar"
   import { Router } from "$lib/router"
 
@@ -8,8 +9,10 @@
   // tab name the page alike.
   const TITLE = "License Plate Readers in Haverhill"
   const sharedUrl = Router.alpr()
-  const PUBLISHED = "2026-11-11"
-  const UPDATED = "2026-11-11"
+
+  // "Published" and "Updated" are read off the page history, as the drought
+  // guide's are (`npm run alpr:snapshot`).
+  let { data } = $props()
   const description =
     "Facts, sources, and concerns about license plate readers and other surveillance in Haverhill, and a comparison of the proposed rules."
 
@@ -21,6 +24,20 @@
   const PACKET = Router.reference("PublicSafetyLPR/ProposedOrdinanceFromHaverhillLawyers.pdf")
   const RING_4 = Router.reference("PublicSafetyLPR/Ring_4of6.pdf")
   const FLOCK = Router.reference("PublicSafetyLPR/FlockContractwithHaverhill.pdf")
+  // The city's termination notices to Flock and the Mayor's release about
+  // them. The file names carry spaces and an ampersand, so they are encoded.
+  const HPD_MEASURES = Router.reference(
+    "PublicSafetyLPR/flock-security-and-privacy-measures-hpd.pdf",
+  )
+  const NOTICE_OCT = Router.reference(
+    `PublicSafetyLPR/${encodeURIComponent("Haverhill - Flock Termination Letter - 10.21.2026.pdf")}`,
+  )
+  const NOTICE_NOV = Router.reference(
+    `PublicSafetyLPR/${encodeURIComponent("Haverhill-Flock-Notice-of-Termination-2026-11-23.pdf")}`,
+  )
+  const RELEASE_NOV = Router.reference(
+    `PublicSafetyLPR/${encodeURIComponent("11.24.26 - Cancelation Update - Release.pdf")}`,
+  )
   const CRS_REPORT = Router.reference("PublicSafetyLPR/R48160.3.pdf")
   const HHS_CAMERAS = Router.reference(
     "PublicSafetyLPR/Haverhill_High_School_Exterior_Camera_Replacement_Proposal_PM05548713P_3-30-23.pdf",
@@ -33,6 +50,11 @@
   const MODEL_BILL = Router.reference(
     "PublicSafetyLPR/Local-Automatic-License-Plate-Reader-Guardrails-Model-Bill-1126.pdf",
   )
+  // Somerville's surveillance oversight ordinance as adopted (Ordinance
+  // 2019-20, Code ch. 10, art. III, §§ 10-61 to 10-69) and its one amendment
+  // (2022-20, which struck the body-worn camera exemption from § 10-63(b)).
+  const SOMERVILLE = Router.reference("PublicSafetyLPR/Somerville-Ordinance-2019-20.pdf")
+  const SOMERVILLE_2022 = Router.reference("PublicSafetyLPR/Somerville-Ordinance-2022-20.pdf")
 
   // The two bills side by side, in plain language. Each summary is read
   // off the section it cites; "No section on this" means none was found on
@@ -47,8 +69,12 @@
       aclu: "Any system or software that turns images of plates into computer-readable data. Cameras that only switch on for a specific violation, like speeding or running a red light, are not included.",
       acluSection: "Section 1(A), page 1",
       acluPage: 1,
-      pick: "Both combined",
-      why: 'Start with the ACLU wording, "Any system or software that turns images of plates into computer-readable data", because it says plainly that software counts even when it is used on its own. The city draft lists software as part of a system, but the ACLU wording leaves no doubt. Then add the city\'s "whether fixed, mobile, or portable, along with its software and databases", so databases of the images are covered too. Keeping the city\'s "other vehicle information" would also cover systems that identify cars by make, color, or features.',
+      somerville:
+        "Any device, hardware, or software that can collect or analyze audio, visual, location, biometric, or similar information linked to an identifiable person, including license plate readers, facial recognition, gunshot detection, cell site simulators, and predictive policing software. Some cameras are exempt, such as police vehicle cameras, traffic cameras, and security cameras on city buildings. Body-worn cameras were exempt until a 2022 amendment.",
+      somervilleSection: "\u00a7 10-62 and \u00a7 10-63(b), pages 1 to 3",
+      somervillePage: 2,
+      pick: "Somerville, ACLU, and city draft combined",
+      why: 'Start with Somerville\'s reach: it covers every kind of surveillance technology, not only plate readers. For plate readers, use the ACLU wording, "Any system or software that turns images of plates into computer-readable data", because it says plainly that software counts even when it is used on its own. The city draft lists software as part of a system, but the ACLU wording leaves no doubt. Then add the city\'s "whether fixed, mobile, or portable, along with its software and databases", so databases of the images are covered too. Keeping the city\'s "other vehicle information" would also cover systems that identify cars by make, color, or features.',
     },
     {
       topic: "What it can be used for",
@@ -58,8 +84,12 @@
       aclu: "Only checking plates against specific lists (stolen, unregistered or uninsured, uninspected, an outstanding felony warrant, a missing person, or a felony), plus parking enforcement, access to secured areas, and toll collection.",
       acluSection: "Section 2(B), pages 1 to 2",
       acluPage: 1,
+      somerville:
+        "Purposes and authorized uses set in a surveillance use policy the City Council approves.",
+      somervilleSection: "\u00a7 10-64(b), pages 4 to 5",
+      somervillePage: 4,
       pick: "ACLU model bill",
-      why: "It is a closed list. The city draft allows any purpose named in a police use policy, which can be widened later without changing the ordinance.",
+      why: "It is a closed list. The city draft allows any purpose named in a police use policy, which can be widened later without changing the ordinance. Somerville also leaves the purposes to a use policy.",
     },
     {
       topic: "What is not allowed",
@@ -69,8 +99,12 @@
       aclu: "Any use not on the allowed list. For registration, insurance, and inspection checks, enforcement aimed at a group based on race, ethnicity, or income beyond its share of the population is also banned.",
       acluSection: "Section 2(A) and (C), pages 1 to 2",
       acluPage: 1,
-      pick: "ACLU model bill, plus the city's list",
-      why: "The ACLU bill bans every use that is not on its allowed list. Keeping the city's named bans as well makes the most common misuses explicit.",
+      somerville:
+        "Prohibited uses are set in the Council-approved use policy rather than listed in the ordinance. Emergency use cannot infringe the right to peacefully protest.",
+      somervilleSection: "\u00a7 10-62 and \u00a7 10-64(b), pages 1 and 4",
+      somervillePage: 4,
+      pick: "ACLU model bill, plus the city draft's list",
+      why: "The ACLU bill bans every use that is not on its allowed list. Keeping the city's named bans as well makes the most common misuses explicit. Somerville leaves prohibited uses to its use policy.",
     },
     {
       topic: "Who approves the system",
@@ -80,8 +114,12 @@
       aclu: "No section on this. The bill sets the rules directly instead.",
       acluSection: "",
       acluPage: 0,
-      pick: "City draft, with more public oversight",
-      why: "The City Council did vote on Flock in April 2025, but only to allow a contract longer than three years. That vote set no rules on how the cameras could be used and required no public report (Flock contract, page 72). The public discussion came in August 2026, more than four years after the first Flock order (Flock contract, pages 20 to 22). The draft's Council vote and 14-day public notice are a start. A public hearing before any approval, a public list of camera locations, and a yearly report posted where residents can read it would give residents a say before a system is in use, not after.",
+      somerville:
+        "The City Council must approve acquiring or using any surveillance technology, or entering an agreement to acquire or share it, even if it is free. The impact report is public when submitted. If the Council does not act within 60 days (not counting June, July, or August), the request is approved by default.",
+      somervilleSection: "\u00a7 10-65, pages 5 to 6",
+      somervillePage: 5,
+      pick: "Somerville and city draft combined, with more public oversight",
+      why: "The City Council did vote on Flock in April 2025, but only to allow a contract longer than three years. That vote set no rules on how the cameras could be used and required no public report (Flock contract, page 72). The public discussion came in August 2026, more than four years after the first Flock order (Flock contract, pages 20 to 22). The draft's Council vote and 14-day public notice are a start. A public hearing before any approval, a public list of camera locations, and a yearly report posted where residents can read it would give residents a say before a system is in use, not after. Somerville goes further: Council approval is needed before acquiring or sharing any surveillance technology, even if it is free, the impact report is public when submitted, and the Council reviews every system each year in a public meeting. But under Somerville's rule a request is approved by default if the Council does not act within 60 days. It should be refused by default instead.",
     },
     {
       topic: "Software updates and minor changes",
@@ -91,8 +129,12 @@
       aclu: "No section on this. Any system that does not fully follow the bill cannot be used at all.",
       acluSection: "Section 2(D), page 2",
       acluPage: 2,
-      pick: "Stronger than both",
-      why: "Software decides what a plate reader can search for, so a software update that adds a new kind of search is not minor, even if the Police Chief decides it is. Every software or firmware update should be listed in a written public record, and any update that adds a feature or a new kind of search should need City Council approval.",
+      somerville:
+        "A department head can apply a patch or upgrade needed to address a threat, but cannot use any new surveillance capability until the Council approves it, unless the Mayor decides the use is unavoidable and then asks the Council for approval as soon as possible.",
+      somervilleSection: "\u00a7 10-63(c)(4), page 4",
+      somervillePage: 4,
+      pick: "Somerville, made stronger",
+      why: "Somerville comes closest: a patch can be applied, but no new surveillance capability can be used until the City Council approves it. Its exception, letting the Mayor allow use first, should be removed. Software decides what a plate reader can search for, so a software update that adds a new kind of search is not minor, even if the Police Chief decides it is. Every software or firmware update should be listed in a written public record, and any update that adds a feature or a new kind of search should need City Council approval.",
     },
     {
       topic: "How long data is kept",
@@ -102,8 +144,12 @@
       aclu: "Deleted after 48 hours, unless it is needed as evidence of a listed offense, for tolls, at another agency's sworn request for an active case, or under a warrant.",
       acluSection: "Section 3(A), pages 2 to 3",
       acluPage: 2,
+      somerville:
+        "No fixed limit. The use policy must state the retention period, why it is appropriate, and how data is deleted.",
+      somervilleSection: "\u00a7 10-64(b)(6), page 5",
+      somervillePage: 5,
       pick: "ACLU model bill",
-      why: "48 hours is a fixed, short limit. The city draft sets no number, and the current police policy keeps data for 30 days (Policy 41.3.9, page 8).",
+      why: "48 hours is a fixed, short limit. The city draft and Somerville set no number, and the current police policy keeps data for 30 days (Policy 41.3.9, page 8).",
     },
     {
       topic: "Sharing with other agencies",
@@ -113,8 +159,12 @@
       aclu: "Only specific data (one camera or area, up to 48 hours) to a Massachusetts agency or one within 25 miles that agrees not to pass it on, or to anyone with a probable cause warrant.",
       acluSection: "Section 5 and Section 1(E), pages 1 and 4",
       acluPage: 4,
-      pick: "ACLU model bill",
-      why: "It allows only specific data, to nearby or in-state agencies that agree not to pass it on, or with a warrant. The city draft allows sharing under a police use policy.",
+      somerville:
+        "The use policy must say if and how other agencies can use the data and under what legal standard. The yearly report must name each agency data was shared with and the reason.",
+      somervilleSection: "\u00a7 10-64(b)(8) and \u00a7 10-66(b)(2), pages 5 and 7",
+      somervillePage: 5,
+      pick: "ACLU model bill and Somerville",
+      why: "The ACLU bill allows only specific data, to nearby or in-state agencies that agree not to pass it on, or with a warrant. The city draft allows sharing under a police use policy. Add Somerville's rule that the yearly public report names every agency data was shared with and why, so residents can see where it went.",
     },
     {
       topic: "Vendors and third parties",
@@ -124,8 +174,12 @@
       aclu: "A vendor running the system for the city may not share the city's data with anyone without the city's express permission, and only in ways the bill allows.",
       acluSection: "Section 5(A)(2)(a), page 4",
       acluPage: 4,
-      pick: "Both combined",
-      why: "Both bar vendors from sharing the city's data on their own: the city draft by banning unauthorized disclosure and secondary use, and the ACLU bill by requiring the city's express permission for any sharing. Neither names AI training. \"Secondary use\" could cover it, but the ordinance should say plainly that city data cannot be used to train AI or to build other products, because the Flock contract allowed both (Flock contract, pages 31 and 47).",
+      somerville:
+        "Any agreement to acquire, share, or use surveillance technology or data needs Council approval first, and the yearly report must disclose every new agreement with an outside entity. There is no list of required vendor contract terms.",
+      somervilleSection: "\u00a7 10-65 and \u00a7 10-66(b)(9), pages 5 and 7",
+      somervillePage: 5,
+      pick: "City draft, ACLU, and Somerville combined",
+      why: "Both bar vendors from sharing the city's data on their own: the city draft by banning unauthorized disclosure and secondary use, and the ACLU bill by requiring the city's express permission for any sharing. Neither names AI training. \"Secondary use\" could cover it, but the ordinance should say plainly that city data cannot be used to train AI or to build other products, because the Flock contract allowed both (Flock contract, pages 31 and 47). Add Somerville's rules that any agreement to acquire or share surveillance technology needs Council approval first, and that every new agreement is disclosed in the yearly public report.",
     },
     {
       topic: "Private plate reader cameras, like businesses or homes",
@@ -135,8 +189,12 @@
       aclu: "Police need a warrant to demand access to a private plate reader camera or its data. They can only accept it if it is offered freely, for no payment, about a crime on that property or against its customers or employees. Private plate readers in places open to the public need a sign within 10 feet of each camera.",
       acluSection: "Section 4, pages 3 to 4",
       acluPage: 3,
+      somerville:
+        "Not covered. The ordinance applies to technology and data the city acquires or directs.",
+      somervilleSection: "\u00a7 10-62, pages 1 to 2",
+      somervillePage: 1,
       pick: "ACLU model bill",
-      why: "It requires a warrant before police can demand data from a private plate reader. The city draft does not cover private plate readers at all. Ordinary security and doorbell cameras are not covered by either bill, which is a gap worth closing.",
+      why: "It requires a warrant before police can demand data from a private plate reader. The city draft and Somerville do not cover private plate readers at all. Ordinary security and doorbell cameras are not covered by any of the three, which is a gap worth closing.",
       note: "Sharing footage with police: at its September 3, 2026 meeting, before voting on a license, the License Commission asked the applicant about installing cameras and whether they planned to work with the police (Haverhill Community TV recording, from 13:25). Neither bill limits police asking for ordinary security camera footage. The ACLU model's limits apply only to private plate readers, and the city draft would apply only to data once the city has it.",
     },
     {
@@ -147,8 +205,11 @@
       aclu: "No separate section. The limits on use and sharing apply to every agency.",
       acluSection: "",
       acluPage: 0,
+      somerville: "No separate section.",
+      somervilleSection: "",
+      somervillePage: 0,
       pick: "City draft",
-      why: "It is the only one with explicit protections tied to Massachusetts law (M.G.L. c. 147, \u00a7 64).",
+      why: "It is the only one of the three with explicit protections tied to Massachusetts law (M.G.L. c. 147, § 64).",
     },
     {
       topic: "Data security",
@@ -158,8 +219,12 @@
       aclu: "End-to-end encryption while data is stored and sent.",
       acluSection: "Section 3(C), page 3",
       acluPage: 3,
+      somerville:
+        "The use policy must describe safeguards against unauthorized access, including encryption and access control.",
+      somervilleSection: "\u00a7 10-64(b)(5), page 5",
+      somervillePage: 5,
       pick: "ACLU model bill",
-      why: 'End-to-end encryption is a specific standard that can be checked. "Reasonable" safeguards cannot.',
+      why: 'End-to-end encryption is a specific standard that can be checked. "Reasonable" safeguards cannot, and Somerville only requires the use policy to describe its safeguards.',
     },
     {
       topic: "Audits and public reporting",
@@ -169,8 +234,12 @@
       aclu: "No section on this.",
       acluSection: "",
       acluPage: 0,
-      pick: "City draft",
-      why: "The yearly report on audits and usage should be in writing, not only presented verbally, and should be a public record posted where residents can read it, not only sent to the Mayor and City Council. The audits should also be done independently of the Police Department.",
+      somerville:
+        "A yearly report for each department, public when submitted, covering how each technology was used, sharing, complaints, internal audit results and violations, whether it worked, costs, and effects on civil rights. The Council must hold a meeting on the reports by May 31 and publish its own summary.",
+      somervilleSection: "\u00a7 10-66, pages 7 to 8",
+      somervillePage: 7,
+      pick: "Somerville, with independent audits",
+      why: "Somerville's yearly report is in writing and public when submitted, names every agency data was shared with, includes internal audit results and violations, and is reviewed by the Council in a public meeting by May 31. The city draft's report goes only to the Mayor and City Council. The audits should also be done independently of the Police Department.",
     },
     {
       topic: "Emergencies",
@@ -180,8 +249,12 @@
       aclu: "No section on this.",
       acluSection: "",
       acluPage: 0,
-      pick: "City draft, with stronger limits",
-      why: "If emergency use is allowed, it needs a written report to the Mayor and City Council, and that report should be available to everyone as a public record. The ordinance should also limit how often emergency use can happen. The city draft requires the use to stop when the emergency ends and a written report within 90 days, but the Police Chief decides when an emergency exists, the report is not public, and there is no limit on how often it can happen. Its ban on using emergencies to monitor protest or religious activity should stay.",
+      somerville:
+        "Police can use surveillance technology in an emergency for up to 90 days. The Police Chief must report in writing to the Council within 90 days after it ends, submit an impact report, and include it in the next yearly report. Emergency use cannot infringe the right to peacefully protest.",
+      somervilleSection: "\u00a7 10-62 and \u00a7 10-63(c)(1), pages 1 and 3",
+      somervillePage: 3,
+      pick: "Somerville and city draft combined",
+      why: "If emergency use is allowed, it needs a written report to the Mayor and City Council, and that report should be available to everyone as a public record. Somerville caps emergency use at 90 days and requires a written report and an impact report afterward. The city draft requires the use to stop when the emergency ends. Use both, and also limit how often emergency use can happen. In both, the Police Chief decides when an emergency exists. The city draft's ban on using emergencies to monitor protest or religious activity, which Somerville also has, should stay.",
     },
     {
       topic: "Systems already in use",
@@ -191,8 +264,12 @@
       aclu: "Existing contracts that do not follow the bill must be amended or ended.",
       acluSection: "Section 2(D), page 2",
       acluPage: 2,
-      pick: "Both combined",
-      why: "Keep the city draft's inventory and widen it. Within 180 days, the Police Chief would have to list every plate reader system in use, where it is, the vendor, the agreements, any data sharing, and any regional, statewide, or national databases the department can search (§ XXX-16(B), packet page 20). The inventory should cover every surveillance technology and third-party system the ordinance would affect, not only plate readers, so it would also answer questions this page could not, such as whether Haverhill uses CrimeTracer. It should be in writing and a public record. Then add the ACLU rule: contracts that do not follow the rules must be changed or ended, rather than allowing 180 days that the Council can extend.",
+      somerville:
+        "The Mayor had to submit a use policy to the Council for every department already using surveillance technology before the ordinance took effect, nine months after adoption.",
+      somervilleSection: "\u00a7 10-64(a) and \u00a7 10-69, pages 4 and 8",
+      somervillePage: 4,
+      pick: "City draft, ACLU, and Somerville combined",
+      why: "Keep the city draft's inventory and widen it. Within 180 days, the Police Chief would have to list every plate reader system in use, where it is, the vendor, the agreements, any data sharing, and any regional, statewide, or national databases the department can search (§ XXX-16(B), packet page 20). The inventory should cover every surveillance technology and third-party system the ordinance would affect, not only plate readers, so it would also answer questions this page could not, such as whether Haverhill uses CrimeTracer. It should be in writing and a public record. Then add the ACLU rule: contracts that do not follow the rules must be changed or ended, rather than allowing 180 days that the Council can extend. Somerville also required a Council-approved use policy for every system already in use before its ordinance took effect.",
     },
     {
       topic: "Evidence collected against the rules",
@@ -202,8 +279,12 @@
       aclu: "Data collected or shared in violation cannot be used as evidence, except to help a defendant.",
       acluSection: "Section 6, pages 4 to 5",
       acluPage: 4,
-      pick: "ACLU model bill",
-      why: "Evidence collected in violation cannot be used, which gives the rules consequences in court.",
+      somerville:
+        "Data collected in violation cannot be used as evidence in any proceeding under the city's jurisdiction.",
+      somervilleSection: "\u00a7 10-67(b), page 8",
+      somervillePage: 8,
+      pick: "ACLU model bill and Somerville",
+      why: "Both keep evidence collected in violation out of court, which gives the rules real consequences. The city draft creates no rule about evidence.",
     },
     {
       topic: "If the rules are broken",
@@ -213,8 +294,12 @@
       aclu: "A person harmed can sue for actual damages or $1,000, plus lawyer's fees.",
       acluSection: "Section 7, page 5",
       acluPage: 5,
-      pick: "ACLU model bill",
-      why: "Residents can sue, so enforcement does not depend only on the city disciplining its own staff or its vendors. That matters for a system residents cannot opt out of: anyone who drives past a camera is recorded.",
+      somerville:
+        "Anyone can go to court to stop a violation or have it declared unlawful; the ordinance does not provide for money damages. City employees who report violations are protected as whistleblowers.",
+      somervilleSection: "\u00a7 10-67(c) and (e), page 8",
+      somervillePage: 8,
+      pick: "ACLU model bill and Somerville",
+      why: "Under the ACLU bill a person harmed can sue for damages, and under Somerville anyone can go to court to stop a violation, and city employees who report violations are protected. Together, enforcement does not depend only on the city disciplining its own staff or its vendors. That matters for a system residents cannot opt out of: anyone who drives past a camera is recorded. Somerville's whistleblower protection for city employees who report violations should stay in any Haverhill ordinance, so the people most likely to see misuse can report it safely.",
     },
   ]
 </script>
@@ -227,16 +312,18 @@
 
 <h1>License Plate Readers in Haverhill</h1>
 
-<!-- Fixed dates, set by hand: PUBLISHED when the page went up, UPDATED when
-     its content last changed. "Updated" shows only once it differs. -->
+<!-- The first and latest versions in the page history. "Updated" shows only
+     once it differs. -->
 <p class="m-0 mt-1 flex flex-wrap items-baseline gap-x-2 text-sm text-slate-600">
   <span class="font-semibold text-slate-700">Published</span>
-  <span>{formatLongDate(PUBLISHED)}</span>
-  {#if UPDATED !== PUBLISHED}
+  <span>{formatLongDate(data.published)}</span>
+  {#if data.updated !== data.published}
     <span aria-hidden="true">·</span>
     <span class="font-semibold text-slate-700">Updated</span>
-    <span>{formatLongDate(UPDATED)}</span>
+    <span>{formatLongDate(data.updated)}</span>
   {/if}
+  <span aria-hidden="true">·</span>
+  <VersionMenu issue={data.issue} versions={data.versions} label="History" />
   <span aria-hidden="true">·</span>
   <span
     >Prepared by <a href="https://www.aholdengouveia.name" target="_blank" rel="noopener noreferrer"
@@ -248,6 +335,25 @@
 <div class="mt-2">
   <ShareButton url={sharedUrl} text={TITLE} />
 </div>
+
+<!-- A running log of changes after first publication, newest first. Each
+     change is also marked with its date in the section it touched. -->
+<aside class="mt-4 rounded border border-slate-200 bg-slate-50 p-3 text-sm text-slate-700">
+  <p class="m-0 font-semibold text-slate-800">Updates to this page</p>
+  <p class="m-0 mt-1">
+    I update this page as I find or receive new information. Each change is marked with its date in
+    the section it affects.
+  </p>
+  <ul class="mt-1 mb-0">
+    <li>
+      <strong>November 25, 2026:</strong> I added new information shared by the City of Haverhill: the
+      city's termination notices to Flock (October 26 and November 23, 2026), the Mayor's November 24,
+      2026 press release, and the Police Department's statement of new Flock safeguards. I also added
+      new news reporting, including Lowell's closed-door vote to turn its Flock cameras back on, and Somerville's
+      surveillance ordinance to the comparison.
+    </li>
+  </ul>
+</aside>
 
 <p>
   Privacy matters to everyone, because you don't know who is collecting your data or who is looking
@@ -451,6 +557,64 @@
     href="{PACKET}#page=52">page 7</a
   >).
 </p>
+
+<p>
+  <strong>Update, November 5, 2026:</strong> After months of public concern, the Police Department
+  released a statement of new Flock safeguards, linked from the city's announcement that it was
+  canceling the Flock contract (<a
+    href="https://www.haverhillma.gov/news/posts/city-of-haverhill-canceling-flock-safety-contract/"
+    target="_blank"
+    rel="external noopener noreferrer"
+    >City of Haverhill, November 5, 2026<span class="sr-only">, opens in a new tab</span></a
+  >). The department says it has "reduced the historical data retrieval period to a maximum of 14
+  days", is "restricting access to personnel with an established operational need", and that
+  "automatic sharing of camera data with other communities and outside agencies has been
+  discontinued". It also says an October 2026 audit "found no evidence of officer misuse or
+  unauthorized access" (<a href={HPD_MEASURES}
+    >Haverhill Police Department, Flock Safety Security and Privacy Measures</a
+  >).
+</p>
+
+<p>Adding oversight now is a step, but these measures leave large gaps:</p>
+
+<ul>
+  <li>
+    <strong>They are the department's own choices, not rules.</strong> None of them is in an
+    ordinance, and the department can change its own policy at any time (<a
+      aria-label="Public Safety Committee packet, page 54"
+      href="{PACKET}#page=54">Policy 41.3.9, page 9</a
+    >).
+  </li>
+  <li>
+    <strong>The department checks itself.</strong> The audit that found no misuse was the department's
+    own, and the statement does not say who did it, what was checked, or what was found. No audit report
+    is public.
+  </li>
+  <li>
+    <strong>A search reason is only as good as what is typed in.</strong> The statement points to
+    the requirement to give a reason for every search, but an officer can type a false reason (see
+    <a href="#enforcement">Enforcement and Verification</a>).
+  </li>
+  <li>
+    <strong>Limiting what can be retrieved is not the same as deleting it.</strong> The statement
+    limits how far back officers can search to 14 days. It does not say the data is deleted any
+    sooner. The written policy still keeps data that is not evidence for 30 days (<a
+      aria-label="Public Safety Committee packet, page 53"
+      href="{PACKET}#page=53">Policy 41.3.9, page 8</a
+    >).
+  </li>
+  <li>
+    <strong>Sharing was happening before.</strong> Ending "automatic sharing of camera data with other
+    communities and outside agencies" means that sharing was in place until now. The statement does not
+    say who it was shared with or for how long, and other agencies' requests are now approved by the department
+    itself.
+  </li>
+  <li>
+    <strong>Nothing covers the vendor.</strong> The statement says nothing about software updates,
+    the vendor's use of data to train AI, or anything else the vendor controls (see
+    <a href="#vendor-software">The Vendor Controls the Software</a>).
+  </li>
+</ul>
 
 <h3>Massachusetts Law</h3>
 
@@ -970,7 +1134,18 @@
     <a aria-label="Flock contract, page 33" href="{FLOCK}#page=33">page 33</a>). The department's
     current plate reader policy took effect in December 2022 (<a href="{PACKET}#page=46"
       >Policy 41.3.9</a
-    >, page 1).
+    >, page 1). The city's own account gives a different start. Its announcement that it was
+    canceling the contract says "Since 2023, the Haverhill Police Department has used Flock cameras"
+    (<a
+      href="https://www.haverhillma.gov/news/posts/city-of-haverhill-canceling-flock-safety-contract/"
+      target="_blank"
+      rel="external noopener noreferrer"
+      >City of Haverhill, November 5, 2026<span class="sr-only">, opens in a new tab</span></a
+    >), but the order signed in January 2022 is attached both to the 2025 contract and to the city's
+    October 2026 termination notice (<a href="{NOTICE_OCT}#page=4">termination notice, Exhibit A</a
+    >). The records do not show when the first cameras were installed, but the city's documents
+    contradict each other, and contradictions like this continue to erode public trust in how open
+    the city is being.
   </li>
   <li>
     <strong>January 2024:</strong> the Police Chief signed a new order form for 11 cameras with a
@@ -1037,6 +1212,48 @@
   >), Ring's public relations coordinator is listed as a media contact, and it ends with Ring's own
   claim that "one Los Angeles neighborhood saw a 55 percent decrease in home break-ins", with no
   independent source (<a href="{RING_4}#page=2">page 2</a>).
+</p>
+
+<p>
+  <strong>Update, November 25, 2026:</strong> The city's own lawyers have now said the Flock
+  agreement was unlawful. In a termination notice to Flock dated October 26, 2026, they wrote:
+  "statutory deficiencies have been discovered which make the agreement unlawful under the laws of
+  the Commonwealth of Massachusetts as it was not lawfully procured, not executed by an individual
+  with authority to bind the City, and is for an indefinite period which was not approved by City
+  Council." They added: "for contracts to be enforceable against the City, the Mayor must be the
+  signatory on behalf of the City; not the Police Chief, as was done here." (<a
+    href="{NOTICE_OCT}#page=1">October 26, 2026 termination notice</a
+  >, page 1)
+</p>
+
+<p>The October notice and the 2025 contract do not attach the same agreements:</p>
+
+<ul>
+  <li>
+    The October notice lists agreements "executed on January 25, 2022, March 29, 2023, and April 2,
+    2024" (<a href="{NOTICE_OCT}#page=1">page 1</a>). Its attachments are the January 2022 order for
+    8 cameras, an order for 3 more cameras signed by the Police Chief and Flock on March 29, 2023 (<a
+      href="{NOTICE_OCT}#page=27">page 27</a
+    >), and an order for 7 cameras signed by the Police Chief on March 29, 2024 and by Flock on
+    April 2, 2024 (<a href="{NOTICE_OCT}#page=34">page 34</a>).
+  </li>
+  <li>
+    The 2025 contract attaches the January 2022 order and a five-year order for 11 cameras, signed
+    by the Police Chief on January 24, 2024 and by Flock on March 6, 2024 (<a href="{FLOCK}#page=66"
+      >Flock contract, page 66</a
+    >, <a href="{FLOCK}#page=68">page 68</a>). The October notice does not mention that order, and
+    the 2025 contract does not include the 2023 or April 2024 orders.
+  </li>
+</ul>
+
+<p>
+  Neither document lists all four orders, so the records do not show how they fit together or how
+  many cameras each one covered at a time. The city sent a second notice on November 23, 2026,
+  terminating the June 24, 2025 contract and asking that all Flock equipment be removed "in no event
+  later than Monday, December 14, 2026" (<a href="{NOTICE_NOV}#page=1"
+    >November 23, 2026 termination notice</a
+  >). On November 24, 2026, the Mayor's office said the city had "received no response from the
+  company" (<a href={RELEASE_NOV}>Mayor's press release, November 24, 2026</a>).
 </p>
 
 <h3 id="vendor-software">The Vendor Controls the Software</h3>
@@ -1203,10 +1420,43 @@
     If Flock is replaced, will any new license plate reader system, from any company, have to meet
     the ordinance and be approved in public before it is installed?
   </li>
+  <li>
+    The city's own lawyers wrote that the Flock agreements were "not lawfully procured" and were
+    signed by the Police Chief rather than the Mayor (<a href="{NOTICE_OCT}#page=1"
+      >October 26, 2026 termination notice</a
+    >, page 1). What is being done to make sure this does not happen again, with any vendor?
+  </li>
+  <li>
+    Will the city publish its contracts, including order forms and renewals signed by departments,
+    so residents can see what has been agreed to and for how long?
+  </li>
+  <li>
+    How will contracts be reviewed going forward, who will do the review, and will the results be
+    public, so that an agreement signed without proper authority or Council approval is caught
+    before it runs for years?
+  </li>
+  <li>
+    Has the city checked its other contracts, in the Police Department and in other departments, for
+    the same problems, and is there any other agreement in place that was not lawfully procured or
+    not signed by someone with authority to bind the city?
+  </li>
+  <li>
+    In October 2026, Lowell's City Council voted in a closed-door executive session to turn its
+    Flock cameras back on, a vote a local group says violated the state's open meeting law (<a
+      href="https://www.nbcboston.com/news/politics/lowell-reactivates-flock-cameras-after-closed-doors-vote-critics-say-violated-law/4048765/"
+      target="_blank"
+      rel="external noopener noreferrer"
+      >NBC Boston, November 12, 2026<span class="sr-only">, opens in a new tab</span></a
+    >). What will stop a surveillance decision in Haverhill from being made behind closed doors, and
+    will the ordinance require every approval, renewal, or reactivation to happen in an open, public
+    meeting?
+  </li>
   <!-- More questions go here. -->
 </ul>
 
-<h2 id="comparison">Comparing the City's Draft Ordinance and the ACLU Model Bill</h2>
+<h2 id="comparison">
+  Comparing the City's Draft Ordinance, the ACLU Model Bill, and Somerville's Ordinance
+</h2>
 
 <p>
   Two proposed sets of rules for license plate readers. The city's draft ordinance was written by
@@ -1216,23 +1466,26 @@
     href="https://www.aclu.org/documents/local-automatic-license-plate-reader-privacy-model-bill"
     target="_blank"
     rel="external noopener noreferrer">ACLU<span class="sr-only">, opens in a new tab</span></a
-  >, November 2026, <a href={MODEL_BILL}>copy</a>). Each summary below gives the section and page it
-  comes from.
+  >, November 2026, <a href={MODEL_BILL}>copy</a>). Somerville's ordinance is a law already in
+  effect, adopted in 2019, that requires City Council approval and public reports for all
+  surveillance technology, not only plate readers (<a href={SOMERVILLE}>Ordinance 2019-20</a>,
+  amended by <a href={SOMERVILLE_2022}>Ordinance 2022-20</a>). Each summary below gives the section
+  and page it comes from.
 </p>
 
 <p>
-  The topics below are not a complete list of what the two bills say. They are a selection I chose
-  of the differences I think matter most: how much a system can collect, keep, and share, who can
-  check it, and how the rules are enforced. The "My recommendation" box under each topic is my
-  opinion of which is better and why, favoring the option that collects less or gives the public
-  more oversight. Please read both full texts, linked above, and form your own opinion.
+  The topics below are not a complete list of what the three say. They are a selection I chose of
+  the differences I think matter most: how much a system can collect, keep, and share, who can check
+  it, and how the rules are enforced. The "My recommendation" box under each topic is my opinion of
+  which is better and why, favoring the option that collects less or gives the public more
+  oversight. Please read all three full texts, linked above, and form your own opinion.
 </p>
 
 <div class="space-y-6">
   {#each COMPARISON as row (row.topic)}
     <section>
       <h3>{row.topic}</h3>
-      <div class="grid gap-3 md:grid-cols-2">
+      <div class="grid gap-3 xl:grid-cols-3">
         <div class="rounded border border-slate-200 bg-slate-50 p-3">
           <p class="m-0 text-sm font-semibold text-slate-700">City draft ordinance</p>
           <p class="m-0 mt-1">{row.city}</p>
@@ -1246,6 +1499,15 @@
           {#if row.acluSection}
             <p class="m-0 mt-1 text-sm text-slate-600">
               <a href="{MODEL_BILL}#page={row.acluPage}">{row.acluSection}</a>
+            </p>
+          {/if}
+        </div>
+        <div class="rounded border border-slate-200 bg-slate-50 p-3">
+          <p class="m-0 text-sm font-semibold text-slate-700">Somerville ordinance</p>
+          <p class="m-0 mt-1">{row.somerville}</p>
+          {#if row.somervilleSection}
+            <p class="m-0 mt-1 text-sm text-slate-600">
+              <a href="{SOMERVILLE}#page={row.somervillePage}">{row.somervilleSection}</a>
             </p>
           {/if}
         </div>
@@ -1263,7 +1525,10 @@
 
 <h3 id="additions">Additions I Would Suggest</h3>
 
-<p>Neither bill includes these. They are my suggestions.</p>
+<p>
+  These are my suggestions. Where Somerville's ordinance already does something similar, it is
+  noted.
+</p>
 
 <ul>
   <li>
@@ -1334,13 +1599,23 @@
     </ul>
   </li>
   <li>
+    <strong>Refused by default, not approved by default.</strong> Under Somerville's ordinance, if
+    the City Council does not approve or deny a request within 60 days (not counting June, July, or
+    August), the request is approved by default (<a href="{SOMERVILLE}#page=6">§ 10-65(a)(3)</a>).
+    Haverhill's ordinance should do the opposite: if the Council does not act, the request is
+    refused, so no surveillance technology can be added without a public vote.
+  </li>
+  <li>
     <strong>Software updates need public review.</strong> The city draft lets the Police Chief treat
     software and firmware updates as minor changes that need no City Council approval (<a
       href="{PACKET}#page=11">§ XXX-4(C)</a
     >). Because software decides what a plate reader can search for (see
     <a href="#vendor-software">The Vendor Controls the Software</a>), every update should be listed
     in a written public record, and any update that adds a feature or a new kind of search should
-    need City Council approval.
+    need City Council approval. Somerville's ordinance already requires Council approval before a
+    new surveillance capability added by an upgrade can be used (<a href="{SOMERVILLE}#page=4"
+      >§ 10-63(c)(4)</a
+    >), but lets the Mayor allow its use first if the Mayor decides it is unavoidable.
   </li>
   <li>
     <strong>No AI training or other products from city data.</strong> The city draft bans "secondary
@@ -1380,6 +1655,9 @@
       target="_blank"
       rel="external noopener noreferrer"
       >Congressional Research Service, May 2026<span class="sr-only">, opens in a new tab</span></a
+    >). Somerville's ordinance already does this: it covers any surveillance technology, including
+    plate readers, facial recognition, gunshot detection, and cell site simulators (<a
+      href="{SOMERVILLE}#page=2">§ 10-62</a
     >).
   </li>
   <li>
@@ -1403,6 +1681,23 @@
     ></a
   >). In Haverhill, we can see where this is an issue given the contentious City Council meeting in
   August, and it is something we should be concerned about for the future.
+</p>
+
+<p>
+  Nearby cities show how quickly that trust can be lost. In October 2026, Lowell's City Council
+  voted in a closed-door executive session to turn more than 40 Flock cameras back on, reversing a
+  September suspension. A local group, DeFlock Lowell, says the vote violated the state's open
+  meeting law. Asked why the vote was held in executive session, a councilor said, "It was on the
+  agenda. That's why we went in there." (<a
+    href="https://www.nbcboston.com/news/politics/lowell-reactivates-flock-cameras-after-closed-doors-vote-critics-say-violated-law/4048765/"
+    target="_blank"
+    rel="external noopener noreferrer"
+    >NBC Boston, November 12, 2026<span class="sr-only">, opens in a new tab</span></a
+  >) Lowell is a nearby city, and Haverhill's own police say "automatic sharing of camera data with
+  other communities and outside agencies has been discontinued", which means it had been in place (<a
+    href={HPD_MEASURES}>Haverhill Police Department</a
+  >). I found no record showing whether Haverhill and Lowell shared data, but decisions made out of
+  public view are exactly why residents do not trust surveillance.
 </p>
 
 <p>
@@ -1895,5 +2190,38 @@
         class="sr-only">, opens in a new tab</span
       ></a
     >, Ella Stern, Cambridge Day, August 19, 2025
+  </li>
+  <li>
+    <a href={NOTICE_OCT}>Notice of Termination of Services</a>, Allison S. Valton, City Solicitor
+    (MTC Lawyers), to Flock Group Inc., dated October 26, 2026, with the January 25, 2022, March 29,
+    2023, and April 2, 2024 agreements attached
+  </li>
+  <li>
+    <a href={NOTICE_NOV}>Notice of Termination of Services</a>, Kayla Venckauskas (MTC Lawyers), to
+    Flock Group Inc., November 23, 2026, with the June 24, 2025 contract attached
+  </li>
+  <li>
+    <a href={RELEASE_NOV}>Haverhill Flock Contract Cancelation Update</a>, press release, Office of
+    Mayor Melinda E. Barrett, November 24, 2026
+  </li>
+  <li>
+    <a href={HPD_MEASURES}>Flock Safety Security and Privacy Measures</a>, Haverhill Police
+    Department, linked from the city's November 5, 2026 announcement
+  </li>
+  <li>
+    <a href={SOMERVILLE}>Ordinance No. 2019-20, Public Oversight of Surveillance Technology</a>,
+    City of Somerville, adopted by the City Council October 10, 2019 and approved by the Mayor
+    October 16, 2019 (Code of Ordinances, Chapter 10, Article III); amended by
+    <a href={SOMERVILLE_2022}>Ordinance No. 2022-20</a>, September 22, 2022
+  </li>
+  <li>
+    <a
+      href="https://www.nbcboston.com/news/politics/lowell-reactivates-flock-cameras-after-closed-doors-vote-critics-say-violated-law/4048765/"
+      target="_blank"
+      rel="external noopener noreferrer"
+      >Lowell reactivates Flock cameras after closed-doors vote critics say violated law<span
+        class="sr-only">, opens in a new tab</span
+      ></a
+    >, John Moroney, NBC Boston, November 12, 2026
   </li>
 </ul>

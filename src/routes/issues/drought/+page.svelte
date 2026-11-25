@@ -29,7 +29,7 @@
   const description = "An in-depth evidence based guide to the drought in Haverhill."
   // Structured data for search engines, the same facts the tab and the card
   // carry. The two dates are the page's own "Published" and "Updated" lines,
-  // both from the page history (`npm run drought:snapshot`).
+  // both from the page history (`npm run drought:snapshot`, `scripts/snapshot-issue.mjs`).
   const structuredData = $derived(
     JSON.stringify({
       "@context": "https://schema.org",
@@ -85,7 +85,9 @@
     <span>{formatLongDate(data.updated)}</span>
   {/if}
   <span aria-hidden="true">·</span>
-  <VersionMenu versions={data.versions} label="History" />
+  <span>Prepared by Colin Williams</span>
+  <span aria-hidden="true">·</span>
+  <VersionMenu issue={data.issue} versions={data.versions} label="History" />
 </p>
 
 <div class="mt-2 print:hidden">

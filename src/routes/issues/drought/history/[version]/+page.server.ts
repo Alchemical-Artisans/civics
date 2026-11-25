@@ -1,7 +1,7 @@
 import type { EntryGenerator, PageServerLoad } from "./$types"
-import { VERSION_IDS, versionPage } from "$lib/server/drought-history"
+import { versionIds, versionPage } from "$lib/server/issue-history"
 
 /** One page per recorded version, prerendered. */
-export const entries: EntryGenerator = () => VERSION_IDS.map((version) => ({ version }))
+export const entries: EntryGenerator = () => versionIds("drought").map((version) => ({ version }))
 
-export const load: PageServerLoad = ({ params }) => versionPage(params.version)
+export const load: PageServerLoad = ({ params }) => versionPage("drought", params.version)

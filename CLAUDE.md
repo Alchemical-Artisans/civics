@@ -98,6 +98,7 @@ npm run issues:mark -- <id> # a lead is in the page now (--irrelevant), or a cha
 npm run precincts:update    # ward and precinct shapes and districts, from MassGIS
 npm run transcribe -- <id>  # hand a sitting to Claude Code to write its page
 npm run drought:snapshot    # record a version of /issues/drought for its page history
+npm run alpr:snapshot       # ... and of /issues/ALPR
 npm run story               # 1080x1920 Instagram story card for the next Council sitting, in .cache/stories/
 npm run storybook           # storybook on :6006
 ```

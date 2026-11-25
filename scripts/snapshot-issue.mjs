@@ -1,13 +1,17 @@
 /**
- * Records a version of the drought guide for its page history.
+ * Records a version of an issue guide for its page history.
  *
- *   npm run drought:snapshot                       # record the page as it stands today
+ *   npm run drought:snapshot                       # record the drought guide as it stands today
+ *   npm run alpr:snapshot                          # ... or the ALPR guide
  *   npm run drought:snapshot -- --note "..."       # ... with a line of your own about it
  *   npm run drought:snapshot -- --check            # exit 1 if the page has moved on from the last version
  *   npm run drought:snapshot -- --backfill         # rebuild the history from git (first run only)
  *
+ * Both are `node scripts/snapshot-issue.mjs <issue>`; `ISSUES` below says
+ * where each guide's page, timeline and history are.
+ *
  * **Publishing an update is this command.** The history is
- * `src/lib/data/drought-history.json`, committed, because the build is offline
+ * `src/lib/data/<issue>-history.json`, committed, because the build is offline
  * and a CI checkout has no history to read; and a version is a deliberate act
  * rather than a commit, because most commits to the page are not new
  * information -- they are a link tidied, a heading reworded, a figure
@@ -28,16 +32,46 @@ import { existsSync, readFileSync, writeFileSync } from "node:fs"
 import { articleBlocks, printedDate, timelineBlocks } from "./lib/article-text.mjs"
 
 const ROOT = new URL("../", import.meta.url).pathname
-const HISTORY = `${ROOT}src/lib/data/drought-history.json`
-const PAGE = "src/routes/issues/drought/+page.svelte"
-const TIMELINE = "src/routes/issues/drought/timeline.ts"
-/** Before the move to /issues/drought, which is as far back as the page was public. */
-const OLD_PAGE = "src/routes/drought/+page.svelte"
-const OLD_TIMELINE = "src/routes/drought/timeline.ts"
-/** "Let /drought be shared, and publish it with today's date": the first publication. */
-const FIRST_PUBLISHED = "5316c75"
+
+/**
+ * Each guide with a history. `oldPage`/`oldTimeline` are where the page lived
+ * before it moved, read by `--backfill` alone; `firstPublished` is the commit
+ * the guide first went public in, which is where a backfill starts.
+ */
+const ISSUES = {
+  drought: {
+    page: "src/routes/issues/drought/+page.svelte",
+    timeline: "src/routes/issues/drought/timeline.ts",
+    // Before the move to /issues/drought, which is as far back as the page was public.
+    oldPage: "src/routes/drought/+page.svelte",
+    oldTimeline: "src/routes/drought/timeline.ts",
+    // "Let /drought be shared, and publish it with today's date".
+    firstPublished: "5316c75",
+  },
+  alpr: {
+    page: "src/routes/issues/ALPR/+page.svelte",
+    timeline: "src/routes/issues/ALPR/timeline.ts",
+    // The page's printed "Published" day, 11 November 2026, is this commit;
+    // the draft of the day before was never public.
+    firstPublished: "dba6c85",
+  },
+}
 
 const args = process.argv.slice(2)
+const issue = args.find((a) => !a.startsWith("--") && ISSUES[a])
+if (!issue) {
+  console.error(`Name the guide: one of ${Object.keys(ISSUES).join(", ")}.`)
+  process.exit(1)
+}
+const {
+  page: PAGE,
+  timeline: TIMELINE,
+  oldPage: OLD_PAGE,
+  oldTimeline: OLD_TIMELINE,
+} = ISSUES[issue]
+const FIRST_PUBLISHED = ISSUES[issue].firstPublished
+const HISTORY = `${ROOT}src/lib/data/${issue}-history.json`
+
 const flag = (name) => args.includes(`--${name}`)
 const option = (name) => {
   const at = args.indexOf(`--${name}`)
@@ -94,7 +128,7 @@ function backfill() {
     `${FIRST_PUBLISHED}^..HEAD`,
     "--",
     PAGE,
-    OLD_PAGE,
+    ...(OLD_PAGE ? [OLD_PAGE] : []),
   )
     .trim()
     .split("\n")
@@ -105,8 +139,8 @@ function backfill() {
 
   const versions = []
   for (const [date, rev] of perDay) {
-    const page = show(rev, PAGE) ?? show(rev, OLD_PAGE)
-    const timeline = show(rev, TIMELINE) ?? show(rev, OLD_TIMELINE) ?? ""
+    const page = show(rev, PAGE) ?? (OLD_PAGE && show(rev, OLD_PAGE))
+    const timeline = show(rev, TIMELINE) ?? (OLD_TIMELINE && show(rev, OLD_TIMELINE)) ?? ""
     if (!page) continue
     const version = { id: date, date, ...fromSources(page, timeline) }
     const last = versions.at(-1)
