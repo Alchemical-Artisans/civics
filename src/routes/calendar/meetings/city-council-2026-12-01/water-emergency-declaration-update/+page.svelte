@@ -33,5 +33,11 @@
       >
     </a>
   </li>
+  <li>
+    <a href={Router.meetingItem("city-council-2026-09-15", "drought-emergency-update")}>
+      Minutes of the City Council Meeting, September 15, 2026
+    </a>
+    &ndash; Robert Ward&rsquo;s update on the Drought Emergency
+  </li>
   <li><a href={Router.drought()}>Haverhill&rsquo;s drought emergency</a></li>
 </ul>

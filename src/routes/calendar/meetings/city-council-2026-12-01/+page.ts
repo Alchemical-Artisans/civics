@@ -3,7 +3,19 @@ import type { PageLoad } from "./$types"
 export const load: PageLoad = () => ({
   details: {
     time: "7:00 PM",
-    // Both highlights are hearings continued from 27 October, where both were
+    // 5.7 is Robert Ward's update on the water emergency. His drought update
+    // of 15 September has its own section in that sitting's minutes: five
+    // councilors' questions on the Methuen connection, recovery, temporary
+    // pipe and tiered rates, two residents heard, and a motion passed asking
+    // him to report back on tiered pricing.
+    //
+    // 15.3 asks after the cancellation of the Flock contract. The Council's
+    // minutes of 11 August record the Police Department's and Flock's
+    // presentation, the councilors' questions on data, access and oversight,
+    // and a motion sending the matter to the City Solicitor and the Police for
+    // an ordinance.
+    //
+    // 10.1 and 10.3 are hearings continued from 27 October, where both were
     // highlighted on the same evidence, and both are back tonight.
     //
     // 10.1 is the Pentucket North hearing. A third I Street resident has
@@ -22,6 +34,19 @@ export const load: PageLoad = () => ({
     // will be placed on file tonight and voted on at a later sitting, so it is
     // not highlighted here.
     highlights: [
+      {
+        item: "water-emergency-declaration-update",
+        title: "Water Emergency Declaration Update",
+        number: "5.7",
+        reasons: [
+          {
+            kind: "discussed-before",
+            meetings: [
+              { id: "city-council-2026-09-15", label: "City Council, September 15, 2026" },
+            ],
+          },
+        ],
+      },
       {
         item: "pentucket-north-planned-development-district",
         title: "Pentucket North Planned Development District",
@@ -82,6 +107,17 @@ export const load: PageLoad = () => ({
                 source: "Diane Desjardins, 28 Country Meadow Road, September 14, 2026",
               },
             ],
+          },
+        ],
+      },
+      {
+        item: "flock-cameras",
+        title: "Flock Cameras and License Plate Monitoring",
+        number: "15.3",
+        reasons: [
+          {
+            kind: "discussed-before",
+            meetings: [{ id: "city-council-2026-08-11", label: "City Council, August 11, 2026" }],
           },
         ],
       },
