@@ -25,6 +25,10 @@
   // the posted link is the same address. The title is the one `<svelte:head>`
   // sets below, so a card and a tab cannot name the page differently.
   const TITLE = "Haverhill Drought Guide"
+  // MassDEP's emergency declaration and order of 18 November 2026, with its
+  // cover letter. The city hosts it on its CDN, but a copy of ours means the
+  // two paragraphs resting on it do not depend on the city keeping it there.
+  const EMERGENCY_ORDER = Router.reference("haverhill-3128000-uao-edec-wma-2026-11-18.pdf")
   const sharedUrl = Router.absolute("/issues/drought")
   const description = "An in-depth evidence based guide to the drought in Haverhill."
   // Structured data for search engines, the same facts the tab and the card
@@ -620,21 +624,21 @@
     href="https://www.haverhillma.gov/news/posts/haverhill-mayor-takes-proactive-steps-to-address-water-supply-emergency/"
     target="_blank"
     rel="external noopener noreferrer">city announced</a
-  > that, in addition to drawing from a test well they had set up as part of the radial collector well
-  permitting process, they were seeking emergency approval to draw water directly from the Merrimack.
-  This will involve extensive testing and approvals, but if they are able to clear those hurdles this
-  will be pumped into Millvale Reservoir.
+  >
+  that, in addition to drawing from a test well they had set up as part of the radial collector well permitting
+  process, they were seeking emergency approval to draw water directly from the Merrimack. This will involve
+  extensive testing and approvals, but if they are able to clear those hurdles this will be pumped into
+  Millvale Reservoir. MassDEP responded with
+  <a href={EMERGENCY_ORDER}>a strongly worded letter</a> explaining how detrimental this step would be,
+  comparing the situation to Flint, Michigan.
 </p>
 
 <h3>Emergency Petition</h3>
 
 <p>
-  On November 18th, MassDEP <a
-    href="https://media-001-us.cdn.govstack.com/haverhillma-003-us/media/4gmdh4pw/haverhill-3128000-uao-edec-wma-2026-11-18.pdf"
-    target="_blank"
-    rel="external noopener noreferrer">approved a petition</a
-  > to declare in emergency in Haverhill. This petition explicitly excludes drawing water from the Merrimack,
-  although it does allow the city to continue pursuing plans to do so in the future.
+  On November 18th, MassDEP <a href={EMERGENCY_ORDER}>approved a petition</a> to declare in emergency
+  in Haverhill. This petition explicitly excludes drawing water from the Merrimack, although it does allow
+  the city to continue pursuing plans to do so in the future.
 </p>
 
 <h3>Methuen</h3>
