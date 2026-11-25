@@ -3,7 +3,7 @@ import { Router } from "$lib/router"
 
 /** One of the records in `static/references/PublicSafetyLPR/`, opened at a page. */
 const record = (file: string, page: number) =>
-  `${Router.reference(`PublicSafetyLPR/${file}`)}#page=${page}`
+  `${Router.reference(`PublicSafetyLPR/${encodeURIComponent(file)}`)}#page=${page}`
 
 /**
  * Haverhill's surveillance technology as a sequence of dated acts, for the
@@ -75,7 +75,19 @@ export const ALPR_TIMELINE: TimelineEntry[] = [
     eyebrow: "Police Department",
     title: "Police Chief signs a Flock order form for 8 cameras, renewing automatically",
     href: record("FlockContractwithHaverhill.pdf", 20),
-    note: "Source: FlockContractwithHaverhill.pdf, pages 20 to 22 and 33 (Exhibit A)",
+    // The city's November 5, 2026 announcement gives a later start ("Since
+    // 2023"); both are named in the note, and the page says they conflict.
+    note: 'Source: FlockContractwithHaverhill.pdf, pages 20 to 22 and 33 (Exhibit A); also Exhibit A of Haverhill - Flock Termination Letter - 10.21.2026.pdf. The city\'s November 5, 2026 announcement instead says "Since 2023, the Haverhill Police Department has used Flock cameras."',
+  },
+  {
+    id: "flock-order-2023",
+    // Not among the 2025 contract's exhibits; attached to the city's October
+    // 2026 termination notice as its Exhibit B.
+    date: "2023-03-29",
+    eyebrow: "Police Department",
+    title: "Police Chief signs a Flock order for 3 more cameras ($16,050)",
+    href: record("Haverhill - Flock Termination Letter - 10.21.2026.pdf", 27),
+    note: "Source: Haverhill - Flock Termination Letter - 10.21.2026.pdf, pages 24 to 28 (Exhibit B). Not in FlockContractwithHaverhill.pdf.",
   },
   {
     id: "flock-order-2024",
@@ -84,6 +96,17 @@ export const ALPR_TIMELINE: TimelineEntry[] = [
     title: "Police Chief signs a five-year Flock order form for 11 cameras ($137,500)",
     href: record("FlockContractwithHaverhill.pdf", 66),
     note: "Source: FlockContractwithHaverhill.pdf, pages 66 and 68 (Exhibit B)",
+  },
+  {
+    id: "flock-order-2024-april",
+    // Two signature dates on one form: the Chief's 3-29-24, Flock's 4/2/2024.
+    // The October notice calls it "executed on ... April 2, 2024". Dated here
+    // by the Chief's signature, with Flock's named in the note.
+    date: "2024-03-29",
+    eyebrow: "Police Department",
+    title: "Police Chief signs a Flock order for 7 cameras ($43,050)",
+    href: record("Haverhill - Flock Termination Letter - 10.21.2026.pdf", 34),
+    note: "Source: Haverhill - Flock Termination Letter - 10.21.2026.pdf, pages 29 to 35 (Exhibit C). Signed by the Police Chief March 29, 2024 and by Flock April 2, 2024. Not in FlockContractwithHaverhill.pdf.",
   },
   {
     id: "council-vote-2025",
@@ -104,6 +127,17 @@ export const ALPR_TIMELINE: TimelineEntry[] = [
     note: "Source: FlockContractwithHaverhill.pdf, pages 1 to 3",
   },
   {
+    id: "termination-notice-oct",
+    // The letter is dated October 26, 2026. The file's name says 10.21.2026
+    // and its PDF metadata says it was created October 22; the letter's own
+    // date is used.
+    date: "2026-10-26",
+    eyebrow: "City of Haverhill",
+    title: "City's lawyers send Flock a termination notice calling the agreement unlawful",
+    href: record("Haverhill - Flock Termination Letter - 10.21.2026.pdf", 1),
+    note: "Source: Haverhill - Flock Termination Letter - 10.21.2026.pdf, pages 1 to 2",
+  },
+  {
     id: "flock-cancelled",
     // "Initiated the cancelation", in the city's words: the announcement
     // gives no date for the cameras coming down, so neither does this.
@@ -112,5 +146,13 @@ export const ALPR_TIMELINE: TimelineEntry[] = [
     title: "City announces it is canceling the Flock contract and asks Flock to remove its cameras",
     href: "https://www.haverhillma.gov/news/posts/city-of-haverhill-canceling-flock-safety-contract",
     note: "Source: City of Haverhill news post, November 5, 2026 (web page, not a PDF)",
+  },
+  {
+    id: "termination-notice-nov",
+    date: "2026-11-23",
+    eyebrow: "City of Haverhill",
+    title: "Second termination notice asks Flock to remove all equipment by December 14, 2026",
+    href: record("Haverhill-Flock-Notice-of-Termination-2026-11-23.pdf", 1),
+    note: "Source: Haverhill-Flock-Notice-of-Termination-2026-11-23.pdf, page 1",
   },
 ]
