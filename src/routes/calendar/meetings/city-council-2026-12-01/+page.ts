@@ -13,7 +13,10 @@ export const load: PageLoad = () => ({
     // minutes of 11 August record the Police Department's and Flock's
     // presentation, the councilors' questions on data, access and oversight,
     // and a motion sending the matter to the City Solicitor and the Police for
-    // an ordinance.
+    // an ordinance. The Public Health, Safety & Works Committee took it up on
+    // 12 November; there are no minutes of that sitting yet, only HC Media's
+    // recording, and it is listed on the site owner's word, from attending,
+    // that the discussion was a long one.
     //
     // 10.1 and 10.3 are hearings continued from 27 October, where both were
     // highlighted on the same evidence, and both are back tonight.
@@ -117,7 +120,13 @@ export const load: PageLoad = () => ({
         reasons: [
           {
             kind: "discussed-before",
-            meetings: [{ id: "city-council-2026-08-11", label: "City Council, August 11, 2026" }],
+            meetings: [
+              { id: "city-council-2026-08-11", label: "City Council, August 11, 2026" },
+              {
+                id: "public-health-safety-works-committee-2026-11-12",
+                label: "Public Health, Safety & Works Committee, November 12, 2026",
+              },
+            ],
           },
         ],
       },
