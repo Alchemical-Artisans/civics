@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-22T13:35:06.093Z",
+  "generatedAt": "2026-11-25T21:42:14.811Z",
   "rules": [
     {
       "board": "City Council",
@@ -616,6 +616,20 @@
       "time": "5:00 PM"
     },
     {
+      "board": "License Commission",
+      "date": "2026-11-30",
+      "title": "License Commission Meeting",
+      "url": "https://events.haverhillma.gov/default/Detail/2026-11-30-1400-License-Commission-Meeting",
+      "time": "2:00 PM"
+    },
+    {
+      "board": "Planning Board",
+      "date": "2026-11-30",
+      "title": "Haverhill Planning Board Mtg",
+      "url": "https://events.haverhillma.gov/default/Detail/2026-11-30-1200-Haverhill-Planning-Board-Mtg",
+      "time": "12:00 PM"
+    },
+    {
       "board": "Special Education Parent Advisory Council",
       "date": "2026-11-30",
       "title": "SEPAC - Special education Parental Advisory Council Meeting",
@@ -637,6 +651,13 @@
       "time": "6:00 PM"
     },
     {
+      "board": "Walnut Square School Site Council",
+      "date": "2026-12-07",
+      "title": "Walnut Square Site Council Meeting",
+      "url": "https://events.haverhillma.gov/default/Detail/2026-12-07-1700-Walnut-Square-Site-Council-Meeting",
+      "time": "5:00 PM"
+    },
+    {
       "board": "City Council",
       "date": "2026-12-08",
       "title": "City Council Meeting",
@@ -649,6 +670,20 @@
       "title": "Haverhill Public Schools District Parent Council Meeting",
       "url": "https://events.haverhillma.gov/default/Detail/2026-12-08-0930-Haverhill-Public-Schools-District-Parent-Council-M",
       "time": "9:30 AM"
+    },
+    {
+      "board": "Health Department",
+      "date": "2026-12-08",
+      "title": "Haverhill Board of Health Meeting",
+      "url": "https://events.haverhillma.gov/default/Detail/2026-12-08-1900-Haverhill-Board-of-Health-Meeting",
+      "time": "7:00 PM"
+    },
+    {
+      "board": "Conservation Commission",
+      "date": "2026-12-10",
+      "title": "Haverhill Conservation Commission Meeting REVISED",
+      "url": "https://events.haverhillma.gov/default/Detail/2026-12-10-1915-Haverhill-Conservation-Commission-Meeting-REVISED",
+      "time": "7:15 PM"
     },
     {
       "board": "Haverhill High School Site Council",

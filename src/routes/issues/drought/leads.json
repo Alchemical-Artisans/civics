@@ -8,6 +8,24 @@
     "publisher": "The Cool Down",
     "url": "https://news.google.com/rss/articles/CBMikgFBVV95cUxQRGNsNUIyM0cxWmNjTmtOcGxJdmlrY3V5eng0UThHSk1zMkpiSXJJWjhIOUd1UWlKUVlvWDdZeXNGVDdWa3p2ZnV4NDdUN3lHUjFUc09COE5LOVVWZG1vbWVJSmxNZVNHdHJfLUN5WFFHdU9sTXdMelhmRlRReS1zSlI2cGF6ZjJmZEJiX3dzejBGdw?oc=5"
   },
+  "48563f9": {
+    "status": "new",
+    "found": "2026-11-25",
+    "date": "2026-11-23",
+    "source": "news",
+    "title": "Haverhill Considers Round Pond Water Withdrawal; Estimates Minimal Supply - WHAV",
+    "publisher": "WHAV",
+    "url": "https://news.google.com/rss/articles/CBMiowFBVV95cUxPRk9uczg1dU1LT0tMUE1wVGVDOUVzU3MxSUladnQ2dHpEbkk2bmtDMlVaZ3laU0tQdWhxMUlvVzAtaW1tNjVjSnhCYk5Vc3VhOVJURi0yU0JFbVdSbVZuX3BBNjlKWjFIN2M5eUoyVDVTakFxNmU2bzFLalphcFVieWlLMHE1dFV3eEZoWG9pQ3lKNU5uMFdRcXFaVHJBQmYwNDhj?oc=5"
+  },
+  "4403cfe": {
+    "status": "new",
+    "found": "2026-11-25",
+    "date": "2026-11-23",
+    "source": "news",
+    "title": "Haverhill Seeks Emergency Merrimack River Water Supply - Wisevoter",
+    "publisher": "Wisevoter",
+    "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxQWnlwd1RXTWhuSFBZZTBONTY2OHBJd1g2M1hWQTJPMXFiSVE0dHR5c1Njb2FNQ0ZOb2lrWkZaNFJHbGRBTFpCVzc5TEJ0V0R5VmlESGFkVWM5b0R3a0ZWZWVjR3lCSVBGM0lfZnZoeEJ3cmhjT1dBYjdlTW9QWW41SEJBYVhYVkYxdE1OenBaMFBLWkFlQkZ6WXBHS1dwSFRSWHdNTFZR?oc=5"
+  },
   "6e1c4b1": {
     "status": "irrelevant",
     "found": "2026-11-22",
@@ -137,6 +155,16 @@
     "title": "Drought Pushes Haverhill to Seek Backup Water Supplies - Environmental Protection Online",
     "publisher": "Environmental Protection Online",
     "url": "https://news.google.com/rss/articles/CBMiogFBVV95cUxPOWw3bTNCeFJZTGxPTnBvU19CRXdjcjdTLTczck02eklwTm5WNUVNc2VjU0paVnB4SHZNV0l0Si1pd0t2NUdWNVhEeHNRY2lJNVc5c0xjdXcwcWV0aTZ5QTNYWVhRRVh4SEhDQm5nRjNXVEZRX3BPYnVwS1loYmdkSzZrblR1cVRiWVNYVV90ZnZ4S1Z5eEZSelhGUDhBcl9Cb0E?oc=5"
+  },
+  "1dc3108": {
+    "status": "new",
+    "found": "2026-11-25",
+    "date": "2026-11-18",
+    "source": "web",
+    "title": "Haverhill Water Emergency: 4-Part Plan Explained",
+    "publisher": "The Boston Report",
+    "url": "https://thebostonreport.com/2026/11/18/haverhill-water-emergency-kenoza-lake-merrimack-river",
+    "note": "Secondary write-up of the water emergency (Kenoza Lake, Merrimack River, test well, Methuen); not fetched, so check it against the city's own updates before citing."
   },
   "b744d46": {
     "status": "incorporated",
