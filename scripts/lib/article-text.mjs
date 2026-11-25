@@ -1,6 +1,6 @@
 /**
- * The drought guide's words, lifted out of its Svelte source, for the page
- * history.
+ * An issue guide's words, lifted out of its Svelte source, for the page
+ * history (`scripts/snapshot-issue.mjs`).
  *
  * **What counts is what a reader reads.** A heading, a paragraph, a list item
  * or a table row, with the links inside it kept as `[label](address)` -- the
@@ -72,13 +72,101 @@ function link(label, href) {
 }
 
 /**
+ * `const NAME = Router.reference(...)` in the page's script, as each name's
+ * `ref:` address. The ALPR guide names its records once at the top and links
+ * them as `href={PACKET}` or `href="{PACKET}#page=46"`; without this the
+ * history would keep the label and lose which record it was.
+ */
+function referenceConstants(script) {
+  const out = new Map()
+  const pattern =
+    /const\s+([A-Z][A-Z0-9_]*)\s*=\s*Router\.reference\(\s*(?:"([^"]+)"|`([^`$]*)\$\{encodeURIComponent\(\s*"([^"]+)"\s*\)\}`)\s*,?\s*\)/g
+  for (const m of script.matchAll(pattern)) {
+    out.set(m[1], `ref:${m[2] ?? m[3] + encodeURIComponent(m[4])}`)
+  }
+  return out
+}
+
+/** The literal text of `const NAME = [...]` in the script, brackets matched outside strings. */
+function arrayLiteral(script, name) {
+  const start = new RegExp(`const\\s+${name}\\s*(?::[^=]+)?=\\s*\\[`).exec(script)
+  if (!start) return null
+  const from = start.index + start[0].length - 1
+  let depth = 0
+  let quote = null
+  for (let i = from; i < script.length; i++) {
+    const c = script[i]
+    if (quote) {
+      if (c === "\\") i++
+      else if (c === quote) quote = null
+    } else if (c === '"' || c === "'" || c === "`") quote = c
+    else if (c === "[") depth++
+    else if (c === "]" && --depth === 0) return script.slice(from, i + 1)
+  }
+  return null
+}
+
+const escapeText = (value) =>
+  String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/\{/g, "&lbrace;")
+    .replace(/\}/g, "&rbrace;")
+
+/**
+ * `{#each NAME as row}` over an array of literals in the script, written out
+ * once per row, so words a page keeps as data -- the ALPR guide's comparison
+ * of the three ordinances -- are in its history like any paragraph.
+ *
+ * **Classes are taken off what is expanded.** The rows are drawn as boxes, so
+ * every element in them carries a class, and the no-class rule would read the
+ * whole comparison as furniture; inside a row, every word is the article's.
+ * A loop over anything but a literal array (one that cannot be evaluated on
+ * its own) is left alone, and its expressions drop out as before.
+ */
+function expandLoops(markup, script) {
+  return markup.replace(
+    /\{#each\s+([A-Z][A-Z0-9_]*)\s+as\s+(\w+)(?:\s*\([^)]*\))?\s*\}([\s\S]*?)\{\/each\}/g,
+    (whole, name, row, body) => {
+      const literal = arrayLiteral(script, name)
+      if (!literal) return whole
+      let rows
+      try {
+        rows = new Function(`return ${literal}`)()
+      } catch {
+        return whole
+      }
+      const field = new RegExp(`\\{${row}\\.(\\w+)\\}`, "g")
+      const condition = new RegExp(`\\{#if\\s+${row}\\.(\\w+)\\s*\\}([\\s\\S]*?)\\{\\/if\\}`, "g")
+      return rows
+        .map((values) =>
+          body
+            .replace(condition, (_, key, inner) => (values[key] ? inner : ""))
+            .replace(field, (_, key) => escapeText(values[key]))
+            .replace(/\sclass\s*=\s*"[^"]*"/g, ""),
+        )
+        .join("")
+    },
+  )
+}
+
+/**
  * The article's blocks, in order: `{ tag, text }`, a table row's cells joined
  * by ` | `.
  */
 export function articleBlocks(source) {
-  const markup = source
+  const script = source.match(/^\s*<script\b[^>]*>([\s\S]*?)<\/script>/)?.[1] ?? ""
+  const references = referenceConstants(script)
+  let markup = source
     .replace(/^\s*<script\b[^>]*>[\s\S]*?<\/script>/, "")
     .replace(/<!--[\s\S]*?-->/g, "")
+  markup = expandLoops(markup, script)
+    .replace(/(\shref\s*=\s*)\{([A-Z][A-Z0-9_]*)\}/g, (whole, lead, name) =>
+      references.has(name) ? `${lead}"${references.get(name)}"` : whole,
+    )
+    .replace(/\{([A-Z][A-Z0-9_]*)\}/g, (whole, name) => references.get(name) ?? whole)
 
   const blocks = []
   const tag = /<(\/?)([a-zA-Z][\w:.-]*)((?:"[^"]*"|'[^']*'|\{[^}]*\}|[^>"'{])*?)(\/?)>/g
@@ -156,7 +244,7 @@ export function articleBlocks(source) {
 }
 
 /**
- * The drought timeline's entries as the same kind of blocks, so a revision
+ * An issue timeline's entries as the same kind of blocks, so a revision
  * that adds, moves or retitles a step shows up in the same diff as a
  * paragraph does. Read from `timeline.ts` by pattern: the file is a literal
  * array of literals, and importing it would pull in the whole of `$lib`.
@@ -168,6 +256,18 @@ export function timelineBlocks(source) {
     .filter((line) => !/^\s*\/\//.test(line))
     .join("\n")
 
+  // The ALPR timeline's `record("file", page)`: a committed reference opened at a page.
+  const recordHelper =
+    /const record = \([^)]*\) =>\s*`\$\{Router\.reference\(`([^`$]*)\$\{(encodeURIComponent\(file\)|file)\}`\)\}#page=\$\{page\}`/.exec(
+      source,
+    )
+  const recordHref = (entry) => {
+    if (!recordHelper) return null
+    const m = entry.match(/\bhref:\s*record\(\s*"([^"]+)"\s*,\s*(\d+)\s*\)/)
+    if (!m) return null
+    const file = recordHelper[2] === "file" ? m[1] : encodeURIComponent(m[1])
+    return `ref:${recordHelper[1]}${file}#page=${m[2]}`
+  }
   const video = /const video = \(slug: string\) => `([^`$]*)\$\{slug\}`/.exec(source)
   const videoBase = video ? video[1] : "http://haverhillcommunitytv.org/video/"
   const field = (entry, key) => {
@@ -184,7 +284,7 @@ export function timelineBlocks(source) {
     const title = field(own, "title")
     if (!title) continue
     const slug = own.match(/\bhref:\s*video\(\s*"([^"]+)"\s*\)/)
-    const href = slug ? `${videoBase}${slug[1]}` : field(own, "href")
+    const href = slug ? `${videoBase}${slug[1]}` : (recordHref(own) ?? field(own, "href"))
     const extras = linksBlock
       ? [...linksBlock[1].matchAll(/\{[^}]*\}/g)]
           .map(([link]) => [field(link, "label"), field(link, "href")])
@@ -204,7 +304,14 @@ export function timelineBlocks(source) {
   return out
 }
 
-/** The "Published" date a revision printed, where it printed one. */
+/**
+ * The "Published" date a revision printed, where it printed one: inline, as
+ * the drought guide did, or as the ALPR guide's `PUBLISHED` constant.
+ */
 export function printedDate(source) {
-  return source.match(/formatLongDate\(\s*"(\d{4}-\d{2}-\d{2})"\s*\)/)?.[1] ?? null
+  return (
+    source.match(/formatLongDate\(\s*"(\d{4}-\d{2}-\d{2})"\s*\)/)?.[1] ??
+    source.match(/const PUBLISHED(?::\s*string)?\s*=\s*"(\d{4}-\d{2}-\d{2})"/)?.[1] ??
+    null
+  )
 }

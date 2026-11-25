@@ -415,10 +415,19 @@ and its structured data's `datePublished`/`dateModified` are read off the same
 record, so the page cannot say it was updated on a day the history does not
 show.
 
-**Publishing an update is `npm run drought:snapshot`** (`--note "..."` adds a
-line of the author's own; nothing writes one for them). It reads the page and
-`timeline.ts` as they stand and writes a version for today, in Haverhill, to
-`src/lib/data/drought-history.json`. If today already has a version it is
+**The ALPR guide keeps the same history**, at `/issues/ALPR/history/<date>`:
+`scripts/snapshot-issue.mjs` takes the guide's name (`ISSUES` there says where
+each one's page and timeline are), `src/lib/server/issue-history.ts` reads
+either file, and both guides' version routes are `src/lib/IssueVersion.svelte`
+under their own title. Its first version is the page as published on 11
+November 2026 (`dba6c85`); a new guide gets a history by adding itself to
+`ISSUES`, `ISSUE_PATHS` in `router.ts` and `HISTORIES`, then running
+`--backfill`.
+
+**Publishing an update is `npm run drought:snapshot`**, or `npm run
+alpr:snapshot` (`--note "..."` adds a line of the author's own; nothing writes
+one for them). It reads the page and `timeline.ts` as they stand and writes a
+version for today, in Haverhill, to `src/lib/data/<issue>-history.json`. If today already has a version it is
 replaced and keeps its note, so a typo fixed an hour later does not make a
 second entry. `--check` exits 1 if the page has changed since its last version.
 `--backfill` rebuilt the first versions from git (the end of each day from the
@@ -436,7 +445,11 @@ out of the Svelte source: an `h1`-`h4`, `p`, `li` or `tr` **with no `class`**
 is a block, which is the site's own rule for authored prose and is what leaves
 out the byline, the print-only address and the share button. Components,
 figures and comments are skipped, so the charts and maps are not in the
-history. Links are kept inline as
+history. Two things a page keeps in its script are read too: a record named
+once as `const NAME = Router.reference(...)` and linked as `{NAME}`, and an
+`{#each}` over a literal array -- the ALPR guide's comparison table -- which
+is written out once per row with its classes taken off, every word in a row
+being the article's. Links are kept inline as
 `[label](address)`, and `src/lib/text-diff.ts` treats the address as part of
 each word: a source swapped for another under the same label shows as a
 change. Timeline entries are compared the same way, as a line each.

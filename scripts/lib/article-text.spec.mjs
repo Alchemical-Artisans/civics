@@ -38,6 +38,51 @@ describe("articleBlocks", () => {
     expect(block.text).toBe("[sheet](ref:a.xlsx)")
   })
 
+  it("resolves a record named once in the script, bare or with a page", () => {
+    const blocks = articleBlocks(`<script lang="ts">
+  const PACKET = Router.reference("dir/packet.pdf")
+  const NOTICE = Router.reference(
+    \`dir/\${encodeURIComponent("A & B.pdf")}\`,
+  )
+</script>
+<p><a href={NOTICE}>notice</a>, <a href="{PACKET}#page=4">page 4</a></p>`)
+    expect(blocks[0].text).toBe(
+      "[notice](ref:dir/A%20%26%20B.pdf), [page 4](ref:dir/packet.pdf#page=4)",
+    )
+  })
+
+  it("writes out a loop over a literal array, classes and all", () => {
+    const blocks = articleBlocks(`<script lang="ts">
+  const ROWS = [
+    { topic: "One", text: "First", note: "" },
+    { topic: "Two", text: 'Second {x}', note: "Noted" },
+  ]
+</script>
+{#each ROWS as row (row.topic)}
+  <h3>{row.topic}</h3>
+  <p class="m-0">{row.text}</p>
+  {#if row.note}<p class="mt-3">{row.note}</p>{/if}
+{/each}`)
+    expect(blocks).toEqual([
+      { tag: "h3", text: "One" },
+      { tag: "p", text: "First" },
+      { tag: "h3", text: "Two" },
+      { tag: "p", text: "Second {x}" },
+      { tag: "p", text: "Noted" },
+    ])
+  })
+
+  it("reads the ALPR guide's comparison and records", () => {
+    const blocks = articleBlocks(read("src/routes/issues/ALPR/+page.svelte"))
+    expect(
+      blocks.some((b) => b.tag === "h3" && b.text === "What counts as a license plate reader"),
+    ).toBe(true)
+    for (const { text } of blocks) {
+      expect(text).not.toMatch(/[<>]|\{[#@:/]|\{\w+\.|\{[A-Z_]+\}/)
+      expect(text).not.toMatch(/\]\(\)/)
+    }
+  })
+
   it("reads only words out of the real page", () => {
     const blocks = articleBlocks(read("src/routes/issues/drought/+page.svelte"))
     expect(blocks.length).toBeGreaterThan(30)
@@ -58,6 +103,17 @@ describe("timelineBlocks", () => {
     expect(entries.some((e) => e.text.includes("](http://haverhillcommunitytv.org/video/"))).toBe(
       true,
     )
+  })
+
+  it("reads the ALPR timeline's records as references at a page", () => {
+    const entries = timelineBlocks(read("src/routes/issues/ALPR/timeline.ts"))
+    expect(
+      entries.some((e) =>
+        e.text.includes(
+          "](ref:PublicSafetyLPR/Haverhill%20-%20Flock%20Termination%20Letter%20-%2010.21.2026.pdf#page=1)",
+        ),
+      ),
+    ).toBe(true)
   })
 
   it("keeps an entry's own link apart from the documents beside it", () => {

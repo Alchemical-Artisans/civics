@@ -1,6 +1,7 @@
 <script lang="ts">
   import ShareButton from "$lib/ShareButton.svelte"
   import ShareMeta from "$lib/ShareMeta.svelte"
+  import VersionMenu from "$lib/VersionMenu.svelte"
   import { formatLongDate } from "$lib/calendar"
   import { Router } from "$lib/router"
 
@@ -8,8 +9,10 @@
   // tab name the page alike.
   const TITLE = "License Plate Readers in Haverhill"
   const sharedUrl = Router.alpr()
-  const PUBLISHED: string = "2026-11-11"
-  const UPDATED: string = "2026-11-25"
+
+  // "Published" and "Updated" are read off the page history, as the drought
+  // guide's are (`npm run alpr:snapshot`).
+  let { data } = $props()
   const description =
     "Facts, sources, and concerns about license plate readers and other surveillance in Haverhill, and a comparison of the proposed rules."
 
@@ -309,16 +312,18 @@
 
 <h1>License Plate Readers in Haverhill</h1>
 
-<!-- Fixed dates, set by hand: PUBLISHED when the page went up, UPDATED when
-     its content last changed. "Updated" shows only once it differs. -->
+<!-- The first and latest versions in the page history. "Updated" shows only
+     once it differs. -->
 <p class="m-0 mt-1 flex flex-wrap items-baseline gap-x-2 text-sm text-slate-600">
   <span class="font-semibold text-slate-700">Published</span>
-  <span>{formatLongDate(PUBLISHED)}</span>
-  {#if UPDATED !== PUBLISHED}
+  <span>{formatLongDate(data.published)}</span>
+  {#if data.updated !== data.published}
     <span aria-hidden="true">·</span>
     <span class="font-semibold text-slate-700">Updated</span>
-    <span>{formatLongDate(UPDATED)}</span>
+    <span>{formatLongDate(data.updated)}</span>
   {/if}
+  <span aria-hidden="true">·</span>
+  <VersionMenu issue={data.issue} versions={data.versions} label="History" />
   <span aria-hidden="true">·</span>
   <span
     >Prepared by <a href="https://www.aholdengouveia.name" target="_blank" rel="noopener noreferrer"

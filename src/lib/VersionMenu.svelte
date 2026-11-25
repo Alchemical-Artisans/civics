@@ -1,5 +1,5 @@
 <!--
-  The drought guide's versions as a dropdown, newest first, each opening the
+  An issue guide's versions as a dropdown, newest first, each opening the
   page that shows what it changed.
 
   A `<details>`, so it opens and every version is a plain link before anything
@@ -9,14 +9,16 @@
 <script lang="ts">
   import { onMount } from "svelte"
   import { formatLongDate } from "$lib/calendar"
-  import { Router } from "$lib/router"
+  import { Router, type Issue } from "$lib/router"
 
   let {
+    issue,
     versions,
     /** The version being viewed; none on the guide itself. */
     current = null,
     label,
   }: {
+    issue: Issue
     versions: { id: string; date: string }[]
     current?: string | null
     label: string
@@ -57,7 +59,7 @@
     {#each versions as v, i (v.id)}
       <li class="m-0 p-0">
         <a
-          href={Router.droughtHistory(v.id)}
+          href={Router.issueHistory(issue, v.id)}
           aria-current={v.id === current ? "page" : undefined}
           class="block rounded px-3 py-1.5 whitespace-nowrap text-slate-800 no-underline hover:bg-slate-100 aria-[current=page]:font-semibold"
         >

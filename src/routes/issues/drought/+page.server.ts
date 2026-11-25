@@ -1,6 +1,6 @@
 import type { PageServerLoad } from "./$types"
 import { averageFullYear, averageRemainder } from "$lib/precipitation"
-import { publication } from "$lib/server/drought-history"
+import { publication } from "$lib/server/issue-history"
 import { PRECIPITATION_SOURCE, precipitationByYear } from "$lib/server/precipitation"
 
 /** Bars on the chart: the current year and the nine before it. */
@@ -43,7 +43,7 @@ export const load: PageServerLoad = () => {
 
   return {
     // When the guide was published and last changed, from its page history.
-    ...publication(),
+    ...publication("drought"),
     rainfallYears: all.slice(-SPAN),
     rainfallBaseline: {
       /** The dashed rule, now that the bars are whole years. */
