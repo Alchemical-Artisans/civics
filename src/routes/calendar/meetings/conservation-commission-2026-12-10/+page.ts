@@ -1,0 +1,54 @@
+import type { PageLoad } from "./$types"
+
+/**
+ * When and where the meeting is, read off the head of the city's agenda. The
+ * layout renders these into the page header; see $lib/calendar's
+ * MeetingDetails for why none of it can come from the scrape.
+ *
+ * As on the Commission's other agendas, only the two sentences of the opening
+ * paragraph the header does not already say are kept: the fallback date, in
+ * `notice`, and the qualification on the join link, in `how`. The events
+ * calendar's copy of this agenda is titled "REVISED"; the agenda itself prints
+ * no revision line, so none is transcribed. The roster is the city's page read
+ * for the 24 November write-up.
+ */
+export const load: PageLoad = () => ({
+  details: {
+    time: "7:15 P.M.",
+    location: {
+      name: "4 Summer Street, City Hall Room 301, Haverhill, MA 01830",
+      // The room geocodes to nothing; hand the map the street address.
+      mapQuery: "4 Summer Street, Haverhill, MA 01830",
+    },
+    remote: {
+      url: "https://tinyurl.com/HaverhillConCom2026",
+      meetingId: "243 284 796 220 8",
+      passcode: "oz3UT23Q",
+      how: [
+        "Note if technological problems interrupt the virtual meeting, the meeting will continue in-person.",
+      ],
+    },
+    notice: [
+      "If postponed by the Commission, the meeting will be held on December 17, 2026, at the same time.",
+    ],
+    // The Commissioner table on the city's own page for the Commission, which
+    // calls it "a seven-member commission of volunteer residents appointed by
+    // the Mayor" and names seven, so no `partial`. The Conservation Partners
+    // listed below them are "not voting members of the Commission".
+    members: {
+      source: {
+        title: "the city's Conservation Commission page",
+        url: "https://www.haverhillma.gov/government/boards-committees-and-commissions/conservation-commission/",
+      },
+      roster: [
+        { name: "Oliver Aguiló" },
+        { name: "Evan Barman, P.E.", role: "Vice-Chair" },
+        { name: "Ted Becker" },
+        { name: "Amy Nelson" },
+        { name: "Jennifer Rubera" },
+        { name: "Harmony Wilson", role: "Chair" },
+        { name: "Thomas Wylie, Ed. D.", role: "Clerk" },
+      ],
+    },
+  },
+})
