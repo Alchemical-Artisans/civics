@@ -218,7 +218,9 @@ export async function printAttention(meetings) {
 
   console.log(`\n${"─".repeat(74)}`)
   if (leads.length) {
-    console.log(`  ISSUE PAGES BEHIND -- ${leads.length} lead(s) not yet incorporated\n`)
+    console.log(
+      `  NEW INFORMATION MISSING FROM ISSUE PAGES -- ${leads.length} lead(s) not yet incorporated\n`,
+    )
     for (const [slug, ls] of Object.entries(Object.groupBy(leads, (l) => l.slug)))
       console.log(`    ${String(ls.length).padStart(5)}  /issues/${slug}`)
     console.log()

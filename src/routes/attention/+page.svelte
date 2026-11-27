@@ -37,7 +37,7 @@
 
   const sections = $derived([
     ...data.groups.map((g) => ({ id: g.key, title: g.title, count: g.records.length })),
-    { id: "leads", title: "Issue pages behind", count: data.leads.length },
+    { id: "leads", title: "New Information Missing From Issue Pages", count: data.leads.length },
     { id: "sources", title: "Cited pages changed", count: acted.length },
     { id: "unreachable", title: "Cited pages unreachable", count: blocked.length },
   ])
@@ -164,7 +164,7 @@
     {#if data.leads.length}
       <section id="leads" class="my-6 scroll-mt-16">
         <h2>
-          Issue pages behind
+          New Information Missing From Issue Pages
           <span class="font-normal text-slate-500">
             -- {needle ? `${leads.length} of ` : ""}{data.leads.length}
           </span>
