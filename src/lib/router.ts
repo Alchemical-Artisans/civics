@@ -82,6 +82,26 @@ export class Router {
     return path("/issues/ALPR")
   }
 
+  /** An issue guide by its directory name under `src/routes/issues/`. */
+  static issue(slug: string): string {
+    return path(`/issues/${slug}`)
+  }
+
+  /**
+   * A stored URL, made to open on whatever server is serving this page.
+   *
+   * The issue watch records a page of this site by its public address, which is
+   * the right thing to keep in `leads.json` but the wrong thing to link from the
+   * dev-only attention page: a page written since the last deploy is a 404 on
+   * the public site and only exists on the dev server in front of the reader.
+   * Any other URL is returned as it is.
+   */
+  static local(url: string): string {
+    if (!url.startsWith(`${SITE}/`)) return url
+    const u = new URL(url)
+    return path(`${u.pathname}${u.search}${u.hash}` as `/${string}`)
+  }
+
   /**
    * The month calendar of agendas and minutes, on whichever month is current.
    *

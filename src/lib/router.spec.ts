@@ -177,3 +177,19 @@ describe("Router", () => {
     expect(url.searchParams.has("ctz")).toBe(false)
   })
 })
+
+describe("Router.local", () => {
+  it("turns this site's public address into a path on the server in front of the reader", () => {
+    expect(
+      Router.local(
+        "https://haverhill.alchemicalartisans.com/calendar/meetings/city-council-2026-12-01/flock-cameras",
+      ),
+    ).toBe("/calendar/meetings/city-council-2026-12-01/flock-cameras")
+  })
+
+  it("leaves another site's address alone", () => {
+    expect(Router.local("https://www.haverhillma.gov/x.pdf")).toBe(
+      "https://www.haverhillma.gov/x.pdf",
+    )
+  })
+})

@@ -1,5 +1,6 @@
 <script lang="ts">
   import { enhance } from "$app/forms"
+  import { Router } from "$lib/router"
 
   let { data, form } = $props()
 
@@ -173,7 +174,9 @@
           to date, then mark it incorporated -- or irrelevant.
         </p>
         {#each Object.entries(Object.groupBy(leads, (l) => l.slug)) as [slug, ls] (slug)}
-          <h3><code>/issues/{slug}</code> -- {ls?.length}</h3>
+          <h3>
+            <a href={Router.issue(slug)} target="_blank"><code>/issues/{slug}</code></a> -- {ls?.length}
+          </h3>
           <ul class="divide-y divide-slate-200 rounded border border-slate-200">
             {#each ls ?? [] as l (l.id)}
               <li class="grid gap-2 p-3 md:grid-cols-[1fr_auto]">
@@ -183,7 +186,7 @@
                     {l.source}{l.publisher ? ` -- ${l.publisher}` : ""}
                   </div>
                   <a
-                    href={l.url}
+                    href={Router.local(l.url)}
                     target="_blank"
                     rel="external noopener noreferrer"
                     class="break-words">{l.title}</a
