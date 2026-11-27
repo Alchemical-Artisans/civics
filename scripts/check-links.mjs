@@ -7,9 +7,10 @@
  * entry pointing at a 404 looks exactly like one pointing at an agenda until
  * somebody clicks it.
  *
- * A HEAD request each, cached in `.cache/link-status.json` so a second run is
- * nearly free and only new documents are fetched. `--recheck` ignores the cache,
- * which is what to run when the city has reorganised something.
+ * A HEAD request each, and a GET where HEAD fails, cached in
+ * `.cache/link-status.json` so a second run is nearly free and only new
+ * documents are fetched. `--recheck` ignores the cache, which is what to run
+ * when the city has reorganised something.
  *
  * Nothing here edits `meetings.json`. A broken link is a fact about the city's
  * site today, not about the record, so it lives in the cache and is reported by
@@ -42,19 +43,31 @@ console.log(
 
 const status = { ...previous }
 let done = 0
-await mapLimit(todo, CONCURRENCY, async (url) => {
-  let ok
+/**
+ * Whether one request for the file succeeds. A GET's body is cancelled as soon
+ * as the status is in, so falling back to one does not download the PDF.
+ */
+async function answers(url, method) {
   try {
     const res = await fetch(url, {
-      method: "HEAD",
+      method,
       redirect: "follow",
       headers: { "User-Agent": USER_AGENT },
       signal: AbortSignal.timeout(TIMEOUT_MS),
     })
-    ok = res.ok
+    await res.body?.cancel()
+    return res.ok
   } catch {
-    ok = false
+    return false
   }
+}
+
+await mapLimit(todo, CONCURRENCY, async (url) => {
+  // A failed HEAD is not a dead link until a GET agrees. The events calendar
+  // answers HEAD on a notice's attachment with 404 and GET with the PDF, which
+  // put every notice agenda on the attention page as broken while each one
+  // opened fine in a browser.
+  const ok = (await answers(url, "HEAD")) || (await answers(url, "GET"))
   status[url] = ok ? "ok" : "dead"
   if (++done % 200 === 0 || done === todo.length) log.write(`  ${done}/${todo.length}`)
 })
