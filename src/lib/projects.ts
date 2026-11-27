@@ -242,6 +242,24 @@ export const PROJECTS: Project[] = [
           item: "new-drinking-water-source-loan-order",
         },
       },
+      // The well's land: the order of taking and the loan order that pays for
+      // it, passed the same evening.
+      {
+        kind: "item",
+        meeting: "city-council-2026-06-02",
+        item: "309-east-broadway-taking",
+        board: "City Council",
+        number: "5.4",
+        title: "Order of taking for 309 East Broadway, $1,800,000.00",
+      },
+      {
+        kind: "item",
+        meeting: "city-council-2026-06-02",
+        item: "309-east-broadway-loan-order",
+        board: "City Council",
+        number: "16.3",
+        title: "$900,000.00 loan order to acquire the land",
+      },
       {
         kind: "item",
         meeting: "city-council-2026-12-01",
@@ -586,10 +604,9 @@ export const PROJECTS: Project[] = [
   /**
    * Mariam's Cottage, a bed and breakfast at 421 East Broadway: heard on 30
    * June 2026 and continued for a modified proposal, then continued again at
-   * the applicant's request. The 2 June and 28 July continuances fall on
-   * sittings with no page here, so each is a date read off a later item: the
-   * applicant's request of May 27 and the 30 June agenda's "Continued from
-   * June 2, 2026"; the 25 August agenda's "Continued from July 28, 2026".
+   * the applicant's request. The 28 July continuance falls on a sitting with
+   * no page here, so it is a date read off a later item, the 25 August
+   * agenda's "Continued from July 28, 2026".
    */
   {
     slug: "mariams-cottage-special-permit",
@@ -597,10 +614,12 @@ export const PROJECTS: Project[] = [
     kind: "initiative",
     entries: [
       {
-        kind: "date",
-        date: "2026-06-02",
+        kind: "item",
+        meeting: "city-council-2026-06-02",
+        item: "mariams-cottage-special-permit",
+        board: "City Council",
+        number: "10.1",
         title: "Continued to June 30 at the applicant's request",
-        from: { meeting: "city-council-2026-06-30", item: "mariams-cottage-special-permit" },
       },
       {
         kind: "item",
