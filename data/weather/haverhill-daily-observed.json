@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-25T21:42:17.691Z",
+  "generatedAt": "2026-11-27T14:09:15.090Z",
   "source": "https://data.rcc-acis.org/StnData",
   "station": {
     "sid": "USC00193505",
@@ -17,7 +17,7 @@
     "snow: Snowfall (inches)",
     "snwd: Snow depth on the ground (inches)"
   ],
-  "count": 46411,
+  "count": 46413,
   "data": [
     [
       "1899-11-01",
@@ -464128,6 +464128,26 @@
       "0.00",
       "0.0",
       "0"
+    ],
+    [
+      "2026-11-26",
+      "M",
+      "M",
+      "M",
+      "M",
+      "M",
+      "M",
+      "M"
+    ],
+    [
+      "2026-11-27",
+      "M",
+      "M",
+      "M",
+      "M",
+      "M",
+      "M",
+      "M"
     ]
   ]
 }

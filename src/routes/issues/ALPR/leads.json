@@ -1,6 +1,42 @@
 {
-  "232ca1c": {
+  "a12b50a": {
     "status": "new",
+    "found": "2026-11-27",
+    "date": "2026-12-01",
+    "source": "meeting page",
+    "title": "Documents Referred to Committee Study",
+    "url": "https://haverhill.alchemicalartisans.com/calendar/meetings/city-council-2026-12-01/documents-referred-to-committee-study",
+    "excerpt": "…ng water systems Planning & Development 7/14/26 32-l Motion by Councilor Ferreira to send Flock Cameras to Public Safety committee for further discussion and recommendation back to coun…"
+  },
+  "0920650": {
+    "status": "new",
+    "found": "2026-11-27",
+    "date": "2026-12-01",
+    "source": "meeting page",
+    "title": "Flock Cameras and License Plate Monitoring",
+    "url": "https://haverhill.alchemicalartisans.com/calendar/meetings/city-council-2026-12-01/flock-cameras",
+    "excerpt": "…/or Haverhill Police Department on status of the cancellation of the city’s contract with Flock Letter from Councilors Ferreira and Michitson November 24, 2026 TO: President and City Co…"
+  },
+  "4e0e2ca": {
+    "status": "incorporated",
+    "found": "2026-11-27",
+    "date": "2026-11-26",
+    "source": "news",
+    "title": "Haverhill makes repeated attempts to end Flock camera contract - Eagle-Tribune",
+    "publisher": "Eagle-Tribune",
+    "url": "https://news.google.com/rss/articles/CBMi9gFBVV95cUxOYUo4YVFwaVN6S2duSElVVmlHRHJGa1FxWVFHNFVSbVRVTUJTV0hHcl9BMGR2VlVzbGRLRS12UzJ5ZUthc3RXMkJhY1d3VmxUNENOeWE1aEVFQjJraUxfa3RBWV9rdm92MlRIUk9fV3N0a3kybUp5SEMyQlZLX3NUUjFCQnl4X0s5UmVubk5MVkNtT0FldXVOX0VNZlpvQ1dmbjlXd2Z2QWdIQTdqYm83dmNKcERVMk9oTmJhN1hSUE51eXl6djhRblI4ZU1xNHhWRzNRRkFSd0p2UHl3R2pJZVVGQkpzWGRNQUdPdG9nRFZJbzJLVEE?oc=5"
+  },
+  "0df761d": {
+    "status": "irrelevant",
+    "found": "2026-11-27",
+    "date": "2026-11-26",
+    "source": "news",
+    "title": "Bringing the heat to Haverhill ... with volcanoes - Haverhill Gazette",
+    "publisher": "Haverhill Gazette",
+    "url": "https://news.google.com/rss/articles/CBMiwwFBVV95cUxNVzJMcktlYUx1bVpQNDdEcGdoSmZFaXFXT1pYUHJ5ZmVLSUZvTkhuaGxwME5xOUxnM1RwdFY0UnhKYjBVNXd0TElaN2d5QXU0NHd5YnViU0FWZ2FBaTJBNFltLWpEU05OZUM5NzJ5OThoZTcxZDJrOEpDY1V5TDg3cVlUMkJkU3c3OTlSQzB4LXFJeXBab1pMOXI4OGdYU0hwbXdvT2RTeE82NC0wRlRNYzlvNzNEZWtWblhRbWZrU0F5MG8?oc=5"
+  },
+  "232ca1c": {
+    "status": "incorporated",
     "found": "2026-11-25",
     "date": "2026-11-25",
     "source": "news",
@@ -9,7 +45,7 @@
     "url": "https://news.google.com/rss/articles/CBMirwFBVV95cUxNdmZOeXNrVExneFdXeW9IUFRtbnVnQWZKdWMycV8ybUNmdmZ3ekhyM01KS0hYeEg0U0xmVnNIcjF4Umd2am9rMXFLU3A3aUJxS3htNm9ibFJ1MHVwdmd0NUVvcGFGc0FTejYtU28xblZRbkZ1UHk4UGk1X2dRdnlwdFQ5NU5BbXRTMXVNaTJqbUw5MzN2V0JTLW5TNHN6M2JNM29xMGlIZ0MzYTUyOFpB?oc=5"
   },
   "c484699": {
-    "status": "new",
+    "status": "incorporated",
     "found": "2026-11-25",
     "date": null,
     "source": "web",
@@ -18,7 +54,7 @@
     "note": "Eagle-Tribune letter to the editor on Haverhill's Flock cancellation, urging against a replacement system. The date isn't shown in the search result, so it may predate 2026-11-10; check before using."
   },
   "c8cf440": {
-    "status": "new",
+    "status": "incorporated",
     "found": "2026-11-25",
     "date": "2026-11-24",
     "source": "city news",
@@ -26,8 +62,17 @@
     "url": "https://www.haverhillma.gov/news/posts/haverhill-flock-contract-termination-update/",
     "excerpt": "…as announced that the City of Haverhill has sent multiple contract termination notices to Flock Inc. Group (Flock), but as of Tuesday, November 24, 2026, the City has received no respon…"
   },
+  "3c396cb": {
+    "status": "incorporated",
+    "found": "2026-11-27",
+    "date": "2026-11-23",
+    "source": "news",
+    "title": "Local Leaders Are Saying NO to Flock - ACLU of Massachusetts",
+    "publisher": "ACLU of Massachusetts",
+    "url": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxNRi1OOW1JeE03Q1RnQ2NndVd2Wi1HTzl4LTFTcjFrOExTWDBKTnRrRkpNRzBBSzVsUWJlbWJ0NUZJRHMwWFFvMXJfOXJRZlZBTHRkbGl4U0dPVGlIX1oxcUxZVUhWMFlFb0pFWXVqUkhuN1k2dVk0SFBZekNqOWc0eVZ1ZDJZV1ln?oc=5"
+  },
   "58e2db1": {
-    "status": "new",
+    "status": "incorporated",
     "found": "2026-11-25",
     "date": "2026-11-20",
     "source": "web",

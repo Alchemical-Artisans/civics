@@ -8,6 +8,73 @@
     "publisher": "The Cool Down",
     "url": "https://news.google.com/rss/articles/CBMikgFBVV95cUxQRGNsNUIyM0cxWmNjTmtOcGxJdmlrY3V5eng0UThHSk1zMkpiSXJJWjhIOUd1UWlKUVlvWDdZeXNGVDdWa3p2ZnV4NDdUN3lHUjFUc09COE5LOVVWZG1vbWVJSmxNZVNHdHJfLUN5WFFHdU9sTXdMelhmRlRReS1zSlI2cGF6ZjJmZEJiX3dzejBGdw?oc=5"
   },
+  "9504bbf": {
+    "status": "irrelevant",
+    "found": "2026-11-27",
+    "date": "2026-12-01",
+    "source": "meeting page",
+    "title": "Joint Pole Location, East Broadway",
+    "url": "https://haverhill.alchemicalartisans.com/calendar/meetings/city-council-2026-12-01/national-grid-pole-petition-east-broadway",
+    "excerpt": "…ing at a point approximately 1550 feet Southwest of the centerline of the intersection of Millvale Road and East Broadway and continuing approximately 15 feet in a West direction. National…"
+  },
+  "0b57677": {
+    "status": "new",
+    "found": "2026-11-27",
+    "date": "2026-12-01",
+    "source": "meeting page",
+    "title": "Water Emergency Declaration Update",
+    "url": "https://haverhill.alchemicalartisans.com/calendar/meetings/city-council-2026-12-01/water-emergency-declaration-update",
+    "excerpt": "5.7. Mayor Barrett wishes to introduce Robert Ward who will provide an update on the Water Emergency Declaration from MassDEP Letter from the Mayor Re: Water Emergency Declaration by MassDEP…"
+  },
+  "2d52e56": {
+    "status": "incorporated",
+    "found": "2026-11-27",
+    "date": null,
+    "source": "web",
+    "title": "Water Supply Emergency",
+    "publisher": "City of Haverhill",
+    "url": "https://www.haverhillma.gov/living-here/projects-of-public-interest/water-supply-emergency",
+    "note": "City's emergency page: Kenoza level 97.1 ft as of 11/19/26, Methuen interconnection, test well up to 0.6 MGD with conditions, river withdrawal not yet established."
+  },
+  "4ab0254": {
+    "status": "incorporated",
+    "found": "2026-11-27",
+    "date": null,
+    "source": "web",
+    "title": "Water Supply Emergency: Frequently Asked Questions",
+    "publisher": "City of Haverhill",
+    "url": "https://www.haverhillma.gov/living-here/waterwastewater-services/water-supply-emergency/frequently-asked-questions",
+    "note": "City FAQ on the declared emergency, calling it a water availability emergency from drought, not contamination."
+  },
+  "5ccf6e9": {
+    "status": "incorporated",
+    "found": "2026-11-27",
+    "date": null,
+    "source": "web",
+    "title": "MassDEP Approves Haverhill Water Supply Emergency, Allowing Methuen Tie-In, Test Well",
+    "publisher": "Memesita",
+    "url": "https://www.memesita.com/massdep-approves-haverhill-water-supply-emergency-allowing-methuen-tie-in-test-well/",
+    "note": "Secondary write-up of the declaration. It gives the city's timeline: a 12-inch, 5,000-foot above-ground pipeline carrying about 500,000 gal/day from the East Broadway test well to Millvale Reservoir. The page is undated in the search result, and it rewrites the city's release, so prefer the city's own pages."
+  },
+  "ab2fde0": {
+    "status": "incorporated",
+    "found": "2026-11-27",
+    "date": null,
+    "source": "web",
+    "title": "MassDEP Declares Water Supply Emergency in Haverhill",
+    "publisher": "World Today News",
+    "url": "https://www.world-today-news.com/massdep-declares-water-supply-emergency-in-haverhill/",
+    "note": "Aggregator rewrite of the MassDEP declaration. The date is not shown in the search result, and it adds nothing beyond the city's release already on the page."
+  },
+  "97ce3a6": {
+    "status": "incorporated",
+    "found": "2026-11-27",
+    "date": "2026-11-26",
+    "source": "news",
+    "title": "Haverhill takes water supply measures - Haverhill Gazette",
+    "publisher": "Haverhill Gazette",
+    "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxNY0JYS2V2ZDNyM1dTR0lucVNVdUo4M0dmaTVqYTBQZVM2cV9zSEc3d1pDQlJKTl9MQ1pGX3ZXUmtHOUUzY1NnQVBKOGtqQ096aFZEeHhSblRWT0lpRkRGQXNLRF9RWkVRLW0tY0gzSF9WYXpQcGRxRXlLSWZGeTlvRVFjRTlJUkh0MGdJVkFYT2RUd0loTjVXOEhOWXBmXzRPWTQ0a2dONUd4WVA3SjBtNkhDUXQ2OXhv?oc=5"
+  },
   "48563f9": {
     "status": "new",
     "found": "2026-11-25",
